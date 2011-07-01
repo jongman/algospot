@@ -5,9 +5,12 @@ class PageRevision(models.Model):
     """Stores a specific revision of the page."""
     text = models.TextField()
     edit_summary = models.TextField(max_length=100)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, null=False)
     created_on = models.DateTimeField(auto_now_add=True)
     revision_for = models.ForeignKey('Page')
+
+    def __unicode__(self):
+        return self.revision_for.title + " " + unicode(self.created_on)
 
 class Page(models.Model):
     """Stores a wiki page."""
@@ -17,3 +20,6 @@ class Page(models.Model):
     modified_on = models.DateTimeField(auto_now=True)
     current_revision = models.ForeignKey(PageRevision, related_name='main',
             blank=True, null=True)
+
+    def __unicode__(self):
+        return self.title

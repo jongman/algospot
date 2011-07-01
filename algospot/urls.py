@@ -5,6 +5,7 @@ from django.conf.urls.defaults import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^wiki/', include('algospot.wiki.urls')),
     # Examples:
     # url(r'^$', 'algospot.views.home', name='home'),
     # url(r'^algospot/', include('algospot.foo.urls')),
