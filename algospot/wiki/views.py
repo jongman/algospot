@@ -3,12 +3,14 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from models import Page, PageRevision
 from forms import EditForm
+from utils import link_to_pages
 
 def detail(request, slug):
     import markdown
     page = Page.objects.get(slug=slug)
     rendered = markdown.markdown(page.current_revision.text,
             extensions=["toc"])
+    rendered = link_to_pages(rendered)
     return render(request, "detail.html",
             {"page": page,
              "rendered_text": rendered})
