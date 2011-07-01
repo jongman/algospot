@@ -115,8 +115,8 @@ section[role=navigation] header {
 	padding-left:25px;
 }
 section[role=navigation] header a {
-	background:url('../img/sample_logo.png') no-repeat;
-	width:148px;
+	background:url('/static/images/logo.png') no-repeat;
+	width:196px;
 	height:31px;
 	text-indent:-9999em;
 	display:block;
