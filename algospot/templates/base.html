@@ -62,88 +62,40 @@
 		<nav id="main-nav">
 			<ul>
 				<li><a href="/" class="no-submenu">뉴스 피드</a></li>
-				<li><a href="/" title="" class="dashboard no-submenu">Dashboard</a></li> <!-- Use class .no-submenu to open link instead of a sub menu-->
-				<!-- Use class .current to open submenu on page load -->
-				<li class="current">
-					<a href="" title="" class="projects">Projects</a><span title="You have 3 new tasks">3</span>
+				<li><a href="/" class="no-submenu">포럼</a></li>
+				<li class="{% block wiki-class %}{% endblock %}" ><a href="/" class="no-submenu">위키</a></li>
+				<li>				
+					<a href="/" class="">온라인 저지</a>
 					<ul>
-						<li class="current"><a href="http://envato.parallaq.com/themes/chromatron/index.html" title="">Sample Index Page</a></li>
-						<li><a href="http://envato.parallaq.com/themes/chromatron/401.html" title="">Error 401</a></li>
-						<li><a href="http://envato.parallaq.com/themes/chromatron/403.html" title="">Error 403</a></li>
-						<li><a href="http://envato.parallaq.com/themes/chromatron/404.html" title="">Error 404</a></li>
-						<li><a href="http://envato.parallaq.com/themes/chromatron/500.html" title="">Error 500</a></li>
-						<li><a href="http://envato.parallaq.com/themes/chromatron/503.html" title="">Error 503</a></li>
-						<li><a href="http://envato.parallaq.com/themes/chromatron/login.html" title="">Sample Login Page</a></li>
+						<li><a href="/">문제 풀기</a></li>
+						<li><a href="/">최근 제출된 답안</a></li>
+						<li><a href="/">사용자 랭킹</a></li>
+						<li><a href="/">대회</a></li>
+						<li><a href="/">튜토리얼</a></li>
 					</ul>
 				</li>
-				<li>
-					<a href="" title="" class="products">Products</a>
-					<ul>
-						<li><a href="" title="">Add Product</a></li>
-						<li><a href="" title="">Edit Product</a></li>
-						<li><a href="" title="">Product Management</a></li>
-						<li><a href="" title="">Some very long link with a lot of words</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="" title="" class="events">Events</a>
-					<ul>
-						<li><a href="" title="">My Events</a></li>
-						<li><a href="" title="">Add Event</a></li>
-						<li><a href="" title="">Edit Event</a></li>
-						<li><a href="" title="">Event Management</a></li>
-						<li><a href="" title="">Settings</a></li>
-					</ul>
-				</li>
-				<li><a href="" title="" class="articles">Articles</a></li>
-				<li><a href="" title="" class="gallery">Image Gallery</a><span title="You have 47 new tasks">47</span></li>
-				<li><a href="" title="" class="settings">Settings</a></li>
+				<li><a href="/" class="no-submenu">캘린더</a></li>
 			</ul>
 		</nav>
-			-->
 		<!-- /Main Navigation -->
 		
-		<!-- Sidebar -->
-		<section class="sidebar nested"> <!-- Use class .nested for diferent style -->
-			<h2>Nested Section</h2>
-			<p>Lorem ipsum dolor sit amet, conse ctetur adipiscing elit. Maec enas id augue ac metu aliquam.</p>
-			<p>Sed pharetra placerat est suscipit sagittis. Phasellus <a href="#">aliquam</a> males uada blandit. Donec adipiscing sem erat.</p>
-		</section>
-		<!-- /Sidebar -->
-		
-		<!-- Sidebar -->
-		<section class="sidebar">
-			<h2>Paragraph with Separator</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et dignissim metus.</p>
-			<p class="separator">Maecenas id augue ac metus tempus aliquam. Sed pharetra placerat est suscipit sagittis.</p>
-			<p class="separator">Phasellus aliquam malesuada blandit. Donec adipiscing sem erat.</p>
-			<a class="button-link" href="#" title="This is my title!">read more</a>
-		</section>
-		<!-- /Sidebar -->
-		
-		<!-- Sidebar -->
-		<section class="sidebar">
-			<img src="img/sample_image.jpg" alt="Sample Image">
-			<h2>Lorem Ipsum Header</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et dignissim metus. Maecenas id augue ac metus tempus aliquam. Sed pharetra placerat est suscipit sagittis. Phasellus aliquam malesuada blandit. Donec adipiscing sem erat.</p>
-			<a class="button-link" href="#" title="This is my title!">super long read more link</a>
-		</section>
-		<!-- /Sidebar -->
-		
-		<!-- Sidebar -->
-		<section class="sidebar separator">
-			<h2>Section with Separator</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse et dignissim metus. Maecenas id augue ac metus tempus aliquam. Sed pharetra placerat est suscipit sagittis.</p>
-			<ul>
-				<li><strong>Sed pharetra placerat</strong></li>
-				<li><em>Phasellus aliquam malesuada</em></li>
-				<li>Maecenas id augue</li>
-				<li>Consectetur <a href="#">adipiscing</a> elit</li>
-				<li>Lorem ipsum dolor</li>
-			</ul>
+		<!--Sidebar -->
+		<section class="sidebar nested">
+			<h2>다가오는 이벤트들</h2>
+			<p>TCO11 Marathon Match R3 (6/30)</p>
+			<p class="separator">SRM 511 (7/2 11:00 AM)</p>
+			<p class="separator">TCO11 Online Round 3 (7/9 11:00 AM)</p>
+			<p class="separator">SRM 512 (7/13 10:00 AM)</p>
+			<p class="separator">TCO11 Online Round 4 (7/23 11:00 AM)</p>
+			<p class="separator">SRM 513 (7/26 6:00 AM)</p>
+			<p class="separator">TCO11 Online Round 5 (8/6 11:00 AM)</p>
+			<p class="separator">SRM 514 (8/9 8:00 PM)</p>
+			<p class="separator">SRM 515 (8/20 11:00 AM)</p>
+			<a class="button-link" href="#" title="See all events!">see all</a>
 		</section>
 		<!-- /Sidebar -->
 	</section>
+		
 	<!-- /Aside Block -->
 	
 	<!-- Main Content -->

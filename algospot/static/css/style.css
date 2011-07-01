@@ -188,6 +188,7 @@ section[role=navigation] header h1 {
 	background-position:25px 8px;
 	background-repeat:no-repeat;
 	height:21px;
+	font-size: 110%;
 }
 #main-nav ul ul {
 	margin-left:50px;
@@ -1492,4 +1493,11 @@ table .actions .delete { background:url('../img/icons/icon_table_delete.png') no
 	display:block;
 	text-align:center;
 	font-size:1000%;
+}
+/* override fonts */
+section.sidebar, /* sidebar item */
+#main-nav ul li a, /* major menu item */
+#main-nav ul li li a /* minor menu item */
+{
+	font-family:NanumGothic,나눔고딕 !important;
 }
