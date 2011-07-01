@@ -1,2 +1,4 @@
 venv
 *.pyc
+*.sqlite3
+designs
