@@ -1495,6 +1495,7 @@ table .actions .delete { background:url('/static/images/icons/icon_table_delete.
 	font-size:1000%;
 }
 /* override fonts */
+div.wiki-text p,
 ul.tab-switch li a,
 ul#breadcrumbs li a, 
 section.sidebar, /* sidebar item */

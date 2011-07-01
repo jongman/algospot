@@ -14,6 +14,9 @@ hello hahaha
 {% endblock %}
 
 {% block page-contents %} 
+	<div class="wiki-text">
+		{{ rendered_text|safe }}
+	</div>
 {% endblock %}
 
 {% block page-footer %}
