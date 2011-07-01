@@ -1503,8 +1503,16 @@ table .actions .delete { background:url('/static/images/icons/icon_table_delete.
 	text-align:center;
 	font-size:1000%;
 }
-/* custom overrides */
 
+/*****************************/
+/* algospot custom overrides */
+/*****************************/
+
+a.missing {
+	color: #2E43AE;
+}
+
+article header h2,
 div.wiki-text *,
 div.wiki-edit textarea,
 div.wiki-edit legend,
@@ -1517,3 +1525,4 @@ section.sidebar, /* sidebar item */
 {
 	font-family:NanumGothic,나눔고딕 !important;
 }
+

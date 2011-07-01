@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from models import Page, PageRevision
 from forms import EditForm
 from utils import link_to_pages
+from djangoutils import get_or_none
 
 def detail(request, slug):
     import markdown
@@ -16,9 +17,10 @@ def detail(request, slug):
              "rendered_text": rendered})
 
 def edit(request, slug):
-    page = Page.objects.get(slug=slug)
+    page = get_or_none(Page, slug=slug)
+    text = page.current_revision if page and page.current_revision else ""
     form = EditForm(data=request.POST or None,
-            initial={"text": page.current_revision.text})
+            initial={"text": text})
 
     if request.method == "POST" and form.is_valid():
         form.save(page, request.user)

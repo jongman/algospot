@@ -1,8 +1,10 @@
 # Django settings for algospot project.
 
-import os
+import os, sys
+
 PROJECT_DIR = os.path.dirname(__file__)
 j = lambda filename: os.path.join(PROJECT_DIR, filename)
+sys.path.append(j("common"))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -100,6 +102,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'algospot.urls'
@@ -107,6 +110,8 @@ ROOT_URLCONF = 'algospot.urls'
 TEMPLATE_DIRS = (
     j("templates"),
 )
+
+INTERNAL_IPS = ('127.0.0.1',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -118,7 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 
     'south',
-    'annoying',
+    'debug_toolbar',
 
     'wiki',
     # Uncomment the next line to enable admin documentation:
