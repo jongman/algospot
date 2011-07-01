@@ -6,21 +6,19 @@ hello hahaha
 
 
 {% block sub-breadcrumbs %}
-<li>{{ page.title }}</li>	
+<li><a href="{% url wiki-detail page.slug %}">{{ page.title }}</a></li>	
+<li>편집하기</li>	
 {% endblock %}
 
 {% block page-title %}
-	{{ page.title }}
+	Edit: {{ page.title }}
 {% endblock %}
 
 {% block page-contents %} 
-	<div class="wiki-text">
-		{{ rendered_text|safe }}
-	</div>
 {% endblock %}
 
 {% block page-footer %}
 Page is last modified on {{ page.modified_on }}
 {% endblock %}
 
-{% block wiki-read-class %}default-tab{% endblock %}
+{% block wiki-edit-class %}default-tab{% endblock %}

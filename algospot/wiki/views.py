@@ -9,3 +9,7 @@ def detail(request, slug):
     return render(request, "detail.html",
             {"page": page,
              "rendered_text": rendered})
+
+def edit(request, slug):
+    page = Page.objects.get(slug=slug)
+    return render(request, "edit.html", {"page": page})

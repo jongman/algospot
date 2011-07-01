@@ -8,8 +8,8 @@
 {% block page-tabs %}
 	<nav>
 		<ul class="tab-switch">
-			<li><a class="{% block wiki-read-class %}{% endblock %}" href="/" rel="tooltip" title="Read article">읽기</a></li>
-			<li><a class="{% block wiki-edit-class %}{% endblock %}" href="/" rel="tooltip" title="Edit article">편집하기</a></li>
+			<li><a class="{% block wiki-read-class %}{% endblock %}" href="{% url wiki-detail page.slug %}" rel="tooltip" title="Read article">읽기</a></li>
+			<li><a class="{% block wiki-edit-class %}{% endblock %}" href="{% url wiki-edit page.slug %}" rel="tooltip" title="Edit article">편집하기</a></li>
 			<li><a class="{% block wiki-history-class %}{% endblock %}" href="/" rel="tooltip" title="See article history">편집내역</a></li>
 		</ul>
 	</nav>
