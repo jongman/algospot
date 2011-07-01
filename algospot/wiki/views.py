@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from models import Page, PageRevision
+from forms import EditForm
 
 def detail(request, slug):
     import markdown
@@ -12,4 +13,5 @@ def detail(request, slug):
 
 def edit(request, slug):
     page = Page.objects.get(slug=slug)
-    return render(request, "edit.html", {"page": page})
+    form = EditForm({"text": page.current_revision.text})
+    return render(request, "edit.html", {"page": page, "form": form})

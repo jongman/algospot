@@ -1084,10 +1084,19 @@ legend {
 .ie8 legend { top:-25px; }
 .ie7 legend { top:-35px; }
 form dt {
-	width:150px;
+	width:80px;
 	text-align:right;
 }
 form dd {
+	position:relative;
+	top:-24px;
+	left:95px;
+}
+form.wide-keys dt {
+	width:150px;
+	text-align:right;
+}
+form.wide-keys dd {
 	position:relative;
 	top:-24px;
 	left:165px;
@@ -1494,8 +1503,12 @@ table .actions .delete { background:url('/static/images/icons/icon_table_delete.
 	text-align:center;
 	font-size:1000%;
 }
-/* override fonts */
+/* custom overrides */
+
 div.wiki-text p,
+div.wiki-edit textarea,
+div.wiki-edit legend,
+div.wiki-edit input,
 ul.tab-switch li a,
 ul#breadcrumbs li a, 
 section.sidebar, /* sidebar item */

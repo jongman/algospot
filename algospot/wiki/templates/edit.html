@@ -15,6 +15,32 @@ hello hahaha
 {% endblock %}
 
 {% block page-contents %} 
+<div class="wiki-edit">
+	<form action="" method="post">
+		{% csrf_token %}
+		<fieldset>
+			<legend>편집하기</legend>
+			{% for field in form %}
+			<dl>
+				<dt>
+					<label>
+						{{ field.label_tag }}
+					</label>
+				</dt>
+				<dd>
+					{{ field }}
+					{% if field.errors %}
+					<span class="invalid-side-note">
+					{{ field.errors }}
+					</span>
+					{% endif %}
+				</dd>
+			</dl>
+			{% endfor %}
+		</fieldset>
+		<button type="submit">Submit</button> or <a href="{% url wiki-detail page.slug %}">Cancel</a>
+	</form>
+</div>
 {% endblock %}
 
 {% block page-footer %}
