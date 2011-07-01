@@ -69,7 +69,7 @@ a.outside { background-image:url('/static/images/icons/icon_outside_link.png'); 
 #main-nav ul li.current { background-image:url('/static/images/bgs/bg_aside_nav_current.png'); }
 #main-nav ul li li, #main-nav ul li li.current { background-image:url('/static/images/icons/list-style/icon_list_style.png'); }
 .widget.add-new-widget span { background-image:url('/static/images/widgets/widget_add.png'); }
-article section ul li { background-image:url('/static/images/icons/list-style/icon_list_style.png'); }
+article section ul li { background:url('/static/images/icons/list-style/icon_list_style.png') no-repeat 0 8px; }
 .sidetabs { background-image:url('/static/images/bgs/bg_sidetab.png'); }
 .accordion .accordion-switch { background-image:url('/static/images/icons/icon_accordion.png'); }
 .accordion .accordion-switch:hover { background-image:url('/static/images/icons/icon_accordion-hover.png'); }

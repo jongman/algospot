@@ -1505,7 +1505,7 @@ table .actions .delete { background:url('/static/images/icons/icon_table_delete.
 }
 /* custom overrides */
 
-div.wiki-text p,
+div.wiki-text *,
 div.wiki-edit textarea,
 div.wiki-edit legend,
 div.wiki-edit input,
