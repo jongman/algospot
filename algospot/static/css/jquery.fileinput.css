@@ -1,0 +1,51 @@
+/*custom upload elements*/
+input.customfile-input {
+	position:absolute;
+	top:-12px;
+	height:50px;
+	width:250px;
+	cursor:pointer;
+	background:transparent;
+	border:0;
+	opacity:0;
+	-moz-opacity:0;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	z-index:999;
+}
+.customfile {
+	width:250px;
+	height:23px;
+	position:relative;
+	cursor:pointer;
+	overflow:visible;
+	background:#fcfcfc;
+	padding:2px;
+	border:1px solid #ddd;
+	-webkit-border-radius:1x;
+	-moz-border-radius:1px;
+	border-radius:1px;
+	-webkit-box-shadow:0 0 4px #d9d9d9 inset;
+	-moz-box-shadow:0 0 4px #d9d9d9 inset;
+	box-shadow:0 0 4px #d9d9d9 inset;
+}
+.customfile-disabled {
+	opacity:.5;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	cursor:default;
+}
+.customfile-feedback {
+	display:block;
+	margin:2px 1px 1px 5px;
+	color:#666;
+}
+.customfile-feedback-populated {
+	color:#666;
+	padding-left:20px;
+	background: url(../img/icon-generic.gif) left 4px no-repeat;
+}
+.customfile-button {
+	float:right;
+	position:relative;
+	top:-3px;
+	right:-5px;
+}
