@@ -1,0 +1,337 @@
+@charset "utf-8";
+
+/* Chromatron Admin Theme Color Settings 
+
+   Here you can find all necessary color setting for theme customization.
+   Default color si Gray/Red combination.
+*/
+
+/*  Text Color  */
+a, #main-nav ul li.current a, #main-nav ul li.current li.current a, #main-nav ul li.current a:hover, .wizard-steps li a.done,
+#main-nav ul li a:hover, #main-nav ul li li a:hover, #main-nav ul li.current li a:hover, .wizard-steps li a:hover, .wizard-steps li a.current,
+.tab-switch li a.current, .sidetab-switch li a.current, .tab-switch li a:hover, .sidetab-switch li a:hover,
+.widget.decrease strong, .jq-datepicker.datepick a, #user-info div > a:hover, .contacts li a.contacts-user:hover, .tickets .ticket-data .ticket-details h4
+{ color:#ae432e; }
+#main-nav ul li a, #main-nav ul li.current li a, #main-nav ul li span, .wizard-steps li a,
+.sidebar h2, .jq-datepicker .datepick-month-header select, .jq-datepicker .datepick-month th,
+.jq-datepicker .datepick-month th a, .tab-switch li a, .sidetab-switch li a
+{ color:#666; }
+section[role=navigation] header h1, article footer, .widget.add-new-widget a:hover strong,
+.sidetab-switch p, .jq-datepicker .datepick-month td .datepick-weekend, .ticket-data-ticket
+{ color:#999; }
+.htmlcalendar .calendar-event .event a, .error-page strong, .jq-datepicker .datepick-month a:hover,
+.jq-datepicker .datepick-month td .datepick-weekend:hover, .jq-datepicker .datepick-month td .datepick-highlight,
+.jq-datepicker .datepick-month td .datepick-today, .htmlcalendar .calendar-event .event
+{ color:#fff; }
+#user-info em, .widget .close-widget:hover, .contacts li em, .htmlcalendar .week.current-week
+{ color:#8c8c8c; }
+.sidebar, .widget, .logs li .logs-timestamp, .logs li .logs-meta, .stats-summary li
+{ color:#808080; }
+.jq-datepicker .datepick-cmd:hover, .jq-datepicker .datepick-ctrl .datepick-cmd:hover
+{ color:#003366; }
+.widget.add-new-widget strong, .htmlcalendar .day.previous-month, .htmlcalendar .day.next-month {
+	color:#ccc;
+}
+.widget.increase strong, #new-tasks span { color:#77ab13; }
+.widget .close-widget, input:disabled, input.disabled { color:#bfbfbf; }
+.htmlcalendar .day.today, .htmlcalendar tr:nth-child(even) .day.today { color:#737373; }
+#user-info div > a { color:#4c4c4c; }
+.htmlcalendar .week { color:#d6d6d6; }
+.htmlcalendar .day { color:#a6a6a6; }
+dd p { color:#888; }
+a:hover { color:#036; }
+
+/*  Background Color  */
+body, body.login, body.error-page, tbody tr:hover, .tickets .ticket-data .ticket-details dl { background-color:#e6e6e6; }
+.widget.add-new-widget, .htmlcalendar tr:nth-child(even) .day, tbody tr:nth-child(even), .tickets .ticket-data:nth-child(2n+1),
+.jq-datepicker .datepick-month-header select, input:disabled, input.disabled, input, textarea, select, input.datepicker { background-color:#fafafa; }
+#user-info { background-color:#d9d9d9; }
+.htmlcalendar .calendar-event .event.blue { background-color:#058dc7; }
+.htmlcalendar .calendar-event .event.green { background-color:#77ab13; }
+.htmlcalendar .calendar-event .event.orange { background-color:#ef561a; }
+.htmlcalendar .calendar-event .event.black { background-color:#4d4d4d; }
+.htmlcalendar .calendar-event .event.gray, .jq-datepicker .datepick-month a:hover,
+.jq-datepicker .datepick-month td .datepick-weekend:hover, .jq-datepicker .datepick-month td .datepick-highlight { background-color:#999; }
+tbody tr:nth-child(odd), .widget, .stats-summary li, .progress-bar, .logs li, .contacts, .htmlcalendar .day, .tickets .ticket-data:nth-child(2n) { background-color:#f2f2f2; }
+.sidebar img, .contacts li img, .login #login-box, .table-switch, .toggle-table-switch,
+.htmlcalendar .week, .htmlcalendar .day.previous-month, .htmlcalendar .day.next-month { background-color:#fff; }
+.htmlcalendar .day.today, .htmlcalendar tr:nth-child(even) .day.today { background-color:#ffffcc; }
+.jq-datepicker .datepick-month td .datepick-today, .htmlcalendar .calendar-event .event { background-color:#ae432e; }
+input.valid, textarea.valid { background-color:#eef4e4; }
+input.invalid, textarea.invalid { background-color:#f4e9e7; }
+input:focus, textarea:focus { background-color:#ededed; }
+#main-nav ul li span { background-color:#d1d1d1; }
+
+/*  Background Images  */
+a.outside { background-image:url('../img/icons/icon_outside_link.png'); }
+#main-nav > ul { background-image:url('../img/bgs/bg_aside_nav.png'); }
+#main-nav ul li { background-image:url('../img/bgs/bg_aside_nav.png'); }
+#main-nav ul li.current { background-image:url('../img/bgs/bg_aside_nav_current.png'); }
+#main-nav ul li li, #main-nav ul li li.current { background-image:url('../img/icons/list-style/icon_list_style.png'); }
+.widget.add-new-widget span { background-image:url('../img/widgets/widget_add.png'); }
+article section ul li { background-image:url('../img/icons/list-style/icon_list_style.png'); }
+.sidetabs { background-image:url('../img/bgs/bg_sidetab.png'); }
+.accordion .accordion-switch { background-image:url('../img/icons/icon_accordion.png'); }
+.accordion .accordion-switch:hover { background-image:url('../img/icons/icon_accordion-hover.png'); }
+#breadcrumbs li:first-child a { background-image:url('../img/icons/icon_breadcrumbs_home.png'); }
+.loader { background-image:url('../img/icons/ajax_loading.gif'); }
+.loader.red { background-image:url('../img/icons/ajax_loading_red.gif'); }
+.loader.green { background-image:url('../img/icons/ajax_loading_green.gif'); }
+.loader.blue { background-image:url('../img/icons/ajax_loading_blue.gif'); }
+.nested .loader { background-image:url('../img/icons/ajax_loading_nested.gif'); }
+.nested .loader.red { background-image:url('../img/icons/ajax_loading_red_nested.gif'); }
+.nested .loader.green { background-image:url('../img/icons/ajax_loading_green_nested.gif'); }
+.nested .loader.blue { background-image:url('../img/icons/ajax_loading_blue_nested.gif'); }
+.tab-switch li a.current { background-image:url('../img/icons/icon_tab.png'); }
+.toggle-table-switch { background-image:url('../img/icons/icon_table_options.png'); }
+.wizard-steps li a { background-image:url('../img/bgs/bg_wizard.png'); }
+
+/*  Border Colors  */
+.sidebar.separator, .sidebar .separator { border-color:#d1d1d1; }
+#user-info img, article img, .toggle-table-switch:hover, .toggle-table-switch.active, .sidebar img, .contacts li img, .jq-datepicker, .table-switch { border-color:#b3b3b3; }
+article header, section .sidetab-switch li, .accordion, .accordion li, .contacts li, .wizard-steps,
+.jq-datepicker .datepick-month table, table, tbody, th, td, .table-switch li, .widget, .tickets .ticket-header, .tickets .ticket-data,
+article footer, .stats-summary li, .logs li, .contacts, .progress-bar { border-color:#e6e6e6; }
+.jq-datepicker .datepick-month, .jq-datepicker .datepick-month td, .sidetab-switch li a.current,
+.jq-datepicker .datepick-month th, .jq-datepicker .datepick-month th a { border-color:#fff; }
+.htmlcalendar, .htmlcalendar tbody th, .htmlcalendar tbody td, .toggle-table-switch, .tickets .ticket-data .ticket-details, .tickets .ticket-data .ticket-details dl { border-color:#ccc; }
+fieldset, .jq-datepicker .datepick-month-header select, input, textarea, select, input.datepicker, input:disabled, input.disabled { border-color:#ddd; }
+#user-info, #main-nav ul li span, #main-nav ul li span { border-color:#bfbfbf; }
+input.valid, textarea.valid { border-color:#77ab13; }
+input.invalid, textarea.invalid { border-color:#ae432e; }
+input:focus, textarea:focus { border-color:#a6a6a6; }
+.login #login-box .article-container { border-color:#ababab; }
+
+/* IE7 does not support border-left-color so we have to reset all border setting to change color  */
+.login-links li {
+	border-left:1px solid #f2f0f0;
+	border-right:1px solid #d1d1d1;
+}
+
+/*  Text Shadows  */
+h1, h2, h3, h4, h5, h6 { text-shadow:0 1px 1px #b3b3b3; }
+#main-nav ul li a { text-shadow:0 1px 1px #ccc; }
+.stats-summary .stats-count { text-shadow:0 1px 1px #a6a6a6; }
+.htmlcalendar .calendar-entry {  text-shadow:0 1px 0 #fff; }
+.error-page strong {
+	text-shadow: 0 1px 0 #ccc, 
+				 0 2px 0 #c9c9c9,
+				 0 3px 0 #bbb,
+				 0 4px 0 #b9b9b9,
+				 0 5px 0 #aaa,
+				 0 6px 1px rgba(0,0,0,.1),
+				 0 0 5px rgba(0,0,0,.1),
+				 0 1px 3px rgba(0,0,0,.3),
+				 0 3px 5px rgba(0,0,0,.2),
+				 0 5px 10px rgba(0,0,0,.25),
+				 0 10px 10px rgba(0,0,0,.2),
+				 0 20px 20px rgba(0,0,0,.15);
+}
+
+/*  Box Shadows  */
+.htmlcalendar .day.today > div, .progress-bar div, .login #login-box {
+	-webkit-box-shadow:0 0 5px #999;
+	-moz-box-shadow:0 0 5px #999;
+	box-shadow:0 0 5px #999;
+}
+.htmlcalendar .calendar-event .event {
+	-webkit-box-shadow:0 0 3px #999;
+	-moz-box-shadow:0 0 3px #999;
+	box-shadow:0 0 3px #999;
+}
+.jq-datepicker, .toggle-table-switch.active, .table-switch {
+	-webkit-box-shadow:0 0 2px #b3b3b3;
+	-moz-box-shadow:0 0 2px #b3b3b3;
+	box-shadow:0 0 2px #b3b3b3;
+}
+input, textarea, select, input.datepicker, .jq-datepicker .datepick-month-header select {
+	-webkit-box-shadow:inset 0 0 4px #d9d9d9;
+	-moz-box-shadow:inset 0 0 4px #d9d9d9;
+	box-shadow:inset 0 0 4px #d9d9d9;
+}
+
+/*  Nested Style Colors  */
+article.nested header, article.nested footer, article.nested .logs li, article.nested fieldset, article.nested .wizard-steps, article.nested .ticket-data,
+article.nested .sidetab-switch li, article.nested .contacts, article.nested .stats-summary li, article.nested .ticket-header,
+article.nested .progress-bar, article.nested .accordion, article.nested .accordion li, .ie7 section.nested,
+.ie8 section.nested, .ie7 article.nested .article-container, .ie8 article.nested .article-container,
+.nested table, .nested th, .nested td, .nested
+{ border-color:#bfbfbf; }
+article.nested .sidetab-switch li, article.nested .accordion, article.nested .accordion li,
+article.nested fieldset, article.nested .contacts, article.nested .contacts li, article.nested .stats-summary li,
+article.nested section h3, article.nested section h4, article.nested section h5
+{ color:#666; }
+article.nested header h2, article.nested .accordion .accordion-switch h3
+{ color:#ae432e; }
+article.nested {
+	background-color:#e6e6e6;
+	color:#808080;
+}
+.sidebar.nested { background-color:#d9d9d9; }
+article.nested .tab-switch li a.current { background-image:url('../img/icons/icon_tab_nested.png'); }
+article.nested .sidetabs { background-image:url('../img/bgs/bg_sidetab_nested.png'); }
+article.nested .accordion .accordion-switch { background-image:url('../img/icons/icon_accordion_nested.png'); }
+article.nested .accordion .accordion-switch:hover { background-image:url('../img/icons/icon_accordion-hover_nested.png'); }
+article.nested .wizard-steps li a { background-image:url('../img/bgs/bg_wizard_nested.png'); }
+.nested {
+	-webkit-box-shadow:inset 0px 0px 3px #ababab;
+	-moz-box-shadow:inset 0px 0px 3px #ababab;
+	box-shadow:inset 0px 0px 3px #ababab;
+}
+
+/* IE7 does not support border-left-color so we have to reset all border setting to change color  */
+article.nested .sidetab-switch li a.current { border-right:1px solid #e6e6e6; }
+
+/*  Buttons  */
+.button-link, .button, button { text-shadow:0 1px 2px #666; }
+.button-link {
+	background-color:#ae432e;
+	color:#fff;
+}
+.button-link.blue { background-color:#066d99; }
+.button-link.green { background-color:#6a9912; }
+.button-link.gray { background-color:#929494; }
+.button-link:hover {
+	background-color:#4c4c4c;
+	color:#fff;
+}
+.button, button {
+	border-color:#cb6652 #b74d39 #803121;
+	background:-moz-linear-gradient(top, #faa796, #d06c57 5%, #ae432e 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#faa796), to(#ae432e), color-stop(0.05, #d06c57));
+	background:-o-linear-gradient(top, #faa796, #d06c57 5%, #ae432e 100%);
+	-webkit-box-shadow:0 1px 2px #999;
+	-moz-box-shadow:0 1px 2px #999;
+	box-shadow:0 1px 2px #999;
+	color:#fce8e3;
+}
+.button:hover, button:hover {
+	background:-moz-linear-gradient(top, #faa796, #d06c57 5%, #943a28 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#faa796), to(#943a28), color-stop(0.05, #d06c57));
+	background:-o-linear-gradient(top, #faa796, #d06c57 5%, #943a28 100%);
+	color:#fff;
+}
+.no-cssgradients .button, .no-cssgradients button { background:#ae432e url('../img/btns/btn_red.png') repeat-x left top; }
+.no-cssgradients .button:hover, .no-cssgradients button:hover { background:#963c2a url('../img/btns/btn_red_hover.png') repeat-x left top; }
+
+/*  Buttons :: Button :: Blue  */
+.button.blue, button.blue { 
+	border-color:#1495cc #2b8ab3 #066d99;
+	background:-moz-linear-gradient(top, #afe3fa, #6cb8d9 5%, #088ec8 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#afe3fa), to(#088ec8), color-stop(0.05, #6cb8d9));
+	background:-o-linear-gradient(top, #afe3fa, #6cb8d9 5%, #088ec8 100%);
+	color:#ebf9ff;
+}
+.button.blue:hover, button.blue:hover {
+	background:-moz-linear-gradient(top, #afe3fa, #6cb8d9 5%, #077bad 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#afe3fa), to(#077bad), color-stop(0.05, #6cb8d9));
+	background:-o-linear-gradient(top, #afe3fa, #6cb8d9 5%, #077bad 100%);
+	color:#fff;
+}
+.no-cssgradients .button.blue, .no-cssgradients button.blue { background:#088ec8 url('../img/btns/btn_blue.png') repeat-x left top; }
+.no-cssgradients .button.blue:hover, .no-cssgradients button.blue:hover { background:#0a7dae url('../img/btns/btn_blue_hover.png') repeat-x left top; }
+
+/*  Buttons :: Button :: Green  */
+.button.green, button.green { 
+	border-color:#8dcc18 #7cb315 #6a9912;
+	background:-moz-linear-gradient(top, #d7fa96, #abd957 5%, #78ac15 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#d7fa96), to(#78ac15), color-stop(0.05, #abd957));
+	background:-o-linear-gradient(top, #d7fa96, #abd957 5%, #78ac15 100%);
+	color:#f7ffe5;
+}
+.button.green:hover, button.green:hover {
+	background:-moz-linear-gradient(top, #d7fa96, #abd957 5%, #659111 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#d7fa96), to(#659111), color-stop(0.05, #abd957));
+	background:-o-linear-gradient(top, #d7fa96, #abd957 5%, #659111 100%);
+	color:#fff;
+}
+.no-cssgradients .button.green, .no-cssgradients button.green { background:#78ac15 url('../img/btns/btn_green.png') repeat-x left top; }
+.no-cssgradients .button.green:hover, .no-cssgradients button.green:hover { background:#679212 url('../img/btns/btn_green_hover.png') repeat-x left top; }
+
+/*  Buttons :: Button :: Gray  */
+.button.gray, button.gray { 
+	border-color:#b1b3b3 #a4a6a6 #929494;
+	background:-moz-linear-gradient(top, #f2f2f2, #ccc 5%, #abacac 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#abacac), color-stop(0.05,#ccc));
+	background:-o-linear-gradient(top, #f2f2f2, #ccc 5%, #abacac 100%);
+	color:#727373;
+	text-shadow:0 1px 2px #999;
+}
+.button.gray:hover, button.gray:hover {
+	background:-moz-linear-gradient(top, #f2f2f2, #ccc 5%, #979999 100%);
+	background:-webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#979999), color-stop(0.05,#ccc));
+	background:-o-linear-gradient(top, #f2f2f2, #ccc 5%, #979999 100%);
+	color:#585959;
+}
+.no-cssgradients .button.gray, .no-cssgradients button.gray { background:#abacac url('../img/btns/btn_gray.png') repeat-x left top; }
+.no-cssgradients .button.gray:hover, .no-cssgradients button.gray:hover { background:#9a9c9c url('../img/btns/btn_gray_hover.png') repeat-x left top; }
+
+/*  Buttons :: Button :: Disable  */
+.button.disabled, button:disabled {
+	background:#fafafa;
+	border-color:#b1b3b3;
+	color:#a0a0a0;
+}
+
+/*  Emoticons  */
+.emoticon.smile { background-image:url('../img/icons/emoticon/emoticon_smile.png'); }
+.emoticon.grin { background-image:url('../img/icons/emoticon/emoticon_grin.png'); }
+.emoticon.evilgrin { background-image:url('../img/icons/emoticon/emoticon_evilgrin.png'); }
+.emoticon.happy { background-image:url('../img/icons/emoticon/emoticon_happy.png'); }
+.emoticon.surprised { background-image:url('../img/icons/emoticon/emoticon_surprised.png'); }
+.emoticon.tongue { background-image:url('../img/icons/emoticon/emoticon_tongue.png'); }
+.emoticon.unhappy { background-image:url('../img/icons/emoticon/emoticon_unhappy.png'); }
+.emoticon.waii { background-image:url('../img/icons/emoticon/emoticon_waii.png'); }
+.emoticon.wink { background-image:url('../img/icons/emoticon/emoticon_wink.png'); }
+.emoticon.neutral { background-image:url('../img/icons/emoticon/emoticon_neutral.png'); }
+.emoticon.cool { background-image:url('../img/icons/emoticon/emoticon_cool.png'); }
+.emoticon.confuse { background-image:url('../img/icons/emoticon/emoticon_confuse.png'); }
+.emoticon.cry { background-image:url('../img/icons/emoticon/emoticon_cry.png'); }
+.emoticon.fat { background-image:url('../img/icons/emoticon/emoticon_fat.png'); }
+.emoticon.mad { background-image:url('../img/icons/emoticon/emoticon_mad.png'); }
+.emoticon.red { background-image:url('../img/icons/emoticon/emoticon_red.png'); }
+.emoticon.roll { background-image:url('../img/icons/emoticon/emoticon_roll.png'); }
+.emoticon.slim { background-image:url('../img/icons/emoticon/emoticon_slim.png'); }
+.emoticon.yell { background-image:url('../img/icons/emoticon/emoticon_yell.png'); }
+.emoticon.bug { background-image:url('../img/icons/emoticon/emoticon_bug.png'); }
+.emoticon.heart { background-image:url('../img/icons/emoticon/emoticon_heart.png'); }
+.emoticon.rocket { background-image:url('../img/icons/emoticon/emoticon_rocket.png'); }
+.emoticon.basketball { background-image:url('../img/icons/emoticon/emoticon_basketball.png'); }
+.emoticon.football { background-image:url('../img/icons/emoticon/emoticon_football.png'); }
+.emoticon.golf { background-image:url('../img/icons/emoticon/emoticon_golf.png'); }
+.emoticon.soccer { background-image:url('../img/icons/emoticon/emoticon_soccer.png'); }
+.emoticon.tennis { background-image:url('../img/icons/emoticon/emoticon_tennis.png'); }
+.emoticon.eightball { background-image:url('../img/icons/emoticon/emoticon_8ball.png'); }
+.emoticon.raquet { background-image:url('../img/icons/emoticon/emoticon_raquet.png'); }
+.emoticon.shuttlecock { background-image:url('../img/icons/emoticon/emoticon_shuttlecock.png'); }
+
+/*  File Extensions  */
+.extension.empty { background-image:url('../img/icons/extensions/page_white.png'); }
+.extension.pdf { background-image:url('../img/icons/extensions/page_pdf.png'); }
+.extension.access { background-image:url('../img/icons/extensions/page_access.png'); }
+.extension.cup { background-image:url('../img/icons/extensions/page_cup.png'); }
+.extension.cplusplus { background-image:url('../img/icons/extensions/page_cplusplus.png'); }
+.extension.csharp { background-image:url('../img/icons/extensions/page_csharp.png'); }
+.extension.database { background-image:url('../img/icons/extensions/page_database.png'); }
+.extension.excel { background-image:url('../img/icons/extensions/page_excel.png'); }
+.extension.flash { background-image:url('../img/icons/extensions/page_flash.png'); }
+.extension.dvd { background-image:url('../img/icons/extensions/page_dvd.png'); }
+.extension.php { background-image:url('../img/icons/extensions/page_php.png'); }
+.extension.powerpoint { background-image:url('../img/icons/extensions/page_powerpoint.png'); }
+.extension.picture { background-image:url('../img/icons/extensions/page_picture.png'); }
+.extension.ruby { background-image:url('../img/icons/extensions/page_ruby.png'); }
+.extension.text { background-image:url('../img/icons/extensions/page_text.png'); }
+.extension.tux { background-image:url('../img/icons/extensions/page_tux.png'); }
+.extension.word { background-image:url('../img/icons/extensions/page_word.png'); }
+.extension.visualstudio { background-image:url('../img/icons/extensions/page_visualstudio.png'); }
+.extension.zip { background-image:url('../img/icons/extensions/page_zip.png'); }
+.extension.film { background-image:url('../img/icons/extensions/page_film.png'); }
+.extension.find { background-image:url('../img/icons/extensions/page_find.png'); }
+.extension.freehand { background-image:url('../img/icons/extensions/page_freehand.png'); }
+.extension.illustrator { background-image:url('../img/icons/extensions/page_illustrator.png'); }
+.extension.photoshop { background-image:url('../img/icons/extensions/page_photoshop.png'); }
+.extension.music { background-image:url('../img/icons/extensions/page_music.png'); }
+.extension.office { background-image:url('../img/icons/extensions/page_office.png'); }
+.extension.swoosh { background-image:url('../img/icons/extensions/page_swoosh.png'); }
+.extension.report { background-image:url('../img/icons/extensions/page_report.png'); }
+.extension.wrench { background-image:url('../img/icons/extensions/page_wrench.png'); }

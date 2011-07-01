@@ -1,0 +1,42 @@
+Chromatron HTML5 Admin Backend Changelog
+--------------------------------------------------------------------
+
+v 1.3
+	* New Feature: Wizard
+	* New Feature: Tickets
+	* New Feature: Data Visualization Tooltips
+	* New Feature: Progress Bar Animation
+	* New Feature: Fixed Layout
+	* New modal system
+	* Emoticons
+	* File Extension Icons
+	* A lot of bugs fixed
+
+v 1.2
+	* New Feature: jQuery Data Visualize
+	* New Feature: Tabs and Sidetabs URL Hash Support
+	* New Feature: Google WebFonts Support
+	* Bugfix: Text Alignment
+	* Some typo correction
+
+v 1.1
+	* New Feature: Table Mini Action Menu
+	* New Feature: Table Pagination
+	* New Feature: Tags
+	* New Feature: Accordion
+	* New Feature: Block Header Mini Menu
+	* New Feature: File Submit Input
+	* New Feature: Datepicker
+	* New Feature: Calendar
+	* New Layout: Event logs
+	* New Layout: Stats
+	* New Layout: Contacts
+	* New Layout: 3 new list styles
+	* New Layout: Error Pages (401, 403, 404, 500, 503)
+	* Bugfix: Better IE8 Support
+	* Bugfix: Better Mobile Support
+	* A lot of minor bugfix
+	* Huge CSS refactoring and optimization
+
+v 1.0
+	* Initial release
