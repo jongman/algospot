@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 class PageRevision(models.Model):
     """Stores a specific revision of the page."""
     text = models.TextField()
-    edit_summary = models.TextField(max_length=100, blank=True)
+    edit_summary = models.TextField(max_length=100, blank=True, null=True)
     user = models.ForeignKey(User, null=False)
     created_on = models.DateTimeField(auto_now_add=True)
     revision_for = models.ForeignKey('Page')

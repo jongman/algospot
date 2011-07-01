@@ -6,7 +6,8 @@ class EditForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea(attrs={"class": "large",
         "rows": "20"}))
     summary = forms.CharField(max_length=100,
-            widget=forms.TextInput(attrs={"class": "large"}))
+            widget=forms.TextInput(attrs={"class": "large"}),
+            required=False)
 
     def save(self, page, user):
         revision = PageRevision(text=self.cleaned_data["text"],
