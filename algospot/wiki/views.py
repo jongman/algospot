@@ -7,7 +7,8 @@ from forms import EditForm
 def detail(request, slug):
     import markdown
     page = Page.objects.get(slug=slug)
-    rendered = markdown.markdown(page.current_revision.text)
+    rendered = markdown.markdown(page.current_revision.text,
+            extensions=["toc"])
     return render(request, "detail.html",
             {"page": page,
              "rendered_text": rendered})
