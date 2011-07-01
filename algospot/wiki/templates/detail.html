@@ -1,3 +1,23 @@
 {% extends "wiki-base.html" %}
 hello hahaha
-{% block title %} {{ slug }} {% endblock %}
+{% block title %} 
+	{{ slug }} 
+{% endblock %}
+
+
+{% block sub-breadcrumbs %}
+<li><a href="{% url wiki-detail page.slug %}">{{ page.title }}</a></li>	
+{% endblock %}
+
+{% block page-title %}
+	{{ page.title }}
+{% endblock %}
+
+{% block page-contents %} 
+{% endblock %}
+
+{% block page-footer %}
+This is wiki details page footer
+{% endblock %}
+
+{% block wiki-read-class %}default-tab{% endblock %}
