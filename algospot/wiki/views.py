@@ -29,7 +29,7 @@ def revert(request, id, slug):
     revision = PageRevision.objects.get(id=id)
     text = revision.text
     form = EditForm({"text": revision.text, 
-        "summary": "리비전 %s으로 복구."})
+        "summary": u"리비전 %s(으)로 복구." % id})
     assert form.is_valid()
     form.save(page, request.user)
     return redirect(reverse("wiki-detail", kwargs={"slug": page.slug}))
