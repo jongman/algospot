@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from models import Page, PageRevision
 from forms import EditForm
-from utils import link_to_pages, slugify, unslugify, get_breadcrumbs
+from utils import link_to_pages, slugify, unslugify, get_breadcrumbs, logger
 from djangoutils import get_or_none
 from textutils import render_text
 
@@ -36,14 +36,27 @@ def revert(request, id, slug):
 
 def history(request, slug):
     page = get_object_or_404(Page, slug=slug)
-    revisions = PageRevision.objects.filter(revision_for=page).order_by("-id")
+
+    revision_set = PageRevision.objects.filter(revision_for=page).order_by("-id")
+    ids = [rev.id for rev in revision_set[:2]]
+    revisions = revision_set.all()
+    last, second_last = -1, -1
+    if len(ids) >= 2:
+        last, second_last = ids[0], ids[1]
+        logger.info("last %s second_last %s", last, second_last)
+
     breadcrumbs = get_breadcrumbs(slug)
     breadcrumbs.append((reverse("wiki-history", kwargs={"slug": slug}), u"편집 내역"))
     return render(request, "history.html",
             {"slug": slug,
              "revisions": revisions,
              "title": page.title,
+             "last_rev": last,
+             "second_last_rev": second_last,
              "breadcrumbs": breadcrumbs})
+
+def diff(request, id1=-1, id2=-1):
+    pass
 
 def detail(request, slug):
     page = get_object_or_404(Page, slug=slug)

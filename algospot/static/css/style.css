@@ -1519,6 +1519,7 @@ a.missing {
 	color: #2E43AE;
 }
 
+.kor,
 .wiki-history *,
 .markup-intro,
 article header h2,
@@ -1535,3 +1536,7 @@ section.sidebar, /* sidebar item */
 	font-family:NanumGothic,나눔고딕 !important;
 }
 
+
+.eng {
+	font-family:'PT Sans', Arial, sans-serif !important;
+}

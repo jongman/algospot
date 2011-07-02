@@ -17,6 +17,7 @@ hello hahaha
 			<th> 날짜 </th>
 			<th> 편집자 </th>
 			<th> 한마디 </th>
+			<th> 선택 </th>
 			<th> 할일 </th>
 		</tr>
 	</thead>
@@ -27,6 +28,10 @@ hello hahaha
 			<td>{{ revision.created_on }}</td>
 			<td>{{ revision.user }}</td>
 			<td>{{ revision.edit_summary }}</td>
+			<td>
+				<input type="radio" name="diff1" value="{{ revision.id }}" {% if second_last_rev == revision.id %}checked{% endif %}/>
+				<input type="radio" name="diff2" value="{{ revision.id }}" {% if last_rev == revision.id %}checked{% endif %}/>
+			</td>
 			<td>
 				<a class="button-link" href="{% url wiki-old revision.id slug %}" rel="tooltip" original-title="보기">
 					see
@@ -42,6 +47,9 @@ hello hahaha
 {% endblock %}
 
 {% block page-footer %}
+	<p>
+	<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="wiki_diff('{% url wiki-diff-home %}');" class="button-link" class="eng">diff</a>
+	</p>
 {% endblock %}
 
 {% block wiki-history-class %}default-tab{% endblock %}

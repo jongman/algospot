@@ -299,3 +299,9 @@ function wiki_revert(destination) {
 		window.location.href = destination;
 	}
 }
+
+function wiki_diff(diff_path) {
+	var diff1 = $('input:radio[name=diff1]:checked').val();
+	var diff2 = $('input:radio[name=diff2]:checked').val();
+	window.location.href = diff_path + "/" + diff1 + "/" + diff2;
+}
