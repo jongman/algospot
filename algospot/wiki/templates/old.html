@@ -1,0 +1,22 @@
+{% extends "wiki-base.html" %}
+{% block title %} 
+	{{ slug }} 
+{% endblock %}
+
+{% block page-title %}
+History: {{ title }}
+{% endblock %}
+
+{% block page-contents %} 
+	<section>
+		<div class="wiki-text">
+			{{ rendered_text|safe }}
+		</div>
+	</section>
+{% endblock %}
+
+{% block page-footer %}
+Page is last modified on {{ modified }}
+{% endblock %}
+
+{% block wiki-history-class %}default-tab{% endblock %}

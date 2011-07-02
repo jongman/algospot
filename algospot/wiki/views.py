@@ -9,7 +9,20 @@ from djangoutils import get_or_none
 from textutils import render_text
 
 def old(request, id, slug):
-    return HttpResponse("bah")
+    page = get_object_or_404(Page, slug=slug)
+    revision = PageRevision.objects.get(id=id)
+    breadcrumbs = get_breadcrumbs(slug)
+    breadcrumbs.append((reverse("wiki-old", kwargs={"id": id, "slug": slug}),
+        unicode(revision.created_on)))
+    rendered = render_text(revision.text)
+    rendered = link_to_pages(rendered)
+    return render(request, "old.html",
+            {"slug": slug,
+             "title": page.title,
+             "time": unicode(revision.created_on),
+             "breadcrumbs": breadcrumbs,
+             "modified": page.modified_on,
+             "rendered_text": rendered})
 
 def revert(request, id, slug):
     return HttpResponse("bah")
