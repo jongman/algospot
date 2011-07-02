@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from models import Page, PageRevision
 from forms import EditForm
-from utils import link_to_pages, slugify, unslugify
+from utils import link_to_pages, slugify, unslugify, get_breadcrumbs
 from djangoutils import get_or_none
 
 def detail(request, slug):
@@ -15,11 +15,12 @@ def detail(request, slug):
     return render(request, "detail.html",
             {"slug": slug,
              "title": page.title,
+             "breadcrumbs": get_breadcrumbs(slug),
              "modified": page.modified_on,
              "rendered_text": rendered})
 
 def edit(request, slug):
-    params = {"slug": slug}
+    params = {"slug": slug, "breadcrumbs": get_breadcrumbs(slug)}
     page = get_or_none(Page, slug=slug)
 
     text = page.current_revision.text if page and page.current_revision else ""

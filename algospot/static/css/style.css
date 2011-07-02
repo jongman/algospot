@@ -361,11 +361,13 @@ article header h2 {
 }
 article header nav { float:right; }
 article section { overflow:hidden; }
-article section h3, article section h4, article section h5 { margin-bottom:.8em; }
-article section h3 { font-size:153.9%; }
-article section h4 { font-size:131%; }
+article section h1, article section h2, article section h3, article section h4, article section h5 { margin-bottom:.8em; }
+article section h1 { font-size:180.8%; }
+article section h2 { font-size:153.9%; }
+article section h3 { font-size:131%; }
+article section h4 { font-size:108%; }
 article section h5 {
-	font-size:108%;
+	font-size:100%;
 	text-transform:uppercase;
 }
 article section p {

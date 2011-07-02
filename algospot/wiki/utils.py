@@ -14,6 +14,16 @@ def slugify(title):
 def unslugify(title):
     return re.sub(ur'[_\s]+', ' ', title)
 
+def get_breadcrumbs(slug):
+    parts = slug.split("/")
+    s = ""
+    ret = []
+    for part in slug.split("/"):
+        if s: s += "/"
+        s += part
+        ret.append((s, unslugify(part)))
+    return ret
+
 def link_to_pages(rendered):
     def replace(match):
         title = match.group(1)

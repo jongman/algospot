@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block breadcrumbs %}
-<li><a href="{% url wiki-detail "Main_Page" %}">위키</a></li>	
-	{% block sub-breadcrumbs %}
-	{% endblock %}
+	<li><a href="{% url wiki-detail "Main_Page" %}">위키</a></li>	
+	{% for slug, title in breadcrumbs %}
+	<li><a href="{% url wiki-detail slug %}">{{ title }}</a></li>
+	{% endfor %}
 {% endblock %}
 {% block wiki-class %}current{% endblock %}
 {% block page-tabs %}
