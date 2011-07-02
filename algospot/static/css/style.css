@@ -1510,10 +1510,16 @@ table .actions .delete { background:url('/static/images/icons/icon_table_delete.
 /* algospot custom overrides */
 /*****************************/
 
+.markup-intro td {
+	text-align:left;
+	padding-left: 12px;
+}
+
 a.missing {
 	color: #2E43AE;
 }
 
+.markup-intro,
 article header h2,
 div.wiki-text *,
 div.wiki-edit textarea,

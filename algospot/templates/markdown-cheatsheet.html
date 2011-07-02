@@ -1,0 +1,79 @@
+<!-- Markdown cheat sheet -->
+<article class="full-block">
+	<!-- Article Container for safe floating -->
+	<div class="article-container">
+	
+		<!-- Article Header -->
+		<header>
+			<h2>마크업 문법 안내</h2>
+		</header>
+		<!-- /Article Header -->
+		
+		<!-- Article Content -->
+		<section class="markup-intro" style="display: none;">
+		<p>
+			알고스팟은 <a href="http://daringfireball.net/projects/markdown/">마크다운</a>이라는 마크업 언어를 사용합니다. 마크다운을 이용하면 읽기 힘든 HTML을 쓰지 않고 구문 강조 등을 할 수 있습니다.
+		</p>
+		<table>
+			<thead>
+				<tr>
+					<th>기능</th>
+					<th>이렇게 치세요</th>
+					<th>이렇게 나옵니다</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>링크하기</td>
+					<td>[구글](http://google.com)</td>
+					<td><a href="http://google.com">구글</a></td>
+				</tr>
+				<tr>
+					<td>위키 링크하기</td>
+					<td>[[알고스팟 온라인 저지]]</td>
+					<td><a href="{% url wiki-detail "알고스팟_온라인_저지"%}">알고스팟 온라인 저지</a></td>
+				</tr>
+				<tr>
+					<td>강조하기</td>
+					<td>**굵게** 그리고 *기울여서*</td>
+					<td><strong>굵게</strong> 그리고 <em>기울여서</em></td>
+				</tr>
+				<tr>
+					<td>목록</td>
+					<td>* 엘<br/>
+						* 롯<br/>
+						* 기<br/>
+						<br/>
+						1. 쌀<br/>
+						2. 콩<br/>
+						3. 보리<br/></td>
+					<td>
+						<ul>
+							<li>엘</li>
+							<li>롯</li>
+							<li>기</li>
+						</ul>
+						<ol>
+							<li>쌀</li>
+							<li>콩</li>
+							<li>보리</li>
+						</ol>
+					</td>
+				</tr>
+				<tr>
+					<td>부제목</td>
+					<td># 큰제목<br/>## 중제목<br/>### 작은제목</td>
+					<td>
+						<h1>큰제목</h1>
+						<h2>중제목</h2>
+						<h3>작은제목</h3>
+					</td>
+				</tr>
+				<tr>
+					<td>그림 링크하기</td>
+					<td>![내가 고자라니]({{ STATIC_URL }}images/gozarani.jpg)</td>
+					<td><img src="{{ STATIC_URL}}images/gozarani.jpg" alt="내가 고자라니"/></td>
+			</tbody>
+		</table>
+		</section>
+</article>
