@@ -21,7 +21,8 @@ def get_breadcrumbs(slug):
     for part in slug.split("/"):
         if s: s += "/"
         s += part
-        ret.append((s, unslugify(part)))
+        ret.append((reverse("wiki-detail", kwargs={"slug": s}),
+            unslugify(part)))
     return ret
 
 def link_to_pages(rendered):
