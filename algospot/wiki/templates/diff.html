@@ -1,0 +1,21 @@
+{% extends "wiki-base.html" %}
+{% load wiki_tags %}
+{% block page-title %}
+	Diff: {{ title }} 
+	(<a href="{{rev1link}}">{{rev1}}</a> and
+	<a href="{{rev2link}}">{{rev2}}</a>)
+{% endblock %}
+
+{% block page-contents %} 
+	<section>
+		<div class="wiki-text">
+			{{ diff|html_diff }}
+		</div>
+	</section>
+{% endblock %}
+
+{% block page-footer %}
+this is a diff
+{% endblock %}
+
+{% block wiki-history-class %}default-tab{% endblock %}

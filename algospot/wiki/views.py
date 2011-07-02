@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from diff_match_patch import diff_match_patch
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -56,7 +57,26 @@ def history(request, slug):
              "breadcrumbs": breadcrumbs})
 
 def diff(request, id1=-1, id2=-1):
-    pass
+    rev1 = get_object_or_404(PageRevision, id=id1)
+    rev2 = get_object_or_404(PageRevision, id=id2)
+    slug = rev1.revision_for.slug
+    title = rev1.revision_for.title
+
+    dmp = diff_match_patch()
+    diff = dmp.diff_compute(rev1.text, rev2.text, True, 2)
+    breadcrumbs = get_breadcrumbs(slug)
+    breadcrumbs.append((reverse("wiki-diff", kwargs={"id1": id1, "id2": id2}), 
+        u"변화 내역"))
+    return render(request, "diff.html",
+            {"slug": slug,
+             "title": title,
+             "diff": diff,
+             "rev1": id1,
+             "rev2": id2,
+             "rev1link": reverse("wiki-old", kwargs={"id": id1, "slug": slug}),
+             "rev2link": reverse("wiki-old", kwargs={"id": id2, "slug": slug}),
+             "breadcrumbs": breadcrumbs})
+
 
 def detail(request, slug):
     page = get_object_or_404(Page, slug=slug)

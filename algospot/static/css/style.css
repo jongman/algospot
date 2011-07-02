@@ -1540,3 +1540,13 @@ section.sidebar, /* sidebar item */
 .eng {
 	font-family:'PT Sans', Arial, sans-serif !important;
 }
+
+.added {
+	background-color: #43ae2e;
+	color: white; 
+}
+.removed {
+	background-color: #ae432e;
+	color: white; 
+}
+
