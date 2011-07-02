@@ -25,7 +25,14 @@ def old(request, id, slug):
              "rendered_text": rendered})
 
 def revert(request, id, slug):
-    return HttpResponse("bah")
+    page = get_object_or_404(Page, slug=slug)
+    revision = PageRevision.objects.get(id=id)
+    text = revision.text
+    form = EditForm({"text": revision.text, 
+        "summary": "리비전 %s으로 복구."})
+    assert form.is_valid()
+    form.save(page, request.user)
+    return redirect(reverse("wiki-detail", kwargs={"slug": page.slug}))
 
 def history(request, slug):
     page = get_object_or_404(Page, slug=slug)
