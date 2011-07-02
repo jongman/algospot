@@ -5,12 +5,11 @@ from models import Page, PageRevision
 from forms import EditForm
 from utils import link_to_pages, slugify, unslugify, get_breadcrumbs
 from djangoutils import get_or_none
+from textutils import render_text
 
 def detail(request, slug):
-    import markdown
     page = Page.objects.get(slug=slug)
-    rendered = markdown.markdown(page.current_revision.text,
-            extensions=["toc"])
+    rendered = render_text(page.current_revision.text)
     rendered = link_to_pages(rendered)
     return render(request, "detail.html",
             {"slug": slug,
