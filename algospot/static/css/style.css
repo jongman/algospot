@@ -53,7 +53,7 @@ body {
 	zoom:1;
 }
 body section[role=navigation] {
-	width:271px;
+	width:241px;
 	height:auto;
 	padding:25px 0;
 	position:absolute;
@@ -64,7 +64,7 @@ body section[role=main] {
 	background-color:#fff;
 	min-width:669px;
 	height:100%;
-	margin-left:271px;
+	margin-left:241px;
 	padding:25px;
 }
 select, input, textarea, button { font:99% sans-serif; }
@@ -1550,3 +1550,6 @@ section.sidebar, /* sidebar item */
 	color: white; 
 }
 
+article section {
+	font-size: 15px;
+}
