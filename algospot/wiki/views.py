@@ -1,14 +1,32 @@
+# -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from models import Page, PageRevision
 from forms import EditForm
 from utils import link_to_pages, slugify, unslugify, get_breadcrumbs
 from djangoutils import get_or_none
 from textutils import render_text
 
+def old(request, id, slug):
+    return HttpResponse("bah")
+
+def revert(request, id, slug):
+    return HttpResponse("bah")
+
+def history(request, slug):
+    page = get_object_or_404(Page, slug=slug)
+    revisions = PageRevision.objects.filter(revision_for=page).order_by("-id")
+    breadcrumbs = get_breadcrumbs(slug)
+    breadcrumbs.append((reverse("wiki-history", kwargs={"slug": slug}), u"편집 내역"))
+    return render(request, "history.html",
+            {"slug": slug,
+             "revisions": revisions,
+             "title": page.title,
+             "breadcrumbs": breadcrumbs})
+
 def detail(request, slug):
-    page = Page.objects.get(slug=slug)
+    page = get_object_or_404(Page, slug=slug)
     rendered = render_text(page.current_revision.text)
     rendered = link_to_pages(rendered)
     return render(request, "detail.html",

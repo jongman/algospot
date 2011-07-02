@@ -1,0 +1,47 @@
+{% extends "wiki-base.html" %}
+hello hahaha
+{% block title %} 
+	{{ slug }} 
+{% endblock %}
+
+
+{% block page-title %}
+	History: {{ title }}
+{% endblock %}
+
+{% block page-contents %} 
+<table class="wiki-history">
+	<thead>
+		<tr>
+			<th> ID </th>
+			<th> 날짜 </th>
+			<th> 편집자 </th>
+			<th> 한마디 </th>
+			<th> 할일 </th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for revision in revisions %}
+		<tr>
+			<td>{{ revision.id }}</td>
+			<td>{{ revision.created_on }}</td>
+			<td>{{ revision.user }}</td>
+			<td>{{ revision.edit_summary }}</td>
+			<td>
+				<a class="button-link" href="{% url wiki-old revision.id slug %}" rel="tooltip" original-title="보기">
+					see
+				</a>
+				<a class="button-link" title="복구하기" href="javascript:void();" onclick="wiki_revert('{% url wiki-revert revision.id slug %}');" rel="tooltip" original-title="복구하기">
+					revert
+				</a>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endblock %}
+
+{% block page-footer %}
+{% endblock %}
+
+{% block wiki-history-class %}default-tab{% endblock %}

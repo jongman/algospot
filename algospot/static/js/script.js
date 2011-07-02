@@ -292,3 +292,10 @@ $(function () {
 	});
 	
 });
+
+/** algospot customization **/
+function wiki_revert(destination) {
+	if(confirm("정말 덮어씌우시겠어요?")) {
+		window.location.href = destination;
+	}
+}
