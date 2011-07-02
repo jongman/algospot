@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from models import Page, PageRevision
 from forms import EditForm
-from utils import link_to_pages
+from utils import link_to_pages, slugify, unslugify
 from djangoutils import get_or_none
 
 def detail(request, slug):
@@ -13,17 +13,35 @@ def detail(request, slug):
             extensions=["toc"])
     rendered = link_to_pages(rendered)
     return render(request, "detail.html",
-            {"page": page,
+            {"slug": slug,
+             "title": page.title,
+             "modified": page.modified_on,
              "rendered_text": rendered})
 
 def edit(request, slug):
+    params = {"slug": slug}
     page = get_or_none(Page, slug=slug)
-    text = page.current_revision if page and page.current_revision else ""
+
+    text = page.current_revision.text if page and page.current_revision else ""
     form = EditForm(data=request.POST or None,
             initial={"text": text})
 
     if request.method == "POST" and form.is_valid():
+        if not page:
+            page = Page(title=unslugify(slug), slug=slug)
+            page.save()
         form.save(page, request.user)
         return redirect(reverse("wiki-detail", kwargs={"slug": page.slug}))
 
-    return render(request, "edit.html", {"page": page, "form": form})
+    params["form"] = form
+    if page:
+        params["action"] = "Edit"
+        params["title"] = page.title
+        params["modified"] = page.modified_on
+        params["action"] = "Edit"
+    else:
+        params["title"] = unslugify(slug)
+        params["modified"] = "NULL"
+        params["action"] = "Create"
+
+    return render(request, "edit.html", params)

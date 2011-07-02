@@ -11,7 +11,7 @@ link_pattern = re.compile("\[\[([^\]]+)\]\]")
 def slugify(title):
     return re.sub(r'\s+', '_', title)
 
-def deslugify(title):
+def unslugify(title):
     return re.sub(ur'[_\s]+', ' ', title)
 
 def link_to_pages(rendered):

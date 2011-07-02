@@ -6,11 +6,11 @@ hello hahaha
 
 
 {% block sub-breadcrumbs %}
-<li>{{ page.title }}</li>	
+<li>{{ title }}</li>	
 {% endblock %}
 
 {% block page-title %}
-	{{ page.title }}
+	{{ title }}
 {% endblock %}
 
 {% block page-contents %} 
@@ -22,7 +22,7 @@ hello hahaha
 {% endblock %}
 
 {% block page-footer %}
-Page is last modified on {{ page.modified_on }}
+Page is last modified on {{ modified }}
 {% endblock %}
 
 {% block wiki-read-class %}default-tab{% endblock %}

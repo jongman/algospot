@@ -6,12 +6,12 @@ hello hahaha
 
 
 {% block sub-breadcrumbs %}
-<li><a href="{% url wiki-detail page.slug %}">{{ page.title }}</a></li>	
+<li><a href="{% url wiki-detail slug %}">{{ title }}</a></li>	
 <li>편집하기</li>	
 {% endblock %}
 
 {% block page-title %}
-	Edit: {{ page.title }}
+	{{ action }}: {{ title }}
 {% endblock %}
 
 {% block page-contents %} 
@@ -38,13 +38,13 @@ hello hahaha
 			</dl>
 			{% endfor %}
 		</fieldset>
-		<button type="submit">Submit</button> or <a href="{% url wiki-detail page.slug %}">Cancel</a>
+		<button type="submit">Submit</button> or <a href="{% url wiki-detail slug %}">Cancel</a>
 	</form>
 </div>
 {% endblock %}
 
 {% block page-footer %}
-Page is last modified on {{ page.modified_on }}
+Page is last modified on {{ modified }}
 {% endblock %}
 
 {% block wiki-edit-class %}default-tab{% endblock %}

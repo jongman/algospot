@@ -1518,7 +1518,7 @@ div.wiki-edit textarea,
 div.wiki-edit legend,
 div.wiki-edit input,
 ul.tab-switch li a,
-ul#breadcrumbs li a, 
+ul#breadcrumbs li, 
 section.sidebar, /* sidebar item */
 #main-nav ul li a, /* major menu item */
 #main-nav ul li li a /* minor menu item */
