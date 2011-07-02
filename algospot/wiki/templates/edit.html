@@ -38,6 +38,12 @@ hello hahaha
 </div>
 {% endblock %}
 
+{% block other-blocks %}
+
+{% include "markdown-cheatsheet.html" %}
+
+{% endblock %}
+
 {% block page-footer %}
 Page is last modified on {{ modified }}
 {% endblock %}
