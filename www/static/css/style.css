@@ -1553,3 +1553,7 @@ section.sidebar, /* sidebar item */
 article section {
 	font-size: 15px;
 }
+
+article img.selected {
+	background-color:#111;
+}
