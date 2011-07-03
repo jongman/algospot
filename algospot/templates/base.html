@@ -52,7 +52,7 @@
 		<!-- User Info -->
 		<section id="user-info">
 		{% if user.is_authenticated %}
-		<a href="{% url user_profile user.id %}"><img src="/static/images/unknown-user.png" alt="Not logged in yet"></a>
+			<a href="{% url user_profile user.id %}">{% avatar user 45 %}</a>
 			<div>
 				<a href="#">{{ user.username }}</a>
 				<em>
