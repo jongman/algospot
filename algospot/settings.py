@@ -133,6 +133,8 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
+AUTH_PROFILE_MODULE = 'base.UserProfile'
+
 ACCOUNT_ACTIVATION_DAYS = 7
 
 # A sample logging configuration. The only tangible logging
