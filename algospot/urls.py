@@ -4,7 +4,10 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^wiki/', include('algospot.wiki.urls')),
+    url(r'^accounts/logout', 'django.contrib.auth.views.logout', 
+        kwargs={'next_page': '/'}),
     url(r'^accounts/', include('registration.urls')),
+    url(r'^user/', include('base.urls')),
     # Examples:
     # url(r'^$', 'algospot.views.home', name='home'),
     # url(r'^algospot/', include('algospot.foo.urls')),

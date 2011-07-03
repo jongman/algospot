@@ -6,6 +6,13 @@
 {% endblock %}
 {% block page-contents %} 
 <div class="signin-form">
+	{% if form.non_field_errors %}
+	<div class="notification error">
+		{% for error in form.non_field_errors %} 
+		<p>{{ error }}</p>
+		{% endfor %}
+	</div>
+	{% endif %}
 	<form method="post" action="">
 		{% csrf_token %}
 		<fieldset class="kor">
@@ -35,5 +42,10 @@
 	<ul class="kor">
 		<li>비밀번호를 잊으셨나요? <a href="{% url auth_password_reset %}">리셋하기</a></li>
 		<li>회원이 아니신가요? <a href="{% url registration_register %}">회원 가입하기</a></li>
-	</ul>
+	</ul>     
+	{% autoescape off %}
+	<script language="javascript">
+		$("#id_username").focus();
+	</script>
+	{% endautoescape %}
 {% endblock %}
