@@ -1,23 +1,55 @@
-{% extends "avatar/base.html" %}
-{% load avatar_tags %}
+{% extends "registration/registration_base.html" %}
+{% block title %}Change your picture {% endblock %}
+{% block page-title %}사진 변경하기{% endblock %}
+{% block breadcrumbs %}
+<li><a href="{% url user_profile user %}">회원 정보 갱신</a></li>
+<li>사진 변경</li>
+{% endblock %}
+{% block page-contents %}
+	{% load avatar_tags %}
+	{% load avatar_custom_tags %}
 
-{% block content %}
-    <p>Your current avatar: </p>
-    {% avatar user %}
-    {% if not avatars %}
-        <p>You do not yet have an avatar.  Please upload one now.</p>
-    {% else %}
-        <form method="POST" action="">
-			{% csrf_token %}
-            <ul>
-                {{ primary_avatar_form.as_ul }}
-            </ul>
-            <input type="submit" value="Choose new Default" />
-        </form>
-    {% endif %}
-    <form enctype="multipart/form-data" method="POST" action="">
+	<form method="POST" action="" id="choiceform">
 		{% csrf_token %}
-        <input type="file" name="avatar" value="Avatar Image" />
-        <input type="submit" value="Upload New Image" />
-    </form>
+		<input type="hidden" name="choice" id="choice" value=""/>
+	</form>
+
+	<form enctype="multipart/form-data" method="POST" action="">
+		<dl>
+			<dt><label>현재 사진</label></dt>
+			<dd>{% avatar user %}</dd>
+		</dl>
+		<dl>
+			<dt><label>사진 선택</label></dt>
+			<dd>
+				{% if not avatars %}
+					<p>사진이 없습니다. 업로드해 주세요.</p>
+				{% else %}
+					{% for avatar in avatars %}
+						{% if not avatar.primary %}
+						<a href="javascript:avatar_select({{ avatar.id }});"><img src="{{ avatar|avatar_url }}"/></a>
+						{% endif %}
+					{% endfor %}
+					<!--
+					<form method="POST" action="">
+						{% csrf_token %}
+						<ul>
+							{{ primary_avatar_form.as_ul }}
+						</ul>
+						<input type="submit" value="Choose new Default" />
+					</form>
+					-->
+				{% endif %}
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>새 사진 추가</label></dt>
+			<dd>
+					{% csrf_token %}
+					<input type="file" name="avatar" value="새 사진" />
+					<input type="submit" class="button eng" value="Upload" />
+				</form>
+			</dd>
+		</dl>
+	</form>
 {% endblock %}

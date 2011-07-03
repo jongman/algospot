@@ -305,3 +305,8 @@ function wiki_diff(diff_path) {
 	var diff2 = $('input:radio[name=diff2]:checked').val();
 	window.location.href = diff_path + "/" + diff1 + "/" + diff2;
 }
+
+function avatar_select(id) {
+	$("#choice").val(id);
+	$("#choiceform").submit();
+}
