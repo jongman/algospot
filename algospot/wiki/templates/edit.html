@@ -15,23 +15,7 @@ hello hahaha
 		{% csrf_token %}
 		<fieldset>
 			<legend>편집하기</legend>
-			{% for field in form %}
-			<dl>
-				<dt>
-					<label>
-						{{ field.label_tag }}
-					</label>
-				</dt>
-				<dd>
-					{{ field }}
-					{% if field.errors %}
-					<span class="invalid-side-note">
-					{{ field.errors }}
-					</span>
-					{% endif %}
-				</dd>
-			</dl>
-			{% endfor %}
+			{% include "print_form.html" %}
 		</fieldset>
 		<button type="submit">Submit</button> or <a href="{% url wiki-detail slug %}">Cancel</a>
 	</form>
@@ -40,7 +24,7 @@ hello hahaha
 
 {% block other-blocks %}
 
-{% include "markdown-cheatsheet.html" %}
+{% include "markdown_cheatsheet.html" %}
 
 {% endblock %}
 

@@ -2,27 +2,12 @@
 {% block breadcrumbs %}<li>회원 가입</li>{% endblock %}
 {% block page-contents %} 
 <div class="signup-form kor">
+	{% include "print_non_field_error.html" %}
 	<form action="" method="post">
 		{% csrf_token %}
 		<fieldset>
 			<legend>회원 정보 입력</legend>
-			{% for field in form %}
-			<dl>
-				<dt>
-					<label>
-						{{ field.label_tag }}
-					</label>
-				</dt>
-				<dd>
-					{{ field }}
-					{% for error in field.errors %}
-					<span class="invalid-side-note">
-						{{ error }}
-					</span>
-					{% endfor %}
-				</dd>
-			</dl>
-			{% endfor %}
+			{% include "print_form.html" %}
 		</fieldset>
 		<button type="submit">Sign Up</button> 
 	</form>

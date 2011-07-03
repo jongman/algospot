@@ -6,34 +6,12 @@
 {% endblock %}
 {% block page-contents %} 
 <div class="signin-form">
-	{% if form.non_field_errors %}
-	<div class="notification error">
-		{% for error in form.non_field_errors %} 
-		<p>{{ error }}</p>
-		{% endfor %}
-	</div>
-	{% endif %}
+	{% include "print_non_field_error.html" %}
 	<form method="post" action="">
 		{% csrf_token %}
 		<fieldset class="kor">
 			<legend>로그인하기</legend>
-			{% for field in form %}
-			<dl>
-				<dt>
-					<label>
-						{{ field.label_tag }}
-					</label>
-				</dt>
-				<dd>
-					{{ field }}
-					{% for error in field.errors %}
-					<span class="invalid-side-note">
-						{{ error }}
-					</span>
-					{% endfor %}
-				</dd>
-			</dl>
-			{% endfor %}
+			{% include "print_form.html" %}
 		</fieldset>
 		<button type="submit">Sign In</button> 
 		<input type="hidden" name="next" value="{{ next }}" />
