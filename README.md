@@ -45,14 +45,14 @@
 
 	$ pip install -r requirements.txt
 
-1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 서버를 켜기 전에 디비 테이블들을 만든다. 만드는 과정에서 슈퍼유저를 만들라고 한다. 얌전히 만든다.
+1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 서버를 켜기 전에 디비 테이블들을 만든다. 
 
 	$ cd www  
-	$ ./manage.py syncdb
+	$ ./manage.py syncdb --noinput --migrate
 
-1. `syncdb` 를 하면 각종 외부 장고 앱의 테이블들을 만든다. 그 후 알고스팟 내에서 사용하는 테이블들을 만든다. 얘들은 개발 중 스키마가 바뀔 일이 많아서, 개발할 때 디비 스키마 변경을 도와주는 도구인 [south](http://south.aeracode.org/)를 쓰기 때문에 이와 같이 따로 해 줘야 한다.
+1. 슈퍼유저를 만든다.
 
-	$ ./manage.py migrate 
+	$ ./manage.py createsuperuser --username=admin --email=admin@algospot.com
 
 1. 디비에 초기 데이터(메인 페이지)를 집어넣는다.
 
@@ -60,7 +60,7 @@
 
 1. 이제 멋있게 개발 서버를 켠다.
 
-	$ ./manange.py runserver
+	$ ./manage.py runserver
 
 1. 웹브라우저에서 [http://127.0.0.1:8000/wiki/read/Main_Page](http://127.0.0.1:8000/wiki/read/Main_Page)를 연다. 아직 메인 페이지가 없어서 위키로 들어가야 한다. -_-
 
