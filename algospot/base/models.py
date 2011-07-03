@@ -7,3 +7,4 @@ class UserProfile(models.Model):
     posts = models.IntegerField(null=False, default=0)
     submissions = models.IntegerField(null=False, default=0)
     solved_problems = models.IntegerField(null=False, default=0)
+    intro = models.TextField(default="")
