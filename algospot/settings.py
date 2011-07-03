@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'registration',
 
+    'base',
     'wiki',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
