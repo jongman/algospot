@@ -35,7 +35,7 @@
 
 1. virtualenv 환경을 만들고 activate 한다.
 
-	$ mkvirtualenv algospot-django
+	$ mkvirtualenv algospot-django --no-site-packages
 
 1. 환경을 만들면 자동으로 활성화되며, 그러면 프롬프트 앞에 환경 이름인 `(algospot-django)` 이 붙는다. 다른 쉘에서는 다음 커맨드를 치면 해당 virtualenv 를 사용할 수 있다.
 
