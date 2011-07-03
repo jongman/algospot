@@ -106,7 +106,7 @@ MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
-ROOT_URLCONF = 'algospot.urls'
+ROOT_URLCONF = 'www.urls'
 
 TEMPLATE_DIRS = (
     j("templates"),
