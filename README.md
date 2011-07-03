@@ -35,19 +35,19 @@
 
 1. virtualenv 환경을 만들고 activate 한다.
 
-	$ mkvirtualenv algospot
+	$ mkvirtualenv algospot-django
 
-1. 환경을 만들면 자동으로 활성화되며, 그러면 프롬프트 앞에 환경 이름인 `(algospot)` 이 붙는다. 다른 쉘에서는 다음 커맨드를 치면 해당 virtualenv 를 사용할 수 있다.
+1. 환경을 만들면 자동으로 활성화되며, 그러면 프롬프트 앞에 환경 이름인 `(algospot-django)` 이 붙는다. 다른 쉘에서는 다음 커맨드를 치면 해당 virtualenv 를 사용할 수 있다.
 
-	$ workon algospot
+	$ workon algospot-django
 
-1. virtualenv 내에서 까는 모든 패키지는 `~/.virtualenvs/algospot` 디렉토리 내에 깔리게 되며, sudo 권한 없이도 깔 수 있다. algospot 사이트에 필요한 각종 파이썬 패키지는 requirements.txt 에 들어있다. pip 을 이용해 requirements 에 들어 있는 패키지들을 깐다. 이렇게 하면 django 랑 기타 장고 앱들을 다 깔아 준다.
+1. virtualenv 내에서 까는 모든 패키지는 `~/.virtualenvs/algospot-django` 디렉토리 내에 깔리게 되며, sudo 권한 없이도 깔 수 있다. algospot 사이트에 필요한 각종 파이썬 패키지는 requirements.txt 에 들어있다. pip 을 이용해 requirements 에 들어 있는 패키지들을 깐다. 이렇게 하면 django 랑 기타 장고 앱들을 다 깔아 준다.
 
 	$ pip install -r requirements.txt
 
 1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 서버를 켜기 전에 디비 테이블들을 만든다. 만드는 과정에서 슈퍼유저를 만들라고 한다. 얌전히 만든다.
 
-	$ cd algospot  
+	$ cd django
 	$ ./manage.py syncdb
 
 1. `syncdb` 를 하면 각종 외부 장고 앱의 테이블들을 만든다. 그 후 알고스팟 내에서 사용하는 테이블들을 만든다. 얘들은 개발 중 스키마가 바뀔 일이 많아서, 개발할 때 디비 스키마 변경을 도와주는 도구인 [south](http://south.aeracode.org/)를 쓰기 때문에 이와 같이 따로 해 줘야 한다.
