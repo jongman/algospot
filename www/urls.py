@@ -11,6 +11,9 @@ urlpatterns = patterns('',
     url(r'^user/', include('base.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^avatar/', include('avatar.urls')),
+
+    # until we write the first page..
+    url(r'^/?$', 'www.wiki.views.detail', kwargs={'slug': 'Main_Page'}),
 )
 
 if settings.DEBUG:
