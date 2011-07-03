@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}
+	<li>회원 정보 갱신</li>
+{% endblock %}
+{% block title %} 회원 정보 갱신 {% endblock %}
+{% block page-title %} {{ settings_user.username }}: 회원 정보 갱신{% endblock %}
+{% block page-contents %}
+<div class="user-settings">
+	{% include "print_non_field_error.html" %}
+	<form action="" method="post">
+		{% csrf_token %}
+		<fieldset class="kor">
+			<legend>회원 정보 갱신</legend>
+			<dl>
+				<dt><label>회원 ID</label></dt>
+				<dd>{{ settings_user.username }}</dd>
+			</dl>
+			{% include "print_form.html" %}
+		</fieldset>
+		<button type="submit">Submit</button>
+	</form>
+</div>
+
+{% endblock %}
