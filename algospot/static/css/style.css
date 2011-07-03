@@ -1086,13 +1086,13 @@ legend {
 .ie8 legend { top:-25px; }
 .ie7 legend { top:-35px; }
 form dt {
-	width:80px;
+	width:100px;
 	text-align:right;
 }
 form dd {
 	position:relative;
 	top:-24px;
-	left:95px;
+	left:110px;
 }
 form.wide-keys dt {
 	width:150px;
