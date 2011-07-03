@@ -4,8 +4,8 @@ import os, sys
 
 PROJECT_DIR = os.path.dirname(__file__)
 j = lambda filename: os.path.join(PROJECT_DIR, filename)
-sys.path.append(j("common"))
-sys.path.append(j("external"))
+sys.path.append(j("libs/common"))
+sys.path.append(j("libs/external"))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
