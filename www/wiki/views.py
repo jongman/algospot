@@ -3,6 +3,9 @@ from diff_match_patch import diff_match_patch
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from base.decorators import authorization_required
+
 from models import Page, PageRevision
 from forms import EditForm
 from utils import link_to_pages, slugify, unslugify, get_breadcrumbs, logger
