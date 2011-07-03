@@ -1,0 +1,31 @@
+{% extends "registration/registration_base.html" %}
+{% block page-contents %} 
+<div class="signup-form kor">
+	<form action="" method="post">
+		{% csrf_token %}
+		<fieldset>
+			<legend>회원 정보 입력</legend>
+			{% for field in form %}
+			<dl>
+				<dt>
+					<label>
+						{{ field.label_tag }}
+					</label>
+				</dt>
+				<dd>
+					{{ field }}
+					{% for error in field.errors %}
+					<span class="invalid-side-note">
+						{{ error }}
+					</span>
+					{% endfor %}
+				</dd>
+			</dl>
+			{% endfor %}
+		</fieldset>
+		<button type="submit">Sign Up</button> 
+	</form>
+</div>
+{% endblock %}
+
+

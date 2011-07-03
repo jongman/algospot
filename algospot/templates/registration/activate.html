@@ -1,0 +1,16 @@
+{% extends "registration/registration_base.html" %}
+
+{% block page-contents %}
+
+<section>
+	{% if account %}
+
+		<p>계정이 성공적으로 활성화되었습니다.</p>
+		<p><a class="button" href="{% url auth_login %}">Sign In</a></p>
+
+	{% else %}
+		<p>계정 활성화가 실패했습니다. 문제가 있는 경우 <a href="mailto:algospot-admins@andromeda-express.com">운영진에게 문의해 주세요</a>.</p>
+	{% endif %}
+</section>
+
+{% endblock %}

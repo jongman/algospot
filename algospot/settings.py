@@ -125,11 +125,14 @@ INSTALLED_APPS = (
 
     'south',
     'debug_toolbar',
+    'registration',
 
     'wiki',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+ACCOUNT_ACTIVATION_DAYS = 7
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -153,3 +156,7 @@ LOGGING = {
         },
     }
 }
+
+# this is a dev setting
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025

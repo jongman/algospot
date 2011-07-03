@@ -4,6 +4,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^wiki/', include('algospot.wiki.urls')),
+    url(r'^accounts/', include('registration.urls')),
     # Examples:
     # url(r'^$', 'algospot.views.home', name='home'),
     # url(r'^algospot/', include('algospot.foo.urls')),
