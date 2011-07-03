@@ -25,9 +25,11 @@ def old(request, id, slug):
              "title": page.title,
              "time": unicode(revision.created_on),
              "breadcrumbs": breadcrumbs,
-             "modified": page.modified_on,
+             "modified": revision.created_on,
              "rendered_text": rendered})
 
+@login_required
+@authorization_required
 def revert(request, id, slug):
     page = get_object_or_404(Page, slug=slug)
     revision = PageRevision.objects.get(id=id)

@@ -1,4 +1,5 @@
 {% extends "wiki-base.html" %}
+{% load common_tags %}
 hello hahaha
 {% block title %} 
 	{{ slug }} 
@@ -25,7 +26,7 @@ hello hahaha
 		{% for revision in revisions %}
 		<tr>
 			<td>{{ revision.id }}</td>
-			<td>{{ revision.created_on }}</td>
+			<td>{{ revision.created_on|print_datetime }}</td>
 			<td>{{ revision.user }}</td>
 			<td>{{ revision.edit_summary }}</td>
 			<td>

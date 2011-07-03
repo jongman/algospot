@@ -1,4 +1,5 @@
 {% extends "wiki-base.html" %}
+{% load common_tags %}
 hello hahaha
 {% block title %} 
 	{{ slug }} 
@@ -18,7 +19,9 @@ hello hahaha
 {% endblock %}
 
 {% block page-footer %}
-Page is last modified on {{ modified }}
+<p class="kor">
+    페이지가 마지막으로 {{ modified|print_datetime }}에 수정되었습니다.
+</p>
 {% endblock %}
 
 {% block wiki-read-class %}default-tab{% endblock %}

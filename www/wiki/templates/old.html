@@ -1,4 +1,5 @@
 {% extends "wiki-base.html" %}
+{% load common_tags %}
 {% block title %} 
 	{{ slug }} 
 {% endblock %}
@@ -16,7 +17,9 @@ History: {{ title }}
 {% endblock %}
 
 {% block page-footer %}
-Page is last modified on {{ modified }}
+<p class="kor">
+	{{ modified|print_datetime }}의 페이지입니다.
+</p>
 {% endblock %}
 
 {% block wiki-history-class %}default-tab{% endblock %}
