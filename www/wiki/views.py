@@ -92,6 +92,8 @@ def detail(request, slug):
              "modified": page.modified_on,
              "rendered_text": rendered})
 
+@login_required
+@authorization_required
 def edit(request, slug):
     params = {"slug": slug, "breadcrumbs": get_breadcrumbs(slug)}
     page = get_or_none(Page, slug=slug)
