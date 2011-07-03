@@ -13,3 +13,4 @@ class SettingsForm(forms.Form):
         user.email = self.cleaned_data["email"]
         user.get_profile().intro = self.cleaned_data["intro"]
         user.save()
+        user.get_profile().save()
