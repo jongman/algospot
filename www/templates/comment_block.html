@@ -13,12 +13,13 @@
 				<ul class="comments">
 					{% for comment in comment_list %}
 
-					<li>
-						<ul class="comment">
+					<li class="comment">
+						<ul>
 							<li class="comment_user">
 								{% avatar comment.user 45 %}
 							</li>
 							<li class="comment_content">
+								<a href="{% url user_profile comment.user.id %}">{{ comment.user_name }}</a>
 								{{ comment.comment }}
 								<br/>
 								<em>{{ comment.submit_date|print_datetime }}</em>
@@ -57,7 +58,8 @@
                     {{ form.content_type }}
                     {{ form.object_pk }}
                     {{ form.timestamp }}
-                    {{ form.security_hash }}
+					{{ form.security_hash }}
+					<input type="hidden" name="next" value="{{ request.get_full_path }}"/>
                     <input type="submit" class="eng button" value="Comment"/>
                 </form>
 
