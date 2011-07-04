@@ -9,7 +9,6 @@ django-debug-toolbar==0.8.5
 django-extensions==0.6
 django-registration==0.8-alpha-1
 django-staticfiles==1.0.1
-django-threadedcomments==0.5.3
 ipdb==0.4
 ipython==0.10.2
 wsgiref==0.1.2

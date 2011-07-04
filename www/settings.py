@@ -128,15 +128,12 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'registration',
     'avatar',
-    'threadedcomments',
 
     'base',
     'wiki',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
-
-COMMENTS_APP = 'threadedcomments'
 
 AUTH_PROFILE_MODULE = 'base.UserProfile'
 
