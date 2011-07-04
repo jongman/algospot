@@ -1,0 +1,69 @@
+{% load avatar_tags %}
+{% load common_tags %}
+{% load comments %}
+<article class="full-block nested">
+<div class="article-container">
+        <header>
+            {% get_comment_count for commentobject as cc %}
+            <h3>{{ cc }}개의 댓글이 있습니다.</h3>
+        </header>
+        <section class="kor">
+			{% get_comment_list for commentobject as comment_list %}
+			{% if cc > 0 %}
+				<ul class="comments">
+					{% for comment in comment_list %}
+
+					<li>
+						<ul class="comment">
+							<li class="comment_user">
+								{% avatar comment.user 45 %}
+							</li>
+							<li class="comment_content">
+								{{ comment.comment }}
+								<br/>
+								<em>{{ comment.submit_date|print_datetime }}</em>
+							</li>
+						</ul>
+					</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+        </section>
+        <section class="kor">
+            {% if user.is_authenticated %}
+                {% get_comment_form for commentobject as form %}
+                {% include "print_non_field_error.html" %}
+                <form method="POST" action="{% comment_form_target %}">
+                    {% csrf_token %}
+                    <fieldset class="commenting">
+                        <legend>댓글 남기기</legend>
+                        <dl>
+                            <dt>
+                                <div class="comment_form_avatar_wrapper">
+                                    <img src="{% avatar_url user 80 %}" class="comment_form_avatar" alt="{{user.username}}"/>
+                                </div>
+                            </dt>
+                            <dd>
+                                {{ form.comment }}
+                                {% for error in form.comment.errors %}
+                                <span class="invalid-side-note">
+                                    {{ error }}
+                                </span>
+                                {% endfor %}
+                            </dd>
+                        </dl>
+                        
+                    </fieldset>
+                    {{ form.content_type }}
+                    {{ form.object_pk }}
+                    {{ form.timestamp }}
+                    {{ form.security_hash }}
+                    <input type="submit" class="eng button" value="Comment"/>
+                </form>
+
+            {% else %}
+                <p>댓글을 남기시려면 <a href="{% url auth_login %}">로그인</a>하세요.
+            {% endif %}
+        </section>
+    </div>
+</article>

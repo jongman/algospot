@@ -25,57 +25,9 @@ hello hahaha
 {% endblock %}
 
 {% block other-blocks %}
-{% load avatar_tags %}
-{% load threadedcommentstags %}
-<article class="full-block nested">
-<div class="article-container">
-        <header>
-            {% get_comment_count for page as cc %}
-            <h3>{{ cc }}개의 댓글이 있습니다.</h3>
-        </header>
-        <section class="kor">
-            {% get_comment_list for page as comment_list %}
-            {% for comment in comment_list %}
-            {% endfor %}
-        </section>
-        <section class="kor">
-            {% if user.is_authenticated %}
-                {% get_comment_form for page as form %}
-                {% include "print_non_field_error.html" %}
-                <form method="POST" action="{% comment_form_target %}">
-                    {% csrf_token %}
-                    <fieldset class="commenting">
-                        <legend>댓글 남기기</legend>
-                        <dl>
-                            <dt>
-                                <div class="comment_form_avatar_wrapper">
-                                    <img src="{% avatar_url user 80 %}" class="comment_form_avatar" alt="{{user.username}}"/>
-                                </div>
-                            </dt>
-                            <dd>
-                                {{ form.comment }}
-                                {% for error in form.comment.errors %}
-                                <span class="invalid-side-note">
-                                    {{ error }}
-                                </span>
-                                {% endfor %}
-                            </dd>
-                        </dl>
-                        
-                    </fieldset>
-                    {{ form.content_type }}
-                    {{ form.object_pk }}
-                    {{ form.timestamp }}
-                    {{ form.security_hash }}
-                    <input type="submit" class="eng button" value="Comment"/>
-                </form>
-
-            {% else %}
-                <p>댓글을 남기시려면 <a href="{% url auth_login %}">로그인</a>하세요.
-            {% endif %}
-        </section>
-    </div>
-</article>
+    {% with commentobject=page %}
+        {% include "comment_block.html" %}
+    {% endwith %}
 {% endblock %}
 
 {% block wiki-read-class %}default-tab{% endblock %}
