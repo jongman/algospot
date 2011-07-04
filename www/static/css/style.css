@@ -1091,7 +1091,7 @@ form dt {
 }
 form dd {
 	position:relative;
-	top:-24px;
+	top:-18px;
 	left:110px;
 }
 form.wide-keys dt {
@@ -1519,6 +1519,7 @@ a.missing {
 	color: #2E43AE;
 }
 
+fieldset.commenting textarea,
 .kor,
 .wiki-history *,
 .markup-intro,
@@ -1557,3 +1558,24 @@ article section {
 article img.selected {
 	background-color:#111;
 }
+
+article header h3 {
+	font-size:131%;
+	float:left;
+}
+
+fieldset.commenting textarea {
+	width: 75%; 
+	height: 80px;
+}
+
+.comment_form_avatar_wrapper {
+	position: relative;
+	top: -16px;
+	left: 0;
+}
+
+.comment_form_avatar {
+	position: absolute;
+}
+

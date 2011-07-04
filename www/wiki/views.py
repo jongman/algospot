@@ -90,6 +90,7 @@ def detail(request, slug):
     return render(request, "detail.html",
             {"slug": slug,
              "title": page.title,
+             "page": page,
              "breadcrumbs": get_breadcrumbs(slug),
              "modified": page.modified_on,
              "rendered_text": rendered})

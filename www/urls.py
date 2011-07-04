@@ -5,15 +5,19 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^wiki/', include('www.wiki.urls')),
+    url(r'^user/', include('base.urls')),
+
+    url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/logout', 'django.contrib.auth.views.logout', 
         kwargs={'next_page': '/'}),
     url(r'^accounts/', include('registration.urls')),
-    url(r'^user/', include('base.urls')),
-    url(r'^admin/', include(admin.site.urls)),
     url(r'^avatar/', include('avatar.urls')),
 
     # until we write the first page..
     url(r'^/?$', 'www.wiki.views.detail', kwargs={'slug': 'Main_Page'}),
+
+    # comments apps
+    url(r'^comments/', include('django.contrib.comments.urls')),
 )
 
 if settings.DEBUG:
