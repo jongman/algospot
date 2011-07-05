@@ -26,25 +26,25 @@
             							{% if user.is_superuser or user == comment.user %}
 											<a href="#" class="button-link gray">delete</a> 
 										{% endif %}
-										<a href="#" class="button-link gray">reply</a>
+										<a href="javascript:comment_reply_form_toggle({{ comment.id }});" class="button-link gray">reply</a>
 									{% endif %}
 								</span>
 							</dd>
 						</dl>
 					</li>
-					<!--
             		{% if user.is_authenticated %}
-						<li class="comment-reply-form">
+						<li class="comment comment_reply_form comment_form" style="display: none;" id="replyform_{{ comment.id }}">
 							{% get_comment_form for comment as form %}
-							{ % include "comment_form.html" % }
+							{% include "comment_form.html" %}
 						</li>
 						{% endif %}
-						-->
 					{% endfor %}
 			{% endif %}
             {% if user.is_authenticated %}
                 {% get_comment_form for commentobject as form %}
+				<li class="comment comment_form">
 				{% include "comment_form.html" %}
+				</li>
 
             {% else %}
             	<li class="comment">

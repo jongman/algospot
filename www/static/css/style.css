@@ -1647,8 +1647,14 @@ article header h3 {
 .comment_form input.button {
 	position: absolute;
 	right: 5px;
-	bottom: 10px;
+	top: 5px;
 }
+
+.comment_reply_form {
+	margin-left: 24px !important;
+}
+
+
 
 a.userlink {
 	text-decoration: none;
