@@ -1605,6 +1605,7 @@ fieldset.commenting textarea {
 	border-color: #D6D6D6;
 	min-height: 60px;
 	overflow: hidden;
+	position: relative;
 }
 .comments .comment .comment_user {
 	width: 55px;	
@@ -1618,15 +1619,24 @@ fieldset.commenting textarea {
 	font-size: 90%;
 	
 }
-.comments .comment .datetime {
-	color: #aaa;
-	font-size: 80%;
-}
 .comments .comment:nth-child(odd) {
 	background-color: #F4F4F4;
 }
 .comments .comment:nth-child(even) {
 	/*background-color: #EAEAEA;*/
+}
+.comments .comment .datetime {
+	color: #aaa;
+	font-size: 80%;
+}
+.comments .comment .operations {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+}
+.comments .comment .operations .button-link {
+	font-size: 10px;
+	line-height: 130%;
 }
 a.userlink {
 	text-decoration: none;
@@ -1634,3 +1644,4 @@ a.userlink {
 	font-size: 14px;
 	font-weight: bold;
 }
+
