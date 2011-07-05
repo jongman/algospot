@@ -1,4 +1,5 @@
 {% load avatar_tags %}
+{% load common_tags %}
 <!doctype html>
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
@@ -54,7 +55,7 @@
 		{% if user.is_authenticated %}
 			<a href="{% url user_profile user.id %}">{% avatar user 45 %}</a>
 			<div>
-				<a href="#">{{ user.username }}</a>
+				<a href="#">{{ user|print_username }}</a>
 				<em>
 					글 {{ user.get_profile.posts }}개,
 					문제 {{ user.get_profile.solved_problems }}개

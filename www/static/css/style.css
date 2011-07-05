@@ -1615,6 +1615,7 @@ fieldset.commenting textarea {
 .comments .comment .comment_content {
 	display: table-cell;
 	color: #444;
+	font-size: 90%;
 	
 }
 .comments .comment .datetime {
@@ -1626,4 +1627,10 @@ fieldset.commenting textarea {
 }
 .comments .comment:nth-child(even) {
 	/*background-color: #EAEAEA;*/
+}
+a.userlink {
+	text-decoration: none;
+	font-family:NanumGothic,나눔고딕 !important;
+	font-size: 14px;
+	font-weight: bold;
 }

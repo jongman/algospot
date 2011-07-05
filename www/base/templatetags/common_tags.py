@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import division
+from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
 from django import template
 import datetime
 
 register = template.Library()
+
+@register.filter
+def print_username(user):
+    profile_link = reverse('user_profile', kwargs={"user_id": user.id})
+    return mark_safe('<a href="%s" class="userlink">%s</a>' % 
+            (profile_link, user.username))
 
 @register.filter
 def print_datetime(dt):

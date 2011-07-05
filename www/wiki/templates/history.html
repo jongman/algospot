@@ -27,7 +27,7 @@ hello hahaha
 		<tr>
 			<td>{{ revision.id }}</td>
 			<td>{{ revision.created_on|print_datetime }}</td>
-			<td>{{ revision.user }}</td>
+			<td>{{ revision.user|print_username }}</td>
 			<td>{{ revision.edit_summary }}</td>
 			<td>
 				<input type="radio" name="diff1" value="{{ revision.id }}" {% if second_last_rev == revision.id %}checked{% endif %}/>

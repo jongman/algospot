@@ -14,7 +14,7 @@
 						<dl>
 							<dt class="comment_user">
 								{% avatar comment.user 45 %}<br/>
-								{{ comment.user_name }}
+								{{ comment.user|print_username }}
 							</dt>
 							<dd class="comment_content">
 								{{ comment.comment }}
