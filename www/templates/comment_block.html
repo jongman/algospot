@@ -22,52 +22,36 @@
 								<span class="datetime">{{ comment.submit_date|print_datetime }}</span>
 								<span class="operations">
 									<a href="#" class="button-link gray">permalink</a>
-									<a href="#" class="button-link gray">delete</a> 
-									<a href="#" class="button-link gray">reply</a>
+            						{% if user.is_authenticated %}
+            							{% if user.is_superuser or user == comment.user %}
+											<a href="#" class="button-link gray">delete</a> 
+										{% endif %}
+										<a href="#" class="button-link gray">reply</a>
+									{% endif %}
 								</span>
 							</dd>
 						</dl>
 					</li>
+					<!--
+            		{% if user.is_authenticated %}
+						<li class="comment-reply-form">
+							{% get_comment_form for comment as form %}
+							{ % include "comment_form.html" % }
+						</li>
+						{% endif %}
+						-->
 					{% endfor %}
-				</ul>
 			{% endif %}
-        </section>
-        <section class="kor">
             {% if user.is_authenticated %}
                 {% get_comment_form for commentobject as form %}
-                {% include "print_non_field_error.html" %}
-                <form method="POST" action="{% comment_form_target %}">
-                    {% csrf_token %}
-                    <fieldset class="commenting">
-                        <legend>댓글 남기기</legend>
-                        <dl>
-                            <dt>
-                                <div class="comment_form_avatar_wrapper">
-                                    <img src="{% avatar_url user 80 %}" class="comment_form_avatar" alt="{{user.username}}"/>
-                                </div>
-                            </dt>
-                            <dd>
-                                {{ form.comment }}
-                                {% for error in form.comment.errors %}
-                                <span class="invalid-side-note">
-                                    {{ error }}
-                                </span>
-                                {% endfor %}
-                            </dd>
-                        </dl>
-                        
-                    </fieldset>
-                    {{ form.content_type }}
-                    {{ form.object_pk }}
-                    {{ form.timestamp }}
-					{{ form.security_hash }}
-					<input type="hidden" name="next" value="{{ request.get_full_path }}"/>
-                    <input type="submit" class="eng button" value="Comment"/>
-                </form>
+				{% include "comment_form.html" %}
 
             {% else %}
-                <p>댓글을 남기시려면 <a href="{% url auth_login %}">로그인</a>하세요.
+            	<li class="comment">
+	                <p>댓글을 남기시려면 <a href="{% url auth_login %}">로그인</a>하세요.
+				</li>
             {% endif %}
+				</ul>
         </section>
     </div>
 </article>

@@ -1519,7 +1519,7 @@ a.missing {
 	color: #2E43AE;
 }
 
-fieldset.commenting textarea,
+.comment_form textarea,
 .kor,
 .wiki-history *,
 .markup-intro,
@@ -1562,21 +1562,6 @@ article img.selected {
 article header h3 {
 	font-size:131%;
 	float:left;
-}
-
-fieldset.commenting textarea {
-	width: 75%; 
-	height: 80px;
-}
-
-.comment_form_avatar_wrapper {
-	position: relative;
-	top: -16px;
-	left: 0;
-}
-
-.comment_form_avatar {
-	position: absolute;
 }
 
 .comments {
@@ -1638,6 +1623,33 @@ fieldset.commenting textarea {
 	font-size: 10px;
 	line-height: 130%;
 }
+.comments .comment-reply-form {
+	margin-left: 55px;
+	background-color: blue;
+}
+
+.comment form {
+	margin: 0;
+	padding: 0;
+}
+
+.comment_form dd {
+	position: static;
+	top: 0px !important;
+	left: 0px !important;
+}
+
+.comment_form textarea {
+	width: 200px;
+	height: 70px;
+}
+
+.comment_form input.button {
+	position: absolute;
+	right: 5px;
+	bottom: 10px;
+}
+
 a.userlink {
 	text-decoration: none;
 	font-family:NanumGothic,나눔고딕 !important;

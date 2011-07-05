@@ -310,3 +310,11 @@ function avatar_select(id) {
 	$("#choice").val(id);
 	$("#choiceform").submit();
 }
+
+$(function() {
+	$(".comment_form").each(function(index, li) {
+		li = $(li);
+		var textarea = li.find("textarea");
+		textarea.css("width", (parseInt(li.css("width")) - 175) + "px");
+	});
+});
