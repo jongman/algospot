@@ -1608,19 +1608,22 @@ fieldset.commenting textarea {
 }
 .comments .comment .comment_user {
 	width: 55px;	
+	margin-right: 10px;
+	float: left;
 	text-align: center;
-	line-height: 100%;
 }
 .comments .comment .comment_content {
-	padding-left: 10px;
+	display: table-cell;
 	color: #444;
+	
 }
-.comments .comment em {
+.comments .comment .datetime {
+	color: #aaa;
 	font-size: 80%;
 }
 .comments .comment:nth-child(odd) {
-	background-color: #EAEAEA;
+	background-color: #F4F4F4;
 }
 .comments .comment:nth-child(even) {
-	background-color: #F4F4F4;
+	/*background-color: #EAEAEA;*/
 }
