@@ -2,10 +2,12 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
 from djangoutils import get_or_none
 from models import Category, Post
 from forms import WriteForm
+from django.contrib.comments.models import Comment
 
 def list(request, slug, page):
     pass
@@ -52,5 +54,23 @@ def write(request, slug, id):
         "breadcrumbs": breadcrumbs, "category": category})
 
 def delete(request, id):
-    pass
+    post = get_object_or_404(Post, id=id)
+    if not request.user.is_superuser and request.user != post.user:
+        return HttpForbidden("operation is forbidden.")
+    category = post.category
+    breadcrumbs = [
+            (reverse("forum-list", 
+                kwargs={"slug": category.slug, "page": 1}), category.name),
+            (reverse("forum-read", kwargs={"id": id}), post.title),
+            (reverse("forum-delete", kwargs={"id": id}), u"삭제")]
+    # Delete on POST
+    if request.method == 'POST':
+        # delete all comments
+        Comment.objects.filter(object_pk=post.id,
+                content_type=ContentType.objects.get_for_model(Post)).delete()
+        post.delete()
+        return redirect(reverse("forum-list", kwargs={"slug": category.slug,
+            "page": 1}))
+    return render(request, "delete.html", {"breadcrumbs": breadcrumbs, 
+        "post": post, "category": category})
 
