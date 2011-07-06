@@ -82,7 +82,15 @@
 		<nav id="main-nav">
 			<ul>
 				<li><a href="/" class="no-submenu">뉴스 피드</a></li>
-				<li><a href="/" class="no-submenu">포럼</a></li>
+                <li><a href="/" class="">포럼</a>
+                    <ul>
+                        {% for category in forum_categories %}
+                        <li>
+                            <a href="{% url forum-list category.slug 1 %}">{{ category.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
 				<li class="{% block wiki-class %}{% endblock %}" ><a href="{% url wiki-detail "Main_Page" %}" class="no-submenu">위키</a></li>
 				<li>				
 					<a href="/" class="">온라인 저지</a>
