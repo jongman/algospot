@@ -11,7 +11,7 @@ History: {{ title }}
 {% block page-contents %} 
 	<section>
 		<div class="wiki-text">
-			{{ rendered_text|safe }}
+			{{ text|render_text }}
 		</div>
 	</section>
 {% endblock %}

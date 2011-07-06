@@ -8,7 +8,7 @@ from base.decorators import authorization_required
 
 from models import Page, PageRevision
 from forms import EditForm
-from utils import link_to_pages, slugify, unslugify, get_breadcrumbs, logger
+from utils import slugify, unslugify, get_breadcrumbs, logger
 from djangoutils import get_or_none
 from textutils import render_text
 
@@ -18,15 +18,13 @@ def old(request, id, slug):
     breadcrumbs = get_breadcrumbs(slug)
     breadcrumbs.append((reverse("wiki-old", kwargs={"id": id, "slug": slug}),
         unicode(revision.created_on)))
-    rendered = render_text(revision.text)
-    rendered = link_to_pages(rendered)
     return render(request, "old.html",
             {"slug": slug,
              "title": page.title,
              "time": unicode(revision.created_on),
              "breadcrumbs": breadcrumbs,
              "modified": revision.created_on,
-             "rendered_text": rendered})
+             "text": revision.text})
 
 @login_required
 @authorization_required
@@ -85,15 +83,13 @@ def diff(request, id1=-1, id2=-1):
 
 def detail(request, slug):
     page = get_object_or_404(Page, slug=slug)
-    rendered = render_text(page.current_revision.text)
-    rendered = link_to_pages(rendered)
     return render(request, "detail.html",
             {"slug": slug,
              "title": page.title,
              "page": page,
              "breadcrumbs": get_breadcrumbs(slug),
              "modified": page.modified_on,
-             "rendered_text": rendered})
+             "text": page.current_revision.text})
 
 @login_required
 @authorization_required

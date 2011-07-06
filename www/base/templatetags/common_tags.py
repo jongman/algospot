@@ -4,6 +4,11 @@ from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django import template
 import datetime
+import re
+import markdown
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import HtmlFormatter
 
 register = template.Library()
 
@@ -23,3 +28,25 @@ def print_datetime(dt):
     if diff.seconds < 6*60*60:
         return u"%d시간 전" % (diff.seconds // (60*60))
     return dt.strftime("%Y/%m/%d %H:%M")
+
+code_pattern = re.compile(r'<code lang=([^>]+)>(.+?)</code>', re.DOTALL)
+def syntax_highlight(text):
+    def proc(match):
+        lang = match.group(1).strip('"\'')
+        lexer = get_lexer_by_name(lang, stripall=True)
+        formatter = HtmlFormatter(linenos=True, style="colorful")
+        return highlight(match.group(2), lexer, formatter)
+    return code_pattern.sub(proc, text)
+
+@register.filter
+def render_text(text):
+    text = syntax_highlight(text)
+    text = markdown.markdown(text, extensions=["toc"])
+    try:
+        from wiki.utils import link_to_pages
+        text = link_to_pages(text)
+    except:
+        pass
+    return mark_safe(text)
+
+

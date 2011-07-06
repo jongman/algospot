@@ -16,7 +16,7 @@
 							{{ comment.user|print_username }}
 						</dt>
 						<dd class="comment_content">
-							{{ comment.comment }}
+							{{ comment.comment|render_text }}
 							<br/>
 							<span class="datetime">{{ comment.submit_date|print_datetime }}</span>
 							<span class="operations">
