@@ -1091,7 +1091,7 @@ form dt {
 }
 form dd {
 	position:relative;
-	top:-18px;
+	top:-22px;
 	left:110px;
 }
 form.wide-keys dt {
@@ -1607,6 +1607,7 @@ article header h3 {
 .comments .comment:nth-child(odd) {
 	background-color: #F4F4F4;
 }
+
 .comments .comment:nth-child(even) {
 	/*background-color: #EAEAEA;*/
 }
@@ -1626,6 +1627,14 @@ article header h3 {
 .comments .comment-reply-form {
 	margin-left: 55px;
 	background-color: blue;
+}
+
+.comments.post .comment {
+	background-color: #fff;
+	border: 0;
+}
+.comments.post {
+	border: 0;
 }
 
 .comment form {
