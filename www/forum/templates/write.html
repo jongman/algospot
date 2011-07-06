@@ -1,0 +1,32 @@
+{% extends "forum-base.html" %}
+{% block title %} 
+	{{ category }}: {{ action }}
+{% endblock %}
+
+
+{% block page-title %}
+	{{ category }}: {{ action }}
+{% endblock %}
+
+{% block page-contents %} 
+<div class="wiki-edit">
+	<form action="" method="post">
+		{% csrf_token %}
+		<fieldset class="kor">
+			<legend>{{ action }}</legend>
+			{% include "print_form.html" %}
+		</fieldset>
+		<button type="submit">Submit</button> 
+	</form>
+</div>
+{% endblock %}
+
+{% block other-blocks %}
+
+{% include "markdown_cheatsheet.html" %}
+
+{% endblock %}
+
+{% block page-footer %}
+{% endblock %}
+
