@@ -216,13 +216,14 @@ $(function () {
 	);
 	
 	//Minimize Content Article
+	/*
 	$('article header h2').css({ 'cursor':'s-resize' }); // Minizmie is not available without javascript, so we don't change cursor style with CSS
 	$('article header h2').click( // Toggle the Box Content
 		function () {
 			$(this).parent().find('nav').toggle();
 			$(this).parent().parent().find('section, footer').toggle();
 		}
-	);
+	);*/
 	
 	// Progress bar animation
 	$('.progress-bar').each(function() {
