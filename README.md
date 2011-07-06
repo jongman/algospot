@@ -74,3 +74,5 @@
 1. 개인 프로젝트 홈페이지에서 Pull Request 를 통해 jongman 에게 Pull Request 를 보낸다.
 1. jongman 이 해당 프로젝트를 가져와 머지한다.
 1. -끗-
+
+좀더 자세한 설명은 [github의 매뉴얼 페이지](http://help.github.com/send-pull-requests/)에서 볼 수 있다.
