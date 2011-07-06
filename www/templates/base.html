@@ -95,6 +95,9 @@
 					</ul>
 				</li>
 				<li><a href="/" class="no-submenu">캘린더</a></li>
+                {% if user.is_superuser %}
+                <li><a href="/admin" class="no-submenu">관리자 페이지</a></li>
+                {% endif %}
 			</ul>
 		</nav>
 		<!-- /Main Navigation -->
