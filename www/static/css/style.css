@@ -1654,8 +1654,6 @@ article header h3 {
 	margin-left: 24px !important;
 }
 
-
-
 a.userlink {
 	text-decoration: none;
 	font-family:NanumGothic,나눔고딕 !important;
@@ -1663,3 +1661,6 @@ a.userlink {
 	font-weight: bold;
 }
 
+.comment-delete  {
+	padding: 25px !important;
+}

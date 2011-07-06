@@ -118,7 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
+    #'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
@@ -176,3 +176,11 @@ AVATAR_DEFAULT_URL = "/static/images/unknown-user.png"
 LOGIN_REDIRECT_URL = "/"
 
 DEBUG_TOOLBAR_CONFIG = { "INTERCEPT_REDIRECTS": False }
+
+TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
+        "django.core.context_processors.debug",
+        "django.core.context_processors.i18n",
+        "django.core.context_processors.media",
+        "django.core.context_processors.static",
+        "django.contrib.messages.context_processors.messages",
+        'django.core.context_processors.request',)

@@ -1,0 +1,22 @@
+{% load avatar_tags %}
+{% load common_tags %}
+{% load comments %}
+
+<form method="POST" action="{% comment_form_target %}">
+{% csrf_token %}
+	<dl>
+		<dt class="comment_user">
+			<img src="{% avatar_url user 45 %}" class="comment_form_avatar" alt="{{user.username}}"/>
+			{{ user|print_username }}
+		</dt>
+		<dd class="comment_content">
+			{{ form.comment }}
+			<input type="submit" class="eng button" value="Comment"/>
+		</dd>
+	</dl>
+	{{ form.content_type }}
+	{{ form.object_pk }}
+	{{ form.timestamp }}
+	{{ form.security_hash }}
+	<input type="hidden" name="next" value="{{ request.get_full_path }}"/>
+</form>

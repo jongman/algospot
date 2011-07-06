@@ -13,6 +13,10 @@ urlpatterns = patterns('',
     url(r'^accounts/', include('registration.urls')),
     url(r'^avatar/', include('avatar.urls')),
 
+    # we are overriding default comments app's deletion.. 
+    url(r'^comments/delete/(?P<comment_id>.+)/', 'www.base.views.delete_comment',
+        name="comment-delete-algospot"),
+
     # until we write the first page..
     url(r'^/?$', 'www.wiki.views.detail', kwargs={'slug': 'Main_Page'}),
 
