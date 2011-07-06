@@ -34,8 +34,10 @@ def syntax_highlight(text):
     def proc(match):
         lang = match.group(1).strip('"\'')
         lexer = get_lexer_by_name(lang, stripall=True)
-        formatter = HtmlFormatter(linenos=True, style="colorful")
-        return highlight(match.group(2), lexer, formatter)
+        formatter = HtmlFormatter(style="colorful")
+        code = match.group(2).replace("\t", "  ")
+        highlighted = highlight(code, lexer, formatter)
+        return highlighted.replace("\n", "<br/>")
     return code_pattern.sub(proc, text)
 
 @register.filter
