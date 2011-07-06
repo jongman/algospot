@@ -56,7 +56,7 @@
 
 1. 디비에 초기 데이터를 집어넣는다.
 
-	$ ./manage.py loaddata wiki/fixtures/fixtures.json
+	$ ./manage.py loaddata wiki/fixtures/fixtures.json  
 	$ ./manage.py loaddata forum/fixtures/fixtures.json
 
 1. 이제 멋있게 개발 서버를 켠다.
