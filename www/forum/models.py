@@ -15,6 +15,7 @@ class Post(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, null=False)
     text = models.TextField()
+    category = models.ForeignKey(Category, null=False)
 
     def __unicode__(self):
         return self.title
