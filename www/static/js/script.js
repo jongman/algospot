@@ -312,19 +312,4 @@ function avatar_select(id) {
 	$("#choiceform").submit();
 }
 
-function resize_textarea(_, li) {
-	li = $(li);
-	var textarea = li.find("textarea");
-	textarea.css("width", (parseInt(li.css("width")) - 175) + "px");
-}
-
-function comment_reply_form_toggle(cid) {
-	var replyform = $("#replyform_" + cid);
-	replyform.toggle();
-	resize_textarea(0, replyform);
-}
-
-$(function() {
-	$(".comment_form").each(resize_textarea);
-});
 
