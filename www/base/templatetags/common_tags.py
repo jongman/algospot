@@ -18,16 +18,27 @@ def print_username(user):
     return mark_safe('<a href="%s" class="userlink">%s</a>' % 
             (profile_link, user.username))
 
+unit_size = [60,    24,      7,     52,      99999]
+unit_name = [u"분", u"시간", u"일", u"주일", u"년"]
+
+def format_readable(diff):
+    if diff < 60:
+        return u"방금 전"
+    cumulative_size = 60
+    for sz, name in zip(unit_size, unit_name):
+        if diff < cumulative_size*sz:
+            return u"%d%s 전" % (diff/ cumulative_size, name)
+        cumulative_size *= sz
+    return None
+
 @register.filter
 def print_datetime(dt):
+    fallback = dt.strftime("%Y/%m/%d %H:%M")
     diff = datetime.datetime.now() - dt
-    if diff.seconds < 60:
-        return u"방금 전"
-    if diff.seconds < 60*60:
-        return u"%d분 전" % (diff.seconds // 60)
-    if diff.seconds < 6*60*60:
-        return u"%d시간 전" % (diff.seconds // (60*60))
-    return dt.strftime("%Y/%m/%d %H:%M")
+    # python 2.6 compatibility. no total_seconds() :(
+    diff = diff.seconds + diff.days * 24 * 3600
+    return mark_safe(u'<span title="%s">%s</span>' % (fallback, 
+        format_readable(diff) or fallback))
 
 code_pattern = re.compile(r'<code lang=([^>]+)>(.+?)</code>', re.DOTALL)
 def syntax_highlight(text):
