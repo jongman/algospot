@@ -1,0 +1,85 @@
+{% extends "forum-base.html" %}
+{% block title %} 
+	{{ category.name }}
+{% endblock %}
+
+
+{% block page-title %}
+	{{ category.name }}
+{% endblock %}
+
+{% block forum-write-class-tabs %}{% endblock %}
+
+{% block page-contents %} 
+{% load common_tags %}
+{% load comments %}
+<ul class="forumlist kor">
+	<li class="forumlist-header">
+		<ul>
+			<li class="forumlist-num">번호</li>
+			<li class="forumlist-title">제목</li>
+			<li class="forumlist-user">글쓴이</li>
+			<li class="forumlist-comments">댓글수</li>
+			<li class="forumlist-lastcommenter">마지막 댓글</li>
+			<li class="forumlist-updated">갱신</li>
+		</ul>
+	</li>
+	{% if page.object_list.count == 0 %}
+	<li class="forumlist-entry"><ul>
+		<li class="forumlist-empty">
+		글이 아직 없습니다.
+		</li>
+	</li>
+	{% endif %}
+	{% for post in page.object_list %}
+	<li class="forumlist-entry"><ul>
+			<li class="forumlist-num">{{ post.id }}</li>
+			<li class="forumlist-title"><a href="{% url forum-read post.id %}">{{ post.title }}</a></li>
+			{% get_comment_count for post as cc %}
+			{% get_last_comment for post as lc %}
+			<li class="forumlist-user">{{ post.user|print_username }}</li>
+			<li class="forumlist-comments"><span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span></li>
+			<li class="forumlist-lastcommenter">
+				{% if lc %}
+					{{ lc.user|print_username }}
+				{% else %}
+					없음
+				{% endif %}
+			</li>
+			<li class="forumlist-updated">
+				{% if lc %}
+					{{ lc.submit_date|print_datetime}}
+				{% else %}
+					{{ post.created_on|print_datetime}}
+				{% endif %}
+			</li>
+		</ul></li>
+	{% endfor %}
+</ul>
+</article>
+<article>
+	<div class="pagination">
+		<span class="step-links">
+			{% if page_lo != 1 %}
+			<a href="{% url newsfeed 1 %}">1</a>
+			...
+			{% endif %}
+			{% for pg in page_nav_range %}
+				<a href="{% url newsfeed pg %}" class="{% if pg == page.number %}active_link{% endif %}">{{ pg }}</a>
+			{% endfor %}
+			{% if page_hi != page.paginator.num_pages %}
+			...
+			<a href="{% url newsfeed page.paginator.num_pages %}">{{page.paginator.num_pages}}</a>
+			{% endif %}
+		</span>
+	</div>
+</section>
+
+{% endblock %}
+
+{% block other-blocks %}
+{% endblock %}
+
+{% block page-footer %}
+{% endblock %}
+

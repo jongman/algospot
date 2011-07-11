@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %} 
+	뉴스 피드
+{% endblock %}
+{% block page-title %}
+	뉴스 피드 
+{% endblock %}
+{% block breadcrumbs %}
+	{% for link, title in breadcrumbs %}
+	<li>{% if link %}<a href="{{ link }}">{% endif %}
+		{{ title }}
+		{% if link %}</a>{% endif %}
+	</li>
+	{% endfor %}
+{% endblock %}
+{% block newsfeed-class %}current{% endblock %}
+{% block page-contents %} 
+	{% load avatar_tags %}
+	{% load common_tags %}
+	{% load newsfeed_tags %}
+
+	<ul class="eventlist">
+		{% for action in page.object_list %}
+		<li>
+			{{ action|format_action }}
+		</li>
+		{% endfor %}
+	</ul>
+</article>
+<article>
+	<div class="pagination">
+		<span class="step-links">
+			{% if page_lo != 1 %}
+			<a href="{% url newsfeed 1 %}">1</a>
+			...
+			{% endif %}
+			{% for pg in page_nav_range %}
+				<a href="{% url newsfeed pg %}" class="{% if pg == page.number %}active_link{% endif %}">{{ pg }}</a>
+			{% endfor %}
+			{% if page_hi != page.paginator.num_pages %}
+			...
+			<a href="{% url newsfeed page.paginator.num_pages %}">{{page.paginator.num_pages}}</a>
+			{% endif %}
+		</span>
+	</div>
+
+{% endblock %}
+
