@@ -41,8 +41,8 @@ if "actstream" in settings.INSTALLED_APPS:
         action.send(instance.user,
                 action_object=instance,
                 target=instance.category,
-                verb=u"{actor}가 {target}에 글 {action_object}를 "
-                u"쓰셨습니다.")
+                verb=u"{target}에 글 {action_object}를 "
+                u"썼습니다.")
     def post_delete_handler(sender, **kwargs):
         instance = kwargs["instance"]
         post_type = ContentType.objects.get(app_label="forum",

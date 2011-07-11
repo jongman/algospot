@@ -17,6 +17,13 @@ def stream(request, page="1"):
     breadcrumbs = [(reverse("newsfeed"), u"뉴스 피드")]
     page_lo = max(1, page.number - PAGINATOR_RANGE)
     page_hi = min(paginator.num_pages, page.number + PAGINATOR_RANGE)
+    # aggregate by actor
+    aggregated = {}
+    for action in page.object_list:
+        if action.actor not in aggregated:
+            aggregated[action.actor] = []
+        aggregated[action.actor].append(action)
+
     return render(request, "newsfeed.html", {"breadcrumbs": breadcrumbs,
-        "page": page, "page_lo": page_lo, 
+        "aggregated_actions": aggregated, "page": page, "page_lo": page_lo, 
         "page_hi": page_hi, "page_nav_range": range(page_lo, page_hi+1)})

@@ -28,7 +28,7 @@ def format_action(action):
 def determine_action_type(action):
     # is it a comment?
     if isinstance(action.action_object, Comment):
-        return "comment"
+        return "commented"
     obj = action.action_object or action.target
     if obj: 
         return obj.__class__.__name__.lower()

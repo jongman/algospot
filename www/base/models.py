@@ -44,7 +44,7 @@ if "actstream" in settings.INSTALLED_APPS:
             action.send(instance.user,
                     action_object=instance,
                     target=target,
-                    verb=u"{actor}가 {target}에 댓글을 달았습니다: "
+                    verb=u"{target}에 새 댓글을 달았습니다: "
                     u"{action_object}")
         elif instance.is_removed:
             comment_type = ContentType.objects.get(app_label="comments",

@@ -1606,11 +1606,11 @@ article header h3 {
 .comments .comment .comment_content p {
 	color: #444
 }
-.comments .comment:nth-child(odd) {
+.comments.background-color .comment:nth-child(odd) {
 	background-color: #F4F4F4;
 }
 
-.comments .comment:nth-child(even) {
+.comments.background-color .comment:nth-child(even) {
 	/*background-color: #EAEAEA;*/
 }
 .comments .comment .datetime {
@@ -1793,6 +1793,7 @@ div.highlight {
 .newsfeed {
 	margin:0;
 	padding:0;
+	width: 617px;
 }
 .newsfeed li {
 	background-position:10px 14px;
@@ -1810,11 +1811,12 @@ div.highlight {
 	-moz-border-radius:3px;
 	border-radius:3px;
 	line-height:100%;
+	width: 90%;
 }
 .newsfeed li a {
 	text-decoration: none;
 }
-.newsfeed li.comment { background-image:url('/static/images/icons/icon_notification_information.png'); }
+.newsfeed li.commented { background-image:url('/static/images/icons/icon_notification_information.png'); }
 .newsfeed li.event { background-image:url('/static/images/icons/icon_event_log.png'); }
 .newsfeed li.post { background-image:url('/static/images/icons/icon_table_edit.png'); }
 .newsfeed li.page { background-image:url('/static/images/icons/icon_nav_articles.png'); }

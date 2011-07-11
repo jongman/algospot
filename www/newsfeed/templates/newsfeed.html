@@ -19,11 +19,27 @@
 	{% load common_tags %}
 	{% load newsfeed_tags %}
 
-	<ul class="newsfeed kor">
-		{% for action in page.object_list %}
-		<li class="{{ action|determine_action_type }}">
-			<span class="newsfeed-timestamp">{{ action.timestamp|print_datetime }}</span>
-			<p>{{ action|format_action }}</p>
+	<ul class="comments">
+		{% for user, actions in aggregated_actions.iteritems %}
+		<li class="comment">
+			<dl>
+				<dt class="comment_user">
+					{% avatar user 45 %}<br/>
+					{{ user|print_username }}
+				</dt>
+				<dd class="comment_content">
+					<ul class="newsfeed kor">
+						{% for action in actions %}
+						<li class="{{ action|determine_action_type }}">
+							<span class="newsfeed-timestamp">{{ action.timestamp|print_datetime }}</span>
+							<p>
+								{{ action|format_action }}
+							</p>
+						</li>
+						{% endfor %}
+					</ul>
+				</dd>
+			</dl>
 		</li>
 		{% endfor %}
 	</ul>
