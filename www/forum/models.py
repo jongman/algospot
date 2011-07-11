@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -12,6 +13,9 @@ class Category(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('forum-list', args=[self.slug, 1])
+
 class Post(models.Model):
     """Stores a forum post."""
     title = models.TextField(max_length=100)
@@ -22,6 +26,9 @@ class Post(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('forum-read', args=[self.id])
 
 if "actstream" in settings.INSTALLED_APPS:
     from actstream import action
