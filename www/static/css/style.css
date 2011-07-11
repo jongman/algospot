@@ -1702,20 +1702,20 @@ div.highlight {
 	border-bottom:1px solid;
 	border-color: #ccc; 
 }
-.forumlist .forumlist-header li, .forumlist .forumlist-entry li {
+.forumlist-header li, .forumlist-entry li {
 	text-align:center;
 	padding:0;
 }
-.forumlist .forumlist-header li { font-weight: bold; }
-.forumlist .forumlist-empty { width: 100%; }
+.forumlist-header li { font-weight: bold; }
+.forumlist-empty { width: 100%; }
 
 
-.forumlist-entry li { color: #999; font-size: 13px; text-align: center; }
+.forumlist-entry li { color: #999; font-size: 14px; text-align: center; }
 .forumlist-num { width: 8%; }
 .forumlist-title { width: 50%; }
 .forumlist-user, .forumlist-lastcommenter { width: 12%; }
 .forumlist-comments { width: 8%; }
-.forumlist-update { width: 10%; }
+.forumlist-updated { width: 10%; }
 .forumlist-title a { text-decoration: none; }
 .forumlist-entry .forumlist-title { text-align: left !important; }
 .forumlist .forumlist-entry ul { 
