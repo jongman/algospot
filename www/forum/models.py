@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
 class Category(models.Model):
     """Stores a post category."""
@@ -32,6 +33,7 @@ class Post(models.Model):
 
 if "actstream" in settings.INSTALLED_APPS:
     from actstream import action
+    from actstream.models import Action
     def post_handler(sender, **kwargs):
         instance, created = kwargs["instance"], kwargs["created"]
         if not created: return
@@ -40,5 +42,14 @@ if "actstream" in settings.INSTALLED_APPS:
                 target=instance.category,
                 verb=u"{actor}가 {target}에 글 {action_object}를 "
                 u"쓰셨습니다.")
+    def post_delete_handler(sender, **kwargs):
+        instance = kwargs["instance"]
+        post_type = ContentType.objects.get(app_label="forum",
+                model="post")
+        Action.objects.filter(action_object_content_type=post_type,
+                action_object_object_id=instance.id).delete()
+
+    pre_delete.connect(post_delete_handler, sender=Post, 
+            dispatch_uid="forum_post_delete_event")
     post_save.connect(post_handler, sender=Post, 
             dispatch_uid="forum_post_event")
