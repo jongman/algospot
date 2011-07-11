@@ -39,4 +39,5 @@ if "actstream" in settings.INSTALLED_APPS:
                 target=instance.category,
                 verb=u"{actor}가 {target}에 글 {action_object}를 "
                 u"쓰셨습니다.")
-    post_save.connect(post_handler, sender=Post)
+    post_save.connect(post_handler, sender=Post, 
+            dispatch_uid="forum_post_event")

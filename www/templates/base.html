@@ -81,8 +81,8 @@
 		<!-- Main Navigation -->
 		<nav id="main-nav">
 			<ul>
-                <li class="{% block newsfeed-class %}{% endblock %}"><a href="/" class="no-submenu">뉴스 피드</a></li>
-                <li class="{% block forum-class %}{% endblock %}"><a href="/">포럼</a>
+                <li class="{% block newsfeed-class %}{% endblock %}"><a href="{% url newsfeed %}" class="no-submenu">뉴스 피드</a></li>
+                <li class="{% block forum-class %}{% endblock %}"><a href="#">포럼</a>
                     <ul>
                         {% for cat in forum_categories %}
                         <li class="{% if cat == category %}current{% endif %}">
