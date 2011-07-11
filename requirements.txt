@@ -3,6 +3,7 @@ Markdown==2.0.3
 PIL==1.1.7
 Pygments==1.4
 South==0.7.3
+django-activity-stream==0.3.5
 django-attachments==0.3.1
 django-avatar==1.0.5
 django-debug-toolbar==0.8.5
