@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'base',
     'wiki',
     'forum',
+    'newsfeed',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

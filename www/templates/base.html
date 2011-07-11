@@ -81,7 +81,7 @@
 		<!-- Main Navigation -->
 		<nav id="main-nav">
 			<ul>
-				<li><a href="/" class="no-submenu">뉴스 피드</a></li>
+                <li class="{% block newsfeed-class %}{% endblock %}"><a href="/" class="no-submenu">뉴스 피드</a></li>
                 <li class="{% block forum-class %}{% endblock %}"><a href="/">포럼</a>
                     <ul>
                         {% for cat in forum_categories %}
@@ -92,7 +92,7 @@
                     </ul>
                 </li>
 				<li class="{% block wiki-class %}{% endblock %}" ><a href="{% url wiki-detail "Main_Page" %}" class="no-submenu">위키</a></li>
-				<li>				
+				<li class="{% block judge-class %}{% endblock %}">
 					<a href="/" class="">온라인 저지</a>
 					<ul>
 						<li><a href="/">문제 풀기</a></li>
@@ -102,7 +102,7 @@
 						<li><a href="/">튜토리얼</a></li>
 					</ul>
 				</li>
-				<li><a href="/" class="no-submenu">캘린더</a></li>
+				<li class="{% block calendar-class %}{% endblock %}"><a href="/" class="no-submenu">캘린더</a></li>
                 {% if user.is_superuser %}
                 <li><a href="/admin" class="no-submenu">관리자 페이지</a></li>
                 {% endif %}

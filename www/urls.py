@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     url(r'^forum/', include('www.forum.urls')),
     url(r'^user/', include('base.urls')),
     url(r'^activity/', include('actstream.urls')),
+    url(r'^newsfeed/', include('newsfeed.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/logout', 'django.contrib.auth.views.logout', 

@@ -37,6 +37,6 @@ if "actstream" in settings.INSTALLED_APPS:
         action.send(instance.user,
                 action_object=instance,
                 target=instance.category,
-                verb=u"%(actor)가 %(target)에 글 %(action_object)를 "
+                verb=u"{actor}가 {target}에 글 {action_object}를 "
                 u"쓰셨습니다.")
     post_save.connect(post_handler, sender=Post)
