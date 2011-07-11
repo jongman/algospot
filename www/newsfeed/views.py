@@ -18,11 +18,11 @@ def stream(request, page="1"):
     page_lo = max(1, page.number - PAGINATOR_RANGE)
     page_hi = min(paginator.num_pages, page.number + PAGINATOR_RANGE)
     # aggregate by actor
-    aggregated = {}
+    aggregated = []
     for action in page.object_list:
-        if action.actor not in aggregated:
-            aggregated[action.actor] = []
-        aggregated[action.actor].append(action)
+        if not aggregated or aggregated[-1][0] != action.actor:
+            aggregated.append((action.actor, []))
+        aggregated[-1][1].append(action)
 
     return render(request, "newsfeed.html", {"breadcrumbs": breadcrumbs,
         "aggregated_actions": aggregated, "page": page, "page_lo": page_lo, 
