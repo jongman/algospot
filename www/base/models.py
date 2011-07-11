@@ -6,6 +6,7 @@ from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 
 # 이만큼은 문제를 풀어야 위키 변경 등의 일을 할 수 있다.
 USER_AUTHORIZATION_LIMIT = 5
@@ -34,15 +35,22 @@ def deleting_user(sender, **kwargs):
 
 if "actstream" in settings.INSTALLED_APPS:
     from actstream import action
+    from actstream.models import Action
 
     def comment_handler(sender, **kwargs):
         instance, created = kwargs["instance"], kwargs["created"]
-        target = instance.content_object
-        action.send(instance.user,
-                action_object=instance,
-                target=target,
-                verb=u"{actor}가 {target}에 댓글을 달았습니다: "
-                u"{action_object}")
+        if created:
+            target = instance.content_object
+            action.send(instance.user,
+                    action_object=instance,
+                    target=target,
+                    verb=u"{actor}가 {target}에 댓글을 달았습니다: "
+                    u"{action_object}")
+        elif instance.is_removed:
+            comment_type = ContentType.objects.get(app_label="comments",
+                    model="comment")
+            Action.objects.filter(action_object_content_type=comment_type,
+                    action_object_object_id=instance.id).delete()
 
     post_save.connect(comment_handler, sender=Comment,
             dispatch_uid="comment_event")
