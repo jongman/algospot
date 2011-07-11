@@ -3,6 +3,7 @@ from __future__ import division
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django import template
+from django.contrib.comments.templatetags.comments import BaseCommentNode
 import datetime
 import re
 import markdown
@@ -11,6 +12,15 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 
 register = template.Library()
+
+class GetLastCommentNode(BaseCommentNode):
+    """ Get last comment into the context. """
+    def get_context_value_from_queryset(self, context, qs):
+        return qs.order_by("-id")[0] if qs.exists() else qs.none()
+
+@register.tag
+def get_last_comment(parser, token):
+    return GetLastCommentNode.handle_token(parser, token)
 
 @register.filter
 def get_comment_hotness(count):

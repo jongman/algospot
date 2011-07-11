@@ -18,9 +18,10 @@
 		<ul>
 			<li class="forumlist-num">번호</li>
 			<li class="forumlist-title">제목</li>
-			<li class="forumlist-comments">댓글</li>
 			<li class="forumlist-user">글쓴이</li>
-			<li class="forumlist-created-on">언제</li>
+			<li class="forumlist-comments">댓글수</li>
+			<li class="forumlist-lastcommenter">마지막 댓글</li>
+			<li class="forumlist-updated">갱신</li>
 		</ul>
 	</li>
 	{% if page.object_list.count == 0 %}
@@ -35,9 +36,23 @@
 			<li class="forumlist-num">{{ post.id }}</li>
 			<li class="forumlist-title"><a href="{% url forum-read post.id %}">{{ post.title }}</a></li>
 			{% get_comment_count for post as cc %}
-			<li class="forumlist-comments"><span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span></li>
+			{% get_last_comment for post as lc %}
 			<li class="forumlist-user">{{ post.user|print_username }}</li>
-			<li class="forumlist-created-on">{{ post.created_on|print_datetime}}</li>
+			<li class="forumlist-comments"><span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span></li>
+			<li class="forumlist-lastcommenter">
+				{% if lc %}
+					{{ lc.user|print_username }}
+				{% else %}
+					없음
+				{% endif %}
+			</li>
+			<li class="forumlist-updated">
+				{% if lc %}
+					{{ lc.submit_date|print_datetime}}
+				{% else %}
+					{{ post.created_on|print_datetime}}
+				{% endif %}
+			</li>
 		</ul></li>
 	{% endfor %}
 </ul>
