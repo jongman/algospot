@@ -1790,3 +1790,36 @@ div.highlight {
 	cursor:default;
 }
 
+.newsfeed {
+	margin:0;
+	padding:0;
+}
+.newsfeed li {
+	background-position:10px 14px;
+	background-repeat:no-repeat;
+	background-image:url('/static/images/icons/icon_event.png');
+	background-color: #fafafa;
+	list-style:none;
+	border-color: #eaeaea !important;
+	display:block;
+	padding:10px 10px 10px 35px;
+	overflow:hidden;
+	margin-bottom:10px;
+	border:1px solid;
+	-webkit-border-radius:3px;
+	-moz-border-radius:3px;
+	border-radius:3px;
+	line-height:100%;
+}
+.newsfeed li a {
+	text-decoration: none;
+}
+.newsfeed li.comment { background-image:url('/static/images/icons/icon_notification_information.png'); }
+.newsfeed li.event { background-image:url('/static/images/icons/icon_event_log.png'); }
+.newsfeed li.post { background-image:url('/static/images/icons/icon_table_edit.png'); }
+.newsfeed li.page { background-image:url('/static/images/icons/icon_nav_articles.png'); }
+.newsfeed li .newsfeed-timestamp {
+	float:right;
+	font-size:93%;
+}
+.newsfeed li .newsfeed-meta a { text-decoration:none; }

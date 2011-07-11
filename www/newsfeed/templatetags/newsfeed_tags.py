@@ -6,7 +6,7 @@ from django import template
 register = template.Library()
 
 @register.filter
-def format_action(activity):
+def format_action(action):
     def wrap_in_link(object):
         if not object: return ""
         if isinstance(object, Comment): 
@@ -20,6 +20,16 @@ def format_action(activity):
                 unicode_rep,
                 '</a>'])
         return unicode_rep
-    return mark_safe(activity.verb.format(actor=wrap_in_link(activity.actor),
-            action_object=wrap_in_link(activity.action_object),
-            target=wrap_in_link(activity.target)))
+    return mark_safe(action.verb.format(actor=wrap_in_link(action.actor),
+            action_object=wrap_in_link(action.action_object),
+            target=wrap_in_link(action.target)))
+
+@register.filter
+def determine_action_type(action):
+    # is it a comment?
+    if isinstance(action.action_object, Comment):
+        return "comment"
+    obj = action.action_object or action.target
+    if obj: 
+        return obj.__class__.__name__.lower()
+    return ""
