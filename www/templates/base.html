@@ -82,11 +82,11 @@
 		<nav id="main-nav">
 			<ul>
 				<li><a href="/" class="no-submenu">뉴스 피드</a></li>
-                <li><a href="/" class="">포럼</a>
+                <li class="{% block forum-class %}{% endblock %}"><a href="/">포럼</a>
                     <ul>
-                        {% for category in forum_categories %}
-                        <li>
-                            <a href="{% url forum-list category.slug 1 %}">{{ category.name }}</a>
+                        {% for cat in forum_categories %}
+                        <li class="{% if cat == category %}current{% endif %}">
+                            <a href="{% url forum-list cat.slug 1 %}">{{ cat.name }}</a>
                         </li>
                         {% endfor %}
                     </ul>
