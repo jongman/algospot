@@ -1799,17 +1799,20 @@ div.highlight {
 	background-position:10px 14px;
 	background-repeat:no-repeat;
 	background-image:url('/static/images/icons/icon_event.png');
+	/*
 	background-color: #fafafa;
-	list-style:none;
 	border-color: #eaeaea !important;
-	display:block;
-	padding:10px 10px 10px 35px;
-	overflow:hidden;
-	margin-bottom:10px;
 	border:1px solid;
 	-webkit-border-radius:3px;
 	-moz-border-radius:3px;
 	border-radius:3px;
+	*/
+	list-style:none;
+	display:block;
+	padding:10px 10px 10px 35px;
+	overflow:hidden;
+	margin-top:5px;
+	margin-bottom:5px;
 	line-height:100%;
 	width: 90%;
 }

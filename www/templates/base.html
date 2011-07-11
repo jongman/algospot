@@ -60,7 +60,7 @@
 					글 {{ user.get_profile.posts }}개,
 					문제 {{ user.get_profile.solved_problems }}개
 				</em>
-				<ul>
+                <ul>
 					<li><a class="button-link" href="{% url user_settings user.id %}" title="설정" rel="tooltip">settings</a></li>
 					<li><a class="button-link" href="{% url auth_logout %}" title="로그아웃" rel="tooltip">sign out</a></li>
 				</ul>
