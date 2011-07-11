@@ -34,6 +34,7 @@ if "actstream" in settings.INSTALLED_APPS:
     from actstream import action
     def post_handler(sender, **kwargs):
         instance, created = kwargs["instance"], kwargs["created"]
+        if not created: return
         action.send(instance.user,
                 action_object=instance,
                 target=instance.category,
