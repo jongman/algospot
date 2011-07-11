@@ -21,7 +21,7 @@ urlpatterns = patterns('',
         name="comment-delete-algospot"),
 
     # until we write the first page..
-    url(r'^/?$', 'www.wiki.views.detail', kwargs={'slug': 'Main_Page'}),
+    url(r'^/?$', 'www.newsfeed.views.stream'),
 
     # comments apps
     url(r'^comments/', include('django.contrib.comments.urls')),
