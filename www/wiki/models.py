@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
 from django.db import models
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 
 class PageRevision(models.Model):
@@ -23,3 +27,16 @@ class Page(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("wiki-detail", args=[self.slug])
+
+if "actstream" in settings.INSTALLED_APPS:
+    from actstream import action
+    def edit_handler(sender, **kwargs):
+        instance, created = kwargs["instance"], kwargs["created"]
+        action.send(instance.user,
+                target=instance.revision_for,
+                verb=u"{actor}가 위키 페이지 {target}을 편집했습니다.")
+    post_save.connect(edit_handler, sender=PageRevision,
+            dispatch_uid="wiki_edit_event")
