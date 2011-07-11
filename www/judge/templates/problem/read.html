@@ -1,13 +1,7 @@
-{% extends "judge-base.html" %}
+{% extends "problem/problem-base.html" %}
 {% load common_tags %}
-{% block title %} 
-	{{ problem.slug }} 
-{% endblock %}
 
-
-{% block page-title %}
-	{{ problem.name }}
-{% endblock %}
+{% block judge-problem-read-class %}current{% endblock %}
 
 {% block page-contents %} 
 	<section class="problem_statement">
