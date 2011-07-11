@@ -1844,9 +1844,10 @@ div.highlight {
 	font-weight: bold;
 }
 .probleminfo li.content {
-	background-color: #fafafa;
-	border-top: 1px solid #eee;
-	border-bottom: 1px solid #eee;
+	background-color: #f0f0f0;
+	border-top: 1px solid;
+	border-bottom: 1px solid;;
+	border-color: silver;
 }
 .probleminfo li li {
 	list-style: none;
@@ -1857,7 +1858,7 @@ div.highlight {
 .probleminfo ul li {
 	width: 16%;
 }
-.problem_statement p, .problem_statement pre {
+.problem_statement p, .problem_statement pre, .problem_statement ul {
 	margin-left: 16px;
 	margin-bottom: 16px;
 }
