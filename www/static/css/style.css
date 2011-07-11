@@ -1796,23 +1796,14 @@ div.highlight {
 	width: 617px;
 }
 .newsfeed li {
-	background-position:10px 14px;
+	background-position:10px 10px;
 	background-repeat:no-repeat;
 	background-image:url('/static/images/icons/icon_event.png');
-	/*
-	background-color: #fafafa;
-	border-color: #eaeaea !important;
-	border:1px solid;
-	-webkit-border-radius:3px;
-	-moz-border-radius:3px;
-	border-radius:3px;
-	*/
 	list-style:none;
 	display:block;
-	padding:10px 10px 10px 35px;
+	padding:5px 5px 5px 35px;
 	overflow:hidden;
-	margin-top:5px;
-	margin-bottom:5px;
+	margin: 0px;;
 	line-height:100%;
 	width: 90%;
 }
