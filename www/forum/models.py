@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
+from django.conf import settings
 
 class Category(models.Model):
     """Stores a post category."""
@@ -19,3 +22,14 @@ class Post(models.Model):
 
     def __unicode__(self):
         return self.title
+
+if "actstream" in settings.INSTALLED_APPS:
+    from actstream import action
+    def post_handler(sender, **kwargs):
+        instance, created = kwargs["instance"], kwargs["created"]
+        action.send(instance.user,
+                action_object=instance,
+                target=instance.category,
+                verb=u"%(actor)가 %(target)에 글 %(action_object)를 "
+                u"쓰셨습니다.")
+    post_save.connect(post_handler, sender=Post)

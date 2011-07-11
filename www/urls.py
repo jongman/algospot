@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     url(r'^wiki/', include('www.wiki.urls')),
     url(r'^forum/', include('www.forum.urls')),
     url(r'^user/', include('base.urls')),
+    url(r'^activity/', include('actstream.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/logout', 'django.contrib.auth.views.logout', 

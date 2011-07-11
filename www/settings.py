@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'registration',
     'avatar',
+    'actstream',
 
     'base',
     'wiki',
