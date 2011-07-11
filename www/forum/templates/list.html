@@ -35,7 +35,7 @@
 			<li class="forumlist-num">{{ post.id }}</li>
 			<li class="forumlist-title"><a href="{% url forum-read post.id %}">{{ post.title }}</a></li>
 			{% get_comment_count for post as cc %}
-			<li class="forumlist-comments">{{ cc }}</li>
+			<li class="forumlist-comments"><span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span></li>
 			<li class="forumlist-user">{{ post.user|print_username }}</li>
 			<li class="forumlist-created-on">{{ post.created_on|print_datetime}}</li>
 		</ul></li>

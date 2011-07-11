@@ -1734,6 +1734,14 @@ div.highlight {
 }
 .forumlist .forumlist-entry { background-color: #f2f2f2; }
 .forumlist .forumlist-entry:nth-child(2n+1) { background-color: #fafafa; }
+.forumlist .forumlist-entry:hover { background-color: #faf2f2; }
+
+.comment_count.none { color: #999; }
+.comment_count.has_comment { color: #966; }
+.comment_count.some_discussions { color: #C66; }
+.comment_count.heated_discussions { color: #C33; }
+.comment_count.very_heated_discussions { color: #F33; }
+.comment_count.wow { color: #F00; font-weight: bold; }
 
 .pagination {
 	width: 100%;

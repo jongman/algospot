@@ -13,6 +13,18 @@ from pygments.formatters import HtmlFormatter
 register = template.Library()
 
 @register.filter
+def get_comment_hotness(count):
+    #threshold = [1, 5, 10, 50, 100]
+    threshold = [1, 2, 3, 4, 5]
+    name = ["has_comment", "some_discussions", "heated_discussions",
+            "very_heated_discussions", "wow"]
+    ret = "none"
+    for cnt, nam in zip(threshold, name):
+        if cnt <= count:
+            ret = nam
+    return ret
+
+@register.filter
 def print_username(user):
     profile_link = reverse('user_profile', kwargs={"user_id": user.id})
     return mark_safe('<a href="%s" class="userlink">%s</a>' % 
