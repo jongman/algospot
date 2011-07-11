@@ -1,0 +1,56 @@
+{% extends "judge-base.html" %}
+{% load common_tags %}
+{% block title %} 
+	{{ problem.slug }} 
+{% endblock %}
+
+
+{% block page-title %}
+	{{ problem.name }}
+{% endblock %}
+
+{% block page-contents %} 
+	<ul class="probleminfo kor">
+		<li class="header">
+			<ul>
+				<li class="problemid">문제 ID</li>
+				<li class="timelimit">시간 제한</li>
+				<li class="memorylimit">메모리 제한</li>
+				<li class="author">출제자</li>
+				<li class="source">출처</li>
+				<li class="category">분류</li>
+			</ul>
+		</li>
+		<li class="content">
+			<ul>
+				<li class="problem-id">{{ problem.slug }}</li>
+				<li class="time-limit">{{ problem.time_limit }}ms</li>
+				<li class="memory-limit">{{ problem.memory_limit }}kb</li>
+				<li class="author">{{ problem.user|print_username }}</li>
+				<li class="source">&nbsp;{{ problems.source }}&nbsp;</li>
+				<li class="category"><a href="#">보기</a></li>
+			</ul>
+		</li>
+	</ul>
+	</section>
+	<section class="problem_statement">
+		<h4>문제</h4>
+		<p class="kor">
+			{{ problem.description|render_text }}
+		</p>
+		<h4>입력</h4>
+		<p class="kor">
+			{{ problem.input|render_text }}
+		</p>
+		<h4>출력</h4>
+		<p class="kor">
+			{{ problem.output|render_text }}
+		</p>
+		<h4>예제 입력</h4>
+		<pre>{{ problem.sample_input }}</pre>
+		<h4>예제 출력</h4>
+		<pre>{{ problem.sample_output }}</pre>
+
+			
+	</section>
+{% endblock %}

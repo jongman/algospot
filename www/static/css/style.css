@@ -1819,3 +1819,51 @@ div.highlight {
 	font-size:93%;
 }
 .newsfeed li .newsfeed-meta a { text-decoration:none; }
+
+/* online judge */
+
+.probleminfo, .probleminfo ul, .probleminfo li {
+	margin:0;
+	padding:0;
+}
+
+.probleminfo {
+	width: 100%;
+	margin-bottom: 16px;
+	font-size: 13px;
+}
+.probleminfo li {
+	display: block;
+	list-style: none;
+	overflow: hidden;
+	background: none;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.probleminfo li.header {
+	font-weight: bold;
+}
+.probleminfo li.content {
+	background-color: #fafafa;
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+}
+.probleminfo li li {
+	list-style: none;
+	background: none;
+	text-align: center;
+	float: left;
+}
+.probleminfo ul li {
+	width: 16%;
+}
+.problem_statement p, .problem_statement pre {
+	margin-left: 16px;
+	margin-bottom: 16px;
+}
+.problem_statement pre {
+	font-family: monospace;
+	background-color: #f0f0f0;
+	padding: 12px;
+	border: 1px solid silver;
+}
