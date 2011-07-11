@@ -14,8 +14,7 @@ register = template.Library()
 
 @register.filter
 def get_comment_hotness(count):
-    #threshold = [1, 5, 10, 50, 100]
-    threshold = [1, 2, 3, 4, 5]
+    threshold = [1, 5, 10, 50, 100]
     name = ["has_comment", "some_discussions", "heated_discussions",
             "very_heated_discussions", "wow"]
     ret = "none"
@@ -49,8 +48,9 @@ def print_datetime(dt):
     diff = datetime.datetime.now() - dt
     # python 2.6 compatibility. no total_seconds() :(
     diff = diff.seconds + diff.days * 24 * 3600
-    return mark_safe(u'<span title="%s">%s</span>' % (fallback, 
-        format_readable(diff) or fallback))
+    class_name = "hot" if diff < 24*3600 else ""
+    return mark_safe(u'<span class="%s" title="%s">%s</span>' % (class_name,
+        fallback, format_readable(diff) or fallback))
 
 code_pattern = re.compile(r'<code lang=([^>]+)>(.+?)</code>', re.DOTALL)
 def syntax_highlight(text):

@@ -1735,6 +1735,7 @@ div.highlight {
 .forumlist .forumlist-entry { background-color: #f2f2f2; }
 .forumlist .forumlist-entry:nth-child(2n+1) { background-color: #fafafa; }
 .forumlist .forumlist-entry:hover { background-color: #faf2f2; }
+.forumlist .forumlist-entry span.hot { color: #c33; }
 
 .comment_count.none { color: #999; }
 .comment_count.has_comment { color: #966; }
@@ -1790,3 +1791,4 @@ div.highlight {
 	color:#D7D7D7;
 	cursor:default;
 }
+
