@@ -3,6 +3,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth.models import User
+from django.contrib.comments.models import Comment
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
@@ -46,8 +47,12 @@ if "actstream" in settings.INSTALLED_APPS:
         instance = kwargs["instance"]
         post_type = ContentType.objects.get(app_label="forum",
                 model="post")
+        # delete action for posting
         Action.objects.filter(action_object_content_type=post_type,
                 action_object_object_id=instance.id).delete()
+        # delete actions for comments
+        Action.objects.filter(target_content_type=post_type,
+                target_object_id=instance.id).delete()
 
     pre_delete.connect(post_delete_handler, sender=Post, 
             dispatch_uid="forum_post_delete_event")
