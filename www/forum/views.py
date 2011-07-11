@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
@@ -8,9 +9,26 @@ from djangoutils import get_or_none
 from models import Category, Post
 from forms import WriteForm
 from django.contrib.comments.models import Comment
+from config import ITEMS_PER_PAGE, PAGINATOR_RANGE
 
 def list(request, slug, page):
-    pass
+    category = get_object_or_404(Category, slug=slug)
+    posts = Post.objects.filter(category=category).order_by("-id")
+    paginator = Paginator(posts, ITEMS_PER_PAGE)
+    try:
+        page = paginator.page(page)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+    breadcrumbs = [
+            (reverse("forum-list", 
+                kwargs={"slug": category.slug, "page": 1}), category.name)]
+    page_lo = max(1, page.number - PAGINATOR_RANGE)
+    page_hi = min(paginator.num_pages, page.number + PAGINATOR_RANGE)
+    return render(request, "list.html", {"breadcrumbs": breadcrumbs,
+        "page": page, "category": category, "page_lo": page_lo, 
+        "page_hi": page_hi, "page_nav_range": range(page_lo, page_hi+1)})
 
 def read(request, id):
     post = get_object_or_404(Post, id=id)
