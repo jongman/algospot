@@ -13,35 +13,56 @@
 {% block page-contents %} 
 {% load common_tags %}
 {% load comments %}
-<ul class="kor">
-	{% for post in page.object_list %}
-		<li class="">		
-			<a href="{% url forum-read post.id %}">{{ post.title }}</a> |
-			{{ post.created_on|print_datetime }} |
-			{{ post.user|print_username }} |
-			{% get_comment_count for post as cc %} 댓글 {{ cc }} 개
+<ul class="forumlist kor">
+	<li class="forumlist-header">
+		<ul>
+			<li class="forumlist-num">번호</li>
+			<li class="forumlist-title">제목</li>
+			<li class="forumlist-comments">댓글</li>
+			<li class="forumlist-user">글쓴이</li>
+			<li class="forumlist-created-on">언제</li>
+		</ul>
+	</li>
+	{% if page.object_list.count == 0 %}
+	<li class="forumlist-entry"><ul>
+		<li class="forumlist-empty">
+		글이 아직 없습니다.
 		</li>
+	</li>
+	{% endif %}
+	{% for post in page.object_list %}
+	<li class="forumlist-entry"><ul>
+			<li class="forumlist-num">{{ post.id }}</li>
+			<li class="forumlist-title"><a href="{% url forum-read post.id %}">{{ post.title }}</a></li>
+			{% get_comment_count for post as cc %}
+			<li class="forumlist-comments">{{ cc }}</li>
+			<li class="forumlist-user">{{ post.user|print_username }}</li>
+			<li class="forumlist-created-on">{{ post.created_on|print_datetime}}</li>
+		</ul></li>
 	{% endfor %}
 </ul>
+</article>
+<article>
+	<div class="pagination">
+		<span class="step-links">
+			{% if page_lo != 1 %}
+			<a href="{% url forum-list category.slug 1 %}">1</a>
+			...
+			{% endif %}
+			{% for pg in page_nav_range %}
+				<a href="{% url forum-list category.slug pg %}" class="{% if pg == page.number %}active_link{% endif %}">{{ pg }}</a>
+			{% endfor %}
+			{% if page_hi != page.paginator.num_pages %}
+			...
+			<a href="{% url forum-list category.slug page.paginator.num_pages %}">{{page.paginator.num_pages}}</a>
+			{% endif %}
+		</span>
+	</div>
+</section>
+
 {% endblock %}
 
 {% block other-blocks %}
-<div class="pagination">
-    <span class="step-links">
-		{% if page_lo != 1 %}
-		<a href="{% url forum-list category.slug 1 %}">1</a>
-		...
-		{% endif %}
-		{% for pg in page_nav_range %}
-			<a href="{% url forum-list category.slug pg %}" class="{% if pg == page.number %}selected{% endif %}">{{ pg }}</a>
-		{% endfor %}
-		{% if page_hi != page.paginator.num_pages %}
-		...
-		<a href="{% url forum-list category.slug page.paginator.num_pages %}">{{page.paginator.num_pages}}</a>
-		{% endif %}
-    </span>
-</div>
-
 {% endblock %}
 
 {% block page-footer %}

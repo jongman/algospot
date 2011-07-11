@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, EmptyPage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
