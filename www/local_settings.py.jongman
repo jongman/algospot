@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+
+import settings
+
+# Use a local mysql database
+
+settings.DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'aldj',
+        'USER': 'algospot',
+        'PASSWORD': '1234',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+# Use django debug toolbar
+
+settings.MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+settings.INSTALLED_APPS += ('debug_toolbar',)
