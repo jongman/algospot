@@ -1822,3 +1822,4 @@ div.highlight {
 	font-size:93%;
 }
 .newsfeed li .newsfeed-meta a { text-decoration:none; }
+article header h2 { width: 500px; }
