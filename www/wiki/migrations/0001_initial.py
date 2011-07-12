@@ -22,7 +22,7 @@ class Migration(SchemaMigration):
         # Adding model 'Page'
         db.create_table('wiki_page', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.TextField')(unique=True, max_length=100)),
+            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
             ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=100, db_index=True)),
             ('created_on', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('modified_on', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),

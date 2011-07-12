@@ -18,7 +18,7 @@ class PageRevision(models.Model):
 
 class Page(models.Model):
     """Stores a wiki page."""
-    title = models.TextField(unique=True, max_length=100)
+    title = models.CharField(unique=True, max_length=100)
     slug = models.SlugField(unique=True, max_length=100)
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
