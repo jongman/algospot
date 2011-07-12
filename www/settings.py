@@ -193,7 +193,7 @@ AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
         )
 
-PROFILE_LOG_BASE = j("profile_logs")
+PROFILE_LOG_BASE = None
 
 try:
     import local_settings

@@ -2,8 +2,10 @@
 
 import settings
 
-# Use a local mysql database
+USE_TOOLBAR = True
+USE_PROFILING = True
 
+# Use a local mysql database
 settings.DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -16,6 +18,9 @@ settings.DATABASES = {
 }
 
 # Use django debug toolbar
+if USE_TOOLBAR:
+	settings.MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+	settings.INSTALLED_APPS += ('debug_toolbar',)
 
-settings.MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-settings.INSTALLED_APPS += ('debug_toolbar',)
+if USE_PROFILING:
+	settings.PROFILE_LOG_BASE = settings.j("profiled_logs")
