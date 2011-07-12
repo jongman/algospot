@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'django.contrib.comments',
 
     'south',
+    'django_extensions',
     'debug_toolbar',
     'registration',
     'avatar',
