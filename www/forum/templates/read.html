@@ -24,7 +24,7 @@
 				<span class="datetime">{{ post.created_on|print_datetime }}</span>
 				<span class="operations">
 					{% if user.is_authenticated %}
-						{% if user.is_superuser or user == comment.user %}
+						{% if user.is_superuser or user == post.user %}
 						<a href="{% url forum-edit post.id %}" class="button-link">edit</a> 
 						<a href="{% url forum-delete post.id %}" class="button-link">delete</a>
 						{% endif %}
@@ -35,13 +35,16 @@
 	</li>
 </ul>
 {% endblock %}
-
 {% block other-blocks %}
 
 {% with commentobject=post %}
 	{% include "comment_block.html" %}
 {% endwith %}
 {% endblock %}
+
+{% block page-tabs %}
+{% endblock %}
+
 
 {% block page-footer %}
 {% endblock %}

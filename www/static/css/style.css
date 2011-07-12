@@ -1568,23 +1568,14 @@ article header h3 {
 .comments {
 	border-top: 1px solid;
 	border-color: #D6D6D6;
-}
-
-.comments, .comments ul, .comments ul ul {
 	overflow: hidden;
 	margin:0;
 	padding:0;
 }
-.comments li {
+.comments .comment {
+	background:none;
 	display: block;
 	list-style:none;
-	background:none;
-	padding:0;
-	margin:0;
-	height:100%;
-}
-.comments li li { float: left; }
-.comments .comment {
 	padding: 5px 5px;
 	margin: 0;
 	border-bottom: 1px solid;

@@ -8,10 +8,3 @@
 	{% endfor %}
 {% endblock %}
 {% block forum-class %}current{% endblock %}
-{% block page-tabs %}
-	<nav>
-		<ul class="tab-switch">
-			<li><a class="{% block forum-write-class %}{% endblock %}" href="{% url forum-write category.slug %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
-		</ul>
-	</nav>
-{% endblock %}
