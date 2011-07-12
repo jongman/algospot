@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 from forum.models import Post, Category
 import MySQLdb
 
@@ -56,7 +59,7 @@ def migrate_forum(db):
         if not slug: continue
         category_id_map[cat["CategoryID"]] = Category.objects.get(slug=slug)
 
-    copied = 0
+    copied_posts, copied_comments = 0, 0
     for thread in fetch_all(db, "GDN_Discussion"):
         cat = category_id_map.get(thread["CategoryID"])
         if not cat: continue
@@ -68,14 +71,24 @@ def migrate_forum(db):
                 text=thread["Body"])
         new_post.save()
 
+        comments = fetch_all(db, "GDN_Comment",
+                DiscussionID=thread["DiscussionID"])
+        for comment in comments:
+            user = User.objects.get(pk=comment["InsertUserID"])
+            new_comment = Comment(
+                    user=user,
+                    content_type=ContentType.objects.get_for_model(Post),
+                    object_pk=new_post.pk,
+                    comment=comment["Body"],
+                    site_id=settings.SITE_ID,
+                    submit_date=comment["DateInserted"])
+            new_comment.save()
+            copied_comments += 1
+        copied_posts += 1
+        if copied_posts % 10 == 0:
+            print "%d posts. %d comments." % (copied_posts, copied_comments)
 
-        copied += 1
-        if copied % 10 == 0:
-            print "copied %d posts." % copied
-
-    print "copied %d posts." % copied
-
-
+    print "%d posts. %d comments." % (copied_posts, copied_comments)
 
 
 class Command(BaseCommand):
