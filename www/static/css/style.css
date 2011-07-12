@@ -1832,6 +1832,7 @@ div.highlight {
 	margin-bottom: 16px;
 	font-size: 13px;
 }
+.probleminfo a { text-decoration: none; }
 .probleminfo li {
 	display: block;
 	list-style: none;
@@ -1856,7 +1857,13 @@ div.highlight {
 	float: left;
 }
 .probleminfo ul li {
-	width: 16%;
+	width: 20%;
+}
+.probleminfo li.source {
+	width: 40%;
+}
+.probleminfo li.category {
+	width: 40%;
 }
 .problem_statement p, .problem_statement pre, .problem_statement ul {
 	margin-left: 16px;
