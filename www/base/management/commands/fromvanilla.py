@@ -68,18 +68,22 @@ def migrate_forum(db):
     for cat in fetch_all(db, "GDN_Category"):
         slug = CATEGORY_MAP.get(cat["UrlCode"], None)
         if not slug: continue
-        category_id_map[cat["CategoryID"]] = Category.objects.get(slug=slug)
+        category_id_map[cat["CategoryID"]] = (Category.objects.get(slug=slug),
+                cat["UrlCode"])
 
     copied_posts, copied_comments = 0, 0
     for thread in fetch_all(db, "GDN_Discussion"):
-        cat = category_id_map.get(thread["CategoryID"])
-        if not cat: continue
+        if thread["CategoryID"] not in category_id_map: continue
+        cat, urlcode = category_id_map.get(thread["CategoryID"])
         new_post = Post(pk=thread["DiscussionID"],
                 category=cat,
-                title=thread["Name"],
+                title=(thread["Name"] if CATEGORY_MAP[urlcode] != "old"
+                    else ("[%s]" % urlcode) + thread["Name"]),
                 user=User.objects.get(pk=thread["InsertUserID"]),
                 created_on=thread["DateInserted"],
                 text=thread["Body"])
+        new_post.save()
+        new_post.created_on = thread["DateInserted"]
         new_post.save()
         patch_action_time(thread["DateInserted"], action_object=new_post)
 

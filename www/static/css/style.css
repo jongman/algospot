@@ -376,7 +376,7 @@ article section p {
 	margin-bottom:0.67em;
 }
 article section p:last-child { margin-bottom:0; }
-article section ul li {
+article section ul > li {
 	list-style:none;
 	padding-left:10px;
 	background-position:0 center;
@@ -1568,23 +1568,14 @@ article header h3 {
 .comments {
 	border-top: 1px solid;
 	border-color: #D6D6D6;
-}
-
-.comments, .comments ul, .comments ul ul {
 	overflow: hidden;
 	margin:0;
 	padding:0;
 }
-.comments li {
+.comments .comment {
+	background:none;
 	display: block;
 	list-style:none;
-	background:none;
-	padding:0;
-	margin:0;
-	height:100%;
-}
-.comments li li { float: left; }
-.comments .comment {
 	padding: 5px 5px;
 	margin: 0;
 	border-bottom: 1px solid;
@@ -1822,4 +1813,4 @@ div.highlight {
 	font-size:93%;
 }
 .newsfeed li .newsfeed-meta a { text-decoration:none; }
-article header h2 { width: 550px; }
+article header h2 { width: 500px; }
