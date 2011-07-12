@@ -41,6 +41,7 @@ if "actstream" in settings.INSTALLED_APPS:
         action.send(instance.user,
                 action_object=instance,
                 target=instance.category,
+                timestamp=instance.created_on,
                 verb=u"{target}에 글 {action_object}를 "
                 u"썼습니다.")
     def post_delete_handler(sender, **kwargs):

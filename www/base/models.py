@@ -44,6 +44,7 @@ if "actstream" in settings.INSTALLED_APPS:
             action.send(instance.user,
                     action_object=instance,
                     target=target,
+                    timestamp=instance.submit_date,
                     verb=u"{target}에 새 댓글을 달았습니다: "
                     u"{action_object}")
         elif instance.is_removed:

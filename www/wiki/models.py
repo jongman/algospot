@@ -37,6 +37,7 @@ if "actstream" in settings.INSTALLED_APPS:
         instance, created = kwargs["instance"], kwargs["created"]
         action.send(instance.user,
                 action_object=instance.revision_for,
+                timestamp=instance.created_on,
                 verb=u"위키 페이지 {action_object}을 편집했습니다.")
     post_save.connect(edit_handler, sender=PageRevision,
             dispatch_uid="wiki_edit_event")
