@@ -4,9 +4,13 @@ from django.contrib.auth.models import User
 from forum.models import Post, Category
 import MySQLdb
 
-def fetch_all(db, table):
+def fetch_all(db, table, **where):
     c = db.cursor()
-    c.execute("SELECT * FROM %s;" % table)
+    where_clause = ""
+    if where:
+        where_clause = "WHERE " + " AND ".join(["%s=%s" % it for it in
+            where.items()])
+    c.execute("SELECT * FROM %s %s;" % (table, where_clause))
     return c.fetchall()
 
 def migrate_user(db):
@@ -46,14 +50,32 @@ CATEGORY_MAP = {"freeboard": "free",
         }
 
 def migrate_forum(db):
-    """
     category_id_map = {}
-    for cat in parse_feed(home, "GDN_Category"):
+    for cat in fetch_all(db, "GDN_Category"):
         slug = CATEGORY_MAP.get(cat["UrlCode"], None)
         if not slug: continue
         category_id_map[cat["CategoryID"]] = Category.objects.get(slug=slug)
-        """
-    pass
+
+    copied = 0
+    for thread in fetch_all(db, "GDN_Discussion"):
+        cat = category_id_map.get(thread["CategoryID"])
+        if not cat: continue
+        new_post = Post(pk=thread["DiscussionID"],
+                category=cat,
+                title=thread["Name"],
+                user=User.objects.get(pk=thread["InsertUserID"]),
+                created_on=thread["DateInserted"],
+                text=thread["Body"])
+        new_post.save()
+
+
+        copied += 1
+        if copied % 10 == 0:
+            print "copied %d posts." % copied
+
+    print "copied %d posts." % copied
+
+
 
 
 class Command(BaseCommand):
