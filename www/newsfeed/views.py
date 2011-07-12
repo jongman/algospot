@@ -8,7 +8,7 @@ from djangoutils import profile
 
 @profile("newsfeed_stream")
 def stream(request, page="1"):
-    actions = Action.objects.order_by("-id")
+    actions = Action.objects.order_by("-timestamp")
     paginator = Paginator(actions, ITEMS_PER_PAGE)
     try:
         page = paginator.page(page)

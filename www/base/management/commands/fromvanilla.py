@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from forum.models import Post, Category
+from actstream.models import Action
 import MySQLdb
 
 def fetch_all(db, table, **where):
@@ -15,6 +16,16 @@ def fetch_all(db, table, **where):
             where.items()])
     c.execute("SELECT * FROM %s %s;" % (table, where_clause))
     return c.fetchall()
+
+# god.. forgive me
+def patch_action_time(timestamp, **kwargs):
+    criteria = {}
+    for k, v in kwargs.items():
+        criteria[k + "_content_type"] = ContentType.objects.get_for_model(v.__class__)
+        criteria[k + "_object_id"] = v.id
+    action = Action.objects.get(**criteria)
+    action.timestamp = timestamp
+    action.save()
 
 def migrate_user(db):
     username_seen = set()
@@ -70,6 +81,7 @@ def migrate_forum(db):
                 created_on=thread["DateInserted"],
                 text=thread["Body"])
         new_post.save()
+        patch_action_time(thread["DateInserted"], action_object=new_post)
 
         comments = fetch_all(db, "GDN_Comment",
                 DiscussionID=thread["DiscussionID"])
@@ -83,6 +95,9 @@ def migrate_forum(db):
                     site_id=settings.SITE_ID,
                     submit_date=comment["DateInserted"])
             new_comment.save()
+            patch_action_time(comment["DateInserted"],
+                    action_object=new_comment,
+                    target=new_post)
             copied_comments += 1
         copied_posts += 1
         if copied_posts % 10 == 0:
