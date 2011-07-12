@@ -78,7 +78,7 @@ def migrate_forum(db):
         new_post = Post(pk=thread["DiscussionID"],
                 category=cat,
                 title=(thread["Name"] if CATEGORY_MAP[urlcode] != "old"
-                    else ("[%s]" % urlcode) + thread["Name"]),
+                    else ("[%s] " % urlcode) + thread["Name"]),
                 user=User.objects.get(pk=thread["InsertUserID"]),
                 created_on=thread["DateInserted"],
                 text=thread["Body"])
