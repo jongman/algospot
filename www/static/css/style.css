@@ -376,7 +376,7 @@ article section p {
 	margin-bottom:0.67em;
 }
 article section p:last-child { margin-bottom:0; }
-article section ul li {
+article section ul > li {
 	list-style:none;
 	padding-left:10px;
 	background-position:0 center;
