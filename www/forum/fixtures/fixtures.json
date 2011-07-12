@@ -13,6 +13,11 @@
 		"model": "forum.Category",
 		"pk": 3,
 		"fields": { "name": "뉴스", "slug": "news" }
+	},
+	{
+		"model": "forum.Category",
+		"pk": 4,
+		"fields": { "name": "과거 게시판", "slug": "old" }
 	}
 ]
 
