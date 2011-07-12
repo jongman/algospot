@@ -1594,7 +1594,8 @@ article header h3 {
 	position: relative;
 }
 .comments .comment .comment_user {
-	width: 55px;	
+	width: 80px;	
+	overflow: hidden;
 	margin-right: 10px;
 	float: left;
 	text-align: center;
@@ -1651,7 +1652,7 @@ article header h3 {
 }
 
 .comment_form textarea {
-	width: 505px;
+	width: 480px;
 	height: 70px;
 }
 
@@ -1668,8 +1669,8 @@ article header h3 {
 a.userlink {
 	text-decoration: none;
 	font-family:NanumGothic,나눔고딕 !important;
-	font-size: 14px;
-	font-weight: bold;
+	font-size: 13px !important;
+	font-weight: bold !important;
 }
 
 .comment-delete  {
@@ -1793,7 +1794,7 @@ div.highlight {
 .newsfeed {
 	margin:0;
 	padding:0;
-	width: 617px;
+	width: 590px;
 }
 .newsfeed li {
 	background-position:10px 10px;
@@ -1815,6 +1816,8 @@ div.highlight {
 .newsfeed li.post { background-image:url('/static/images/icons/icon_table_edit.png'); }
 .newsfeed li.page { background-image:url('/static/images/icons/icon_nav_articles.png'); }
 .newsfeed li .newsfeed-timestamp {
+	margin-top: 4px;
+	margin-left: 16px;
 	float:right;
 	font-size:93%;
 }
