@@ -26,7 +26,7 @@ def migrate_user(home):
                 email=u["Email"],
                 is_active=True,
                 last_login=u["DateLastActive"],
-                password=u["Password"],
+                password="|".join(["legacy", u["HashMethod"], u["Password"]]),
                 is_superuser=(u["Admin"] == "1"))
         new_user.save()
         created += 1
