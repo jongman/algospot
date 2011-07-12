@@ -4,7 +4,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 from actstream.models import Action
 from config import ITEMS_PER_PAGE, PAGINATOR_RANGE
+from djangoutils import profile
 
+@profile("newsfeed_stream")
 def stream(request, page="1"):
     actions = Action.objects.order_by("-id")
     paginator = Paginator(actions, ITEMS_PER_PAGE)

@@ -103,7 +103,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'www.urls'
@@ -126,7 +125,6 @@ INSTALLED_APPS = (
 
     'south',
     'django_extensions',
-    'debug_toolbar',
     'registration',
     'avatar',
     'actstream',
@@ -195,7 +193,9 @@ AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
         )
 
+PROFILE_LOG_BASE = j("profile_logs")
+
 try:
-    from local_settings import *
+    import local_settings
 except ImportError:
     pass
