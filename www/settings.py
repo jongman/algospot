@@ -189,3 +189,8 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
         'django.core.context_processors.request',
         "www.forum.processors.add_categories",
         )
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
