@@ -20,13 +20,16 @@ def migrate_user(home):
             print "%s is a duplicate" % u["Name"]
             continue
         if u["Deleted"] == "1": continue
+        pw = (u["Password"] 
+                if u["HashMethod"] != "Vanilla" 
+                else "sha1$deadbeef$" + u["Password"].replace("$", "_"))
         new_user = User(id=u["UserID"],
                 username = u["Name"],
                 date_joined=u["DateInserted"],
                 email=u["Email"],
                 is_active=True,
                 last_login=u["DateLastActive"],
-                password="|".join(["legacy", u["HashMethod"], u["Password"]]),
+                password=pw,
                 is_superuser=(u["Admin"] == "1"))
         new_user.save()
         created += 1
