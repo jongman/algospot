@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block breadcrumbs %}
+	{% for link, title in breadcrumbs %}
+	<li>{% if link %}<a href="{{ link }}">{% endif %}
+		{{ title }}
+		{% if link %}</a>{% endif %}
+	</li>
+	{% endfor %}
+{% endblock %}
+{% block judge-class %}current{% endblock %}
