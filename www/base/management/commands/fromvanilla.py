@@ -141,6 +141,34 @@ def migrate_judge(db):
         imported += 1
     print "imported %d problems." % imported
 
+    SUBMISSION_MAPPING = {
+            "No": "id",
+            "Submitted": "submitted_on",
+            "IsPublic": "is_public",
+            "Language": "language",
+            "State": "state",
+            "Length": "length",
+            "Source": "source",
+            "Message": "message",
+            "Time": "time",
+            "Memory": "memory"}
+    imported = 0
+    submissions = fetch_all(db, "GDN_Submission")
+    for submission in submissions:
+        kwargs = {}
+        kwargs["problem"] = Problem.objects.get(id=submission["Problem"])
+        kwargs["user"] = User.objects.get(id=submission["Author"])
+        for k, v in SUBMISSION_MAPPING.items():
+            kwargs[v] = submission[k]
+        new_submission = Submission(**kwargs)
+        new_submission.save()
+        imported += 1
+        if imported % 100 == 0:
+            print "Migrated %d of %d submissions." % (imported,
+                    len(submissions))
+    print "Migrated %d submissions." % imported
+
+
 
 class Command(BaseCommand):
     args = '<mysql host> <mysql user> <mysql password> <mysql db> [app]'
