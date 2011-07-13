@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from forum.models import Post, Category
+from judge.models import Problem, Submission
 from actstream.models import Action
 import MySQLdb
 
@@ -109,6 +110,37 @@ def migrate_forum(db):
 
     print "%d posts. %d comments." % (copied_posts, copied_comments)
 
+def migrate_judge(db):
+    PROBLEM_MAPPING = {
+        "No": "id",
+        "ID": "slug",
+        "Updated": "updated_on",
+        "State": "state",
+        "Source": "source",
+        "Name": "name",
+        "Description": "description",
+        "Input": "input",
+        "Output": "output",
+        "SampleInput": "sample_input",
+        "SampleOutput": "sample_output",
+        "Note": "note",
+        "JudgeModule": "judge_module",
+        "TimeLimit": "time_limit",
+        "MemoryLimit": "memory_limit",
+        "Accepted": "accepted_count",
+        "Submissions": "submissions_count",
+    }
+    imported = 0
+    for problem in fetch_all(db, "GDN_Problem", State=3):
+        kwargs = {}
+        kwargs["user"] = User.objects.get(id=problem["Author"])
+        for k, v in PROBLEM_MAPPING.items():
+            kwargs[v] = problem[k]
+        new_problem = Problem(**kwargs)
+        new_problem.save()
+        imported += 1
+    print "imported %d problems." % imported
+
 
 class Command(BaseCommand):
     args = '<mysql host> <mysql user> <mysql password> <mysql db> [app]'
@@ -123,3 +155,5 @@ class Command(BaseCommand):
             migrate_user(db)
         if app in ["all", "forum"]:
             migrate_forum(db)
+        if app in ["all", "judge"]:
+            migrate_judge(db)
