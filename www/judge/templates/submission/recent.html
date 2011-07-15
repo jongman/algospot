@@ -12,6 +12,7 @@
 {% block page-tabs %}
 {% endblock %}
 
+{% block judge-submission-class %}current{% endblock %}
 {% block page-contents %}
 {% load judge_tags %}
 <!--
@@ -39,7 +40,13 @@
 	<tbody>
 		{% for sub in pagination.page.object_list %}
 		<tr>
-			<td class="id">{{ sub.id }}</td>
+			<td class="id">
+				{% if sub.is_public %}
+					{{ sub.id }}
+				{% else %}
+					NP
+				{% endif %}
+			</td>
 			<td class="problem"><a href="{{ sub.problem.get_absolute_url }}">{{ sub.problem.slug }}</a></td>
 			<td class="user">{{ sub.user|print_username }}</td>
 			<td class="language">

@@ -18,7 +18,7 @@ class SubmitForm(forms.Form):
         new_submission.save()
 
 class AdminSubmitForm(SubmitForm):
-    is_public = forms.ChoiceField([(u"공개", "True"), (u"비공개", "False")],
+    is_public = forms.ChoiceField([("True", u"공개"), ("False", u"비공개")],
             label=u"공개여부")
 
     def save(self, user, problem):
@@ -26,6 +26,6 @@ class AdminSubmitForm(SubmitForm):
                 user=user,
                 language=self.cleaned_data["language"],
                 length=len(self.cleaned_data["source"]),
-                is_public=bool(self.cleaned_data["is_public"]),
+                is_public=("True" == self.cleaned_data["is_public"]),
                 source=self.cleaned_data["source"])
         new_submission.save()
