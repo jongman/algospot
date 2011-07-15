@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 class Problem(models.Model):
     DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
@@ -28,6 +29,9 @@ class Problem(models.Model):
 
     def __unicode__(self):
         return self.slug
+
+    def get_absolute_url(self):
+        return reverse("judge-problem-read", kwargs={"slug": self.slug})
 
 class Submission(models.Model):
     (RECEIVED, COMPILING, RUNNING, JUDGING, COMPILE_ERROR,

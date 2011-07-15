@@ -1,0 +1,20 @@
+{% extends "judge-base.html" %}
+{% load common_tags %}
+{% block title %} 
+	{{ title }}
+{% endblock %}
+
+
+{% block page-title %}
+	{{ title }}
+{% endblock %}
+
+{% block page-tabs %}
+{% endblock %}
+
+<nav>
+	<ul class="tab-switch">
+		<li><a class="{% block judge-submission-mine-class %}{% endblock %}" href="{% url judge-submission-mine %}" rel="tooltip" title="My submissions only">내가 제출한 답안</a></li>
+		<li><a class="{% block judge-submission-recent-class %}{% endblock %}" href="{% url judge-submission-recent %}" rel="tooltip" title="All recent submissions">전체 답안</a></li>
+	</ul>
+</nav>

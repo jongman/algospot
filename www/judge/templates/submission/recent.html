@@ -1,0 +1,48 @@
+{% extends "judge-base.html" %}
+{% load common_tags %}
+{% block title %} 
+	{{ title }}
+{% endblock %}
+
+
+{% block page-title %}
+	{{ title }}
+{% endblock %}
+
+{% block page-tabs %}
+{% endblock %}
+
+{% block page-contents %}
+<table class="submissions kor">
+	<thead>
+		<tr>
+			<th class="id">#</th>
+			<th class="problem">문제</th>
+			<th class="user">제출자</th>
+			<th class="language">언어</th>
+			<th class="length">길이</th>
+			<th class="state">결과</th>
+			<th class="stats">시간/메모리</th>
+			<th class="submitted_on">제출시간</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for sub in pagination.page.object_list %}
+		<tr>
+			<td class="id">{{ sub.id }}</td>
+			<td class="problem"><a href="{{ sub.problem.get_absolute_url }}">{{ sub.problem.slug }}</a></td>
+			<td class="user">{{ sub.user|print_username }}</td>
+			<td class="language">{{ sub.language }}</td>
+			<td class="length">{{ sub.length }}</td>
+			<td class="state">{{ sub.state }}</td>
+			<td class="stats"></td>
+			<td class="submitted_on">{{ sub.submitted_on|print_datetime}}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</section>
+</article>
+<article>
+	{{ pagination.render }}
+{% endblock %}
