@@ -1893,3 +1893,10 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 /* Can't Be Judged */
 .submissionCANT_BE_JUDGED { font-weight: bold; color: rgb(64, 255, 64); text-decoration: underline; }
 .submissionREJUDGE_REQUESTED{ color: silver; }
+
+.submission_filter li {
+	padding: 8px;
+	margin-bottom: 16px;
+	background: none;
+	float: left;
+}
