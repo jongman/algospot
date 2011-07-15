@@ -6,6 +6,16 @@ from django import template
 register = template.Library()
 
 @register.filter
+def aggregate_by_user(page):
+    # aggregate by actor
+    aggregated = []
+    for action in page.object_list:
+        if not aggregated or aggregated[-1][0] != action.actor:
+            aggregated.append((action.actor, []))
+        aggregated[-1][1].append(action)
+    return aggregated
+
+@register.filter
 def format_action(action):
     def wrap_in_link(object):
         if not object: return ""

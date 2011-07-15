@@ -20,7 +20,7 @@
 	{% load newsfeed_tags %}
 
 	<ul class="comments background-color">
-		{% for user, actions in aggregated_actions %}
+		{% for user, actions in pagination.page|aggregate_by_user %}
 		<li class="comment">
 			<dl>
 				<dt class="comment_user">
@@ -45,21 +45,7 @@
 	</ul>
 </article>
 <article>
-	<div class="pagination">
-		<span class="step-links">
-			{% if page_lo != 1 %}
-			<a href="{% url newsfeed 1 %}">1</a>
-			...
-			{% endif %}
-			{% for pg in page_nav_range %}
-				<a href="{% url newsfeed pg %}" class="{% if pg == page.number %}active_link{% endif %}">{{ pg }}</a>
-			{% endfor %}
-			{% if page_hi != page.paginator.num_pages %}
-			...
-			<a href="{% url newsfeed page.paginator.num_pages %}">{{page.paginator.num_pages}}</a>
-			{% endif %}
-		</span>
-	</div>
+	{{ pagination.render }}
 
 {% endblock %}
 
