@@ -43,3 +43,5 @@ def recent(request, page=1):
              "pagination": setup_paginator(submissions, page,
                  "judge-submission-recent", {}, filters)})
 
+def details(request, id):
+    pass
