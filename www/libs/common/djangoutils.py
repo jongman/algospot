@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import hotshot
 import os
+import urllib
 import time
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -15,16 +16,23 @@ def get_or_none(model, **kwargs):
     except model.DoesNotExist:
         return None
 
+def get_query(params):
+    if not params: return ""
+    return "?" + "&".join(["%s=%s" % (k, urllib.urlencode(v)) 
+        for k, v in params.iteritems()])
+
 class Pagination(object):
-    def __init__(self, paginator, page, link_name, link_kwargs):
+    def __init__(self, paginator, page, link_name, link_kwargs, get_params):
         self.paginator = paginator
         self.page = page
         self.link_name = link_name
         self.link_kwargs = dict(link_kwargs)
+        self.get_params = get_query(get_params)
 
     def link_with_page(self, page):
         self.link_kwargs["page"] = page
-        return reverse(self.link_name, kwargs=self.link_kwargs)
+        return (reverse(self.link_name, kwargs=self.link_kwargs) +
+                self.get_params)
 
     def render(self):
         num_pages = self.paginator.num_pages
@@ -44,7 +52,7 @@ class Pagination(object):
         return self.render()
 
 
-def setup_paginator(objects, page, link_name, link_kwargs):
+def setup_paginator(objects, page, link_name, link_kwargs, get_params={}):
     paginator = Paginator(objects, settings.ITEMS_PER_PAGE)
     try:
         page = paginator.page(page)
@@ -52,7 +60,7 @@ def setup_paginator(objects, page, link_name, link_kwargs):
         page = paginator.page(1)
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
-    return Pagination(paginator, page, link_name, link_kwargs)
+    return Pagination(paginator, page, link_name, link_kwargs, get_params)
 
 try:
     PROFILE_LOG_BASE = settings.PROFILE_LOG_BASE
