@@ -43,7 +43,22 @@
 				{% endif %}					
 			</td>
 			<td class="length">{{ sub.length|print_length }}</td>
-			<td class="state">{{ sub.get_state_name }}</td>
+			<td class="state">
+				{% if sub.has_messages %}
+					{% if user == sub.user or user.is_superuser %}
+						<a href="{% url judge-submission-details sub.id %}">
+					{% endif %}
+				{% endif %}
+				<span class="submission{{ sub.name_eng }}">
+					{{ sub.name_kor }}
+				</span>
+				{% if sub.has_messages %}
+					{% if user == sub.user or user.is_superuser %}
+						</a>
+					{% endif %}
+				{% endif %}
+
+			</td>
 			<td class="stats">
 				{% if sub.has_run %}
 					{{ sub.time }}ms/{{ sub.memory }}KB

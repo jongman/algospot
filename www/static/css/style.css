@@ -1877,3 +1877,19 @@ article header h2 { width: 500px; }
 	font-size: 13px; 
 }
 .submissions a { text-decoration: none; }
+.submissionRECEIVED { color: silver; }
+.submissionCOMPILING { color: gray; }
+.submissionCOMPILE_ERROR { font-weight: bold; color: rgb(64, 64, 255); }
+a .submissionCOMPILE_ERROR { text-decoration: underline; }
+/* Accepted */
+.submissionACCEPTED { font-weight: bold; color: rgb(255, 64, 64); }
+/* Wrong Answer */
+.submissionWRONG_ANSWER { font-weight: bold; color: rgb(64, 128, 64); }
+/* Runtime Error */
+.submissionRUNTIME_ERROR { font-weight: bold; color: rgb(64, 196, 64); }
+a .submissionRUNTIME_ERROR { text-decoration: underline; }
+/* Time Limit Exceeded */
+.submissionTIME_LIMIT_EXCEEDED { font-weight: bold; color: rgb(64, 64, 128); }
+/* Can't Be Judged */
+.submissionCANT_BE_JUDGED { font-weight: bold; color: rgb(64, 255, 64); text-decoration: underline; }
+.submissionREJUDGE_REQUESTED{ color: silver; }
