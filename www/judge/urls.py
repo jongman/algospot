@@ -13,5 +13,9 @@ urlpatterns = patterns('judge.views',
             name='judge-submission-mine'),
         url(r'^submission/mine/(?P<page>.+)/$', views.submission.mine,
             name='judge-submission-mine'),
+        url(r'^submission/recent/$', views.submission.recent,
+            name='judge-submission-recent'),
+        url(r'^submission/recent/(?P<page>.+)/$', views.submission.recent,
+            name='judge-submission-recent'),
         )
 
