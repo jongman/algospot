@@ -27,7 +27,7 @@ def list(request, slug, page):
     page_lo = max(1, page.number - PAGINATOR_RANGE)
     page_hi = min(paginator.num_pages, page.number + PAGINATOR_RANGE)
     return render(request, "list.html", {"breadcrumbs": breadcrumbs,
-        "page": page, "category": category, "page_lo": page_lo, 
+        "page": page, "category": category, "page_lo": page_lo,
         "page_hi": page_hi, "page_nav_range": range(page_lo, page_hi+1)})
 
 def read(request, id):
