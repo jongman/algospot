@@ -22,6 +22,7 @@ class GetLastCommentNode(BaseCommentNode):
 def get_last_comment(parser, token):
     return GetLastCommentNode.handle_token(parser, token)
 
+
 @register.filter
 def get_comment_hotness(count):
     threshold = [1, 5, 10, 50, 100]

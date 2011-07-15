@@ -194,6 +194,10 @@ AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
         )
 
+# PAGINATION SETTINGS
+ITEMS_PER_PAGE = 25
+PAGINATOR_RANGE = 10
+
 PROFILE_LOG_BASE = None
 
 try:

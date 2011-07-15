@@ -3,6 +3,11 @@ import hotshot
 import os
 import time
 from django.conf import settings
+from django.template.loader import render_to_string
+from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+# TODO: move this module to base app
 
 def get_or_none(model, **kwargs):
     try:
@@ -10,6 +15,44 @@ def get_or_none(model, **kwargs):
     except model.DoesNotExist:
         return None
 
+class Pagination(object):
+    def __init__(self, paginator, page, link_name, link_kwargs):
+        self.paginator = paginator
+        self.page = page
+        self.link_name = link_name
+        self.link_kwargs = dict(link_kwargs)
+
+    def link_with_page(self, page):
+        self.link_kwargs["page"] = page
+        return reverse(self.link_name, kwargs=self.link_kwargs)
+
+    def render(self):
+        num_pages = self.paginator.num_pages
+        lo = max(1, self.page.number - settings.PAGINATOR_RANGE)
+        hi = min(num_pages, self.page.number + settings.PAGINATOR_RANGE)
+        links = [(page_no, self.link_with_page(page_no),
+                    page_no == self.page.number)
+                for page_no in xrange(lo, hi+1)]
+        first = ({"link": self.link_with_page(1), "label": 1}
+                if lo != 1 else None)
+        last = ({"link": self.link_with_page(num_pages), "label": num_pages}
+                if hi < num_pages else None)
+        return render_to_string("pagination.html",
+                {"links": links, "first": first, "last": last})
+
+    def __unicode__(self):
+        return self.render()
+
+
+def setup_paginator(objects, page, link_name, link_kwargs):
+    paginator = Paginator(objects, settings.ITEMS_PER_PAGE)
+    try:
+        page = paginator.page(page)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+    return Pagination(paginator, page, link_name, link_kwargs)
 
 try:
     PROFILE_LOG_BASE = settings.PROFILE_LOG_BASE
