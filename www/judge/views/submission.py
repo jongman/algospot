@@ -19,6 +19,7 @@ def recent(request, page=1):
     filters = {}
 
     empty_message = u"제출된 답안이 없습니다."
+    title_add = []
     if "problem" in request.GET:
         slug = request.GET["problem"]
         problem = get_or_none(Problem, slug=slug)
@@ -27,6 +28,7 @@ def recent(request, page=1):
             submissions = submissions.none()
         else:
             submissions = submissions.filter(problem=problem)
+        title_add.append(u"문제 " + slug)
         filters["problem"] = request.GET["problem"]
         breadcrumbs.append((request.path + get_query(filters), slug))
     if "user" in request.GET:
@@ -38,10 +40,12 @@ def recent(request, page=1):
         else:
             submissions = submissions.filter(user=user)
         filters["user"] = request.GET["user"]
+        title_add.append(u"사용자 " + username)
         breadcrumbs.append((request.path + get_query(filters), username))
 
     return render(request, "submission/recent.html",
-            {"title": breadcrumbs[-1][1],
+            {"title": u"답안 목록" + (": " if title_add else "") +
+                ",".join(title_add),
              "breadcrumbs": breadcrumbs,
              "filters": filters,
              "pagination": setup_paginator(submissions, page,
