@@ -1868,6 +1868,12 @@ article header h2 { width: 500px; }
 	border: 1px solid silver;
 }
 
-.submissions td.problem { text-align: left; }
-.submissions td, .submissions th { height: 24px; font-size: 13px; }
+.submissions td, .submissions th { 
+	padding-left: 8px; 
+	text-align: left; 
+}
+.submissions td, .submissions th {
+	height: 24px; 
+	font-size: 13px; 
+}
 .submissions a { text-decoration: none; }

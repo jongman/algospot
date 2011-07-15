@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block page-contents %}
+{% load judge_tags %}
 <table class="submissions kor">
 	<thead>
 		<tr>
@@ -41,7 +42,7 @@
 				</a>
 				{% endif %}					
 			</td>
-			<td class="length">{{ sub.length }}</td>
+			<td class="length">{{ sub.length|print_length }}</td>
 			<td class="state">{{ sub.state }}</td>
 			<td class="stats"></td>
 			<td class="submitted_on">{{ sub.submitted_on|print_datetime}}</td>

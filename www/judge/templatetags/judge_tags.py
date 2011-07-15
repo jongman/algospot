@@ -18,3 +18,7 @@ def percentage(parser, token):
     a, b = toks[1:3]
     return PercentNode(a, b)
 
+@register.filter
+def print_length(length):
+    if length < 1024: return "%dB" % length
+    return "%.1lfKB" % (length / 1024.)
