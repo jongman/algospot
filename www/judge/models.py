@@ -37,7 +37,7 @@ class Submission(models.Model):
     (RECEIVED, COMPILING, RUNNING, JUDGING, COMPILE_ERROR,
     OK, ACCEPTED, WRONG_ANSWER, RUNTIME_ERROR, TIME_LIMIT_EXCEEDED,
     CANT_BE_JUDGED, REJUDGE_REQUESTED) = range(12)
-    STATE_CHOICES = [
+    STATE_CHOICES = dict([
         (RECEIVED, "RECEIVED"),
         (COMPILING, "COMPILING"),
         (RUNNING, "RUNNING"),
@@ -48,18 +48,28 @@ class Submission(models.Model):
         (WRONG_ANSWER, "WRONG ANSWER"),
         (RUNTIME_ERROR, "RUNTIME ERROR"),
         (TIME_LIMIT_EXCEEDED, "TIME LIMIT EXCEEDED"),
-        (CANT_BE_JUDGED, "CANT BE JUDGED"),
-        (REJUDGE_REQUESTED, "REJUDGE REQUESTED")]
+        (CANT_BE_JUDGED, "CAN'T BE JUDGED"),
+        (REJUDGE_REQUESTED, "REJUDGE REQUESTED")])
+
+    PROGRAM_HAS_RUN = [OK, ACCEPTED, WRONG_ANSWER]
+    HAS_MESSAGES = [COMPILE_ERROR, RUNTIME_ERROR]
 
     submitted_on = models.DateTimeField(auto_now_add=True)
     problem = models.ForeignKey(Problem)
     is_public = models.BooleanField(default=True)
     user = models.ForeignKey(User)
     language = models.TextField(max_length=100)
-    state = models.SmallIntegerField(default=RECEIVED, choices=STATE_CHOICES)
+    state = models.SmallIntegerField(default=RECEIVED,
+            choices=STATE_CHOICES.items())
     length = models.IntegerField()
     source = models.TextField()
     message = models.TextField(blank=True, default="")
     time = models.IntegerField(null=True)
     memory = models.IntegerField(null=True)
+
+    def has_run(self):
+        return self.state in self.PROGRAM_HAS_RUN
+
+    def get_state_name(self):
+        return self.STATE_CHOICES[self.state]
 

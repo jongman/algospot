@@ -2,6 +2,7 @@
 import hotshot
 import os
 import urllib
+import logging
 import time
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -18,8 +19,7 @@ def get_or_none(model, **kwargs):
 
 def get_query(params):
     if not params: return ""
-    return "?" + "&".join(["%s=%s" % (k, urllib.urlencode(v)) 
-        for k, v in params.iteritems()])
+    return "?" + urllib.urlencode(params)
 
 class Pagination(object):
     def __init__(self, paginator, page, link_name, link_kwargs, get_params):

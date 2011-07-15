@@ -43,8 +43,12 @@
 				{% endif %}					
 			</td>
 			<td class="length">{{ sub.length|print_length }}</td>
-			<td class="state">{{ sub.state }}</td>
-			<td class="stats"></td>
+			<td class="state">{{ sub.get_state_name }}</td>
+			<td class="stats">
+				{% if sub.has_run %}
+					{{ sub.time }}ms/{{ sub.memory }}KB
+				{% endif %}
+			</td>
 			<td class="submitted_on">{{ sub.submitted_on|print_datetime}}</td>
 		</tr>
 		{% endfor %}
