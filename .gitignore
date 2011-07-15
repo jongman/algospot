@@ -2,3 +2,4 @@ venv
 *.pyc
 *.sqlite3
 designs
+www/profile_logs
