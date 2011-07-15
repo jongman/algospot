@@ -34,6 +34,17 @@ class Problem(models.Model):
     def get_absolute_url(self):
         return reverse("judge-problem-read", kwargs={"slug": self.slug})
 
+class Attachment(models.Model):
+    problem = models.ForeignKey(Problem)
+    name = models.CharField(max_length=128)
+    path = models.CharField(max_length=256)
+    size = models.IntegerField()
+    md5 = models.CharField(max_length=32)
+
+    def get_absolute_url(self):
+        return reverse("judge-problem-attachment",
+                kwargs={"id": self.id, "name": self.name})
+
 class Submission(models.Model):
     (RECEIVED, COMPILING, RUNNING, JUDGING, COMPILE_ERROR,
     OK, ACCEPTED, WRONG_ANSWER, RUNTIME_ERROR, TIME_LIMIT_EXCEEDED,
