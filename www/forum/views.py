@@ -26,7 +26,7 @@ def read(request, id):
             (reverse("forum-list",
                 kwargs={"slug": category.slug, "page": 1}), category.name),
             (reverse("forum-read", kwargs={"id": id}), post.title)]
-    return render(request, "read.html", {"breadcrumbs": breadcrumbs, 
+    return render(request, "read.html", {"breadcrumbs": breadcrumbs,
         "post": post, "category": category})
 
 @login_required
@@ -41,10 +41,17 @@ def write(request, slug, id):
         post = get_object_or_404(Post, id=id)
         if not request.user.is_superuser and request.user != post.user:
             return HttpForbidden("operation is forbidden.")
-        initial_data["title"] = post.title
-        initial_data["text"] = post.text
-        initial_data["category"] = post.category.id
         category = post.category
+        form = WriteForm(data=request.POST or None, instance=post)
+    else:
+        form = WriteForm(data=request.POST or None, initial=initial_data)
+
+    if request.method == "POST" and form.is_valid():
+        post = form.save(commit=False)
+        post.user = request.user
+        post.save()
+        return redirect(reverse("forum-read", kwargs={"id": post.id}))
+
     breadcrumbs = [(reverse("forum-list",
         kwargs={"slug": category.slug, "page": 1}),
         category.name)]
@@ -53,10 +60,6 @@ def write(request, slug, id):
             post.title))
     breadcrumbs.append((None, action))
 
-    form = WriteForm(data=request.POST or None, initial=initial_data)
-    if request.method == "POST" and form.is_valid():
-        id = form.save(request.user, id)
-        return redirect(reverse("forum-read", kwargs={"id": id}))
     return render(request, "write.html", {"form": form, "action": action,
         "breadcrumbs": breadcrumbs, "category": category})
 
@@ -66,7 +69,7 @@ def delete(request, id):
         return HttpForbidden("operation is forbidden.")
     category = post.category
     breadcrumbs = [
-            (reverse("forum-list", 
+            (reverse("forum-list",
                 kwargs={"slug": category.slug, "page": 1}), category.name),
             (reverse("forum-read", kwargs={"id": id}), post.title),
             (reverse("forum-delete", kwargs={"id": id}), u"삭제")]
@@ -78,6 +81,6 @@ def delete(request, id):
         post.delete()
         return redirect(reverse("forum-list", kwargs={"slug": category.slug,
             "page": 1}))
-    return render(request, "delete.html", {"breadcrumbs": breadcrumbs, 
+    return render(request, "delete.html", {"breadcrumbs": breadcrumbs,
         "post": post, "category": category})
 
