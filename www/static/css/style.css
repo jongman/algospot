@@ -1519,6 +1519,8 @@ a.missing {
 	color: #2E43AE;
 }
 
+.problem_edit input,
+.problem_edit textarea,
 form dd select,
 .comment_form textarea,
 .kor,
