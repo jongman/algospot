@@ -1900,3 +1900,7 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 	background: none;
 	float: left;
 }
+
+.problem_edit textarea {
+    width: 70%;
+}
