@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 from djangoutils import setup_paginator, get_or_none, get_query
 from django.contrib.auth.models import User
 from ..models import Problem, Submission
-from ..config import SUBMISSIONS_PER_PAGE, PAGINATOR_RANGE
 
 @login_required
 def mine(request):
@@ -48,6 +47,7 @@ def recent(request, page=1):
                 ",".join(title_add),
              "breadcrumbs": breadcrumbs,
              "filters": filters,
+             "empty_message": empty_message,
              "pagination": setup_paginator(submissions, page,
                  "judge-submission-recent", {}, filters)})
 

@@ -12,9 +12,6 @@ def read(request, slug):
     return render(request, "problem/read.html", {"problem": problem,
         "breadcrumbs": breadcrumbs})
 
-def attachment(request, id, name):
-    pass
-
 def submit(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
     if request.user == problem.user or request.user.is_superuser:
