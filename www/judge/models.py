@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from config import JUDGE_MODULES
 
 class Problem(models.Model):
     DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
@@ -14,15 +15,16 @@ class Problem(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     state = models.SmallIntegerField(default=DRAFT, choices=STATE_CHOICES)
     user = models.ForeignKey(User)
-    source = models.TextField(max_length=100, blank=True)
-    name = models.TextField(max_length=100, blank=True)
+    source = models.CharField(max_length=100, blank=True)
+    name = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     input = models.TextField(blank=True)
     output = models.TextField(blank=True)
     sample_input = models.TextField(blank=True)
     sample_output = models.TextField(blank=True)
     note = models.TextField(blank=True)
-    judge_module = models.TextField(blank=True,max_length=100)
+    judge_module = models.CharField(blank=True, max_length=100,
+            choices=JUDGE_MODULES.items())
     time_limit = models.PositiveIntegerField(default=10000)
     memory_limit = models.PositiveIntegerField(default=65536)
     submissions_count = models.IntegerField(default=0)
