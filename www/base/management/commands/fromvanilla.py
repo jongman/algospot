@@ -36,8 +36,8 @@ def migrate_user(db):
             print "%s is a duplicate" % u["Name"]
             continue
         if u["Deleted"] == "1": continue
-        pw = (u["Password"] 
-                if u["HashMethod"] != "Vanilla" 
+        pw = (u["Password"]
+                if u["HashMethod"] != "Vanilla"
                 else "sha1$deadbeef$" + u["Password"].replace("$", "_"))
         new_user = User(id=u["UserID"],
                 username = u["Name"],
@@ -110,7 +110,7 @@ def migrate_forum(db):
 
     print "%d posts. %d comments." % (copied_posts, copied_comments)
 
-def migrate_judge(db):
+def migrate_judge(db, upload):
     PROBLEM_MAPPING = {
         "No": "id",
         "ID": "slug",
@@ -171,17 +171,17 @@ def migrate_judge(db):
 
 
 class Command(BaseCommand):
-    args = '<mysql host> <mysql user> <mysql password> <mysql db> [app]'
+    args = '<mysql host> <mysql user> <mysql password> <mysql db> <uploaded> [app]'
     help = 'Migrate data over from Vanilla\'s CSV dump'
 
     def handle(self, *args, **options):
-        host, user, password, db = args[:4]
+        host, user, password, db, upload = args[:5]
         db = MySQLdb.connect(host=host, user=user, passwd=password, db=db,
                 cursorclass=MySQLdb.cursors.DictCursor)
-        app = "all" if len(args) == 4 else args[4]
+        app = "all" if len(args) == 5 else args[5]
         if app in ["all", "user"]:
             migrate_user(db)
         if app in ["all", "forum"]:
             migrate_forum(db)
         if app in ["all", "judge"]:
-            migrate_judge(db)
+            migrate_judge(db, upload)
