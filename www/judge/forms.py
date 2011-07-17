@@ -4,6 +4,10 @@ from django import forms
 from models import Problem, Submission
 from config import LANGUAGES
 
+class ProblemEditForm(forms.ModelForm):
+    class Meta:
+        model = Problem
+
 class SubmitForm(forms.Form):
     language = forms.ChoiceField(LANGUAGES.items(), label=u"사용언어")
     source = forms.CharField(widget=forms.Textarea(attrs={"class": "large",
