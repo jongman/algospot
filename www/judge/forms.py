@@ -7,6 +7,12 @@ from config import LANGUAGES
 class ProblemEditForm(forms.ModelForm):
     class Meta:
         model = Problem
+        exclude = ('submissions_count', 'accepted_count')
+
+class RestrictedProblemEditForm(ProblemEditForm):
+    class Meta:
+        model = Problem
+        exclude = ('state', 'user', 'submissions_count', 'accepted_count')
 
 class SubmitForm(forms.Form):
     language = forms.ChoiceField(LANGUAGES.items(), label=u"사용언어")
