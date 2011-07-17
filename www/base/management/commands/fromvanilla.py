@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from forum.models import Post, Category
+from judge.models import Problem, Submission
 from actstream.models import Action
 import MySQLdb
 
@@ -35,8 +36,8 @@ def migrate_user(db):
             print "%s is a duplicate" % u["Name"]
             continue
         if u["Deleted"] == "1": continue
-        pw = (u["Password"] 
-                if u["HashMethod"] != "Vanilla" 
+        pw = (u["Password"]
+                if u["HashMethod"] != "Vanilla"
                 else "sha1$deadbeef$" + u["Password"].replace("$", "_"))
         new_user = User(id=u["UserID"],
                 username = u["Name"],
@@ -109,17 +110,78 @@ def migrate_forum(db):
 
     print "%d posts. %d comments." % (copied_posts, copied_comments)
 
+def migrate_judge(db, upload):
+    PROBLEM_MAPPING = {
+        "No": "id",
+        "ID": "slug",
+        "Updated": "updated_on",
+        "State": "state",
+        "Source": "source",
+        "Name": "name",
+        "Description": "description",
+        "Input": "input",
+        "Output": "output",
+        "SampleInput": "sample_input",
+        "SampleOutput": "sample_output",
+        "Note": "note",
+        "JudgeModule": "judge_module",
+        "TimeLimit": "time_limit",
+        "MemoryLimit": "memory_limit",
+        "Accepted": "accepted_count",
+        "Submissions": "submissions_count",
+    }
+    imported = 0
+    for problem in fetch_all(db, "GDN_Problem", State=3):
+        kwargs = {}
+        kwargs["user"] = User.objects.get(id=problem["Author"])
+        for k, v in PROBLEM_MAPPING.items():
+            kwargs[v] = problem[k]
+        new_problem = Problem(**kwargs)
+        new_problem.save()
+        imported += 1
+    print "imported %d problems." % imported
+
+    SUBMISSION_MAPPING = {
+            "No": "id",
+            "Submitted": "submitted_on",
+            "IsPublic": "is_public",
+            "Language": "language",
+            "State": "state",
+            "Length": "length",
+            "Source": "source",
+            "Message": "message",
+            "Time": "time",
+            "Memory": "memory"}
+    imported = 0
+    submissions = fetch_all(db, "GDN_Submission")
+    for submission in submissions:
+        kwargs = {}
+        kwargs["problem"] = Problem.objects.get(id=submission["Problem"])
+        kwargs["user"] = User.objects.get(id=submission["Author"])
+        for k, v in SUBMISSION_MAPPING.items():
+            kwargs[v] = submission[k]
+        new_submission = Submission(**kwargs)
+        new_submission.save()
+        imported += 1
+        if imported % 100 == 0:
+            print "Migrated %d of %d submissions." % (imported,
+                    len(submissions))
+    print "Migrated %d submissions." % imported
+
+
 
 class Command(BaseCommand):
-    args = '<mysql host> <mysql user> <mysql password> <mysql db> [app]'
+    args = '<mysql host> <mysql user> <mysql password> <mysql db> <uploaded> [app]'
     help = 'Migrate data over from Vanilla\'s CSV dump'
 
     def handle(self, *args, **options):
-        host, user, password, db = args[:4]
+        host, user, password, db, upload = args[:5]
         db = MySQLdb.connect(host=host, user=user, passwd=password, db=db,
                 cursorclass=MySQLdb.cursors.DictCursor)
-        app = "all" if len(args) == 4 else args[4]
+        app = "all" if len(args) == 5 else args[5]
         if app in ["all", "user"]:
             migrate_user(db)
         if app in ["all", "forum"]:
             migrate_forum(db)
+        if app in ["all", "judge"]:
+            migrate_judge(db, upload)
