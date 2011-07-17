@@ -2,17 +2,17 @@
 	{
 		"model": "forum.Category",
 		"pk": 1,
-		"fields": { "name": "자유게시판", "slug": "free" }
+		"fields": { "name": "뉴스", "slug": "news" }
 	},
 	{
 		"model": "forum.Category",
 		"pk": 2,
-		"fields": { "name": "질문과 답변", "slug": "qna" }
+		"fields": { "name": "자유게시판", "slug": "free" }
 	},
 	{
 		"model": "forum.Category",
 		"pk": 3,
-		"fields": { "name": "뉴스", "slug": "news" }
+		"fields": { "name": "질문과 답변", "slug": "qna" }
 	},
 	{
 		"model": "forum.Category",
