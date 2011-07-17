@@ -20,7 +20,7 @@ class Category(models.Model):
 
 class Post(models.Model):
     """Stores a forum post."""
-    title = models.TextField(max_length=100)
+    title = models.CharField(max_length=100)
     created_on = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, null=False)
     text = models.TextField()
@@ -55,7 +55,7 @@ if "actstream" in settings.INSTALLED_APPS:
         Action.objects.filter(target_content_type=post_type,
                 target_object_id=instance.id).delete()
 
-    pre_delete.connect(post_delete_handler, sender=Post, 
+    pre_delete.connect(post_delete_handler, sender=Post,
             dispatch_uid="forum_post_delete_event")
-    post_save.connect(post_handler, sender=Post, 
+    post_save.connect(post_handler, sender=Post,
             dispatch_uid="forum_post_event")
