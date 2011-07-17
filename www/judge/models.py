@@ -59,3 +59,10 @@ class Submission(models.Model):
     time = models.IntegerField(null=True)
     memory = models.IntegerField(null=True)
 
+class Attachment(models.Model):
+    problem = models.ForeignKey(Problem)
+    name = models.TextField(max_length=128)
+    path = models.TextField(max_length=128)
+    md5 = models.TextField(max_length=32)
+    size = models.IntegerField()
+
