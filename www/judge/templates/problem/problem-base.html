@@ -1,21 +1,21 @@
 {% extends "judge-base.html" %}
 {% load common_tags %}
 {% block title %} 
-	{{ problem.slug }} 
+{{ problem.slug }} 
 {% endblock %}
 
 {% block judge-problem-class %}current{% endblock %}
 
 {% block page-title %}
-	{{ problem.name }}
+{{ problem.name }}
 {% endblock %}
 
 {% block page-tabs %}
-	<nav>
-		<ul class="tab-switch">
-			<li><a class="{% block judge-problem-read-class %}{% endblock %}" href="{% url judge-problem-read problem.slug %}" rel="tooltip" title="Read problem">문제</a></li>
-			<li><a class="{% block judge-problem-submit-class %}{% endblock %}" href="{% url judge-problem-submit problem.slug %}" rel="tooltip" title="Submit a solution">답안 제출</a></li>
-			<li><a class="{% block judge-problem-stats-class %}{% endblock %}" href="{% url judge-problem-read problem.slug %}" rel="tooltip" title="Problem statistics">통계</a></li>
-		</ul>
-	</nav>
+<nav>
+<ul class="tab-switch">
+    <li><a class="{% block judge-problem-read-class %}{% endblock %}" href="{% url judge-problem-read problem.slug %}" rel="tooltip" title="Read problem">문제</a></li>
+    <li><a class="{% block judge-problem-submit-class %}{% endblock %}" href="{% url judge-problem-submit problem.slug %}" rel="tooltip" title="Submit a solution">답안 제출</a></li>
+    <li><a class="{% block judge-problem-stats-class %}{% endblock %}" href="{% url judge-problem-read problem.slug %}" rel="tooltip" title="Problem statistics">통계</a></li>
+</ul>
+</nav>
 {% endblock %}

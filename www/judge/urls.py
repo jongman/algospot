@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url
 import views
 
 urlpatterns = patterns('judge.views',
@@ -7,6 +7,10 @@ urlpatterns = patterns('judge.views',
             name='judge-index'),
         url(r'^problem/read/(?P<slug>.+)$', views.problem.read,
             name='judge-problem-read'),
+        url(r'^problem/list/$', views.problem.list,
+            name='judge-problem-list'),
+        url(r'^problem/list/(?P<page>.+)$', views.problem.list,
+            name='judge-problem-list'),
         url(r'^problem/submit/(?P<slug>.+)$', views.problem.submit,
             name='judge-problem-submit'),
         url(r'^problem/edit/(?P<id>.+)$', views.problem.edit,

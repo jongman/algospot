@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from djangoutils import setup_paginator
 from ..models import Problem
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
 
@@ -22,6 +23,18 @@ def edit(request, id):
         "form": form,
         "breadcrumbs": breadcrumbs})
 
+def list(request, page=1):
+    breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),
+                   (reverse("judge-problem-list"), u"문제 목록")]
+    problems = Problem.objects.all().order_by("slug")
+    # options = {}
+    # TODO: 카테고리별 문제 보기
+    # TODO: 난이도 순으로 정렬하기
+    return render(request, "problem/list.html",
+                  {"title": u"문제 목록 보기",
+                   "breadcrumbs": breadcrumbs,
+                   "pagination": setup_paginator(problems, page,
+                                                 "judge-problem-list", {})})
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
     breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),

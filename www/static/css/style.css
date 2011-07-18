@@ -1909,3 +1909,12 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 .problem_edit textarea, .forum_edit textarea {
     height: 400px;
 }
+
+.problems td, .problems th {
+	height: 24px; 
+	font-size: 13px; 
+}
+
+.problems td.id, .problems td.name { text-align: left; }
+
+.problems a { text-decoration: none; }

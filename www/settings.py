@@ -11,7 +11,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-        ('JongMan Koo', 'jongman@gmail.com'),
+    ('JongMan Koo', 'jongman@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -84,7 +84,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -94,7 +94,7 @@ SECRET_KEY = 'ql^5l!arg8ua-nxp-n+!*a-n%9_^osj-*k7ae@zu=n$zbrod-w'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    #     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -178,21 +178,21 @@ AVATAR_DEFAULT_URL = "/static/images/unknown-user.png"
 
 LOGIN_REDIRECT_URL = "/"
 
-DEBUG_TOOLBAR_CONFIG = { "INTERCEPT_REDIRECTS": False }
+DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False }
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
-        "django.core.context_processors.debug",
-        "django.core.context_processors.i18n",
-        "django.core.context_processors.media",
-        "django.core.context_processors.static",
-        "django.contrib.messages.context_processors.messages",
-        'django.core.context_processors.request',
-        "www.forum.processors.add_categories",
-        )
+                               "django.core.context_processors.debug",
+                               "django.core.context_processors.i18n",
+                               "django.core.context_processors.media",
+                               "django.core.context_processors.static",
+                               "django.contrib.messages.context_processors.messages",
+                               'django.core.context_processors.request',
+                               "www.forum.processors.add_categories",
+                              )
 AUTHENTICATION_BACKENDS = (
-        'base.backends.LegacyBackend',
-        'django.contrib.auth.backends.ModelBackend',
-        )
+    'base.backends.LegacyBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # PAGINATION SETTINGS
 ITEMS_PER_PAGE = 20

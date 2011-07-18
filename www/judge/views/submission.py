@@ -19,17 +19,21 @@ def recent(request, page=1):
 
     empty_message = u"제출된 답안이 없습니다."
     title_add = []
+
     if "problem" in request.GET:
         slug = request.GET["problem"]
         problem = get_or_none(Problem, slug=slug)
+
         if not problem:
             empty_message = u"해당 문제가 없습니다."
             submissions = submissions.none()
         else:
             submissions = submissions.filter(problem=problem)
+
         title_add.append(u"문제 " + slug)
         filters["problem"] = request.GET["problem"]
         breadcrumbs.append((request.path + get_query(filters), slug))
+
     if "user" in request.GET:
         username = request.GET["user"]
         user = get_or_none(User, username=username)
