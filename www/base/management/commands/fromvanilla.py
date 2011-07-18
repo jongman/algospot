@@ -5,9 +5,13 @@ from django.conf import settings
 from django.contrib.comments.models import Comment
 from django.contrib.contenttypes.models import ContentType
 from forum.models import Post, Category
-from judge.models import Problem, Submission
+from judge.models import Problem, Submission, Attachment
+from djangoutils import get_or_none
 from actstream.models import Action
 import MySQLdb
+import hashlib
+import shutil
+import os
 
 def fetch_all(db, table, **where):
     c = db.cursor()
@@ -110,7 +114,7 @@ def migrate_forum(db):
 
     print "%d posts. %d comments." % (copied_posts, copied_comments)
 
-def migrate_judge(db, upload):
+def migrate_problems(db):
     PROBLEM_MAPPING = {
         "No": "id",
         "ID": "slug",
@@ -141,6 +145,7 @@ def migrate_judge(db, upload):
         imported += 1
     print "imported %d problems." % imported
 
+def migrate_submissions(db):
     SUBMISSION_MAPPING = {
             "No": "id",
             "Submitted": "submitted_on",
@@ -162,13 +167,42 @@ def migrate_judge(db, upload):
             kwargs[v] = submission[k]
         new_submission = Submission(**kwargs)
         new_submission.save()
+        new_submission.submitted_on = submission["Submitted"]
+        new_submission.save()
         imported += 1
         if imported % 100 == 0:
             print "Migrated %d of %d submissions." % (imported,
                     len(submissions))
     print "Migrated %d submissions." % imported
 
+def md5file(file_path):
+    md5 = hashlib.md5()
+    md5.update(open(file_path, "rb").read())
+    return md5.hexdigest()
 
+def migrate_attachments(db, upload):
+    attachments = fetch_all(db, "GDN_Attachment")
+    for attachment in attachments:
+        origin = os.path.join(upload, attachment["Path"])
+        md5 = md5file(origin)
+        target_path = os.path.join("judge-attachments",
+                                   md5, attachment["Name"])
+        copy_to = os.path.join(settings.MEDIA_ROOT, target_path)
+        try:
+            os.makedirs(os.path.dirname(copy_to))
+        except:
+            pass
+        shutil.copy(origin, copy_to)
+        problem = get_or_none(Problem, id=attachment["Problem"])
+        if not problem: continue
+        new_attachment = Attachment(problem=problem,
+                                    id=attachment["No"], file=target_path)
+        new_attachment.save()
+
+def migrate_judge(db, upload):
+    #migrate_problems(db)
+    #migrate_submissions(db)
+    migrate_attachments(db, upload)
 
 class Command(BaseCommand):
     args = '<mysql host> <mysql user> <mysql password> <mysql db> <uploaded> [app]'
