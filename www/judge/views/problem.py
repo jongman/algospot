@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from djangoutils import setup_paginator
-from ..models import Problem
+from ..models import Problem, Submission
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
 
 @login_required
@@ -33,6 +33,7 @@ def list(request, page=1):
     return render(request, "problem/list.html",
                   {"title": u"문제 목록 보기",
                    "breadcrumbs": breadcrumbs,
+                   "ACCEPTED": Submission.ACCEPTED,
                    "pagination": setup_paginator(problems, page,
                                                  "judge-problem-list", {})})
 def read(request, slug):

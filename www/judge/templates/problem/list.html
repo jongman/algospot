@@ -47,8 +47,16 @@
 			<td class="writer">
 				{{ problem.user|print_username }}
 			</td>
-			<td class="submissions">{{ problem.submissions_count }}</td>
-			<td class="accepted">{{ problem.accepted_count }} ({% percentage problem.accepted_count problem.submissions_count %}%)</td>
+			<td class="submissions">
+				<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}">
+					{{ problem.submissions_count }}
+				</a>
+			</td>
+			<td class="accepted">
+				<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}&state={{ ACCEPTED }}&order_by=length">
+					{{ problem.accepted_count }} ({% percentage problem.accepted_count problem.submissions_count %}%)
+				</a>
+			</td>
 		</tr>
 		{% endfor %}
 	</tbody>

@@ -31,8 +31,20 @@ def recent(request, page=1):
             submissions = submissions.filter(problem=problem)
 
         title_add.append(u"문제 " + slug)
-        filters["problem"] = request.GET["problem"]
+        filters["problem"] = slug
         breadcrumbs.append((request.path + get_query(filters), slug))
+
+    if "state" in request.GET:
+        state = request.GET["state"]
+        submissions = submissions.filter(state=state)
+        filters["state"] = state
+        title_add.append(Submission.STATES_KOR[int(state)])
+        breadcrumbs.append((request.path + get_query(filters),
+                           Submission.STATES_KOR[int(state)]))
+
+    if "order_by" in request.GET:
+        order_by = request.GET["order_by"]
+        submissions = submissions.order_by(order_by)
 
     if "user" in request.GET:
         username = request.GET["user"]
@@ -42,7 +54,7 @@ def recent(request, page=1):
             submissions = submissions.none()
         else:
             submissions = submissions.filter(user=user)
-        filters["user"] = request.GET["user"]
+        filters["user"] = username
         title_add.append(u"사용자 " + username)
         breadcrumbs.append((request.path + get_query(filters), username))
 
