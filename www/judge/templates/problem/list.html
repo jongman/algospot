@@ -1,0 +1,60 @@
+{% extends "judge-base.html" %}
+{% load common_tags %}
+{% block title %}
+{{ title }}
+{% endblock %}
+
+
+{% block page-title %}
+{{ title }}
+{% endblock %}
+
+{% block page-tabs %}
+{% endblock %}
+
+{% block judge-problem-class %}current{% endblock %}
+{% block page-contents %}
+{% load judge_tags %}
+{% load common_tags %}
+<table class="problems kor">
+	<thead>
+		<tr>
+			<th class="accepted">풀었나?</th>
+			<th class="id">문제ID</th>
+			<th class="name">문제 제목</th>
+			<th class="writer">출제자</th>
+			<th class="submissions">답안수</th>
+			<th class="accepted">정답수/비율</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for problem in pagination.page.object_list %}
+		<tr>
+			<td class="accepted">
+				{% if user.is_authenticated %}
+					{% get_has_solved problem by user as solved %}
+					{% if solved %}
+					네!
+					{% endif %}
+				{% endif %}
+			</td>
+			<td class="id">
+				<a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a>
+			</td>
+			<td class="name">
+				<a href="{% url judge-problem-read problem.slug %}">{{ problem.name }}</a>
+			</td>
+			<td class="writer">
+				{{ problem.user|print_username }}
+			</td>
+			<td class="submissions">{{ problem.submissions_count }}</td>
+			<td class="accepted">{{ problem.accepted_count }} ({% percentage problem.accepted_count problem.submissions_count %}%)</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</section>
+</article>
+<article>
+{{ pagination.render }}
+{% endblock %}

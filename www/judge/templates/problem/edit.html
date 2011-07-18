@@ -1,0 +1,21 @@
+{% extends "problem/problem-base.html" %}
+{% load common_tags %}
+
+{% block judge-problem-read-class %}current{% endblock %}
+
+{% block page-title %}
+    문제 편집: {{ problem.name }}
+{% endblock %}
+
+{% block page-contents %} 
+<div class="kor problem_edit">
+    <form action="" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend>편집하기</legend>
+            {% include "print_form.html" %}
+        </fieldset>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}
