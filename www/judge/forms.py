@@ -3,8 +3,10 @@
 from django import forms
 from models import Problem, Submission
 from config import LANGUAGES
+from django.contrib.auth.models import User
 
 class ProblemEditForm(forms.ModelForm):
+    user = forms.ModelChoiceField(label=u"작성자", queryset=User.objects.order_by("username"))
     class Meta:
         model = Problem
         exclude = ('submissions_count', 'accepted_count')
