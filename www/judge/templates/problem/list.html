@@ -24,7 +24,7 @@
 			<th class="name">문제 제목</th>
 			<th class="writer">출제자</th>
 			<th class="submissions">답안수</th>
-			<th class="accepted">정답수/비율</th>
+			<th class="accepted">정답비율</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -54,7 +54,7 @@
 			</td>
 			<td class="accepted">
 				<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}&state={{ ACCEPTED }}&order_by=length">
-					{{ problem.accepted_count }} ({% percentage problem.accepted_count problem.submissions_count %}%)
+					{% percentage problem.accepted_count problem.submissions_count %}%
 				</a>
 			</td>
 		</tr>
