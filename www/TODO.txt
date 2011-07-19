@@ -1,0 +1,9 @@
+* news feed 타입 추가: actstream 보다 단순한 그 무언가를 작성해야 할 듯. 타입별로 필터링할 수 있게 하고 싶다. 게시판 알림, 위키 알림, 온라인 저지 알림별로 나눠서도 볼 수 있도록.
+* breadcrumb generation 간소화
+* breadcrumb 에서 현재 페이지는 링크 안 걸리게 하기
+* reindent all source code
+* 좋아요 추가하기
+* 난이도 평가하기: 상/중/하 셋 중 하나에 투표할 수 있도록 하기
+* submission filter 기능.. 아마도 구현?
+* 푼사람 수/시도한 사람 수 instead of # submissions
+* 위키에 사이트 통합 도움말 시스템 집어넣기. 흠
