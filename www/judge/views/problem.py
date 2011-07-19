@@ -2,10 +2,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from djangoutils import setup_paginator
-from ..models import Problem, Submission
+from ..models import Problem, Submission, Attachment
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
+import json
+import os
 
 @login_required
 def edit(request, id):
@@ -22,6 +24,22 @@ def edit(request, id):
     return render(request, "problem/edit.html", {"problem": problem,
         "form": form,
         "breadcrumbs": breadcrumbs})
+
+@login_required
+def list_attachments(request, id):
+    problem = get_object_or_404(Problem, id=id)
+    if not request.user.is_superuser and problem.user != request.user:
+        raise Http404
+    data = [[attachment.id,
+             os.path.basename(attachment.file.name),
+             attachment.file.size,
+             attachment.file.url]
+            for attachment in Attachment.objects.filter(problem=problem)]
+    ret = {"iTotalRecords": len(data),
+           "sEcho": request.GET.get("sEcho", ""),
+           "iTotalDisplayRecords": len(data),
+           "aaData": data}
+    return HttpResponse(json.dumps(ret))
 
 def list(request, page=1):
     breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),

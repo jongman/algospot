@@ -4,18 +4,49 @@
 {% block judge-problem-read-class %}current{% endblock %}
 
 {% block page-title %}
-    문제 편집: {{ problem.name }}
+문제 편집: {{ problem.name }}
 {% endblock %}
 
 {% block page-contents %} 
 <div class="kor problem_edit">
-    <form action="" method="post">
-        {% csrf_token %}
-        <fieldset>
-            <legend>편집하기</legend>
-            {% include "print_form.html" %}
-        </fieldset>
-        <button type="submit">Submit</button>
-    </form>
+	<form action="" method="post">
+		{% csrf_token %}
+		<fieldset>
+			<legend>편집하기</legend>
+			{% include "print_form.html" %}
+		</fieldset>
+		<fieldset>
+			<legend>첨부파일</legend>
+			<table id="attachments">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>파일명</th>
+						<th>파일크기</th>
+						<th>동작</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</fieldset>
+		<button type="submit">Submit</button>
+	</form>
 </div>
+<script language="javascript">
+	$(document).ready(function() {
+		$("#attachments").dataTable({
+			"bProcessing": true,
+			"bLengthChange": false,
+			"bFilter": false,
+			"bInfo": false,
+			"bSort": false,
+			"bSearch": false,
+			//"bServerSide": true,
+			"iDisplayLength": 100,
+			"sAjaxSource": "{% url judge-problem-list-attachments problem.id %}",
+			"aaSorting": [[0, "asc"]]
+		});
+	});
+</script>
 {% endblock %}
