@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from config import JUDGE_MODULES
 from django.db.models.signals import pre_save, post_save
 from actstream import action
+from djangoutils import get_or_none
 
 class Problem(models.Model):
     DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
@@ -124,6 +125,7 @@ def solved_problem(user, problem, instance):
     if acs == 0:
         subs = Submission.objects.filter(user=user,
                                          problem=problem).count()
+        print user, "solved", problem
         action.send(user,
                     action_object=problem,
                     verb=u"%d번의 시도만에 문제 {action_object}를 "
@@ -147,7 +149,9 @@ def unsolved_problem(user, problem, instance):
 def will_save_submission(sender, **kwargs):
     instance = kwargs["instance"]
     if not instance.id: return
-    old_state = Submission.objects.get(id=instance.id).state
+    current_sub = get_or_none(Submission, id=instance.id)
+    if not current_sub: return
+    old_state = current_sub.state
     if old_state == instance.state: return
     # 풀었다!
     if instance.state == Submission.ACCEPTED:
@@ -164,9 +168,7 @@ def saved_submission(sender, **kwargs):
 
 pre_save.connect(will_save_problem, sender=Problem,
                  dispatch_uid="will_save_problem")
-"""
 pre_save.connect(will_save_submission, sender=Submission,
                  dispatch_uid="will_save_submission")
 post_save.connect(saved_submission, sender=Submission,
                   dispatch_uid="saved_submission")
-                  """

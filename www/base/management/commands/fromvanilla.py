@@ -170,6 +170,7 @@ def migrate_submissions(db):
             "Memory": "memory"}
     imported = 0
     submissions = fetch_all(db, "GDN_Submission")
+    Submission.objects.all().delete()
     for submission in submissions:
         kwargs = {}
         try:
@@ -181,8 +182,10 @@ def migrate_submissions(db):
             kwargs[v] = submission[k]
         if not kwargs["message"]:
             kwargs["message"] = ""
+        kwargs["state"] = Submission.RECEIVED
         new_submission = Submission(**kwargs)
         new_submission.save()
+        new_submission.state = submission["State"]
         new_submission.submitted_on = submission["Submitted"]
         new_submission.save()
         imported += 1
