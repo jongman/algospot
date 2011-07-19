@@ -3,9 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from config import JUDGE_MODULES
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from django.conf import settings
+from django.db.models.signals import pre_save, post_save
 from actstream import action
 
 class Problem(models.Model):
@@ -105,7 +103,7 @@ class Submission(models.Model):
         return self.STATES_ENG[self.state]
 
 # SIGNAL HANDLERS
-def problem_saved(sender, **kwargs):
+def will_save_problem(sender, **kwargs):
     instance = kwargs["instance"]
     # 새로 만들어질 때는 항상 DRAFT 상태
     if not instance.id: return
@@ -118,5 +116,57 @@ def problem_saved(sender, **kwargs):
                 verb=u"온라인 저지에 새 문제 {action_object}를 "
                      u"공개했습니다.")
 
-pre_save.connect(problem_saved, sender=Problem,
-        dispatch_uid="problem_saved")
+def solved_problem(user, problem, instance):
+    acs = Submission.objects.filter(user=user,
+                                    problem=problem,
+                                    state=Submission.ACCEPTED).count()
+    # 오오 풀었당!
+    if acs == 0:
+        subs = Submission.objects.filter(user=user,
+                                         problem=problem).count()
+        action.send(user,
+                    action_object=problem,
+                    verb=u"%d번의 시도만에 문제 {action_object}를 "
+                         u"해결했습니다." % subs)
+        profile = user.get_profile()
+        profile.solved_problems += 1
+        profile.save()
+
+def unsolved_problem(user, problem, instance):
+    acs = Submission.objects.filter(user=user,
+                                    problem=problem,
+                                    state=Submission.ACCEPTED).count()
+    # 이것까지 없어지다니 !
+    if acs == 1:
+        profile = user.get_profile()
+        profile.solved_profiles -= 1
+        profile.save()
+
+        # TODO: news feed entry 없애기
+
+def will_save_submission(sender, **kwargs):
+    instance = kwargs["instance"]
+    if not instance.id: return
+    old_state = Submission.objects.get(id=instance.id).state
+    if old_state == instance.state: return
+    # 풀었다!
+    if instance.state == Submission.ACCEPTED:
+        solved_problem(instance.user, instance.problem, instance)
+    # 리저지?
+    elif old_state == Submission.ACCEPTED:
+        unsolved_problem(instance.user, instance.problem, instance)
+
+def saved_submission(sender, **kwargs):
+    if kwargs["created"]:
+        profile = kwargs["instance"].user.get_profile()
+        profile.submissions += 1
+        profile.save()
+
+pre_save.connect(will_save_problem, sender=Problem,
+                 dispatch_uid="will_save_problem")
+"""
+pre_save.connect(will_save_submission, sender=Submission,
+                 dispatch_uid="will_save_submission")
+post_save.connect(saved_submission, sender=Submission,
+                  dispatch_uid="saved_submission")
+                  """

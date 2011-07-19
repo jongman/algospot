@@ -172,10 +172,15 @@ def migrate_submissions(db):
     submissions = fetch_all(db, "GDN_Submission")
     for submission in submissions:
         kwargs = {}
-        kwargs["problem"] = Problem.objects.get(id=submission["Problem"])
+        try:
+            kwargs["problem"] = Problem.objects.get(id=submission["Problem"])
+        except:
+            continue
         kwargs["user"] = User.objects.get(id=submission["Author"])
         for k, v in SUBMISSION_MAPPING.items():
-            kwargs[v] = submission[k] or ""
+            kwargs[v] = submission[k]
+        if not kwargs["message"]:
+            kwargs["message"] = ""
         new_submission = Submission(**kwargs)
         new_submission.save()
         new_submission.submitted_on = submission["Submitted"]
@@ -224,9 +229,9 @@ def fix_insertimage(db):
         problem.save()
 
 def migrate_judge(db, upload):
-    #migrate_problems(db)
-    #migrate_submissions(db)
-    #migrate_attachments(db, upload)
+    migrate_problems(db)
+    migrate_submissions(db)
+    migrate_attachments(db, upload)
     fix_insertimage(db)
 
 class Command(BaseCommand):
