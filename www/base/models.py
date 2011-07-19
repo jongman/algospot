@@ -6,9 +6,7 @@ from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.contrib.comments.models import Comment
-from django.contrib.contenttypes.models import ContentType
-from actstream import action
-from actstream.models import Action
+from newsfeed import publish, depublish
 
 # 이만큼은 문제를 풀어야 위키 변경 등의 일을 할 수 있다.
 USER_AUTHORIZATION_LIMIT = 5
@@ -39,9 +37,12 @@ def deleting_user(sender, **kwargs):
 def comment_handler(sender, **kwargs):
     instance, created = kwargs["instance"], kwargs["created"]
     profile = instance.user.get_profile()
+    target = instance.content_object
     if created:
-        target = instance.content_object
-        action.send(instance.user,
+        publish("comment-%d" % instance.id,
+                "posts",
+                "commented",
+                actor=instance.user,
                 action_object=instance,
                 target=target,
                 timestamp=instance.submit_date,
@@ -49,11 +50,8 @@ def comment_handler(sender, **kwargs):
                 u"{action_object}")
         profile.posts += 1
     elif instance.is_removed:
+        depublish("comment-%d" % instance.id)
         profile.posts -= 1
-        comment_type = ContentType.objects.get(app_label="comments",
-                model="comment")
-        Action.objects.filter(action_object_content_type=comment_type,
-                action_object_object_id=instance.id).delete()
     profile.save()
 
 post_save.connect(comment_handler, sender=Comment,
