@@ -15,14 +15,21 @@ class Activity(models.Model):
     actor = models.ForeignKey(User, null=True, related_name='actor')
     # {actor} {target} {action_object} 를 갖는 문자열
     verb = models.CharField(max_length=255)
-    """
-    target_content_type = models.ForeignKey(ContentType,related_name='target',blank=True,null=True)
-    target_object_id = models.PositiveIntegerField(blank=True,null=True)
+
+    target_content_type = models.ForeignKey(ContentType,
+                                            related_name='target_content_type',
+                                            blank=True,
+                                            null=True)
+    target_object_id = models.PositiveIntegerField(blank=True,
+                                                   null=True)
     target = generic.GenericForeignKey('target_content_type','target_object_id')
 
-    action_object_content_type = models.ForeignKey(ContentType,related_name='action_object',blank=True,null=True)
+    action_object_content_type = models.ForeignKey(ContentType,
+                                                   related_name='action_object_content_type',
+                                                   blank=True,
+                                                   null=True)
     action_object_object_id = models.PositiveIntegerField(blank=True,null=True)
-    action_object = generic.GenericForeignKey('action_object_content_type','action_object_object_id')
-"""
+    action_object = generic.GenericForeignKey('action_object_content_type',
+                                              'action_object_object_id')
     timestamp = models.DateTimeField(auto_now_add=True)
 
