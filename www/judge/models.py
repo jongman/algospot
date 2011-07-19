@@ -3,6 +3,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from config import JUDGE_MODULES
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.conf import settings
 
 class Problem(models.Model):
     DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
@@ -35,6 +38,26 @@ class Problem(models.Model):
 
     def get_absolute_url(self):
         return reverse("judge-problem-read", kwargs={"slug": self.slug})
+
+if "actstream" in settings.INSTALLED_APPS:
+    from actstream import action
+
+    def problem_saved(sender, **kwargs):
+        instance = kwargs["instance"]
+        # 새로 만들어질 때는 항상 DRAFT 상태
+        if not instance.id: return
+        # 이미 공개된 문제면 무시
+        if Problem.objects.get(id=instance.id).state == Problem.PUBLISHED:
+            return
+        if instance.state == Problem.PUBLISHED:
+            action.send(instance.user,
+                    action_object=instance,
+                    verb=u"온라인 저지에 새 문제 {action_object}를 "
+                         u"공개했습니다.")
+
+    pre_save.connect(problem_saved, sender=Problem,
+            dispatch_uid="problem_saved")
+
 
 class Attachment(models.Model):
     problem = models.ForeignKey(Problem)
