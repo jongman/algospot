@@ -1,7 +1,7 @@
 from models import Activity
 
-def publish(key, category, **kwargs):
-    new_activity = Activity(key=key, category=category, **kwargs)
+def publish(key, category, type, **kwargs):
+    new_activity = Activity.new(key=key, category=category, type=type, **kwargs)
     new_activity.save()
     return new_activity
 
