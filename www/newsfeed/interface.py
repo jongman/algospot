@@ -7,3 +7,6 @@ def publish(key, category, type, **kwargs):
 
 def depublish(key):
     Activity.objects.filter(key=key).delete()
+
+def depublish_where(**kwargs):
+    Activity.delete_all(**kwargs)

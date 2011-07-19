@@ -39,9 +39,7 @@ class Activity(models.Model):
     timestamp = models.DateTimeField()
 
     @staticmethod
-    def new(**kwargs):
-        if "timestamp" not in kwargs:
-            kwargs["timestamp"] = datetime.datetime.now()
+    def translate(kwargs):
         args = {}
         for k, v in kwargs.iteritems():
             if k in ["target", "action_object"]:
@@ -51,7 +49,17 @@ class Activity(models.Model):
                 args[k + "_object_id"] = pk
             else:
                 args[k] = v
-        return Activity(**args)
+        return args
+
+    @staticmethod
+    def new(**kwargs):
+        if "timestamp" not in kwargs:
+            kwargs["timestamp"] = datetime.datetime.now()
+        return Activity(**Activity.translate(kwargs))
+
+    @staticmethod
+    def delete_all(**kwargs):
+        return Activity.objects.filter(**Activity.translate(kwargs)).delete()
 
     def render(self):
         def wrap_in_link(object):

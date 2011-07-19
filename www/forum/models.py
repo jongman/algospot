@@ -3,9 +3,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
-from actstream import action
-from actstream.models import Action
+from newsfeed import publish, depublish, depublish_where
 
 class Category(models.Model):
     """Stores a post category."""
@@ -38,9 +36,12 @@ def post_handler(sender, **kwargs):
     profile = instance.user.get_profile()
     profile.posts += 1
     profile.save()
-    action.send(instance.user,
-            action_object=instance,
+    publish("forum-post-%d" % instance.id,
+            "posts",
+            "posted",
+            actor=instance.user,
             target=instance.category,
+            action_object=instance,
             timestamp=instance.created_on,
             verb=u"{target}에 글 {action_object}를 "
             u"썼습니다.")
@@ -49,14 +50,8 @@ def pre_delete_handler(sender, **kwargs):
     profile = instance.user.get_profile()
     profile.posts -= 1
     profile.save()
-    post_type = ContentType.objects.get(app_label="forum",
-            model="post")
-    # delete action for posting
-    Action.objects.filter(action_object_content_type=post_type,
-            action_object_object_id=instance.id).delete()
-    # delete actions for comments
-    Action.objects.filter(target_content_type=post_type,
-            target_object_id=instance.id).delete()
+    depublish("forum-post-%d" % instance.id)
+    depublish_where(type="commented", target=instance)
 
 pre_delete.connect(pre_delete_handler, sender=Post,
         dispatch_uid="forum_pre_delete_event")
