@@ -1906,7 +1906,7 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 .problem_edit textarea, .forum_edit textarea, .forum_edit input, .problem_edit input {
     width: 80%;
 }
-.problem_edit textarea, .forum_edit textarea {
+.problem_edit textarea#id_description, .forum_edit textarea {
     height: 400px;
 }
 
