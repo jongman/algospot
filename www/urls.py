@@ -7,17 +7,16 @@ urlpatterns = patterns('',
     url(r'^wiki/', include('www.wiki.urls')),
     url(r'^forum/', include('www.forum.urls')),
     url(r'^user/', include('base.urls')),
-    url(r'^activity/', include('actstream.urls')),
     url(r'^newsfeed/', include('newsfeed.urls')),
     url(r'^judge/', include('judge.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/logout', 'django.contrib.auth.views.logout', 
+    url(r'^accounts/logout', 'django.contrib.auth.views.logout',
         kwargs={'next_page': '/'}),
     url(r'^accounts/', include('registration.urls')),
     url(r'^avatar/', include('avatar.urls')),
 
-    # we are overriding default comments app's deletion.. 
+    # we are overriding default comments app's deletion..
     url(r'^comments/delete/(?P<comment_id>.+)/', 'www.base.views.delete_comment',
         name="comment-delete-algospot"),
 
@@ -30,7 +29,7 @@ urlpatterns = patterns('',
 
 if settings.DEBUG:
     # Serve all local files from MEDIA_ROOT below /media/
-    urlpatterns += patterns('', 
+    urlpatterns += patterns('',
             (r'^%s(?P<path>.*)$' % settings.MEDIA_URL.lstrip("/"),
-                'django.views.static.serve', 
+                'django.views.static.serve',
                 {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),)
