@@ -109,7 +109,7 @@ def migrate_forum(db):
                     site_id=settings.SITE_ID,
                     submit_date=comment["DateInserted"])
             new_comment.save()
-            patch("forum-post-%d" % new_comment.id, comment["DatedInserted"])
+            patch("forum-post-%d" % new_comment.id, comment["DateInserted"])
             copied_comments += 1
         copied_posts += 1
         if copied_posts % 10 == 0:

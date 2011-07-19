@@ -3,3 +3,4 @@ venv
 *.sqlite3
 designs
 www/profile_logs
+*swp
