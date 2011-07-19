@@ -1,13 +1,13 @@
 {% extends "problem/problem-base.html" %}
 {% load common_tags %}
 
-{% block judge-problem-read-class %}current{% endblock %}
+{% block judge-problem-admin-class %}current{% endblock %}
 
 {% block page-title %}
 문제 편집: {{ problem.name }}
 {% endblock %}
 
-{% block page-contents %} 
+{% block page-contents %}
 <div class="kor problem_edit">
 	<form action="" method="post">
 		{% csrf_token %}
@@ -15,7 +15,7 @@
 			<legend>편집하기</legend>
 			{% include "print_form.html" %}
 		</fieldset>
-		<fieldset>
+		<fieldset class="attachments">
 			<legend>첨부파일</legend>
 			<table id="attachments">
 				<thead>
@@ -45,7 +45,21 @@
 			//"bServerSide": true,
 			"iDisplayLength": 100,
 			"sAjaxSource": "{% url judge-problem-list-attachments problem.id %}",
-			"aaSorting": [[0, "asc"]]
+			"aaSorting": [[0, "asc"]],
+			"aoColumnDefs": [
+				{
+					"aTargets": [1],
+					"fnRender": function(obj) {
+						return '<a href="' + obj.aData[3] + '">' + obj.aData[1] + '</a>';
+					}
+				},
+				{
+					"aTargets": [3],
+					"fnRender": function(obj) {
+						return "bah";
+					}
+				}
+			]
 		});
 	});
 </script>

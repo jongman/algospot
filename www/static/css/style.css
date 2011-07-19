@@ -1918,3 +1918,6 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 .problems td.id, .problems td.name { text-align: left; }
 
 .problems a { text-decoration: none; }
+
+.attachments .dataTables_wrapper { min-height: 0px; }
+.attachments a { text-decoration: none; }
