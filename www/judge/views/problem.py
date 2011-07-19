@@ -3,11 +3,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
-from djangoutils import setup_paginator
+from.django.core.files.storage import DefaultStorage
+from djangoutils import setup_paginator, get_or_none
 from ..models import Problem, Submission, Attachment
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
 import json
 import os
+import hashlib
 
 @login_required
 def edit(request, id):
@@ -34,6 +36,38 @@ def delete_attachment(request, id):
     attachment.file.delete(False)
     attachment.delete()
     return HttpResponse("[]")
+
+def md5file(file):
+    md5 = hashlib.md5()
+    for chunk in file.chunks():
+        md5.update(chunk)
+    return md5.hexdigest()
+
+@login_required
+def add_attachment(request, id):
+    def go():
+        problem = get_or_none(Problem, id=id)
+        if not problem:
+            return {"success": False,
+                    "error": u"존재하지 않는 문제입니다."}
+        if not request.user.is_superuser and problem.user != request.user:
+            return {"success": False,
+                    "error": u"권한이 없습니다."}
+        if request.method != "POST":
+            return {"success": False,
+                    "error": u"POST 접근하셔야 합니다."}
+        file = request.FILES["file"]
+        md5 = md5file(file)
+        target_path = os.path.join("judge-attachments", md5, file.name)
+        storage = DefaultStorage()
+        storage.save(target_path, file)
+        new_attachment = Attachment(problem=problem,
+                                    file=target_path)
+        new_attachment.save()
+        return {"success": True}
+
+    return HttpResponse(json.dumps(go()))
+
 
 @login_required
 def list_attachments(request, id):

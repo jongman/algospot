@@ -1923,6 +1923,10 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 .attachments a { text-decoration: none; }
 .attachments td, .attachments th {
 	text-align: left;
-	margin-left: 16px;
+	margin-left: 8px;
 	padding: 0;
+	padding-left: 8px;
+}
+.attachments div.uploadbutton {
+	margin-bottom: 16px;
 }

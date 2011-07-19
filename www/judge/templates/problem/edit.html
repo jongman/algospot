@@ -29,6 +29,9 @@
 				<tbody>
 				</tbody>
 			</table>
+			<div class="uploadbutton">
+				<a href="javascript:;" class="button" id="upload_button">업로드</a>
+			</div>
 		</fieldset>
 		<button type="submit">Submit</button>
 	</form>
@@ -39,6 +42,7 @@
 		table = $("#attachments").dataTable({
 			"bProcessing": true,
 			"bLengthChange": false,
+			"bPaginate": false,
 			"bFilter": false,
 			"bInfo": false,
 			"bSort": false,
@@ -66,6 +70,26 @@
 				}
 			]
 		});
+
+        new AjaxUpload("upload_button", {
+			action: "{% url judge-problem-add-attachment problem.id %}",
+            data: {
+				csrfmiddlewaretoken: $("form input[name=csrfmiddlewaretoken]").val()
+			},
+            name: "file",
+            autoSubmit: true,
+            responseType: "json",
+            onSubmit: function(file, extension) {
+            },
+            onComplete: function(file, response) {
+                if(response.success) {
+                    alert("업로드가 성공했습니다.");
+                    table.fnReloadAjax();
+                }
+                else
+                    alert(response.error);
+            }});
 	});
 </script>
+<script language="javascript" src="/static/js/ajaxupload.js"></script>
 {% endblock %}
