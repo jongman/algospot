@@ -51,20 +51,20 @@
 			"iDisplayLength": 100,
 			"sAjaxSource": "{% url judge-problem-list-attachments problem.id %}",
 			"aaSorting": [[0, "asc"]],
-			"aoColumnDefs": [
+			"aoColumns": [
+				null,
 				{
-					"aTargets": [1],
 					"fnRender": function(obj) {
 						return '<a href="' + obj.aData[3] + '">' + obj.aData[1] + '</a>';
 					},
 					"sWidth": "40%"
 				},
+				null,
 				{
-					"aTargets": [3],
 					"fnRender": function(obj) {
 						return [
 						'<a href="javascript:confirm_attachment_delete(table, \'{% url judge-problem-delete-attachment "" %}' + obj.aData[0] + '\');" class="button-link">delete</a>',
-						'<a href="javascript:insert_attachment_link(\'' + obj.aData[3] + '\', obj.aData[1]);" class="button-link">insert</a>'
+						'<a href="javascript:insert_attachment_link(\'' + obj.aData[3] + '\');" class="button-link">insert</a>'
 						].join(' ');
 					}
 				}

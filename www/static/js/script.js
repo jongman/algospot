@@ -326,6 +326,46 @@ function confirm_attachment_delete(table, url) {
 	return false;
 }
 
+function insert_attachment_link(url) {
+	var ext = url.split(".").pop().toLowerCase();
+	var filename = url.split("/").pop();
+	if(ext == "jpg" || ext == "png") 
+		$("textarea[name=description]").insertAtCaret("![" + filename + "](" + url + ")");
+	else
+		$("textarea[name=description]").insertAtCaret("[" + filename + "](" + url + ")");
+}
+
+/* insertAtCaret implementation */
+$.fn.insertAtCaret = function (myValue) {
+		return this.each(function(){
+				//IE support
+				if (document.selection) {
+						this.focus();
+						sel = document.selection.createRange();
+						sel.text = myValue;
+						this.focus();
+				}
+				//MOZILLA/NETSCAPE support
+				else if (this.selectionStart || this.selectionStart == '0') {
+						var startPos = this.selectionStart;
+						var endPos = this.selectionEnd;
+						var scrollTop = this.scrollTop;
+						this.value = this.value.substring(0, startPos)
+									  + myValue
+							  + this.value.substring(endPos,
+this.value.length);
+						this.focus();
+						this.selectionStart = startPos + myValue.length;
+						this.selectionEnd = startPos + myValue.length;
+						this.scrollTop = scrollTop;
+				} else {
+						this.value += myValue;
+						this.focus();
+				}
+		});
+
+};
+
 /* fnReloadAjax implementation */
 
 $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
