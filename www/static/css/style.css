@@ -396,7 +396,7 @@ article footer {
 }
 
 /*  Content Layout :: Main Content :: Block Layout */
-.half-block { 
+.half-block {
 	width:49%;
 	margin-right:2%;
 	float:left;
@@ -1021,14 +1021,14 @@ div.tab > img, div.tab > .image-frame img { margin-top:0; }
 	text-align:center;
 	height:35px;
 	border-bottom:3px solid;
-	
+
 }
 .wizard-steps li {
 	font-size:116%;
 	height:100%;
 	display:inline-block;
 	padding:0 15px;
-	
+
 }
 .ie7 .wizard-steps li {
 	display:block;
@@ -1246,7 +1246,7 @@ input.datepicker {
 }
 .htmlcalendar .week span, .htmlcalendar .week sup { padding-right:8px; }
 .htmlcalendar .day > div { min-height:110px; }
-.htmlcalendar .calendar-entry { 
+.htmlcalendar .calendar-entry {
 	padding:8px;
 	text-align:right;
 	font-size:131%;
@@ -1532,7 +1532,7 @@ div.wiki-edit textarea,
 div.wiki-edit legend,
 div.wiki-edit input,
 ul.tab-switch li a,
-ul#breadcrumbs li, 
+ul#breadcrumbs li,
 section.sidebar, /* sidebar item */
 #main-nav ul li a, /* major menu item */
 #main-nav ul li li a /* minor menu item */
@@ -1546,11 +1546,11 @@ section.sidebar, /* sidebar item */
 
 .added {
 	background-color: #43ae2e;
-	color: white; 
+	color: white;
 }
 .removed {
 	background-color: #ae432e;
-	color: white; 
+	color: white;
 }
 
 article section {
@@ -1587,7 +1587,7 @@ article header h3 {
 	position: relative;
 }
 .comments .comment .comment_user {
-	width: 80px;	
+	width: 80px;
 	overflow: hidden;
 	margin-right: 10px;
 	float: left;
@@ -1595,7 +1595,7 @@ article header h3 {
 }
 .comments .comment .comment_content {
 	display: table-cell;
-	font-size: 90%;	
+	font-size: 90%;
 }
 .comments .comment .comment_content p {
 	color: #444
@@ -1694,7 +1694,7 @@ div.highlight {
 	width:100%;
 	padding-bottom:10px;
 	border-bottom:1px solid;
-	border-color: #ccc; 
+	border-color: #ccc;
 }
 .forumlist-header li, .forumlist-entry li {
 	text-align:center;
@@ -1712,16 +1712,16 @@ div.highlight {
 .forumlist-updated { width: 10%; }
 .forumlist-title a { text-decoration: none; }
 .forumlist-entry .forumlist-title { text-align: left !important; }
-.forumlist .forumlist-entry ul { 
+.forumlist .forumlist-entry ul {
 	margin-top: 5px;
 	margin-bottom:5px;
 }
-.forumlist .forumlist-entry { 
+.forumlist .forumlist-entry {
 	padding:0;
 	line-height: 100%;
 	margin:0;
 	border-bottom:1px solid;
-	border-color: #ccc; 
+	border-color: #ccc;
 	overflow:hidden;
 }
 .forumlist .forumlist-entry { background-color: #f2f2f2; }
@@ -1870,13 +1870,13 @@ article header h2 { width: 500px; }
 	border: 1px solid silver;
 }
 
-.submissions td, .submissions th { 
-	padding-left: 8px; 
-	text-align: left; 
+.submissions td, .submissions th {
+	padding-left: 8px;
+	text-align: left;
 }
 .submissions td, .submissions th {
-	height: 24px; 
-	font-size: 13px; 
+	height: 24px;
+	font-size: 13px;
 }
 .submissions a { text-decoration: none; }
 .submissionRECEIVED { color: silver; }
@@ -1910,9 +1910,9 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
     height: 400px;
 }
 
-.problems td, .problems th {
-	height: 24px; 
-	font-size: 13px; 
+.problems td, .problems th, .attachments td, .attachments th {
+	height: 24px;
+	font-size: 13px;
 }
 
 .problems td.id, .problems td.name { text-align: left; }
@@ -1921,3 +1921,8 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 
 .attachments .dataTables_wrapper { min-height: 0px; }
 .attachments a { text-decoration: none; }
+.attachments td, .attachments th {
+	text-align: left;
+	margin-left: 16px;
+	padding: 0;
+}

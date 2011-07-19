@@ -26,6 +26,16 @@ def edit(request, id):
         "breadcrumbs": breadcrumbs})
 
 @login_required
+def delete_attachment(request, id):
+    attachment = get_object_or_404(Attachment, id=id)
+    problem = attachment.problem
+    if not request.user.is_superuser and problem.user != request.user:
+        raise Http404
+    attachment.file.delete(False)
+    attachment.delete()
+    return HttpResponse("[]")
+
+@login_required
 def list_attachments(request, id):
     problem = get_object_or_404(Problem, id=id)
     if not request.user.is_superuser and problem.user != request.user:

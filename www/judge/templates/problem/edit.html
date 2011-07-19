@@ -34,8 +34,9 @@
 	</form>
 </div>
 <script language="javascript">
+	var table = null;
 	$(document).ready(function() {
-		$("#attachments").dataTable({
+		table = $("#attachments").dataTable({
 			"bProcessing": true,
 			"bLengthChange": false,
 			"bFilter": false,
@@ -51,12 +52,16 @@
 					"aTargets": [1],
 					"fnRender": function(obj) {
 						return '<a href="' + obj.aData[3] + '">' + obj.aData[1] + '</a>';
-					}
+					},
+					"sWidth": "40%"
 				},
 				{
 					"aTargets": [3],
 					"fnRender": function(obj) {
-						return "bah";
+						return [
+						'<a href="javascript:confirm_attachment_delete(table, \'{% url judge-problem-delete-attachment "" %}' + obj.aData[0] + '\');" class="button-link">delete</a>',
+						'<a href="javascript:insert_attachment_link(\'' + obj.aData[3] + '\', obj.aData[1]);" class="button-link">insert</a>'
+						].join(' ');
 					}
 				}
 			]
