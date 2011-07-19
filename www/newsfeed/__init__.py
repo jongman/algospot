@@ -1,1 +1,1 @@
-from interface import publish, depublish, depublish_where
+from interface import publish, depublish, depublish_where, has_activity

@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from forum.models import Post, Category
 from judge.models import Problem, Submission, Attachment
 from djangoutils import get_or_none
-from actstream.models import Action
+from newsfeed.models import Activity
 import MySQLdb
 import hashlib
 import shutil
@@ -15,6 +15,12 @@ import urllib
 import os
 import re
 import string
+
+def patch(key, val):
+    act = get_or_none(Activity, key=key)
+    if act:
+        act.timestamp = val
+        act.save()
 
 accepted = string.letters + string.digits + "._-"
 def escape(ch):
@@ -32,18 +38,6 @@ def fetch_all(db, table, **where):
             where.items()])
     c.execute("SELECT * FROM %s %s;" % (table, where_clause))
     return c.fetchall()
-
-# god.. forgive me
-def patch_action_time(timestamp, **kwargs):
-    criteria = {}
-    for k, v in kwargs.items():
-        criteria[k + "_content_type"] = ContentType.objects.get_for_model(v.__class__)
-        criteria[k + "_object_id"] = v.id
-    actions = Action.objects.filter(**criteria)
-    for action in actions:
-        action.timestamp = timestamp
-        action.save()
-
 def migrate_user(db):
     username_seen = set()
     created = 0
@@ -64,6 +58,7 @@ def migrate_user(db):
                 password=pw,
                 is_superuser=(u["Admin"] == "1"))
         new_user.save()
+        patch("joined-%d" % new_user.id, u["DateInserted"])
         created += 1
         if created % 10 == 0:
             print "created %d users so far" % created
@@ -100,9 +95,7 @@ def migrate_forum(db):
                 created_on=thread["DateInserted"],
                 text=thread["Body"])
         new_post.save()
-        new_post.created_on = thread["DateInserted"]
-        new_post.save()
-        patch_action_time(thread["DateInserted"], action_object=new_post)
+        patch("forum-post-%d" % new_post.id, thread["DateInserted"])
 
         comments = fetch_all(db, "GDN_Comment",
                 DiscussionID=thread["DiscussionID"])
@@ -116,9 +109,7 @@ def migrate_forum(db):
                     site_id=settings.SITE_ID,
                     submit_date=comment["DateInserted"])
             new_comment.save()
-            patch_action_time(comment["DateInserted"],
-                    action_object=new_comment,
-                    target=new_post)
+            patch("forum-post-%d" % new_comment.id, comment["DatedInserted"])
             copied_comments += 1
         copied_posts += 1
         if copied_posts % 10 == 0:
@@ -172,7 +163,6 @@ def migrate_submissions(db):
     imported = 0
     submissions = fetch_all(db, "GDN_Submission")
     Submission.objects.all().delete()
-    solved = set()
     for submission in submissions:
         kwargs = {}
         try:
@@ -187,17 +177,13 @@ def migrate_submissions(db):
         kwargs["state"] = Submission.RECEIVED
         new_submission = Submission(**kwargs)
         new_submission.save()
-
         new_submission.state = submission["State"]
-        new_submission.submitted_on = submission["Submitted"]
         new_submission.save()
-        if submission["State"] == Submission.ACCEPTED:
-            key = (kwargs["user"].id, kwargs["problem"].id)
-            if key not in solved:
-                solved.add(key)
-                patch_action_time(submission["Submitted"],
-                                  action_object=new_submission,
-                                  target=kwargs["problem"])
+        patch("solved-%d-%d-%d" % (submission["Author"],
+                                   submission["Problem"],
+                                   submission["No"]),
+              submission["Submitted"])
+
         imported += 1
         if imported % 100 == 0:
             print "Migrated %d of %d submissions." % (imported,

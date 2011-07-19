@@ -26,13 +26,20 @@ class UserProfile(models.Model):
 def user_added(sender, **kwargs):
     """ automatically create profile classes when a user is created."""
     if kwargs["created"]:
-        profile = UserProfile(user=kwargs["instance"])
+        user = kwargs["instance"]
+        profile = UserProfile(user=user)
         profile.save()
+        publish("joined-%d" % user.id ,
+                "other",
+                "joined",
+                actor=user,
+                verb=u"가입했습니다.")
 
 @receiver(pre_delete, sender=User)
 def deleting_user(sender, **kwargs):
-    sender.get_profile().delete()
-
+    user = kwargs["instance"]
+    user.get_profile().delete()
+    depublish("joined-%d" % user.id)
 
 def comment_handler(sender, **kwargs):
     instance, created = kwargs["instance"], kwargs["created"]

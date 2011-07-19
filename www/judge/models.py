@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from config import JUDGE_MODULES
 from django.db.models.signals import pre_save, post_save
-from actstream import action
+from newsfeed import publish, depublish, has_activity
 from djangoutils import get_or_none
 
 class Problem(models.Model):
@@ -130,25 +130,43 @@ def solved_problem(user, problem, instance):
     # 오오 풀었당!
     subs = Submission.objects.filter(user=user,
                                      problem=problem).count()
-    action.send(user,
-                target=problem,
-                action_object=instance,
-                verb=u"%d번의 시도만에 문제 {target}를 "
-                     u"해결했습니다." % subs)
+    publish("solved-%d-%d-%d" % (user.id, problem.id, instance.id),
+            "solved",
+            "judge",
+            target=problem,
+            actor=user,
+            verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." % subs)
     profile = user.get_profile()
     profile.solved_problems += 1
     profile.save()
 
 def unsolved_problem(user, problem, instance):
-    accepted = Submission.objects.filter(user=user,
-                                    problem=problem,
-                                    state=Submission.ACCEPTED).count()
-    # TODO: news feed entry 없애고 다시 만들기?
-    # 이게 없어지면 못 푼 문제가 되나?
-    if accepted > 1: return
-    profile = user.get_profile()
-    profile.solved_profiles -= 1
-    profile.save()
+    activity_id = "solved-%d-%d-%d" % (user.id, problem.id, instance.id)
+    # 첫 번째 AC가 없어지지 않는한 신경 안 쓴다
+    if not has_activity(activity_id): return
+    depublish(activity_id)
+    # 이후에 AC받은 전적이 있나?
+    next_accepted = get_or_none(Submission,
+                                user=user,
+                                problem=problem,
+                                state=Submission.ACCEPTED,
+                                id__gt=instance.id)
+    # 그렇다면 새로 publish 하고 끝
+    if next_accepted:
+        subs = Submission.objects.filter(user=user,
+                                         problem=problem,
+                                         id__lte=next_accepted.id).count()
+        publish("solved-%d-%d-%d" % (user.id, problem.id, next_accepted.id),
+                "solved",
+                "judge",
+                target=problem,
+                actor=user,
+                verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." % subs)
+    else:
+        # 이제 이 문제 못풀었어요 프로필 빠빠이..
+        profile = user.get_profile()
+        profile.solved_profiles -= 1
+        profile.save()
 
 def will_save_submission(sender, **kwargs):
     instance = kwargs["instance"]

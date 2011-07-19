@@ -10,3 +10,6 @@ def depublish(key):
 
 def depublish_where(**kwargs):
     Activity.delete_all(**kwargs)
+
+def has_activity(**kwargs):
+    return Activity.objects.filter(**Activity.translate(kwargs)).count() > 0
