@@ -39,6 +39,7 @@ if "actstream" in settings.INSTALLED_APPS:
 
     def comment_handler(sender, **kwargs):
         instance, created = kwargs["instance"], kwargs["created"]
+        profile = instance.user.get_profile()
         if created:
             target = instance.content_object
             action.send(instance.user,
@@ -47,11 +48,14 @@ if "actstream" in settings.INSTALLED_APPS:
                     timestamp=instance.submit_date,
                     verb=u"{target}에 새 댓글을 달았습니다: "
                     u"{action_object}")
+            profile.posts += 1
         elif instance.is_removed:
+            profile.posts -= 1
             comment_type = ContentType.objects.get(app_label="comments",
                     model="comment")
             Action.objects.filter(action_object_content_type=comment_type,
                     action_object_object_id=instance.id).delete()
+        profile.save()
 
     post_save.connect(comment_handler, sender=Comment,
             dispatch_uid="comment_event")
