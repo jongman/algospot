@@ -17,7 +17,7 @@
 {% block page-contents %} 
 	{% load avatar_tags %}
 	{% load common_tags %}
-	{% load newsfeed_tags %}
+	{% load	newsfeed_tags %}
 
 	<ul class="comments background-color">
 		{% for user, actions in pagination.page|aggregate_by_user %}
@@ -30,10 +30,10 @@
 				<dd class="comment_content">
 					<ul class="newsfeed kor">
 						{% for action in actions %}
-						<li class="{{ action|determine_action_type }}">
+						<li class="{{ action.type }}">
 							<span class="newsfeed-timestamp">{{ action.timestamp|print_datetime }}</span>
 							<p>
-								{{ action|format_action }}
+								{{ action.render }}
 							</p>
 						</li>
 						{% endfor %}

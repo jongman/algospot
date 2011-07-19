@@ -1798,13 +1798,14 @@ div.highlight {
 	line-height:100%;
 	width: 90%;
 }
+.newsfeed li.wiki-edit {
+	background-image:url('/static/images/icons/icon_nav_articles.png');
+}
 .newsfeed li a {
 	text-decoration: none;
 }
 .newsfeed li.commented { background-image:url('/static/images/icons/icon_notification_information.png'); }
 .newsfeed li.event { background-image:url('/static/images/icons/icon_event_log.png'); }
-.newsfeed li.post { background-image:url('/static/images/icons/icon_table_edit.png'); }
-.newsfeed li.page { background-image:url('/static/images/icons/icon_nav_articles.png'); }
 .newsfeed li .newsfeed-timestamp {
 	margin-top: 4px;
 	margin-left: 16px;

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
+from django.utils.safestring import mark_safe
+from django.contrib.comments.models import Comment
+import datetime
 
 class Activity(models.Model):
     # 액션 고유 ID. 지울 때 쓴다. 예: judge-problem-opened-417
@@ -34,5 +36,37 @@ class Activity(models.Model):
     action_object_object_id = models.PositiveIntegerField(blank=True,null=True)
     action_object = generic.GenericForeignKey('action_object_content_type',
                                               'action_object_object_id')
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField()
 
+    @staticmethod
+    def new(**kwargs):
+        if "timestamp" not in kwargs:
+            kwargs["timestamp"] = datetime.datetime.now()
+        args = {}
+        for k, v in kwargs.iteritems():
+            if k in ["target", "action_object"]:
+                ct = ContentType.objects.get_for_model(v.__class__)
+                pk = v.id
+                args[k + "_content_type"] = ct
+                args[k + "_object_id"] = pk
+            else:
+                args[k] = v
+        return Activity(**args)
+
+    def render(self):
+        def wrap_in_link(object):
+            if not object: return ""
+            if isinstance(object, Comment):
+                unicode_rep = object.comment
+                if len(unicode_rep) > 50:
+                    unicode_rep = unicode_rep[:47] + ".."
+            else:
+                unicode_rep = unicode(object)
+            if object.get_absolute_url:
+                return "".join(['<a href="%s">' % object.get_absolute_url(),
+                    unicode_rep,
+                    '</a>'])
+            return unicode_rep
+        return mark_safe(self.verb.format(actor=wrap_in_link(self.actor),
+                                          action_object=wrap_in_link(self.action_object),
+                                          target=wrap_in_link(self.target)))

@@ -3,7 +3,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
-from actstream import action
+from newsfeed import publish
 
 class PageRevision(models.Model):
     """Stores a specific revision of the page."""
@@ -32,10 +32,13 @@ class Page(models.Model):
         return reverse("wiki-detail", args=[self.slug])
 
 def edit_handler(sender, **kwargs):
-    instance, created = kwargs["instance"], kwargs["created"]
-    action.send(instance.user,
-            action_object=instance.revision_for,
+    instance = kwargs["instance"]
+    publish("wiki-edit-%d" % instance.id,
+            "wiki",
+            "wiki-edit",
+            actor=instance.user,
+            target=instance.revision_for,
             timestamp=instance.created_on,
-            verb=u"위키 페이지 {action_object}을 편집했습니다.")
+            verb=u"위키 페이지 {target}을 편집했습니다.")
 post_save.connect(edit_handler, sender=PageRevision,
         dispatch_uid="wiki_edit_event")
