@@ -2,7 +2,7 @@
 
 import settings
 
-USE_TOOLBAR = True
+USE_TOOLBAR = False
 USE_PROFILING = False
 
 # Use a local mysql database

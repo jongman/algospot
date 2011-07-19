@@ -11,7 +11,18 @@ from actstream.models import Action
 import MySQLdb
 import hashlib
 import shutil
+import urllib
 import os
+import re
+import string
+
+accepted = string.letters + string.digits + "._-"
+def escape(ch):
+    if ch in accepted: return ch
+    return "_%.3d_" % ord(ch)
+
+def sanitize_filename(filename):
+    return "".join(map(escape, filename))
 
 def fetch_all(db, table, **where):
     c = db.cursor()
@@ -164,7 +175,7 @@ def migrate_submissions(db):
         kwargs["problem"] = Problem.objects.get(id=submission["Problem"])
         kwargs["user"] = User.objects.get(id=submission["Author"])
         for k, v in SUBMISSION_MAPPING.items():
-            kwargs[v] = submission[k]
+            kwargs[v] = submission[k] or ""
         new_submission = Submission(**kwargs)
         new_submission.save()
         new_submission.submitted_on = submission["Submitted"]
@@ -185,8 +196,9 @@ def migrate_attachments(db, upload):
     for attachment in attachments:
         origin = os.path.join(upload, attachment["Path"])
         md5 = md5file(origin)
+        name = sanitize_filename(attachment["Name"])
         target_path = os.path.join("judge-attachments",
-                                   md5, attachment["Name"])
+                                   md5, name)
         copy_to = os.path.join(settings.MEDIA_ROOT, target_path)
         try:
             os.makedirs(os.path.dirname(copy_to))
@@ -199,10 +211,23 @@ def migrate_attachments(db, upload):
                                     id=attachment["No"], file=target_path)
         new_attachment.save()
 
+def fix_insertimage(db):
+    def replace(mobj):
+        attachment = Attachment.objects.get(id=int(mobj.group(1)))
+        print attachment.file.url
+        return "![%s](%s)" % (attachment.file.name.replace("]", "\]"),
+                              attachment.file.url)
+    for problem in Problem.objects.all():
+        problem.description = re.sub('\[InsertImage\|([0-9]+)\]',
+                                     replace,
+                                     problem.description)
+        problem.save()
+
 def migrate_judge(db, upload):
     #migrate_problems(db)
     #migrate_submissions(db)
-    migrate_attachments(db, upload)
+    #migrate_attachments(db, upload)
+    fix_insertimage(db)
 
 class Command(BaseCommand):
     args = '<mysql host> <mysql user> <mysql password> <mysql db> <uploaded> [app]'
