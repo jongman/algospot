@@ -127,7 +127,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'registration',
     'avatar',
-    'actstream',
+    #'actstream',
 
     'base',
     'wiki',

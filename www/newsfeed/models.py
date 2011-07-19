@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 
 from django.contrib.contenttypes import generic
@@ -11,10 +12,10 @@ class Activity(models.Model):
     # membership
     category = models.CharField(max_length=64, db_index=True)
     # 액터
-    actor = models.ForeignKey(User, null=True)
+    actor = models.ForeignKey(User, null=True, related_name='actor')
     # {actor} {target} {action_object} 를 갖는 문자열
     verb = models.CharField(max_length=255)
-
+    """
     target_content_type = models.ForeignKey(ContentType,related_name='target',blank=True,null=True)
     target_object_id = models.PositiveIntegerField(blank=True,null=True)
     target = generic.GenericForeignKey('target_content_type','target_object_id')
@@ -22,6 +23,6 @@ class Activity(models.Model):
     action_object_content_type = models.ForeignKey(ContentType,related_name='action_object',blank=True,null=True)
     action_object_object_id = models.PositiveIntegerField(blank=True,null=True)
     action_object = generic.GenericForeignKey('action_object_content_type','action_object_object_id')
-
+"""
     timestamp = models.DateTimeField(auto_now_add=True)
 
