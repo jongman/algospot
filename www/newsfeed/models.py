@@ -11,6 +11,9 @@ class Activity(models.Model):
     # 액션 카테고리. 카테고리별 뉴스피드를 볼 때 쓴다. 예: wiki, judge,
     # membership
     category = models.CharField(max_length=64, db_index=True)
+    # 액션 타입. css 클래스를 정하는 데 쓴다.. -_-; 예: wiki-edit,
+    # problem-solved, posted, commented
+    type = models.CharField(max_length=64)
     # 액터
     actor = models.ForeignKey(User, null=True, related_name='actor')
     # {actor} {target} {action_object} 를 갖는 문자열
