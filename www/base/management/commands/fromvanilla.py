@@ -39,9 +39,10 @@ def patch_action_time(timestamp, **kwargs):
     for k, v in kwargs.items():
         criteria[k + "_content_type"] = ContentType.objects.get_for_model(v.__class__)
         criteria[k + "_object_id"] = v.id
-    action = Action.objects.get(**criteria)
-    action.timestamp = timestamp
-    action.save()
+    actions = Action.objects.filter(**criteria)
+    for action in actions:
+        action.timestamp = timestamp
+        action.save()
 
 def migrate_user(db):
     username_seen = set()
@@ -171,6 +172,7 @@ def migrate_submissions(db):
     imported = 0
     submissions = fetch_all(db, "GDN_Submission")
     Submission.objects.all().delete()
+    solved = set()
     for submission in submissions:
         kwargs = {}
         try:
@@ -185,9 +187,17 @@ def migrate_submissions(db):
         kwargs["state"] = Submission.RECEIVED
         new_submission = Submission(**kwargs)
         new_submission.save()
+
         new_submission.state = submission["State"]
         new_submission.submitted_on = submission["Submitted"]
         new_submission.save()
+        if submission["State"] == Submission.ACCEPTED:
+            key = (kwargs["user"].id, kwargs["problem"].id)
+            if key not in solved:
+                solved.add(key)
+                patch_action_time(submission["Submitted"],
+                                  action_object=new_submission,
+                                  target=kwargs["problem"])
         imported += 1
         if imported % 100 == 0:
             print "Migrated %d of %d submissions." % (imported,

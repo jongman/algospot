@@ -103,14 +103,18 @@ class Submission(models.Model):
     def name_eng(self):
         return self.STATES_ENG[self.state]
 
+    def get_absolute_url(self):
+        return reverse("judge-submission-details", kwargs={"id": self.id})
+
 # SIGNAL HANDLERS
 def will_save_problem(sender, **kwargs):
     instance = kwargs["instance"]
     # 새로 만들어질 때는 항상 DRAFT 상태
     if not instance.id: return
+    problem = get_or_none(Problem, id=instance.id)
+    if not problem: return
     # 이미 공개된 문제면 무시
-    if Problem.objects.get(id=instance.id).state == Problem.PUBLISHED:
-        return
+    if problem.state == Problem.PUBLISHED: return
     if instance.state == Problem.PUBLISHED:
         action.send(instance.user,
                 action_object=instance,
@@ -118,33 +122,33 @@ def will_save_problem(sender, **kwargs):
                      u"공개했습니다.")
 
 def solved_problem(user, problem, instance):
-    acs = Submission.objects.filter(user=user,
-                                    problem=problem,
-                                    state=Submission.ACCEPTED).count()
+    accepted = Submission.objects.filter(user=user,
+                                         problem=problem,
+                                         state=Submission.ACCEPTED).count()
+    # 이미 푼 문젤까?
+    if accepted > 0: return
     # 오오 풀었당!
-    if acs == 0:
-        subs = Submission.objects.filter(user=user,
-                                         problem=problem).count()
-        print user, "solved", problem
-        action.send(user,
-                    action_object=problem,
-                    verb=u"%d번의 시도만에 문제 {action_object}를 "
-                         u"해결했습니다." % subs)
-        profile = user.get_profile()
-        profile.solved_problems += 1
-        profile.save()
+    subs = Submission.objects.filter(user=user,
+                                     problem=problem).count()
+    action.send(user,
+                target=problem,
+                action_object=instance,
+                verb=u"%d번의 시도만에 문제 {target}를 "
+                     u"해결했습니다." % subs)
+    profile = user.get_profile()
+    profile.solved_problems += 1
+    profile.save()
 
 def unsolved_problem(user, problem, instance):
-    acs = Submission.objects.filter(user=user,
+    accepted = Submission.objects.filter(user=user,
                                     problem=problem,
                                     state=Submission.ACCEPTED).count()
-    # 이것까지 없어지다니 !
-    if acs == 1:
-        profile = user.get_profile()
-        profile.solved_profiles -= 1
-        profile.save()
-
-        # TODO: news feed entry 없애기
+    # TODO: news feed entry 없애고 다시 만들기?
+    # 이게 없어지면 못 푼 문제가 되나?
+    if accepted > 1: return
+    profile = user.get_profile()
+    profile.solved_profiles -= 1
+    profile.save()
 
 def will_save_submission(sender, **kwargs):
     instance = kwargs["instance"]
