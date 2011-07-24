@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'registration',
     'avatar',
+    'djcelery',
     #'actstream',
 
     'base',
@@ -198,7 +199,19 @@ AUTHENTICATION_BACKENDS = (
 ITEMS_PER_PAGE = 20
 PAGINATOR_RANGE = 10
 
+# PROFILE SETTINGS
 PROFILE_LOG_BASE = None
+
+# CELERY SETTINGS
+import djcelery
+djcelery.setup_loader()
+
+CELERY_IMPORTS = ("judge.tasks",)
+CELERYD_CONCURRENCY = 1
+
+# setup ghetto celery queue settings
+BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+INSTALLED_APPS += ("djkombu",)
 
 try:
     import local_settings
