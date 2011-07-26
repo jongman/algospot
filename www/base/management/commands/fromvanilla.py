@@ -11,7 +11,6 @@ from newsfeed.models import Activity
 import MySQLdb
 import hashlib
 import shutil
-import urllib
 import os
 import re
 import string
@@ -21,6 +20,8 @@ def patch(key, val):
     if act:
         act.timestamp = val
         act.save()
+    else:
+        print "failed to find", key
 
 accepted = string.letters + string.digits + "._-"
 def escape(ch):
@@ -95,6 +96,8 @@ def migrate_forum(db):
                 created_on=thread["DateInserted"],
                 text=thread["Body"])
         new_post.save()
+        new_post.created_on = thread["DateInserted"]
+        new_post.save()
         patch("forum-post-%d" % new_post.id, thread["DateInserted"])
 
         comments = fetch_all(db, "GDN_Comment",
@@ -114,6 +117,8 @@ def migrate_forum(db):
         copied_posts += 1
         if copied_posts % 10 == 0:
             print "%d posts. %d comments." % (copied_posts, copied_comments)
+        if copied_posts == 100:
+            break
 
     print "%d posts. %d comments." % (copied_posts, copied_comments)
 
@@ -188,6 +193,8 @@ def migrate_submissions(db):
         if imported % 100 == 0:
             print "Migrated %d of %d submissions." % (imported,
                     len(submissions))
+        if imported == 100:
+            break
     print "Migrated %d submissions." % imported
 
 def md5file(file_path):
