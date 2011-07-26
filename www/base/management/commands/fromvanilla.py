@@ -121,8 +121,6 @@ def migrate_forum(db):
         copied_posts += 1
         if copied_posts % 10 == 0:
             print "%d posts. %d comments." % (copied_posts, copied_comments)
-        if copied_posts == 100:
-            break
 
     print "%d posts. %d comments." % (copied_posts, copied_comments)
 
@@ -201,8 +199,6 @@ def migrate_submissions(db):
         if imported % 100 == 0:
             print "Migrated %d of %d submissions." % (imported,
                     len(submissions))
-        if imported == 100:
-            break
     print "Migrated %d submissions." % imported
 
 def md5file(file_path):
