@@ -8,6 +8,7 @@ from forum.models import Post, Category
 from judge.models import Problem, Submission, Attachment
 from djangoutils import get_or_none
 from newsfeed.models import Activity
+from newsfeed import get_activity
 import MySQLdb
 import hashlib
 import shutil
@@ -64,6 +65,9 @@ def migrate_user(db):
         if created % 10 == 0:
             print "created %d users so far" % created
         username_seen.add(u["Name"])
+    u = User.get(username="JongMan")
+    u.is_superuser = True
+    u.save()
     print "created %d users." % created
 
 CATEGORY_MAP = {"freeboard": "free",
@@ -150,6 +154,9 @@ def migrate_problems(db):
             kwargs[v] = problem[k]
         new_problem = Problem(**kwargs)
         new_problem.save()
+        # delete new problem entry: we don't have timestamp information for
+        # old problems.
+        get_activity(key="new-problem-%d" % new_problem.id).delete()
         #patch("new-problem-%d" % new_problem.id,
         imported += 1
     print "imported %d problems." % imported
@@ -234,6 +241,7 @@ def fix_insertimage(db):
                                      replace,
                                      problem.description)
         problem.save()
+        get_activity(key="new-problem-%d" % problem.id).delete()
 
 def migrate_judge(db, upload):
     migrate_problems(db)
