@@ -37,21 +37,21 @@ def get_comment_hotness(count):
 @register.filter
 def print_username(user):
     profile_link = reverse('user_profile', kwargs={"user_id": user.id})
-    return mark_safe('<a href="%s" class="userlink">%s</a>' % 
+    return mark_safe('<a href="%s" class="userlink">%s</a>' %
             (profile_link, user.username))
 
-unit_size = [60,    24,      7,     52,      99999]
-unit_name = [u"분", u"시간", u"일", u"주일", u"년"]
+units = [(int(365.2425*24*60*60), u"년"),
+         (30*24*60*60, u"달"),
+         (7*24*60*60, u"주"),
+         (24*60*60, u"일"),
+         (60*60, u"시간"),
+         (60, u"분")]
 
 def format_readable(diff):
-    if diff < 60:
-        return u"방금 전"
-    cumulative_size = 60
-    for sz, name in zip(unit_size, unit_name):
-        if diff < cumulative_size*sz:
-            return u"%d%s 전" % (diff/ cumulative_size, name)
-        cumulative_size *= sz
-    return None
+    for size, name in units:
+        if diff >= size:
+            return u"%d%s 전" % (int(diff / size), name)
+    return u"방금 전"
 
 @register.filter
 def print_datetime(dt):
