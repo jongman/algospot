@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 from diff_match_patch import diff_match_patch
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from base.decorators import authorization_required
 
 from models import Page, PageRevision
 from forms import EditForm
-from utils import slugify, unslugify, get_breadcrumbs, logger
+from utils import unslugify, get_breadcrumbs, logger
 from djangoutils import get_or_none
-from textutils import render_text
 
 def old(request, id, slug):
     page = get_object_or_404(Page, slug=slug)
@@ -31,8 +29,7 @@ def old(request, id, slug):
 def revert(request, id, slug):
     page = get_object_or_404(Page, slug=slug)
     revision = PageRevision.objects.get(id=id)
-    text = revision.text
-    form = EditForm({"text": revision.text, 
+    form = EditForm({"text": revision.text,
         "summary": u"리비전 %s(으)로 복구." % id})
     assert form.is_valid()
     form.save(page, request.user)
@@ -68,7 +65,7 @@ def diff(request, id1=-1, id2=-1):
     dmp = diff_match_patch()
     diff = dmp.diff_compute(rev1.text, rev2.text, True, 2)
     breadcrumbs = get_breadcrumbs(slug)
-    breadcrumbs.append((reverse("wiki-diff", kwargs={"id1": id1, "id2": id2}), 
+    breadcrumbs.append((reverse("wiki-diff", kwargs={"id1": id1, "id2": id2}),
         u"변화 내역"))
     return render(request, "diff.html",
             {"slug": slug,
