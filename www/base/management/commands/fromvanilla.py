@@ -150,6 +150,7 @@ def migrate_problems(db):
             kwargs[v] = problem[k]
         new_problem = Problem(**kwargs)
         new_problem.save()
+        #patch("new-problem-%d" % new_problem.id,
         imported += 1
     print "imported %d problems." % imported
 

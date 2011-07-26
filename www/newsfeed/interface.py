@@ -13,3 +13,6 @@ def depublish_where(**kwargs):
 
 def has_activity(**kwargs):
     return Activity.objects.filter(**Activity.translate(kwargs)).count() > 0
+
+def get_activity(**kwargs):
+    return Activity.objects.get(**Activity.translate(kwargs))

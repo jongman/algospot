@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from config import JUDGE_MODULES
 from django.db.models.signals import pre_save, post_save
-from newsfeed import publish, depublish, has_activity
+from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
 
 class Problem(models.Model):
@@ -107,19 +107,20 @@ class Submission(models.Model):
         return reverse("judge-submission-details", kwargs={"id": self.id})
 
 # SIGNAL HANDLERS
-def will_save_problem(sender, **kwargs):
+def saved_problem(sender, **kwargs):
     instance = kwargs["instance"]
-    # 새로 만들어질 때는 항상 DRAFT 상태
-    if not instance.id: return
-    problem = get_or_none(Problem, id=instance.id)
-    if not problem: return
-    # 이미 공개된 문제면 무시
-    if problem.state == Problem.PUBLISHED: return
     if instance.state == Problem.PUBLISHED:
-        action.send(instance.user,
-                action_object=instance,
-                verb=u"온라인 저지에 새 문제 {action_object}를 "
-                     u"공개했습니다.")
+        id = "new-problem-%d" % instance.id
+        if not has_activity(key=id):
+            publish(id, "newproblem", "judge",
+                    actor=instance.user,
+                    action_object=instance,
+                    verb=u"온라인 저지에 새 문제 {action_object}를 "
+                         u"공개했습니다.")
+        else:
+            activity = get_activity(key=id)
+            activity.actor = instance.user
+            activity.save()
 
 def solved_problem(user, problem, instance):
     accepted = Submission.objects.filter(user=user,
@@ -188,8 +189,8 @@ def saved_submission(sender, **kwargs):
         profile.submissions += 1
         profile.save()
 
-pre_save.connect(will_save_problem, sender=Problem,
-                 dispatch_uid="will_save_problem")
+post_save.connect(saved_problem, sender=Problem,
+                 dispatch_uid="saved_problem")
 pre_save.connect(will_save_submission, sender=Submission,
                  dispatch_uid="will_save_submission")
 post_save.connect(saved_submission, sender=Submission,
