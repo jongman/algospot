@@ -122,7 +122,7 @@ def saved_problem(sender, **kwargs):
             activity.actor = instance.user
             activity.save()
 
-def solved_problem(user, problem, instance):
+def solved_problem(user, problem, submission):
     accepted = Submission.objects.filter(user=user,
                                          problem=problem,
                                          state=Submission.ACCEPTED).count()
@@ -131,18 +131,19 @@ def solved_problem(user, problem, instance):
     # 오오 풀었당!
     subs = Submission.objects.filter(user=user,
                                      problem=problem).count()
-    publish("solved-%d-%d-%d" % (user.id, problem.id, instance.id),
+    publish("solved-%d-%d-%d" % (user.id, problem.id, submission.id),
             "solved",
             "judge",
             target=problem,
             actor=user,
+            timestamp=submission.submitted_on,
             verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." % subs)
     profile = user.get_profile()
     profile.solved_problems += 1
     profile.save()
 
-def unsolved_problem(user, problem, instance):
-    activity_id = "solved-%d-%d-%d" % (user.id, problem.id, instance.id)
+def unsolved_problem(user, problem, submission):
+    activity_id = "solved-%d-%d-%d" % (user.id, problem.id, submission.id)
     # 첫 번째 AC가 없어지지 않는한 신경 안 쓴다
     if not has_activity(activity_id): return
     depublish(activity_id)
@@ -151,7 +152,7 @@ def unsolved_problem(user, problem, instance):
                                 user=user,
                                 problem=problem,
                                 state=Submission.ACCEPTED,
-                                id__gt=instance.id)
+                                id__gt=submission.id)
     # 그렇다면 새로 publish 하고 끝
     if next_accepted:
         subs = Submission.objects.filter(user=user,
@@ -162,6 +163,7 @@ def unsolved_problem(user, problem, instance):
                 "judge",
                 target=problem,
                 actor=user,
+                timestamp=next_accepted.submitted_on,
                 verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." % subs)
     else:
         # 이제 이 문제 못풀었어요 프로필 빠빠이..
@@ -170,18 +172,18 @@ def unsolved_problem(user, problem, instance):
         profile.save()
 
 def will_save_submission(sender, **kwargs):
-    instance = kwargs["instance"]
-    if not instance.id: return
-    current_sub = get_or_none(Submission, id=instance.id)
+    submission = kwargs["instance"]
+    if not submission.id: return
+    current_sub = get_or_none(Submission, id=submission.id)
     if not current_sub: return
     old_state = current_sub.state
-    if old_state == instance.state: return
+    if old_state == submission.state: return
     # 풀었다!
-    if instance.state == Submission.ACCEPTED:
-        solved_problem(instance.user, instance.problem, instance)
+    if submission.state == Submission.ACCEPTED:
+        solved_problem(submission.user, submission.problem, submission)
     # 리저지?
     elif old_state == Submission.ACCEPTED:
-        unsolved_problem(instance.user, instance.problem, instance)
+        unsolved_problem(submission.user, submission.problem, submission)
 
 def saved_submission(sender, **kwargs):
     if kwargs["created"]:
