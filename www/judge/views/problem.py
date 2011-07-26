@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
-from.django.core.files.storage import DefaultStorage
+from django.core.files.storage import DefaultStorage
 from djangoutils import setup_paginator, get_or_none
 from ..models import Problem, Submission, Attachment
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
