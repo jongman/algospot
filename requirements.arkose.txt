@@ -1,2 +1,0 @@
-configobj==4.7.2
-netaddr==0.7.5
