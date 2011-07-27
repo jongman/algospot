@@ -45,6 +45,7 @@ def judge_submission(server, submission):
             ext = basename.split(".")[-1].lower()
             if ext not in ["in", "out", "zip"]: continue
             destination = os.path.join(data_dir, basename)
+            # TODO: check MD5 and make sure we don't have to download again
             if not os.path.exists(destination):
                 download(server, entry, destination)
                 if ext == "zip":
