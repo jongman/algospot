@@ -18,6 +18,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
+        # TODO: change this into an absolute path if you're running celeryd from
+        # a separate checkout in the same machine
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'db.sqlite3',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
@@ -194,6 +196,9 @@ AUTHENTICATION_BACKENDS = (
     'base.backends.LegacyBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+# JUDGE SETTINGS
+JUDGE_WORKDIR = j("judge/work")
 
 # PAGINATION SETTINGS
 ITEMS_PER_PAGE = 20
