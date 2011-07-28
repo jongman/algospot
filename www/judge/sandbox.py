@@ -43,11 +43,12 @@ def get_sandbox(memory_limit):
                       memory_limit / 1024, SETTINGS["SwapSize"])
 
 class LXCSandbox(object):
-    def __init__(self, user, fs_size=64, memory_limit=64, swap_size=64):
+    def __init__(self, user, fs_size=64, memory_limit=64, swap_size=64,
+                 home_type="bind"):
         assert os.geteuid() == 0
         self.mounts = []
         self.user = pwd.getpwnam(user)
-        self.isolate_filesystem(fs_size)
+        self.isolate_filesystem(fs_size, home_type)
         self.generate_config(memory_limit, swap_size)
 
     def generate_config(self, memory_limit, swap_size):
@@ -94,7 +95,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
         execute(cmd)
         self.mounts.append(destination)
 
-    def isolate_filesystem(self, fs_size):
+    def isolate_filesystem(self, fs_size, home_type):
         self.root = tempfile.mkdtemp(dir=makedir("~/.sandbox"))
         os.chmod(self.root, 0o755)
 
@@ -121,7 +122,23 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
         home_path = self.user.pw_dir.lstrip("/")
         self.new_home = makedir(join(self.workdir, "user-home"))
         self.home_in_mounted = makedir(join(self.root_mount, home_path))
-        self.mount(self.new_home, self.home_in_mounted, "none", "bind")
+        self.new_home_cow = expanduser(join(self.workdir, "user-home-cow"))
+        self.mount_home(home_type)
+
+    def mount_home(self, home_type):
+        if self.mounts and self.mounts[-1] == self.home_in_mounted:
+            execute(["umount", self.home_in_mounted])
+            self.mounts.pop()
+
+        if home_type == "bind":
+            self.mount(self.new_home, self.home_in_mounted, "none", "bind")
+        else:
+            if exists(self.new_home_cow):
+                shutil.rmtree(self.new_home_cow)
+            makedir(self.new_home_cow)
+            self.mount("none", self.home_in_mounted, "aufs", "br=%s:%s" %
+                       (self.new_home_cow, self.new_home))
+
         os.chown(self.home_in_mounted, self.user.pw_uid, self.user.pw_gid)
         os.chmod(self.home_in_mounted, 0o700)
 
@@ -174,6 +191,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
                        redirect=not interactive)
 
 def main():
+    """
     from os.path import basename
     import argparse
     parser = argparse.ArgumentParser()
@@ -197,6 +215,16 @@ def main():
     finally:
         if sandbox:
             sandbox.teardown()
+    """
+    try:
+        sandbox = LXCSandbox("runner", home_type="bind")
+        sandbox.run("bash", True)
+        sandbox.mount_home("cow")
+        sandbox.run("bash", True)
+        sandbox.mount_home("cow")
+        sandbox.run("bash", True)
+    finally:
+        sandbox.teardown()
 
 if __name__ == "__main__":
     main()
