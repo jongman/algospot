@@ -11,8 +11,8 @@ def add(x, y):
     return x + y
 
 @task()
-def judge_submission(server, submission):
-    logger = judge_submission.get_logger()
+def download_data(server, problem):
+    logger = download_data.get_logger()
 
     def copy(source, dest):
         while True:
@@ -34,23 +34,27 @@ def judge_submission(server, submission):
             logger.info("generating %s ..", dest)
             copy(file.open(name), open(dest, "wb"))
 
-    def download_data(server, problem):
-        attachments = Attachment.objects.filter(problem=problem)
-        data_dir = os.path.join(settings.JUDGE_SETTINGS["WORKDIR"],
-                                "data/%d-%s" % (problem.id, problem.slug))
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)
-        for entry in attachments:
-            basename = os.path.basename(entry.file.name)
-            ext = basename.split(".")[-1].lower()
-            if ext not in ["in", "out", "zip"]: continue
-            destination = os.path.join(data_dir, basename)
-            # TODO: check MD5 and make sure we don't have to download again
-            if not os.path.exists(destination):
-                download(server, entry, destination)
-                if ext == "zip":
-                    unzip(destination, data_dir)
-            else:
-                logger.info("We already have %s", basename)
+    attachments = Attachment.objects.filter(problem=problem)
+    data_dir = os.path.join(settings.JUDGE_SETTINGS["WORKDIR"],
+                            "data/%d-%s" % (problem.id, problem.slug))
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    for entry in attachments:
+        basename = os.path.basename(entry.file.name)
+        ext = basename.split(".")[-1].lower()
+        if ext not in ["in", "out", "zip"]: continue
+        destination = os.path.join(data_dir, basename)
+        # TODO: check MD5 and make sure we don't have to download again
+        if not os.path.exists(destination):
+            download(server, entry, destination)
+            if ext == "zip":
+                unzip(destination, data_dir)
+        else:
+            logger.info("We already have %s", basename)
 
-    download_data(server, submission.problem)
+@task()
+def judge_submission(server, submission):
+    logger = judge_submission.get_logger()
+    download_data.delay(server, submission.problem).wait()
+    logger.info("judge_submission body")
+
