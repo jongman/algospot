@@ -36,8 +36,8 @@ def judge_submission(server, submission):
 
     def download_data(server, problem):
         attachments = Attachment.objects.filter(problem=problem)
-        data_dir = os.path.join(settings.JUDGE_WORKDIR, "data/%d-%s" % (problem.id,
-                                                                        problem.slug))
+        data_dir = os.path.join(settings.JUDGE_SETTINGS["WORKDIR"],
+                                "data/%d-%s" % (problem.id, problem.slug))
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
         for entry in attachments:

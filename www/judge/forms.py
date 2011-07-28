@@ -2,8 +2,8 @@
 
 from django import forms
 from models import Problem, Submission
-from config import LANGUAGES
 from django.contrib.auth.models import User
+import languages
 
 class ProblemEditForm(forms.ModelForm):
     user = forms.ModelChoiceField(label=u"작성자", queryset=User.objects.order_by("username"))
@@ -17,7 +17,9 @@ class RestrictedProblemEditForm(ProblemEditForm):
         exclude = ('state', 'user', 'submissions_count', 'accepted_count')
 
 class SubmitForm(forms.Form):
-    language = forms.ChoiceField(LANGUAGES.items(), label=u"사용언어")
+    language = forms.ChoiceField([(key, "%s: %s" % (val.LANGUAGE, val.VERSION))
+                                  for key, val in languages.modules.items()],
+                                 label=u"사용언어")
     source = forms.CharField(widget=forms.Textarea(attrs={"class": "large",
         "rows": "12"}), label=u"소스코드")
 
