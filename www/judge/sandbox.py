@@ -11,7 +11,6 @@ import tempfile
 import shutil
 import signal
 import subprocess
-from django.conf import settings
 from os.path import expanduser, exists, split, join, abspath, dirname
 
 def makedir(path):
@@ -37,6 +36,7 @@ def execute(command, redirect=True):
     return ret
 
 def get_sandbox(memory_limit):
+    from django.conf import settings
     SETTINGS = settings.JUDGE_SETTINGS
     assert SETTINGS["Sandbox"] == "LXC"
     return LXCSandbox(SETTINGS["User"], SETTINGS["FileSystemSize"],

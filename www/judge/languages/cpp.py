@@ -9,11 +9,8 @@ EXT = "cpp"
 VERSION = system(["g++", "--version"])[0].split("\n")[0]
 ADDITIONAL_FILES = []
 
-def setup(source):
+def setup(sandbox, source):
     pass
 
-def run(input_file, time_limit, memory_limit):
-    pass
-
-def cleanup():
+def run(sandbox, input_file, time_limit, memory_limit):
     pass
