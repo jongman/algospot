@@ -11,6 +11,7 @@ import tempfile
 import shutil
 import signal
 import subprocess
+from django.conf import settings
 from os.path import expanduser, exists, split, join, abspath, dirname
 
 def makedir(path):
@@ -35,7 +36,13 @@ def execute(command, redirect=True):
         ret["stderr"] = popen.stderr.read()
     return ret
 
-class Sandbox(object):
+def get_sandbox(memory_limit):
+    SETTINGS = settings.JUDGE_SETTINGS
+    assert SETTINGS["Sandbox"] == "LXC"
+    return LXCSandbox(SETTINGS["User"], SETTINGS["FileSystemSize"],
+                      memory_limit / 1024, SETTINGS["SwapSize"])
+
+class LXCSandbox(object):
     def __init__(self, user, fs_size=64, memory_limit=64, swap_size=64):
         assert os.geteuid() == 0
         self.mounts = []
@@ -178,7 +185,7 @@ def main():
     print args
     try:
         sandbox = None
-        sandbox = Sandbox("runner")
+        sandbox = LXCSandbox("runner")
         for file in args.files:
             sandbox.copy_file(file, basename(file))
         ret = sandbox.run(" ".join(args.command), args.interactive)
