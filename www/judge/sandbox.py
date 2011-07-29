@@ -112,6 +112,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
     def isolate_filesystem(self, fs_size, home_type):
         self.root = tempfile.mkdtemp(dir=makedir("~/.sandbox"))
+        print "sandbox root", self.root
         os.chmod(self.root, 0o755)
 
         self.name = "sandbox-%s" % split(self.root)[1]

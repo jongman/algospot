@@ -107,7 +107,6 @@ def judge_submission(submission):
         if result["status"] != "ok":
             submission.state = Submission.COMPILE_ERROR
             submission.message = result["message"]
-            submission.save()
             return
 
         logger.info("Freezing sandbox..")
@@ -118,17 +117,30 @@ def judge_submission(submission):
         logger.info("Running..")
         submission.state = Submission.RUNNING
         submission.save()
+        total_time, max_memory = 0, 64
         for io in ioset.itervalues():
-            result = language_module.run(sandbox_env, io["in"], problem.time_limit,
-                                         problem.memory_limit)
+            inp = os.path.basename(io["in"])
+            sandbox_env.put_file(io["in"], inp)
+            result = language_module.run(sandbox_env, inp, problem.time_limit)
             if result["status"] != "ok":
-                submission.state = Submission.RUNTIME_ERROR
-                submission.message = result["message"]
-                submission.save()
+                if result["verdict"] == "TLE":
+                    submission.state = Submission.TIME_LIMIT_EXCEEDED
+                elif result["verdict"] == "MLE":
+                    submission.state = Submission.RUNTIME_ERROR
+                    submission.message = u"메모리 제한 초과"
+                elif result["verdict"] == "RTE":
+                    submission.state = Submission.RUNTIME_ERROR
+                    submission.message = result["message"]
+                return
+            total_time += float(result["time"])
+            max_memory = max(max_memory, int(result["memory"]))
+            if total_time > problem.time_limit:
+                submission.state = Submission.TIME_LIMIT_EXCEEDED
                 return
 
+        submission.time = int(total_time * 1000)
+        submission.memory = max_memory
         submission.state = Submission.JUDGING
-        submission.save()
 
     except:
         submission.state = Submission.CANT_BE_JUDGED
@@ -139,8 +151,8 @@ def judge_submission(submission):
                 print_stack_trace()])
         except Exception as e:
             submission.message = u"오류 인코딩 중 에러: %s" % e.message
-        submission.save()
     finally:
+        submission.save()
         if sandbox_env:
             sandbox_env.teardown()
 
