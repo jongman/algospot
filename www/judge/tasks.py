@@ -10,6 +10,7 @@ import sandbox
 import languages
 import StringIO
 import traceback
+import differs
 
 def print_stack_trace():
     io = StringIO.StringIO()
@@ -87,9 +88,15 @@ def judge_submission(submission):
                             submission.language)
         language_module = languages.modules[submission.language]
 
-        logger.info("Downloading judge i/o set..")
-        # 문제 채점 데이터를 다운받고 채점 준비
         problem = submission.problem
+
+        # 결과 differ 모듈 확인
+        if problem.judge_module not in differs.modules:
+            raise Exception("Can't find diff module %s" % problem.judge_module)
+        differ_module = differs.modules[problem.judge_module]
+
+        # 문제 채점 데이터를 다운받고 채점 준비
+        logger.info("Downloading judge i/o set..")
         data_dir = os.path.join(settings.JUDGE_SETTINGS["WORKDIR"],
                                 "data/%d-%s" % (problem.id, problem.slug))
         download_data(submission.problem)
@@ -122,6 +129,8 @@ def judge_submission(submission):
             inp = os.path.basename(io["in"])
             sandbox_env.put_file(io["in"], inp)
             result = language_module.run(sandbox_env, inp, problem.time_limit)
+
+            # RTE 혹은 MLE?
             if result["status"] != "ok":
                 if result["verdict"] == "TLE":
                     submission.state = Submission.TIME_LIMIT_EXCEEDED
@@ -132,15 +141,24 @@ def judge_submission(submission):
                     submission.state = Submission.RUNTIME_ERROR
                     submission.message = result["message"]
                 return
+
+            # 전체 시간이 시간 초과면 곧장 TLE
+            # TODO: 채점 데이터별 시간 제한 지원
             total_time += float(result["time"])
             max_memory = max(max_memory, int(result["memory"]))
             if total_time > problem.time_limit:
                 submission.state = Submission.TIME_LIMIT_EXCEEDED
                 return
 
-        submission.time = int(total_time * 1000)
-        submission.memory = max_memory
-        submission.state = Submission.JUDGING
+            # differ 에 보내자
+            output = sandbox_env.get_file_path(result["output"])
+            if not differ_module.judge(io["in"], output, io["out"]):
+                submission.time = int(total_time * 1000)
+                submission.memory = max_memory
+                submission.state = Submission.WRONG_ANSWER
+                return
+
+        submission.state = Submission.ACCEPTED
 
     except:
         submission.state = Submission.CANT_BE_JUDGED

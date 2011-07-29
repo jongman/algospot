@@ -30,6 +30,6 @@ urlpatterns = patterns('',
 if settings.DEBUG:
     # Serve all local files from MEDIA_ROOT below /media/
     urlpatterns += patterns('',
-            (r'^%s(?P<path>.*)$' % settings.MEDIA_URL.lstrip("/"),
-                'django.views.static.serve',
-                {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),)
+            (r'^media/(?P<path>.*)$',
+             'django.views.static.serve',
+             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),)
