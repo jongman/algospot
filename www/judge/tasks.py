@@ -158,6 +158,8 @@ def judge_submission(submission):
                 submission.state = Submission.WRONG_ANSWER
                 return
 
+        submission.time = int(total_time * 1000)
+        submission.memory = max_memory
         submission.state = Submission.ACCEPTED
 
     except:

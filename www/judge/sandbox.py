@@ -178,7 +178,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
     def write_file(self, text, destination, permission=None):
         "Create a file in user's home directory with given contents"
         target = join(self.home_in_mounted, destination)
-        open(target, "w").write(text)
+        open(target, "w").write(text.encode("utf-8"))
         os.chown(target, self.user.pw_uid, self.user.pw_gid)
         if permission:
             os.chmod(target, permission)
