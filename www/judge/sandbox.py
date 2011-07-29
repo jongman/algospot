@@ -167,7 +167,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         if os.path.exists(self.root):
             shutil.rmtree(self.root)
 
-    def copy_file(self, source, destination, permission=None):
+    def put_file(self, source, destination, permission=None):
         "Put a file into user's home directory"
         target = join(self.home_in_mounted, destination)
         shutil.copy(source, target)
@@ -175,7 +175,15 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         if permission:
             os.chmod(target, permission)
 
-    def get_file(self, file):
+    def write_file(self, text, destination, permission=None):
+        "Create a file in user's home directory with given contents"
+        target = join(self.home_in_mounted, destination)
+        open(target, "w").write(text)
+        os.chown(target, self.user.pw_uid, self.user.pw_gid)
+        if permission:
+            os.chmod(target, permission)
+
+    def read_file(self, file):
         "Reads a file from user's home directory"
         return open(join(self.home_in_mounted, file)).read()
 
@@ -203,7 +211,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
     def run(self, command, stdin=None, stdout=None, stderr=None, time_limit=None):
         # 모니터를 샌드박스 안에 집어넣는다
-        self.copy_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
+        self.put_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
                        "monitor.py")
         cmd = ["python", "~/monitor.py"]
         if stdin: cmd += ["-i", stdin]
@@ -258,9 +266,9 @@ def main():
         sandbox = LXCSandbox("runner", memory_limit=65536, home_type="bind")
         import sys
         for file in sys.argv[1:]:
-            sandbox.copy_file(file, os.path.basename(file))
-        sandbox.copy_file("dp.cpp", "dp.cpp", 0o700)
-        sandbox.copy_file("inp", "inp")
+            sandbox.put_file(file, os.path.basename(file))
+        sandbox.put_file("dp.cpp", "dp.cpp", 0o700)
+        sandbox.put_file("inp", "inp")
         print sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
                                  stderr=".compile.stderr")
         print sandbox.run("./dp", "inp", ".stdout", ".stderr")
