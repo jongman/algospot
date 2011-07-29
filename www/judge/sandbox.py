@@ -226,12 +226,18 @@ def main():
         sandbox.mount_home("cow")
         sandbox.run_interactive("bash")
         """
-        sandbox = LXCSandbox("runner", home_type="bind")
+        sandbox = LXCSandbox("runner", memory_limit=74, swap_size=74, home_type="bind")
+        import sys
+        for file in sys.argv[1:]:
+            sandbox.copy_file(file, os.path.basename(file))
         sandbox.copy_file("dp.cpp", "dp.cpp", 0o700)
-        sandbox.copy_file("input16medium.txt", "inp")
+        sandbox.copy_file("inp", "inp")
         print_result(sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
                                  stderr=".compile.stderr"))
         print_result(sandbox.run("./dp", "inp", ".stdout", ".stderr"))
+        print sandbox.get_file(".stdout")
+        print sandbox.get_file(".stderr")
+        sandbox.run_interactive("bash")
     finally:
         sandbox.teardown()
 
