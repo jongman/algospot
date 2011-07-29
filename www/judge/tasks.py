@@ -103,10 +103,13 @@ def judge_submission(server, submission):
         sandbox_env.mount_home("cow")
 
         # let's run now
+        submission.state = Submission.RUNNING
+        submission.save()
         for io in ioset.iteritems():
             result = language_module.run(sandbox_env, io["in"], problem.time_limit,
                                          problem.memory_limit)
-
+        submission.state = Submission.JUDGING
+        submission.save()
 
     except Exception as e:
         submission.state = Submission.CANT_BE_JUDGED
