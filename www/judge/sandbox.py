@@ -54,7 +54,7 @@ def get_sandbox(memory_limit):
     assert 1024 <= memory_limit <= 1024*1024*2, "memory_limit should be in kilobytes"
     from django.conf import settings
     SETTINGS = settings.JUDGE_SETTINGS
-    assert SETTINGS["Sandbox"] == "LXC"
+    assert SETTINGS["SANDBOX"] == "LXC"
     return LXCSandbox(SETTINGS["User"], SETTINGS["FileSystemSize"],
                       memory_limit, SETTINGS["SwapSize"])
 
