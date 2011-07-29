@@ -3,7 +3,6 @@ from django.conf import settings
 from celery.decorators import task
 from models import Submission, Attachment
 import urllib
-import urlparse
 import os
 import zipfile
 import glob
@@ -72,11 +71,11 @@ def judge_submission(submission):
                     io[basename] = {}
                 io[basename][tokens[-1]] = file
         if not io:
-            raise Exception(u"채점 데이터가 없습니다.")
+            raise Exception("Judge I/O data not found.")
         for key, value in io.iteritems():
             if len(value) != 2:
-                raise Exception(u"입출력 파일 목록이 쌍이 맞지 않습니다."
-                                u"목록:\n%s" % str(io))
+                raise Exception("Non-matching pairs in judge I/O data. See: %s"
+                                % str(io))
         return io
 
     sandbox_env = None
@@ -84,7 +83,7 @@ def judge_submission(submission):
         logger.info("Checking language module..")
         # 언어별 채점 모듈 존재 여부부터 확인하기
         if submission.language not in languages.modules:
-            raise Exception(u"언어 %s의 채점 모듈을 찾을 수 없습니다." %
+            raise Exception("Can't find judge module for language %s" %
                             submission.language)
         language_module = languages.modules[submission.language]
 

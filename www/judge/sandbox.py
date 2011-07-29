@@ -222,8 +222,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
                     result["stderr"].strip() or
                     not result["stdout"].strip() or
                     result["stdout"].split()[0] not in ["RTE", "MLE", "OK"]):
-                raise Exception(u"모니터 수행 결과가 예상과 다릅니다."
-                                u"결과:\n%s", str(result))
+                raise Exception("Unexpected monitor result:\n" + str(result))
         except TimeOutException:
             return "TLE"
         #print "RESULT", result
