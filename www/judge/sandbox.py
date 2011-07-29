@@ -26,10 +26,10 @@ class TimeOutException(Exception):
 def execute(command, redirect=True, time_limit=None):
     """ time_limit must be in seconds """
     assert isinstance(command, list)
-    kwargs = {}
+    kwargs = {"close_fds": True}
     if redirect:
         kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
-    # print "RUN:", command
+    #print "RUN:", command
     popen = subprocess.Popen(command, **kwargs)
     if not time_limit:
         wait = popen.wait()
@@ -42,8 +42,6 @@ def execute(command, redirect=True, time_limit=None):
         if wait is None:
             popen.kill()
             raise TimeOutException
-    if wait != 0:
-        print "NONZERO RETURN CODE!!!", wait
     ret = {"returncode": wait}
     if redirect:
         ret["stdout"] = popen.stdout.read()
@@ -105,8 +103,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
 
     def mount(self, source, destination, fstype, options=None):
-        print "mount src=%s dest=%s type=%s options=%s" % (source, destination,
-                                                           fstype, options)
+        #print "mount src=%s dest=%s type=%s options=%s" % (source, destination, fstype, options)
         cmd = ["mount", "-t", fstype, source, destination]
         if options:
             cmd += ["-o", options]
@@ -188,7 +185,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
     def create_entrypoint(self, command):
         entrypoint = join(self.home_in_mounted, "entrypoint.sh")
-        print "ENTRYPOINT", command
+        #print "ENTRYPOINT", command
         content = "\n".join(["#!/bin/sh",
                              "rm $0",
                              "RET=$?",
@@ -220,16 +217,23 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
         self.create_entrypoint(" ".join(cmd))
         try:
-            result = self._run(True, time_limit)["stdout"]
+            result = self._run(True, time_limit)
+            if (result["returncode"] != 0 or
+                    result["stderr"].strip() or
+                    not result["stdout"].strip() or
+                    result["stdout"].split()[0] not in ["RTE", "MLE", "OK"]):
+                raise Exception(u"모니터 수행 결과가 예상과 다릅니다."
+                                u"결과:\n%s", str(result))
         except TimeOutException:
             return "TLE"
-        toks = result.split()
+        #print "RESULT", result
+        toks = result["stdout"].split()
         if toks[0] == "OK":
             time_used, memory_used = map(float, toks[1:3])
             if time_limit is not None and time_used >= time_limit:
-                return "TLE"
+                return u"TLE (샌드박스 밖에서 확인)"
             if memory_used >= self.memory_limit:
-                return "MLE"
+                return u"MLE (샌드박스 밖에서 확인)"
         return result
 
     def _run(self, redirect, time_limit=None):
