@@ -3,7 +3,8 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^wiki/', include('www.wiki.urls')),
     url(r'^forum/', include('www.forum.urls')),
     url(r'^user/', include('base.urls')),
@@ -29,7 +30,7 @@ urlpatterns = patterns('',
 
 if settings.DEBUG:
     # Serve all local files from MEDIA_ROOT below /media/
-    urlpatterns += patterns('',
-            (r'^media/(?P<path>.*)$',
-             'django.views.static.serve',
-             {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),)
+    urlpatterns += patterns(
+        '',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve',
+         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),)

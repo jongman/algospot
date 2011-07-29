@@ -2,7 +2,6 @@
 import hotshot
 import os
 import urllib
-import logging
 import time
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -38,15 +37,13 @@ class Pagination(object):
         num_pages = self.paginator.num_pages
         lo = max(1, self.page.number - settings.PAGINATOR_RANGE)
         hi = min(num_pages, self.page.number + settings.PAGINATOR_RANGE)
-        links = [(page_no, self.link_with_page(page_no),
-                    page_no == self.page.number)
-                for page_no in xrange(lo, hi+1)]
-        first = ({"link": self.link_with_page(1), "label": 1}
-                if lo != 1 else None)
+        links = [(page_no, self.link_with_page(page_no), page_no == self.page.number)
+                 for page_no in xrange(lo, hi+1)]
+        first = ({"link": self.link_with_page(1), "label": 1} if lo != 1 else None)
         last = ({"link": self.link_with_page(num_pages), "label": num_pages}
                 if hi < num_pages else None)
         return render_to_string("pagination.html",
-                {"links": links, "first": first, "last": last})
+                                {"links": links, "first": first, "last": last})
 
     def __unicode__(self):
         return self.render()
@@ -76,10 +73,10 @@ def profile(log_file):
     for later processing and examination.
 
     It takes one argument, the profile log name. If it's a relative path, it
-    places it under the PROFILE_LOG_BASE. It also inserts a time stamp into the 
-    file name, such that 'my_view.prof' become 'my_view-20100211T170321.prof', 
-    where the time stamp is in UTC. This makes it easy to run and compare 
-    multiple trials.     
+    places it under the PROFILE_LOG_BASE. It also inserts a time stamp into the
+    file name, such that 'my_view.prof' become 'my_view-20100211T170321.prof',
+    where the time stamp is in UTC. This makes it easy to run and compare
+    multiple trials.
     """
 
     if not PROFILE_LOG_BASE: return lambda f: f

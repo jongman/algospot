@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
@@ -62,4 +61,4 @@ def comment_handler(sender, **kwargs):
     profile.save()
 
 post_save.connect(comment_handler, sender=Comment,
-        dispatch_uid="comment_event")
+                  dispatch_uid="comment_event")

@@ -23,7 +23,7 @@ class Page(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
     current_revision = models.ForeignKey(PageRevision, related_name='main',
-            blank=True, null=True)
+                                         blank=True, null=True)
 
     def __unicode__(self):
         return self.title
@@ -40,5 +40,6 @@ def edit_handler(sender, **kwargs):
             target=instance.revision_for,
             timestamp=instance.created_on,
             verb=u"위키 페이지 {target}을 편집했습니다.")
+
 post_save.connect(edit_handler, sender=PageRevision,
         dispatch_uid="wiki_edit_event")

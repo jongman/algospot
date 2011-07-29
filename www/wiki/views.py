@@ -14,11 +14,11 @@ def old(request, id, slug):
     page = get_object_or_404(Page, slug=slug)
     revision = PageRevision.objects.get(id=id)
     return render(request, "old.html",
-            {"slug": slug,
-             "title": page.title,
-             "time": unicode(revision.created_on),
-             "modified": revision.created_on,
-             "text": revision.text})
+                  {"slug": slug,
+                   "title": page.title,
+                   "time": unicode(revision.created_on),
+                   "modified": revision.created_on,
+                   "text": revision.text})
 
 @login_required
 @authorization_required
@@ -26,7 +26,7 @@ def revert(request, id, slug):
     page = get_object_or_404(Page, slug=slug)
     revision = PageRevision.objects.get(id=id)
     form = EditForm({"text": revision.text,
-        "summary": u"리비전 %s(으)로 복구." % id})
+                     "summary": u"리비전 %s(으)로 복구." % id})
     assert form.is_valid()
     form.save(page, request.user)
     return redirect(reverse("wiki-detail", kwargs={"slug": page.slug}))
@@ -43,11 +43,11 @@ def history(request, slug):
         logger.info("last %s second_last %s", last, second_last)
 
     return render(request, "history.html",
-            {"slug": slug,
-             "revisions": revisions,
-             "title": page.title,
-             "last_rev": last,
-             "second_last_rev": second_last})
+                  {"slug": slug,
+                   "revisions": revisions,
+                   "title": page.title,
+                   "last_rev": last,
+                   "second_last_rev": second_last})
 
 def diff(request, id1=-1, id2=-1):
     rev1 = get_object_or_404(PageRevision, id=id1)
@@ -58,23 +58,23 @@ def diff(request, id1=-1, id2=-1):
     dmp = diff_match_patch()
     diff = dmp.diff_compute(rev1.text, rev2.text, True, 2)
     return render(request, "diff.html",
-            {"slug": slug,
-             "title": title,
-             "diff": diff,
-             "rev1": id1,
-             "rev2": id2,
-             "rev1link": reverse("wiki-old", kwargs={"id": id1, "slug": slug}),
-             "rev2link": reverse("wiki-old", kwargs={"id": id2, "slug": slug})})
+                  {"slug": slug,
+                   "title": title,
+                   "diff": diff,
+                   "rev1": id1,
+                   "rev2": id2,
+                   "rev1link": reverse("wiki-old", kwargs={"id": id1, "slug": slug}),
+                   "rev2link": reverse("wiki-old", kwargs={"id": id2, "slug": slug})})
 
 
 def detail(request, slug):
     page = get_object_or_404(Page, slug=slug)
     return render(request, "detail.html",
-            {"slug": slug,
-             "title": page.title,
-             "page": page,
-             "modified": page.modified_on,
-             "text": page.current_revision.text})
+                  {"slug": slug,
+                   "title": page.title,
+                   "page": page,
+                   "modified": page.modified_on,
+                   "text": page.current_revision.text})
 
 @login_required
 @authorization_required
@@ -83,8 +83,7 @@ def edit(request, slug):
     page = get_or_none(Page, slug=slug)
 
     text = page.current_revision.text if page and page.current_revision else ""
-    form = EditForm(data=request.POST or None,
-            initial={"text": text})
+    form = EditForm(data=request.POST or None, initial={"text": text})
 
     if request.method == "POST" and form.is_valid():
         if not page:

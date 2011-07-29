@@ -12,13 +12,10 @@ def link_to_pages(rendered):
         title = match.group(1)
         slug = slugify(title)
         if Page.objects.filter(slug=slug).count() == 0:
-            return u'<a class="missing" href="%s">%s</a>' % (
-                reverse("wiki-edit", kwargs={"slug": slug}),
-                title)
-            link_class = "missing"
-        return u'<a href="%s">%s</a>' % (
-                reverse("wiki-detail", kwargs={"slug": slug}),
-                title)
+            return u'<a class="missing" href="%s">%s</a>' % (reverse("wiki-edit", kwargs={"slug": slug}),
+                                                             title)
+        return u'<a href="%s">%s</a>' % (reverse("wiki-detail", kwargs={"slug": slug}),
+                                         title)
 
     return link_pattern.sub(replace, rendered)
 

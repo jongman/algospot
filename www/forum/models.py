@@ -45,6 +45,7 @@ def post_handler(sender, **kwargs):
             timestamp=instance.created_on,
             verb=u"{target}에 글 {action_object}를 "
             u"썼습니다.")
+
 def pre_delete_handler(sender, **kwargs):
     instance = kwargs["instance"]
     profile = instance.user.get_profile()
@@ -54,6 +55,6 @@ def pre_delete_handler(sender, **kwargs):
     depublish_where(type="commented", target=instance)
 
 pre_delete.connect(pre_delete_handler, sender=Post,
-        dispatch_uid="forum_pre_delete_event")
+                   dispatch_uid="forum_pre_delete_event")
 post_save.connect(post_handler, sender=Post,
-        dispatch_uid="forum_post_event")
+                  dispatch_uid="forum_post_event")

@@ -9,9 +9,9 @@ from djangoutils import get_or_none
 class Problem(models.Model):
     DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
     STATE_CHOICES = ((DRAFT, "DRAFT"),
-            (PENDING_REVIEW, "PENDING REVIEW"),
-            (HIDDEN, "HIDDEN"),
-            (PUBLISHED, "PUBLISHED"))
+                     (PENDING_REVIEW, "PENDING REVIEW"),
+                     (HIDDEN, "HIDDEN"),
+                     (PUBLISHED, "PUBLISHED"))
 
     slug = models.SlugField(u"문제 ID", blank=True,max_length=100)
     updated_on = models.DateTimeField(auto_now=True)
@@ -45,32 +45,30 @@ class Submission(models.Model):
     (RECEIVED, COMPILING, RUNNING, JUDGING, COMPILE_ERROR,
     OK, ACCEPTED, WRONG_ANSWER, RUNTIME_ERROR, TIME_LIMIT_EXCEEDED,
     CANT_BE_JUDGED, REJUDGE_REQUESTED) = range(12)
-    STATES_KOR = dict([
-        (RECEIVED, u"수신"),
-        (COMPILING, u"컴파일중"),
-        (RUNNING, u"실행중"),
-        (JUDGING, u"채점중"),
-        (COMPILE_ERROR, u"컴파일 실패"),
-        (OK, u"수행완료"),
-        (ACCEPTED, u"정답"),
-        (WRONG_ANSWER, u"오답"),
-        (RUNTIME_ERROR, u"런타임 오류"),
-        (TIME_LIMIT_EXCEEDED, u"시간초과"),
-        (CANT_BE_JUDGED, u"채점실패"),
-        (REJUDGE_REQUESTED, u"재채점")])
-    STATES_ENG = dict([
-        (RECEIVED, "RECEIVED"),
-        (COMPILING, "COMPILING"),
-        (RUNNING, "RUNNING"),
-        (JUDGING, "JUDGING"),
-        (COMPILE_ERROR, "COMPILE_ERROR"),
-        (OK, "OK"),
-        (ACCEPTED, "ACCEPTED"),
-        (WRONG_ANSWER, "WRONG_ANSWER"),
-        (RUNTIME_ERROR, "RUNTIME_ERROR"),
-        (TIME_LIMIT_EXCEEDED, "TIME_LIMIT_EXCEEDED"),
-        (CANT_BE_JUDGED, "CANT_BE_JUDGED"),
-        (REJUDGE_REQUESTED, "REJUDGE_REQUESTED")])
+    STATES_KOR = dict([(RECEIVED, u"수신"),
+                       (COMPILING, u"컴파일중"),
+                       (RUNNING, u"실행중"),
+                       (JUDGING, u"채점중"),
+                       (COMPILE_ERROR, u"컴파일 실패"),
+                       (OK, u"수행완료"),
+                       (ACCEPTED, u"정답"),
+                       (WRONG_ANSWER, u"오답"),
+                       (RUNTIME_ERROR, u"런타임 오류"),
+                       (TIME_LIMIT_EXCEEDED, u"시간초과"),
+                       (CANT_BE_JUDGED, u"채점실패"),
+                       (REJUDGE_REQUESTED, u"재채점")])
+    STATES_ENG = dict([(RECEIVED, "RECEIVED"),
+                       (COMPILING, "COMPILING"),
+                       (RUNNING, "RUNNING"),
+                       (JUDGING, "JUDGING"),
+                       (COMPILE_ERROR, "COMPILE_ERROR"),
+                       (OK, "OK"),
+                       (ACCEPTED, "ACCEPTED"),
+                       (WRONG_ANSWER, "WRONG_ANSWER"),
+                       (RUNTIME_ERROR, "RUNTIME_ERROR"),
+                       (TIME_LIMIT_EXCEEDED, "TIME_LIMIT_EXCEEDED"),
+                       (CANT_BE_JUDGED, "CANT_BE_JUDGED"),
+                       (REJUDGE_REQUESTED, "REJUDGE_REQUESTED")])
 
 
     PROGRAM_HAS_RUN = [OK, ACCEPTED, WRONG_ANSWER]
@@ -82,7 +80,7 @@ class Submission(models.Model):
     user = models.ForeignKey(User)
     language = models.TextField(max_length=100)
     state = models.SmallIntegerField(default=RECEIVED,
-            choices=STATES_ENG.items())
+                                     choices=STATES_ENG.items())
     length = models.IntegerField()
     source = models.TextField()
     message = models.TextField(blank=True, default="")

@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from django.contrib.auth.models import User
-from models import UserProfile
 
 class SettingsForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False),
-        required=False, label=u"비밀번호 변경")
+                                required=False, label=u"비밀번호 변경")
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False),
-        required=False, label=u"비밀번호 (확인)")
+                                required=False, label=u"비밀번호 (확인)")
 
     email = forms.EmailField(label=u"이메일", max_length=75)
-    intro = forms.CharField(label=u"자기소개", 
-            widget=forms.Textarea(attrs={"class": "large",
-                "rows": "5"}), required=False)
+    intro = forms.CharField(label=u"자기소개",
+                            widget=forms.Textarea(attrs={"class": "large",
+                                                         "rows": "5"}), required=False)
 
     def clean(self):
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:

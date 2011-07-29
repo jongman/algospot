@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
 from djangoutils import setup_paginator, profile
 from models import Activity
 

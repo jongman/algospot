@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpResponse
-from djangoutils import get_or_none, setup_paginator
+from django.http import HttpForbidden
+from djangoutils import setup_paginator
 from models import Category, Post
 from forms import WriteForm
 from django.contrib.comments.models import Comment
@@ -12,9 +12,10 @@ from django.contrib.comments.models import Comment
 def list(request, slug, page=1):
     category = get_object_or_404(Category, slug=slug)
     posts = Post.objects.filter(category=category).order_by("-id")
-    return render(request, "list.html", {"category": category,
-        "pagination": setup_paginator(posts, page, "forum-list",
-                                      {"slug": category.slug})})
+    return render(request, "list.html",
+                  {"category": category,
+                   "pagination": setup_paginator(posts, page, "forum-list",
+                                                 {"slug": category.slug})})
 
 def read(request, id):
     post = get_object_or_404(Post, id=id)
@@ -44,7 +45,7 @@ def write(request, slug, id):
         post.save()
         return redirect(reverse("forum-read", kwargs={"id": post.id}))
     return render(request, "write.html", {"form": form, "action": action,
-        "category": category})
+                                          "category": category})
 
 def delete(request, id):
     post = get_object_or_404(Post, id=id)
@@ -57,7 +58,7 @@ def delete(request, id):
         Comment.objects.filter(object_pk=post.id,
                 content_type=ContentType.objects.get_for_model(Post)).delete()
         post.delete()
-        return redirect(reverse("forum-list", kwargs={"slug": category.slug,
-            "page": 1}))
+        return redirect(reverse("forum-list",
+                                kwargs={"slug": category.slug, "page": 1}))
     return render(request, "delete.html", {"post": post, "category": category})
 

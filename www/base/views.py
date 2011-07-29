@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
 from django.contrib.comments.views.moderation import perform_delete
 from django.contrib.comments.models import Comment
-from models import UserProfile
 from forms import SettingsForm
 
 def profile(request, user_id):
@@ -14,17 +13,17 @@ def settings(request, user_id):
     user = get_object_or_404(User, id=user_id)
     if request.user != user and not request.user.is_superuser:
         return HttpResponseForbidden("Forbidden operation.")
-    form = SettingsForm(data=request.POST or None, initial={"email":
-        user.email, "intro": user.get_profile().intro})
+    form = SettingsForm(data=request.POST or None,
+                        initial={"email": user.email, "intro": user.get_profile().intro})
     if request.method == "POST" and form.is_valid():
         form.save(user)
         return redirect(reverse("user_profile", kwargs={"user_id": user_id}))
     return render(request, "settings.html",
-            {"form": form, "settings_user": user})
+                  {"form": form, "settings_user": user})
 
 def delete_comment(request, comment_id):
-    """ 
-    overriding default comments app's delete, so comment owners can always 
+    """
+    overriding default comments app's delete, so comment owners can always
     delete their comments.
     """
     comment = get_object_or_404(Comment, pk=comment_id)
@@ -40,5 +39,6 @@ def delete_comment(request, comment_id):
 
     # Render a form on GET
     else:
-        return render(request, "comments/delete.html", {"comment": comment, 
-            "next": request.GET.get("next", "/")})
+        return render(request, "comments/delete.html",
+                      {"comment": comment,
+                       "next": request.GET.get("next", "/")})

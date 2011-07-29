@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from django.contrib.auth.models import User, check_password
+from django.contrib.auth.models import User
 from djangoutils import get_or_none
 import hashlib
 
