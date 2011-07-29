@@ -9,6 +9,14 @@ import zipfile
 import glob
 import sandbox
 import languages
+import StringIO
+import traceback
+
+def print_stack_trace():
+    io = StringIO.StringIO()
+    traceback.print_exc(file=io)
+    io.seek(0)
+    return io.read()
 
 @task()
 def add(x, y):
@@ -124,11 +132,12 @@ def judge_submission(submission):
         submission.save()
 
     except Exception as e:
-        # TODO: put stack trace in the message
         submission.state = Submission.CANT_BE_JUDGED
         submission.message = (u"채점 중 예외가 발생했습니다.\n"
-                              u"예외 타입: %s\n예외 메시지:%s" %
-                              (unicode(type(e)), unicode(e)))
+                              u"예외 타입: %s\n예외 메시지:%s\n"
+                              u"스택 트레이스:\n%s" %
+                              (unicode(type(e)), unicode(e),
+                               print_stack_trace()))
         submission.save()
     finally:
         if sandbox_env:
