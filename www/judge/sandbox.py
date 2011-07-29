@@ -233,7 +233,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
                 return u"TLE (샌드박스 밖에서 확인)"
             if memory_used >= self.memory_limit:
                 return u"MLE (샌드박스 밖에서 확인)"
-        return result
+        return result["stdout"]
 
     def _run(self, redirect, time_limit=None):
         signal.signal(signal.SIGTTOU, signal.SIG_IGN)

@@ -16,7 +16,7 @@ def setup(sandbox, source_code):
     if compiled.split()[0] != "OK":
         return {"status": "error",
                 "message": "\n".join(["MONITOR:", compiled,
-                                      "STDOUT:", sandbox.read_file(".stdin"),
+                                      "STDOUT:", sandbox.read_file(".stdout"),
                                       "STDERR:", sandbox.read_file(".stderr")])}
     #sandbox.run("rm submission.cpp .stdin .stderr")
     return {"status": "ok"}
