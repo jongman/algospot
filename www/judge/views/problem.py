@@ -113,6 +113,7 @@ def submit(request, slug):
     else:
         form = SubmitForm(data=request.POST or None)
     if request.method == "POST" and form.is_valid():
+        form.save(request.user, problem)
         return redirect(reverse("judge-submission-mine"))
 
     breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),

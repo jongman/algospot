@@ -15,7 +15,7 @@ def add(x, y):
     return x + y
 
 @task()
-def judge_submission(server, submission):
+def judge_submission(submission):
     logger = judge_submission.get_logger()
 
     def copy(source, dest):
@@ -24,11 +24,10 @@ def judge_submission(server, submission):
             if not chunk: break
             dest.write(chunk)
 
-    def download(server, attachment, destination):
+    def download(attachment, destination):
         # TODO: add MD5 verification to downloaded files
-        full = urlparse.urljoin(server, attachment.file.url)
-        logger.info("downloading %s ..", server)
-        copy(urllib.urlopen(full), open(destination, "wb"))
+        logger.info("downloading %s ..", attachment.file.url)
+        copy(urllib.urlopen(attachment.file.url), open(destination, "wb"))
 
     def unzip(archive, data_dir):
         logger.info("unzipping %s ..", archive)
@@ -38,7 +37,7 @@ def judge_submission(server, submission):
             logger.info("generating %s ..", dest)
             copy(file.open(name), open(dest, "wb"))
 
-    def download_data(server, problem):
+    def download_data(problem):
         attachments = Attachment.objects.filter(problem=problem)
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
@@ -49,7 +48,7 @@ def judge_submission(server, submission):
             destination = os.path.join(data_dir, basename)
             # TODO: check MD5 and make sure we don't have to download again
             if not os.path.exists(destination):
-                download(server, entry, destination)
+                download(entry, destination)
                 if ext == "zip":
                     unzip(destination, data_dir)
             else:
@@ -84,7 +83,7 @@ def judge_submission(server, submission):
         problem = submission.problem
         data_dir = os.path.join(settings.JUDGE_SETTINGS["WORKDIR"],
                                 "data/%d-%s" % (problem.id, problem.slug))
-        download_data(server, submission.problem)
+        download_data(submission.problem)
         ioset = get_ioset()
 
         # 샌드박스 생성
@@ -98,6 +97,7 @@ def judge_submission(server, submission):
             submission.state = Submission.COMPILE_ERROR
             submission.message = result["message"]
             submission.save()
+            return
 
         # set sandbox in copy-on-write mode: will run
         sandbox_env.mount_home("cow")
@@ -108,6 +108,12 @@ def judge_submission(server, submission):
         for io in ioset.iteritems():
             result = language_module.run(sandbox_env, io["in"], problem.time_limit,
                                          problem.memory_limit)
+            if result["status"] != "ok":
+                submission.state = Submission.RUNTIME_ERROR
+                submission.message = result["message"]
+                submission.save()
+                return
+
         submission.state = Submission.JUDGING
         submission.save()
 

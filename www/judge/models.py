@@ -186,8 +186,12 @@ def will_save_submission(sender, **kwargs):
         unsolved_problem(submission.user, submission.problem, submission)
 
 def saved_submission(sender, **kwargs):
-    if kwargs["created"]:
-        profile = kwargs["instance"].user.get_profile()
+    created, submission = kwargs["created"], kwargs["instance"]
+    if created:
+        if submission.state == Submission.RECEIVED:
+            import tasks
+            tasks.judge_submission.delay(submission)
+        profile = submission.user.get_profile()
         profile.submissions += 1
         profile.save()
 

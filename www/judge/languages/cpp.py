@@ -10,7 +10,7 @@ VERSION = system(["g++", "--version"])[0].split("\n")[0]
 ADDITIONAL_FILES = []
 
 def setup(sandbox, source_code):
-    pass
+    return {"status": "ok"}
 
 def run(sandbox, input_file, time_limit, memory_limit):
-    pass
+    return {"status": "ok"}
