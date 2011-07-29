@@ -11,6 +11,7 @@ import tempfile
 import shutil
 import signal
 import subprocess
+import time
 from os.path import expanduser, exists, split, join, abspath, dirname
 
 def makedir(path):
@@ -19,14 +20,28 @@ def makedir(path):
         os.makedirs(path)
     return path
 
-def execute(command, redirect=True):
+class TimeOutException(Exception):
+    pass
+
+def execute(command, redirect=True, time_limit=None):
+    """ time_limit must be in seconds """
     assert isinstance(command, list)
     kwargs = {}
     if redirect:
         kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
-    print "RUN:", command
+    # print "RUN:", command
     popen = subprocess.Popen(command, **kwargs)
-    wait = popen.wait()
+    if not time_limit:
+        wait = popen.wait()
+    else:
+        start = time.time()
+        # 실제 수행하는 데는 2초를 더 준다.
+        while time.time() < start + time_limit + 2 and popen.poll() is None:
+            time.sleep(0.1)
+        wait = popen.poll()
+        if wait is None:
+            popen.kill()
+            raise TimeOutException
     if wait != 0:
         print "NONZERO RETURN CODE!!!", wait
     ret = {"returncode": wait}
@@ -36,24 +51,26 @@ def execute(command, redirect=True):
     return ret
 
 def get_sandbox(memory_limit):
+    assert 1024 <= memory_limit <= 1024*1024*2, "memory_limit should be in kilobytes"
     from django.conf import settings
     SETTINGS = settings.JUDGE_SETTINGS
     assert SETTINGS["Sandbox"] == "LXC"
     return LXCSandbox(SETTINGS["User"], SETTINGS["FileSystemSize"],
-                      memory_limit / 1024, SETTINGS["SwapSize"])
+                      memory_limit, SETTINGS["SwapSize"])
 
+# TODO: 모든 용량 기준 킬로바이트로 통일
 class LXCSandbox(object):
-    def __init__(self, user, fs_size=64, memory_limit=64, swap_size=64,
-                 home_type="bind"):
+    def __init__(self, user, fs_size=65536, memory_limit=65536, home_type="bind"):
         assert os.geteuid() == 0
         self.mounts = []
         self.user = pwd.getpwnam(user)
         self.isolate_filesystem(fs_size, home_type)
-        self.generate_config(memory_limit, swap_size)
+        self.generate_config(memory_limit)
 
-
-    def generate_config(self, memory_limit, swap_size):
+    def generate_config(self, memory_limit):
+        self.memory_limit = memory_limit
         self.config = join(self.root, "config")
+        # 실제 디바이스에는 10MB 를 더 준다
         f = open(self.config, "w")
         f.write("""
 lxc.utsname = %s
@@ -81,9 +98,10 @@ lxc.cgroup.devices.allow = c 254:0 rwm
 ## Networking
 lxc.network.type = empty
 ## Limit max memory
-lxc.cgroup.memory.limit_in_bytes = %dM
-lxc.cgroup.memory.memsw.limit_in_bytes = %dM
-                """ % (self.name, self.root_mount, memory_limit, swap_size))
+lxc.cgroup.memory.limit_in_bytes = %dK
+lxc.cgroup.memory.memsw.limit_in_bytes = %dK
+                """ % (self.name, self.root_mount, memory_limit + 10240,
+                       memory_limit + 10240))
         f.close()
 
 
@@ -184,7 +202,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
         self.create_entrypoint(command)
         return self._run(False)
 
-    def run(self, command, stdin=None, stdout=None, stderr=None):
+    def run(self, command, stdin=None, stdout=None, stderr=None, time_limit=None):
         # 모니터를 샌드박스 안에 집어넣는다
         self.copy_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
                        "monitor.py")
@@ -195,9 +213,20 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
         cmd.append('"%s"' % command)
 
         self.create_entrypoint(" ".join(cmd))
-        return self._run(True)
+        try:
+            result = self._run(True, time_limit)["stdout"]
+        except TimeOutException:
+            return "TLE"
+        toks = result.split()
+        if toks[0] == "OK":
+            time_used, memory_used = map(float, toks[1:3])
+            if time_limit is not None and time_used >= time_limit:
+                return "TLE"
+            if memory_used >= self.memory_limit:
+                return "MLE"
+        return result
 
-    def _run(self, redirect):
+    def _run(self, redirect, time_limit=None):
         signal.signal(signal.SIGTTOU, signal.SIG_IGN)
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         current_path = abspath(dirname(__file__))
@@ -207,7 +236,8 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
                         "-o", join(current_path, "lxc.log"),
                         "-l", "INFO",
                         "su", self.user.pw_name, "-c", "sh", join(self.user.pw_dir, "entrypoint.sh")],
-                       redirect=redirect)
+                       redirect=redirect,
+                       time_limit=time_limit)
 
 def main():
     def print_result(x):
@@ -226,18 +256,15 @@ def main():
         sandbox.mount_home("cow")
         sandbox.run_interactive("bash")
         """
-        sandbox = LXCSandbox("runner", memory_limit=74, swap_size=74, home_type="bind")
+        sandbox = LXCSandbox("runner", memory_limit=65536, home_type="bind")
         import sys
         for file in sys.argv[1:]:
             sandbox.copy_file(file, os.path.basename(file))
         sandbox.copy_file("dp.cpp", "dp.cpp", 0o700)
         sandbox.copy_file("inp", "inp")
-        print_result(sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
-                                 stderr=".compile.stderr"))
-        print_result(sandbox.run("./dp", "inp", ".stdout", ".stderr"))
-        print sandbox.get_file(".stdout")
-        print sandbox.get_file(".stderr")
-        sandbox.run_interactive("bash")
+        print sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
+                                 stderr=".compile.stderr")
+        print sandbox.run("./dp", "inp", ".stdout", ".stderr")
     finally:
         sandbox.teardown()
 
