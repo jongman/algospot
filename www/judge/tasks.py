@@ -111,7 +111,7 @@ def judge_submission(submission):
         logger.info("Running..")
         submission.state = Submission.RUNNING
         submission.save()
-        for io in ioset.iteritems():
+        for io in ioset.itervalues():
             result = language_module.run(sandbox_env, io["in"], problem.time_limit,
                                          problem.memory_limit)
             if result["status"] != "ok":
@@ -124,6 +124,7 @@ def judge_submission(submission):
         submission.save()
 
     except Exception as e:
+        # TODO: put stack trace in the message
         submission.state = Submission.CANT_BE_JUDGED
         submission.message = (u"채점 중 예외가 발생했습니다.\n"
                               u"예외 타입: %s\n예외 메시지:%s" %

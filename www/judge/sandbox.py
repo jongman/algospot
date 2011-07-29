@@ -55,8 +55,7 @@ def get_sandbox(memory_limit):
     from django.conf import settings
     SETTINGS = settings.JUDGE_SETTINGS
     assert SETTINGS["SANDBOX"] == "LXC"
-    return LXCSandbox(SETTINGS["User"], SETTINGS["FileSystemSize"],
-                      memory_limit, SETTINGS["SwapSize"])
+    return LXCSandbox(SETTINGS["USER"], SETTINGS["FILESYSTEMSIZE"], memory_limit)
 
 # TODO: 모든 용량 기준 킬로바이트로 통일
 class LXCSandbox(object):
