@@ -51,6 +51,7 @@ class LXCSandbox(object):
         self.isolate_filesystem(fs_size, home_type)
         self.generate_config(memory_limit, swap_size)
 
+
     def generate_config(self, memory_limit, swap_size):
         self.config = join(self.root, "config")
         f = open(self.config, "w")
@@ -167,6 +168,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
                              "rm $0",
                              "RET=$?",
                              "reset -I 2> /dev/null",
+                             "cd",
                              command,
                              "pkill -P 1 2> /dev/null",
                              "exit $RET"])
@@ -175,54 +177,46 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
         fp.close()
         os.chown(entrypoint, self.user.pw_uid, self.user.pw_gid)
 
-    def run(self, command, interactive=False):
-        "Runs a command in the sandbox"
+    def run_interactive(self, command):
+        "Runs an interactive command in the sandbox"
         # 에.. 이건 왜켜냐
+        self.create_entrypoint(command)
+        return self._run(False)
+
+    def run_measured(self, command, stdin, stdout, stderr):
+        # 모니터를 샌드박스 안에 집어넣는다
+        self.copy_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
+                       "monitor.py")
+        self.create_entrypoint("python ~/monitor.py -i %s -o %s -e %s %s" %
+                               (stdin, stdout, stderr, command))
+        return self._run(True)
+
+    def _run(self, redirect):
         signal.signal(signal.SIGTTOU, signal.SIG_IGN)
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         current_path = abspath(dirname(__file__))
-        self.create_entrypoint(command)
         return execute(["lxc-start",
                         "-n", self.name,
                         "-f", self.config,
                         "-o", join(current_path, "lxc.log"),
                         "-l", "INFO",
                         "su", self.user.pw_name, "-c", "sh", join(self.user.pw_dir, "entrypoint.sh")],
-                       redirect=not interactive)
+                       redirect=redirect)
 
 def main():
-    """
-    from os.path import basename
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("files", nargs="*")
-    parser.add_argument("--interactive", "-i", action="store_true",
-                        default=False)
-    parser.add_argument("--command", "-c", nargs=1, default=["bash"])
-    args = parser.parse_args()
-    print args
     try:
-        sandbox = None
-        sandbox = LXCSandbox("runner")
-        for file in args.files:
-            sandbox.copy_file(file, basename(file))
-        ret = sandbox.run(" ".join(args.command), args.interactive)
-        if not args.interactive:
-            print "Stdout"
-            print ret["stdout"]
-            print "Stderr"
-            print ret["stderr"]
-    finally:
-        if sandbox:
-            sandbox.teardown()
-    """
-    try:
+        """
         sandbox = LXCSandbox("runner", home_type="bind")
-        sandbox.run("bash", True)
+        sandbox.run_interactive("bash")
         sandbox.mount_home("cow")
-        sandbox.run("bash", True)
+        sandbox.run_interactive("bash")
         sandbox.mount_home("cow")
-        sandbox.run("bash", True)
+        sandbox.run_interactive("bash")
+        """
+        sandbox = LXCSandbox("runner", home_type="bind")
+        sandbox.copy_file("dp", "dp", 0o700)
+        sandbox.copy_file("input16medium.txt", "inp")
+        print sandbox.run_measured("./dp", "inp", ".stdout", ".stderr")
     finally:
         sandbox.teardown()
 
