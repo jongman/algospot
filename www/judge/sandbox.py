@@ -164,6 +164,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
 
     def create_entrypoint(self, command):
         entrypoint = join(self.home_in_mounted, "entrypoint.sh")
+        print "ENTRYPOINT", command
         content = "\n".join(["#!/bin/sh",
                              "rm $0",
                              "RET=$?",
@@ -183,12 +184,17 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
         self.create_entrypoint(command)
         return self._run(False)
 
-    def run_measured(self, command, stdin, stdout, stderr):
+    def run(self, command, stdin=None, stdout=None, stderr=None):
         # 모니터를 샌드박스 안에 집어넣는다
         self.copy_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
                        "monitor.py")
-        self.create_entrypoint("python ~/monitor.py -i %s -o %s -e %s %s" %
-                               (stdin, stdout, stderr, command))
+        cmd = ["python", "~/monitor.py"]
+        if stdin: cmd += ["-i", stdin]
+        if stdout: cmd += ["-o", stdout]
+        if stderr: cmd += ["-e", stderr]
+        cmd.append('"%s"' % command)
+
+        self.create_entrypoint(" ".join(cmd))
         return self._run(True)
 
     def _run(self, redirect):
@@ -204,6 +210,13 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dM
                        redirect=redirect)
 
 def main():
+    def print_result(x):
+        print "RETURN CODE: %d" % x["returncode"]
+        for key in x.keys():
+            if x[key]:
+                print key, "============"
+                print x[key]
+
     try:
         """
         sandbox = LXCSandbox("runner", home_type="bind")
@@ -214,9 +227,11 @@ def main():
         sandbox.run_interactive("bash")
         """
         sandbox = LXCSandbox("runner", home_type="bind")
-        sandbox.copy_file("dp", "dp", 0o700)
+        sandbox.copy_file("dp.cpp", "dp.cpp", 0o700)
         sandbox.copy_file("input16medium.txt", "inp")
-        print sandbox.run_measured("./dp", "inp", ".stdout", ".stderr")
+        print_result(sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
+                                 stderr=".compile.stderr"))
+        print_result(sandbox.run("./dp", "inp", ".stdout", ".stderr"))
     finally:
         sandbox.teardown()
 
