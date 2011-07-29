@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.http import HttpForbidden
+from django.http import HttpResponseForbidden
 from djangoutils import setup_paginator
 from models import Category, Post
 from forms import WriteForm
@@ -33,7 +33,7 @@ def write(request, slug, id):
         action = u"글 편집하기"
         post = get_object_or_404(Post, id=id)
         if not request.user.is_superuser and request.user != post.user:
-            return HttpForbidden("operation is forbidden.")
+            return HttpResponseForbidden("operation is forbidden.")
         category = post.category
         form = WriteForm(data=request.POST or None, instance=post)
     else:
@@ -50,7 +50,7 @@ def write(request, slug, id):
 def delete(request, id):
     post = get_object_or_404(Post, id=id)
     if not request.user.is_superuser and request.user != post.user:
-        return HttpForbidden("operation is forbidden.")
+        return HttpResponseForbidden("operation is forbidden.")
     category = post.category
     # Delete on POST
     if request.method == 'POST':
