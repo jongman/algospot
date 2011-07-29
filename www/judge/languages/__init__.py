@@ -20,5 +20,4 @@ for file in files:
     except ImportError:
         import ipdb; ipdb.set_trace()
         continue
-
-sys.path.pop()
+sys.path.remove(languages_dir)
