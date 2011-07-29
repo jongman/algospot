@@ -128,7 +128,8 @@ def judge_submission(submission):
         for io in ioset.itervalues():
             inp = os.path.basename(io["in"])
             sandbox_env.put_file(io["in"], inp)
-            result = language_module.run(sandbox_env, inp, problem.time_limit)
+            result = language_module.run(sandbox_env, inp,
+                                         problem.time_limit / 1000.)
 
             # RTE 혹은 MLE?
             if result["status"] != "ok":
@@ -146,7 +147,7 @@ def judge_submission(submission):
             # TODO: 채점 데이터별 시간 제한 지원
             total_time += float(result["time"])
             max_memory = max(max_memory, int(result["memory"]))
-            if total_time > problem.time_limit:
+            if total_time > problem.time_limit / 1000.:
                 submission.state = Submission.TIME_LIMIT_EXCEEDED
                 return
 
