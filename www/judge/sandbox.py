@@ -164,8 +164,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         for destination in reversed(self.mounts):
             execute(["umount", destination])
 
-        if os.path.exists(self.root):
-            shutil.rmtree(self.root)
+        #if os.path.exists(self.root): shutil.rmtree(self.root)
 
     def put_file(self, source, destination, permission=None):
         "Put a file into user's home directory"
