@@ -1,13 +1,4 @@
 {% extends "base.html" %}
-{% block breadcrumbs %}
-	<li><a href="{% url wiki-detail "Main_Page" %}">위키</a></li>	
-	{% for link, title in breadcrumbs %}
-	<li>{% if link %}<a href="{{ link }}">{% endif %}
-		{{ title }}
-		{% if link %}</a>{% endif %}
-	</li>
-	{% endfor %}
-{% endblock %}
 {% block wiki-class %}current{% endblock %}
 {% block page-tabs %}
 	<nav>

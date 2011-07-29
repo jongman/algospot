@@ -1,10 +1,6 @@
 {% extends "registration/registration_base.html" %}
 {% block title %}Change your picture {% endblock %}
 {% block page-title %}사진 변경하기{% endblock %}
-{% block breadcrumbs %}
-<li><a href="{% url user_settings user.id %}">회원 정보 갱신</a></li>
-<li>사진 변경</li>
-{% endblock %}
 {% block page-contents %}
 	{% load avatar_tags %}
 	{% load avatar_custom_tags %}

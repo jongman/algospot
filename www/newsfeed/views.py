@@ -7,7 +7,6 @@ from models import Activity
 @profile("newsfeed_stream")
 def stream(request, page="1"):
     actions = Activity.objects.order_by("-timestamp")
-    breadcrumbs = [(reverse("newsfeed"), u"뉴스 피드")]
 
-    return render(request, "newsfeed.html", {"breadcrumbs": breadcrumbs,
-        "pagination": setup_paginator(actions, page, "newsfeed", {})})
+    return render(request, "newsfeed.html",
+                  {"pagination": setup_paginator(actions, page, "newsfeed", {})})

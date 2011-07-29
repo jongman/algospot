@@ -7,20 +7,16 @@ from base.decorators import authorization_required
 
 from models import Page, PageRevision
 from forms import EditForm
-from utils import unslugify, get_breadcrumbs, logger
+from utils import unslugify, logger
 from djangoutils import get_or_none
 
 def old(request, id, slug):
     page = get_object_or_404(Page, slug=slug)
     revision = PageRevision.objects.get(id=id)
-    breadcrumbs = get_breadcrumbs(slug)
-    breadcrumbs.append((reverse("wiki-old", kwargs={"id": id, "slug": slug}),
-        unicode(revision.created_on)))
     return render(request, "old.html",
             {"slug": slug,
              "title": page.title,
              "time": unicode(revision.created_on),
-             "breadcrumbs": breadcrumbs,
              "modified": revision.created_on,
              "text": revision.text})
 
@@ -46,15 +42,12 @@ def history(request, slug):
         last, second_last = ids[0], ids[1]
         logger.info("last %s second_last %s", last, second_last)
 
-    breadcrumbs = get_breadcrumbs(slug)
-    breadcrumbs.append((reverse("wiki-history", kwargs={"slug": slug}), u"편집 내역"))
     return render(request, "history.html",
             {"slug": slug,
              "revisions": revisions,
              "title": page.title,
              "last_rev": last,
-             "second_last_rev": second_last,
-             "breadcrumbs": breadcrumbs})
+             "second_last_rev": second_last})
 
 def diff(request, id1=-1, id2=-1):
     rev1 = get_object_or_404(PageRevision, id=id1)
@@ -64,9 +57,6 @@ def diff(request, id1=-1, id2=-1):
 
     dmp = diff_match_patch()
     diff = dmp.diff_compute(rev1.text, rev2.text, True, 2)
-    breadcrumbs = get_breadcrumbs(slug)
-    breadcrumbs.append((reverse("wiki-diff", kwargs={"id1": id1, "id2": id2}),
-        u"변화 내역"))
     return render(request, "diff.html",
             {"slug": slug,
              "title": title,
@@ -74,8 +64,7 @@ def diff(request, id1=-1, id2=-1):
              "rev1": id1,
              "rev2": id2,
              "rev1link": reverse("wiki-old", kwargs={"id": id1, "slug": slug}),
-             "rev2link": reverse("wiki-old", kwargs={"id": id2, "slug": slug}),
-             "breadcrumbs": breadcrumbs})
+             "rev2link": reverse("wiki-old", kwargs={"id": id2, "slug": slug})})
 
 
 def detail(request, slug):
@@ -84,14 +73,13 @@ def detail(request, slug):
             {"slug": slug,
              "title": page.title,
              "page": page,
-             "breadcrumbs": get_breadcrumbs(slug),
              "modified": page.modified_on,
              "text": page.current_revision.text})
 
 @login_required
 @authorization_required
 def edit(request, slug):
-    params = {"slug": slug, "breadcrumbs": get_breadcrumbs(slug)}
+    params = {"slug": slug}
     page = get_or_none(Page, slug=slug)
 
     text = page.current_revision.text if page and page.current_revision else ""

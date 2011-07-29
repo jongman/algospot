@@ -11,8 +11,6 @@ def mine(request):
     return redirect(reverse("judge-submission-recent"))
 
 def recent(request, page=1):
-    breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),
-            (request.path, u"답안 목록")]
     submissions = Submission.objects.all().order_by("-id")
 
     filters = {}
@@ -32,15 +30,12 @@ def recent(request, page=1):
 
         title_add.append(u"문제 " + slug)
         filters["problem"] = slug
-        breadcrumbs.append((request.path + get_query(filters), slug))
 
     if "state" in request.GET:
         state = request.GET["state"]
         submissions = submissions.filter(state=state)
         filters["state"] = state
         title_add.append(Submission.STATES_KOR[int(state)])
-        breadcrumbs.append((request.path + get_query(filters),
-                           Submission.STATES_KOR[int(state)]))
 
     if "order_by" in request.GET:
         order_by = request.GET["order_by"]
@@ -56,12 +51,10 @@ def recent(request, page=1):
             submissions = submissions.filter(user=user)
         filters["user"] = username
         title_add.append(u"사용자 " + username)
-        breadcrumbs.append((request.path + get_query(filters), username))
 
     return render(request, "submission/recent.html",
             {"title": u"답안 목록" + (": " if title_add else "") +
                 ",".join(title_add),
-             "breadcrumbs": breadcrumbs,
              "filters": filters,
              "empty_message": empty_message,
              "pagination": setup_paginator(submissions, page,

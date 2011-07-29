@@ -21,11 +21,8 @@ def edit(request, id):
         form.save()
         return redirect(reverse("judge-problem-read",
             kwargs={"slug": form.cleaned_data["slug"]}));
-    breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),
-            (None, "문제 편집")]
     return render(request, "problem/edit.html", {"problem": problem,
-        "form": form,
-        "breadcrumbs": breadcrumbs})
+        "form": form})
 
 @login_required
 def delete_attachment(request, id):
@@ -86,25 +83,18 @@ def list_attachments(request, id):
     return HttpResponse(json.dumps(ret))
 
 def list(request, page=1):
-    breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),
-                   (reverse("judge-problem-list"), u"문제 목록")]
     problems = Problem.objects.all().order_by("slug")
     # options = {}
     # TODO: 카테고리별 문제 보기
     # TODO: 난이도 순으로 정렬하기
     return render(request, "problem/list.html",
                   {"title": u"문제 목록 보기",
-                   "breadcrumbs": breadcrumbs,
                    "ACCEPTED": Submission.ACCEPTED,
                    "pagination": setup_paginator(problems, page,
                                                  "judge-problem-list", {})})
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
-    breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),
-            (reverse("judge-problem-read", kwargs={"slug":slug}),
-                problem.slug)]
-    return render(request, "problem/read.html", {"problem": problem,
-        "breadcrumbs": breadcrumbs})
+    return render(request, "problem/read.html", {"problem": problem})
 
 def submit(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
@@ -116,10 +106,5 @@ def submit(request, slug):
         form.save(request.user, problem)
         return redirect(reverse("judge-submission-mine"))
 
-    breadcrumbs = [(reverse("judge-index"), u"온라인 저지"),
-            (reverse("judge-problem-read", kwargs={"slug":slug}),
-                problem.slug),
-            (reverse("judge-problem-submit", kwargs={"slug":slug}),
-                u"제출하기")]
     return render(request, "problem/submit.html", {"form": form,
-        "breadcrumbs": breadcrumbs, "problem": problem})
+        "problem": problem})

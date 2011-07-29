@@ -12,22 +12,14 @@ from django.contrib.comments.models import Comment
 def list(request, slug, page=1):
     category = get_object_or_404(Category, slug=slug)
     posts = Post.objects.filter(category=category).order_by("-id")
-    breadcrumbs = [(reverse("forum-list",
-        kwargs={"slug": category.slug, "page": 1}), category.name)]
-    return render(request, "list.html", {"breadcrumbs": breadcrumbs,
-        "category": category,
+    return render(request, "list.html", {"category": category,
         "pagination": setup_paginator(posts, page, "forum-list",
-            {"slug": category.slug})})
+                                      {"slug": category.slug})})
 
 def read(request, id):
     post = get_object_or_404(Post, id=id)
     category = post.category
-    breadcrumbs = [
-            (reverse("forum-list",
-                kwargs={"slug": category.slug, "page": 1}), category.name),
-            (reverse("forum-read", kwargs={"id": id}), post.title)]
-    return render(request, "read.html", {"breadcrumbs": breadcrumbs,
-        "post": post, "category": category})
+    return render(request, "read.html", {"post": post, "category": category})
 
 @login_required
 def write(request, slug, id):
@@ -51,28 +43,14 @@ def write(request, slug, id):
         post.user = request.user
         post.save()
         return redirect(reverse("forum-read", kwargs={"id": post.id}))
-
-    breadcrumbs = [(reverse("forum-list",
-        kwargs={"slug": category.slug, "page": 1}),
-        category.name)]
-    if id != None:
-        breadcrumbs.append((reverse("forum-read", kwargs={"id": id}),
-            post.title))
-    breadcrumbs.append((None, action))
-
     return render(request, "write.html", {"form": form, "action": action,
-        "breadcrumbs": breadcrumbs, "category": category})
+        "category": category})
 
 def delete(request, id):
     post = get_object_or_404(Post, id=id)
     if not request.user.is_superuser and request.user != post.user:
         return HttpForbidden("operation is forbidden.")
     category = post.category
-    breadcrumbs = [
-            (reverse("forum-list",
-                kwargs={"slug": category.slug, "page": 1}), category.name),
-            (reverse("forum-read", kwargs={"id": id}), post.title),
-            (reverse("forum-delete", kwargs={"id": id}), u"삭제")]
     # Delete on POST
     if request.method == 'POST':
         # delete all comments
@@ -81,6 +59,5 @@ def delete(request, id):
         post.delete()
         return redirect(reverse("forum-list", kwargs={"slug": category.slug,
             "page": 1}))
-    return render(request, "delete.html", {"breadcrumbs": breadcrumbs,
-        "post": post, "category": category})
+    return render(request, "delete.html", {"post": post, "category": category})
 

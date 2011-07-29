@@ -28,15 +28,4 @@ def slugify(title):
 def unslugify(title):
     return re.sub(ur'[_\s]+', ' ', title)
 
-def get_breadcrumbs(slug):
-    parts = slug.split("/")
-    s = ""
-    ret = []
-    for part in slug.split("/"):
-        if s: s += "/"
-        s += part
-        ret.append((reverse("wiki-detail", kwargs={"slug": s}),
-            unslugify(part)))
-    return ret
-
 
