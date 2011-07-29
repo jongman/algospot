@@ -73,12 +73,14 @@ def judge_submission(submission):
 
     sandbox_env = None
     try:
+        logger.info("Checking language module..")
         # 언어별 채점 모듈 존재 여부부터 확인하기
         if submission.language not in languages.modules:
             raise Exception(u"언어 %s의 채점 모듈을 찾을 수 없습니다." %
                             submission.language)
         language_module = languages.modules[submission.language]
 
+        logger.info("Downloading judge i/o set..")
         # 문제 채점 데이터를 다운받고 채점 준비
         problem = submission.problem
         data_dir = os.path.join(settings.JUDGE_SETTINGS["WORKDIR"],
@@ -86,9 +88,11 @@ def judge_submission(submission):
         download_data(submission.problem)
         ioset = get_ioset()
 
+        logger.info("Initiating sandbox..")
         # 샌드박스 생성
         sandbox_env = sandbox.get_sandbox(problem.memory_limit)
 
+        logger.info("Compiling..")
         # 컴파일
         submission.state = Submission.COMPILING
         submission.save()
@@ -99,10 +103,12 @@ def judge_submission(submission):
             submission.save()
             return
 
+        logger.info("Freezing sandbox..")
         # set sandbox in copy-on-write mode: will run
         sandbox_env.mount_home("cow")
 
         # let's run now
+        logger.info("Running..")
         submission.state = Submission.RUNNING
         submission.save()
         for io in ioset.iteritems():
