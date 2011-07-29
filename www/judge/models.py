@@ -2,7 +2,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from config import JUDGE_MODULES
 from django.db.models.signals import pre_save, post_save
 from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
@@ -26,8 +25,7 @@ class Problem(models.Model):
     sample_input = models.TextField(u"예제 입력", blank=True)
     sample_output = models.TextField(u"예제 출력", blank=True)
     note = models.TextField(u"노트", blank=True)
-    judge_module = models.CharField(u"채점 모듈", blank=True, max_length=100,
-            choices=JUDGE_MODULES.items())
+    judge_module = models.CharField(u"채점 모듈", blank=True, max_length=100)
     time_limit = models.PositiveIntegerField(u"시간 제한 (ms)", default=10000)
     memory_limit = models.PositiveIntegerField(u"메모리 제한 (kb)", default=65536)
     submissions_count = models.IntegerField(default=0)

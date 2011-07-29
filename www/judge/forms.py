@@ -4,12 +4,17 @@ from django import forms
 from models import Problem, Submission
 from django.contrib.auth.models import User
 import languages
+import differs
 
 class ProblemEditForm(forms.ModelForm):
     user = forms.ModelChoiceField(label=u"작성자", queryset=User.objects.order_by("username"))
     class Meta:
         model = Problem
         exclude = ('submissions_count', 'accepted_count')
+        widgets = {
+             "judge_module": forms.Select(choices=[(key, key + ": " + val.DESC)
+                                                   for key, val in differs.modules.iteritems()])
+         }
 
 class RestrictedProblemEditForm(ProblemEditForm):
     class Meta:
