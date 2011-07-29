@@ -125,8 +125,9 @@ def judge_submission(submission):
 
     except Exception as e:
         submission.state = Submission.CANT_BE_JUDGED
-        submission.message = (u"채점 중 오류가 발생했습니다. 오류 메시지:\n" +
-                              unicode(e))
+        submission.message = (u"채점 중 예외가 발생했습니다.\n"
+                              u"예외 타입: %s\n예외 메시지:%s" %
+                              (unicode(type(e)), unicode(e)))
         submission.save()
     finally:
         if sandbox_env:
