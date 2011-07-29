@@ -22,8 +22,8 @@ def main():
     try:
         process = subprocess.Popen(args.command.split(), **kwargs)
         returncode = process.wait()
-    except:
-        print "RTE (popen failed, contact admin)"
+    except Exception as e:
+        print "RTE (popen failed, contact admin. exception: %s)" % str(e)
         return
     if returncode > 0:
         print "RTE (nonzero return code)"
@@ -37,8 +37,17 @@ def main():
         elif sgn == signal.SIGSEGV:
             print ("RTE (SIGSEGV: segmentation fault, probably incorrect memory "
                    "access)")
+        elif sgn == signal.SIGKILL:
+            print ("RTE (SIGKILL: program was forcefully killed, probably "
+                   "memory limit exceeded)")
         else:
-            print "RTE Unknown signal %d" % sgn
+            name = str(sgn)
+            for entry in dir(signal):
+                if entry.startswith("SIG"):
+                    if getattr(signal, entry) == sgn:
+                        name = entry
+                        break
+            print "RTE (Unknown signal %s)" % name
         return
     usage = resource.getrusage(resource.RUSAGE_CHILDREN)
     print "OK %.4lf %d" % (usage.ru_utime + usage.ru_stime, usage.ru_maxrss)
