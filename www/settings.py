@@ -202,7 +202,6 @@ AUTHENTICATION_BACKENDS = (
 # JUDGE SETTINGS
 JUDGE_SETTINGS = {
     "WORKDIR": j("judge/work"),
-    "SANDBOX": "LXC",
     "USER": "runner",
     "FILESYSTEMSIZE": 20 * 1024
 }

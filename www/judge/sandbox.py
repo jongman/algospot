@@ -12,6 +12,9 @@ import shutil
 import signal
 import subprocess
 import time
+import logging
+import getpass
+import codecs
 from os.path import expanduser, exists, split, join, abspath, dirname
 
 def makedir(path):
@@ -52,15 +55,20 @@ def get_sandbox(memory_limit):
     assert 1024 <= memory_limit <= 1024*1024*2, "memory_limit should be in kilobytes"
     from django.conf import settings
     SETTINGS = settings.JUDGE_SETTINGS
-    assert SETTINGS["SANDBOX"] == "LXC"
-    return LXCSandbox(SETTINGS["USER"], SETTINGS["FILESYSTEMSIZE"], memory_limit)
+    return Sandbox(SETTINGS["USER"], SETTINGS["FILESYSTEMSIZE"], memory_limit)
 
 # TODO: 모든 용량 기준 킬로바이트로 통일
-class LXCSandbox(object):
+class Sandbox(object):
     def __init__(self, user, fs_size=65536, memory_limit=65536, home_type="bind"):
-        assert os.geteuid() == 0
-        self.mounts = []
+        self.am_i_root = os.geteuid() == 0
+        if not self.am_i_root:
+            logging.warning("Sandbox not running as root: all sandboxing "
+                            "functionalities are unavailable.")
+            print ("Sandbox not running as root: all sandboxing "
+                            "functionalities are unavailable.")
+            user = getpass.getuser()
         self.user = pwd.getpwnam(user)
+        self.mounts = []
         self.isolate_filesystem(fs_size, home_type)
         self.generate_config(memory_limit)
 
@@ -103,7 +111,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
 
     def mount(self, source, destination, fstype, options=None):
-        #print "mount src=%s dest=%s type=%s options=%s" % (source, destination, fstype, options)
+        if not self.am_i_root: return
         cmd = ["mount", "-t", fstype, source, destination]
         if options:
             cmd += ["-o", options]
@@ -141,10 +149,14 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.new_home_cow = expanduser(join(self.workdir, "user-home-cow"))
         self.mount_home(home_type)
 
+    def _umount(self, mounted):
+        if not self.am_i_root: return
+        if mounted not in self.mounts: return
+        execute(["umount", self.mounted])
+        self.mounts.remove(mounted)
+
     def mount_home(self, home_type):
-        if self.mounts and self.mounts[-1] == self.home_in_mounted:
-            execute(["umount", self.home_in_mounted])
-            self.mounts.pop()
+        self._umount(self.home_in_mounted)
 
         if home_type == "bind":
             self.mount(self.new_home, self.home_in_mounted, "none", "bind")
@@ -159,8 +171,8 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         os.chmod(self.home_in_mounted, 0o700)
 
     def teardown(self):
-        for destination in reversed(self.mounts):
-            execute(["umount", destination])
+        for destination in list(reversed(self.mounts)):
+            self._umount(destination)
 
         #if os.path.exists(self.root): shutil.rmtree(self.root)
 
@@ -185,18 +197,18 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
     def read_file(self, file):
         "Reads a file from user's home directory"
-        return open(join(self.home_in_mounted, file)).read()
+        return codecs.open(join(self.home_in_mounted, file), encoding="utf-8").read()
 
     def create_entrypoint(self, command):
         entrypoint = join(self.home_in_mounted, "entrypoint.sh")
         #print "ENTRYPOINT", command
         content = "\n".join(["#!/bin/sh",
+                             "cd `dirname $0`",
                              "rm $0",
-                             "RET=$?",
-                             "reset -I 2> /dev/null",
-                             "cd",
+                             "reset -I 2> /dev/null" if self.am_i_root else "",
                              command,
-                             "pkill -P 1 2> /dev/null",
+                             "RET=$?",
+                             "pkill -P 1 2> /dev/null" if self.am_i_root else "",
                              "exit $RET"])
         fp = open(entrypoint, "w")
         fp.write(content)
@@ -213,7 +225,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         # 모니터를 샌드박스 안에 집어넣는다
         self.put_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
                        "monitor.py")
-        cmd = ["python", "~/monitor.py"]
+        cmd = ["python", "monitor.py"]
         if stdin: cmd += ["-i", stdin]
         if stdout: cmd += ["-o", stdout]
         if stderr: cmd += ["-e", stderr]
@@ -243,12 +255,16 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         signal.signal(signal.SIGTTOU, signal.SIG_IGN)
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         current_path = abspath(dirname(__file__))
-        return execute(["lxc-start",
-                        "-n", self.name,
-                        "-f", self.config,
-                        "-o", join(current_path, "lxc.log"),
-                        "-l", "INFO",
-                        "su", self.user.pw_name, "-c", "sh", join(self.user.pw_dir, "entrypoint.sh")],
+        if self.am_i_root:
+            return execute(["lxc-start",
+                            "-n", self.name,
+                            "-f", self.config,
+                            "-o", join(current_path, "lxc.log"),
+                            "-l", "INFO",
+                            "su", self.user.pw_name, "-c", "sh", join(self.user.pw_dir, "entrypoint.sh")],
+                           redirect=redirect,
+                           time_limit=time_limit)
+        return execute(["sh", join(self.home_in_mounted, "entrypoint.sh")],
                        redirect=redirect,
                        time_limit=time_limit)
 
@@ -262,14 +278,14 @@ def main():
 
     try:
         """
-        sandbox = LXCSandbox("runner", home_type="bind")
+        sandbox = Sandbox("runner", home_type="bind")
         sandbox.run_interactive("bash")
         sandbox.mount_home("cow")
         sandbox.run_interactive("bash")
         sandbox.mount_home("cow")
         sandbox.run_interactive("bash")
         """
-        sandbox = LXCSandbox("runner", memory_limit=65536, home_type="bind")
+        sandbox = Sandbox("runner", memory_limit=65536, home_type="bind")
         import sys
         for file in sys.argv[1:]:
             sandbox.put_file(file, os.path.basename(file))
