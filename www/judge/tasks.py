@@ -132,10 +132,13 @@ def judge_submission(submission):
 
     except:
         submission.state = Submission.CANT_BE_JUDGED
-        submission.message = u"\n".join([
-            u"채점 중 예외가 발생했습니다.",
-            u"스택 트레이스:",
-            print_stack_trace()])
+        try:
+            submission.message = u"\n".join([
+                u"채점 중 예외가 발생했습니다.",
+                u"스택 트레이스:",
+                print_stack_trace()])
+        except Exception as e:
+            submission.message = u"오류 인코딩 중 에러: %s" % e.message
         submission.save()
     finally:
         if sandbox_env:
