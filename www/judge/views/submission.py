@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
-from djangoutils import setup_paginator, get_or_none, get_query
+from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
 from ..models import Problem, Submission
 
@@ -53,12 +53,17 @@ def recent(request, page=1):
         title_add.append(u"사용자 " + username)
 
     return render(request, "submission/recent.html",
-            {"title": u"답안 목록" + (": " if title_add else "") +
-                ",".join(title_add),
-             "filters": filters,
-             "empty_message": empty_message,
-             "pagination": setup_paginator(submissions, page,
-                 "judge-submission-recent", {}, filters)})
+                  {"title": u"답안 목록" + (": " if title_add else "") +
+                   ",".join(title_add),
+                   "filters": filters,
+                   "empty_message": empty_message,
+                   "pagination": setup_paginator(submissions, page,
+                                                 "judge-submission-recent", {}, filters)})
 
 def details(request, id):
-    pass
+    submission = get_object_or_404(Submission, id=id)
+    problem = submission.problem
+    return render(request, "submission/details.html",
+                  {"title": u"답안 보기",
+                   "submission": submission,
+                   "problem": problem})

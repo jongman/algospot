@@ -1670,7 +1670,7 @@ a.userlink {
 	padding: 25px !important;
 }
 
-div.highlight {
+.highlight {
 	background-color: #eee;
 	border: 1px solid #ccc;
 }
@@ -1817,18 +1817,18 @@ article header h2 { width: 500px; }
 
 /* online judge */
 
-.probleminfo, .probleminfo ul, .probleminfo li {
+.tabular, .tabular ul, .tabular li
+{
 	margin:0;
 	padding:0;
 }
 
-.probleminfo {
+.tabular {
 	width: 100%;
 	margin-bottom: 16px;
 	font-size: 13px;
 }
-.probleminfo a { text-decoration: none; }
-.probleminfo li {
+.tabular li {
 	display: block;
 	list-style: none;
 	overflow: hidden;
@@ -1836,21 +1836,22 @@ article header h2 { width: 500px; }
 	padding-top: 2px;
 	padding-bottom: 2px;
 }
-.probleminfo li.header {
+.tabular li.header {
 	font-weight: bold;
 }
-.probleminfo li.content {
+.tabular li.content {
 	background-color: #f0f0f0;
 	border-top: 1px solid;
 	border-bottom: 1px solid;;
 	border-color: silver;
 }
-.probleminfo li li {
+.tabular li li {
 	list-style: none;
 	background: none;
 	text-align: center;
 	float: left;
 }
+.probleminfo a { text-decoration: none; }
 .probleminfo ul li {
 	width: 20%;
 }
@@ -1859,6 +1860,16 @@ article header h2 { width: 500px; }
 }
 .probleminfo li.category {
 	width: 40%;
+}
+.submissioninfo a { text-decoration: none; }
+.submissioninfo ul li {
+	width: 14%;
+}
+.submission_message .highlight {
+	margin-left: 32px;
+}
+.sourcecode .highlight {
+	margin-left: 32px;
 }
 .problem_statement p, .problem_statement pre, .problem_statement ul {
 	margin-left: 16px;

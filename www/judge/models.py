@@ -90,8 +90,9 @@ class Submission(models.Model):
     def has_run(self):
         return self.state in self.PROGRAM_HAS_RUN
 
+    # TODO: has_messages => has_message
     def has_messages(self):
-        return self.state in self.HAS_MESSAGES
+        return bool(self.message)
 
     def name_kor(self):
         return self.STATES_KOR[self.state]

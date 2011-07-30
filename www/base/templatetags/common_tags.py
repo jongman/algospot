@@ -22,6 +22,22 @@ class GetLastCommentNode(BaseCommentNode):
 def get_last_comment(parser, token):
     return GetLastCommentNode.handle_token(parser, token)
 
+class SourceCodeNode(template.Node):
+    def __init__(self, code, lang):
+        self.code = template.Variable(code)
+        self.lang = template.Variable(lang)
+    def render(self, context):
+        code = self.code.resolve(context)
+        lang = self.lang.resolve(context)
+        lexer = get_lexer_by_name(lang)
+        formatter = HtmlFormatter(style="colorful")
+        return highlight(code, lexer, formatter).replace("\n", "<br/>")
+
+@register.tag
+def syntax_highlight(parser, token):
+    toks = token.split_contents()
+    code, lang = toks[1:3]
+    return SourceCodeNode(code, lang)
 
 @register.filter
 def get_comment_hotness(count):
@@ -64,7 +80,7 @@ def print_datetime(dt):
         fallback, format_readable(diff) or fallback))
 
 code_pattern = re.compile(r'<code lang=([^>]+)>(.+?)</code>', re.DOTALL)
-def syntax_highlight(text):
+def highlight_code_section(text):
     def proc(match):
         lang = match.group(1).strip('"\'')
         lexer = get_lexer_by_name(lang, stripall=True)
@@ -76,7 +92,7 @@ def syntax_highlight(text):
 
 @register.filter
 def render_text(text):
-    text = syntax_highlight(text)
+    text = highlight_code_section(text)
     text = markdown.markdown(text, extensions=["toc"])
     try:
         from wiki.utils import link_to_pages
