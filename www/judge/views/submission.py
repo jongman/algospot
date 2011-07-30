@@ -37,11 +37,6 @@ def recent(request, page=1):
         filters["state"] = state
         title_add.append(Submission.STATES_KOR[int(state)])
 
-    if request.GET.get("order_by"):
-        order_by = request.GET["order_by"]
-        submissions = submissions.order_by(order_by)
-        filters["order_by"] = order_by
-
     if request.GET.get("user"):
         username = request.GET["user"]
         user = get_or_none(User, username=username)
