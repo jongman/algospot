@@ -31,7 +31,11 @@ urlpatterns = patterns(
         name='judge-submission-mine'),
     url(r'^submission/recent/$', views.submission.recent,
         name='judge-submission-recent'),
-    url(r'^submission/recent/(?P<page>.+)/$', views.submission.recent,
+    url(r'^submission/recent/(?P<page>.+)$', views.submission.recent,
         name='judge-submission-recent'),
+    url(r'^submission/accepted/(?P<problem>[^/]+)$', views.submission.accepted,
+        name='judge-submission-accepted'),
+    url(r'^submission/accepted/(?P<problem>.+)/(?P<order_by>.+)/(?P<page>.+)$', views.submission.accepted,
+        name='judge-submission-accepted'),
 )
 

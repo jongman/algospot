@@ -1882,15 +1882,28 @@ article header h2 { width: 500px; }
 	border: 1px solid silver;
 }
 
-.submissions td, .submissions th {
+.submissions td, .submissions th, 
+.submissions_accepted td, .submissions_accepted th {
 	padding-left: 8px;
 	text-align: left;
 }
-.submissions td, .submissions th {
+.submissions td, .submissions th,
+.submissions_accepted td, .submissions_accepted th 
+{
 	height: 24px;
 	font-size: 13px;
 }
-.submissions a { text-decoration: none; }
+.submissions_accepted td, .submissions_accepted th {
+	width: 10%;
+}
+.submissions_accepted td.user, .submissions_accepted th.user,
+.submissions_accepted td.stats, .submissions_accepted th.stats
+{
+	width: 30%;
+}
+.submissions a,
+.submissions_accepted a
+{ text-decoration: none; }
 .submissionRECEIVED { color: silver; }
 .submissionCOMPILING { color: gray; }
 .submissionCOMPILE_ERROR { font-weight: bold; color: rgb(64, 64, 255); }

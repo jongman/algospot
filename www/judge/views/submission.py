@@ -10,7 +10,21 @@ from ..models import Problem, Submission
 def mine(request):
     return redirect(reverse("judge-submission-recent"))
 
+def accepted(request, problem, order_by="length", page=1):
+    problem = get_object_or_404(Problem, slug=problem)
+    submissions = Submission.objects.filter(state=Submission.ACCEPTED,
+                                            problem=problem).order_by(order_by)
+    return render(request, "submission/accepted.html",
+                  {"problem": problem,
+                   "order_by": order_by,
+                   "pagination": setup_paginator(submissions, page,
+                                                 "judge-submission-accepted",
+                                                 {"problem": problem.slug,
+                                                  "order_by": order_by})})
+
 def recent(request, page=1):
+    # TODO: hide non-public submission
+    # TODO: handle non-public submissions in general
     submissions = Submission.objects.all().order_by("-id")
 
     filters = {}
