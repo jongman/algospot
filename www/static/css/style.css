@@ -1937,7 +1937,7 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 }
 
 .submission-filter select {
-	width: 300px;
+	font-size: 12px;
 }
 
 .submission-filter {
