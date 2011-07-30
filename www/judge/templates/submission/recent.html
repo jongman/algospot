@@ -15,15 +15,6 @@
 {% block judge-submission-class %}current{% endblock %}
 {% block page-contents %}
 {% load judge_tags %}
-<!--
-<ul class="submission_filter kor">
-	<li class="filter">골라보기</li>
-	<li class="problem">문제</li>
-	<li class="problem_filter"><input type="text" id="problem" value="{{ filters.problem }}"/></li>
-	<li class="user">사용자</li>
-	<li class="user_filter"><input type="text" id="user" value="{{ filters.user }}"/></li>
-	<li class="apply"><a href="#" class="button-link">apply</a></li>
-</ul>-->
 <table class="submissions kor">
 	<thead>
 		<tr>
@@ -88,5 +79,42 @@
 </section>
 </article>
 <article>
-	{{ pagination.render }}
+	<section>
+		{{ pagination.render }}
+	</section>
+	<section>
+		<form>
+			<fieldset class="kor">
+				<legend>답안 필터</legend>
+				<dl>
+					<dt>
+						문제
+					</dt>
+					<dd>
+						<select id="problem_filter">
+							{% for problem in problems %}
+							<option value="{{ problem.slug }}">{{ problem.slug }}</option>
+							{% endfor %}
+						</select>
+					</dd>
+					<dt>
+						제출자
+					</dt>
+					<dd>
+						<select id="user_filter">
+							{% for user in users %}
+							<option value="{{ user.username }}">{{ user.username }}</option>
+							{% endfor %}
+						</select>
+					</dd>
+					<dt>
+						적용
+					</dt>
+					<dd>
+						<a href="#" class="button-link">apply</a>
+					</dd>
+				</dl>
+			</fieldset>
+		</form>
+	</section>
 {% endblock %}

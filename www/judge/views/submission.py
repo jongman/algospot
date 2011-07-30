@@ -52,10 +52,15 @@ def recent(request, page=1):
         filters["user"] = username
         title_add.append(u"사용자 " + username)
 
+    problems = Problem.objects.filter(state=Problem.PUBLISHED).order_by("slug")
+    users = User.objects.order_by("username")
+
     return render(request, "submission/recent.html",
                   {"title": u"답안 목록" + (": " if title_add else "") +
                    ",".join(title_add),
                    "filters": filters,
+                   "problems": problems,
+                   "users": users,
                    "empty_message": empty_message,
                    "pagination": setup_paginator(submissions, page,
                                                  "judge-submission-recent", {}, filters)})
