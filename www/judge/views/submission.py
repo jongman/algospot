@@ -18,7 +18,7 @@ def recent(request, page=1):
     empty_message = u"제출된 답안이 없습니다."
     title_add = []
 
-    if "problem" in request.GET:
+    if request.GET.get("problem"):
         slug = request.GET["problem"]
         problem = get_or_none(Problem, slug=slug)
 
@@ -28,7 +28,7 @@ def recent(request, page=1):
         else:
             submissions = submissions.filter(problem=problem)
 
-        title_add.append(u"문제 " + slug)
+        title_add.append(slug)
         filters["problem"] = slug
 
     if "state" in request.GET:
@@ -51,7 +51,7 @@ def recent(request, page=1):
         else:
             submissions = submissions.filter(user=user)
         filters["user"] = username
-        title_add.append(u"사용자 " + username)
+        title_add.append(username)
 
     problems = Problem.objects.filter(state=Problem.PUBLISHED).order_by("slug")
     users = User.objects.order_by("username")

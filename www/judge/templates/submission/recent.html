@@ -106,7 +106,7 @@
 						<select name="user" title="특정 사용자의 답안만 보기" class="chzn-select">
 							<option value=""></option>
 							{% for user in users %}
-							<option value="{{ user.username }}">{{ user.username }}</option>
+								<option {% if user.username == filters.user %}selected{% endif %} value="{{ user.username }}">{{ user.username }}</option>
 							{% endfor %}
 						</select>
 					</dd>

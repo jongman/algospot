@@ -18,7 +18,9 @@ def get_or_none(model, **kwargs):
 
 def get_query(params):
     if not params: return ""
-    return "?" + urllib.urlencode(params)
+    return "?" + "&".join(["%s=%s" % (key,
+                                      urllib.quote(val.encode("utf-8")))
+                           for key, val in params.iteritems()])
 
 class Pagination(object):
     def __init__(self, paginator, page, link_name, link_kwargs, get_params):
