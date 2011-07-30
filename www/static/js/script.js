@@ -291,6 +291,8 @@ $(function () {
 			}
 		]
 	});
+
+	$(".chzn-select").chosen();
 	
 });
 

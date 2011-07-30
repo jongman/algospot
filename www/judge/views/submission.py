@@ -37,11 +37,12 @@ def recent(request, page=1):
         filters["state"] = state
         title_add.append(Submission.STATES_KOR[int(state)])
 
-    if "order_by" in request.GET:
+    if request.GET.get("order_by"):
         order_by = request.GET["order_by"]
         submissions = submissions.order_by(order_by)
+        filters["order_by"] = order_by
 
-    if "user" in request.GET:
+    if request.GET.get("user"):
         username = request.GET["user"]
         user = get_or_none(User, username=username)
         if not user:
@@ -58,9 +59,9 @@ def recent(request, page=1):
     return render(request, "submission/recent.html",
                   {"title": u"답안 목록" + (": " if title_add else "") +
                    ",".join(title_add),
-                   "filters": filters,
                    "problems": problems,
                    "users": users,
+                   "filters": filters,
                    "empty_message": empty_message,
                    "pagination": setup_paginator(submissions, page,
                                                  "judge-submission-recent", {}, filters)})

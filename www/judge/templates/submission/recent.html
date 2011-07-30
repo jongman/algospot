@@ -83,17 +83,19 @@
 		{{ pagination.render }}
 	</section>
 	<section>
-		<form>
-			<fieldset class="kor">
+		<form method="GET" action="">
+			<input type="hidden" name="order_by" value="{{ filters.order_by }}">
+			<fieldset class="kor submission-filter">
 				<legend>답안 필터</legend>
 				<dl>
 					<dt>
 						문제
 					</dt>
 					<dd>
-						<select id="problem_filter">
+						<select name="problem" title="특정 문제의 답안만 보기" class="chzn-select">
+							<option value=""></option>
 							{% for problem in problems %}
-							<option value="{{ problem.slug }}">{{ problem.slug }}</option>
+								<option {% if problem.slug == filters.problem %}selected{% endif %} value="{{ problem.slug }}">{{ problem.slug }}</option>
 							{% endfor %}
 						</select>
 					</dd>
@@ -101,7 +103,8 @@
 						제출자
 					</dt>
 					<dd>
-						<select id="user_filter">
+						<select name="user" title="특정 사용자의 답안만 보기" class="chzn-select">
+							<option value=""></option>
 							{% for user in users %}
 							<option value="{{ user.username }}">{{ user.username }}</option>
 							{% endfor %}
@@ -111,7 +114,7 @@
 						적용
 					</dt>
 					<dd>
-						<a href="#" class="button-link">apply</a>
+						<button type="submit">적용하기</button>
 					</dd>
 				</dl>
 			</fieldset>

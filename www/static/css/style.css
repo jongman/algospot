@@ -1935,3 +1935,16 @@ a .submissionRUNTIME_ERROR { text-decoration: underline; }
 .attachments div.uploadbutton {
 	margin-bottom: 16px;
 }
+
+.submission-filter select {
+	width: 300px;
+}
+
+.submission-filter {
+	margin-bottom: 200px;
+}
+
+/* disable default li styling for chosen */
+ul.chzn-results li {
+	background-image: none;
+}
