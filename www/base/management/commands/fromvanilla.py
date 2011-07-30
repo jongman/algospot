@@ -189,6 +189,7 @@ def migrate_submissions(db):
         new_submission = Submission(**kwargs)
         new_submission.save()
         new_submission.state = submission["State"]
+        new_submission.submitted_on = submission["Submitted"]
         new_submission.save()
         patch("solved-%d-%d-%d" % (submission["Author"],
                                    submission["Problem"],
