@@ -1,5 +1,7 @@
 @charset "utf-8";
 
+/* 광역 효과 ***************************************************/
+
 /* 링크 밑줄 is so 1990 */
 a { text-decoration: none; }
 
@@ -7,7 +9,14 @@ a { text-decoration: none; }
 body { font-family: NanumGothic,나눔고딕; }
 .button-link { font-family: 'PT Sans', Arial; }
 
+/* 사용자 핸들은 굵은 글씨로 */
+a.username { font-weight: bold; }
 
+/* 글로벌 엘레멘트들 ***************************************************/
+
+/* 내비게이션 바 */
+#user-info div > a { font-size: 100%; }
+#user-info div > em { font-size: 80%; }
 
 /* .markup-intro td { */
 /* 	text-align:left; */

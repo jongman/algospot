@@ -53,7 +53,7 @@ def get_comment_hotness(count):
 @register.filter
 def print_username(user):
     profile_link = reverse('user_profile', kwargs={"user_id": user.id})
-    return mark_safe('<a href="%s" class="userlink">%s</a>' %
+    return mark_safe('<a href="%s" class="username">%s</a>' %
             (profile_link, user.username))
 
 units = [(int(365.2425*24*60*60), u"년"),

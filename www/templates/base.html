@@ -57,7 +57,7 @@
 					{% if user.is_authenticated %}
 						<a href="{% url user_profile user.id %}">{% avatar user 45 %}</a>
 						<div>
-							<a href="#">{{ user|print_username }}</a>
+							{{ user|print_username }}
 							<em class="kor">
 								글 {{ user.get_profile.posts }}개,
 								문제 {{ user.get_profile.solved_problems }}개
