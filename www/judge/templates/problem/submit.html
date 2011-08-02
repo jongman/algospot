@@ -1,13 +1,13 @@
 {% extends "problem/problem-base.html" %}
 {% load common_tags %}
 
-{% block judge-problem-submit-class %}current{% endblock %}
+{% block judge_problem_submit_class %}current{% endblock %}
 
-{% block page-title %}
+{% block page_title %}
 	제출하기: {{ problem.name }}
 {% endblock %}
 
-{% block page-contents %} 
+{% block page_contents %} 
 	<section>
 		<form action="" method="POST" class="kor">
 			{% csrf_token %}

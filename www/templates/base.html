@@ -82,12 +82,12 @@
 				<!-- Main Navigation -->
 				<nav id="main-nav">
 					<ul>
-						<li class="{% block newsfeed-class %}{% endblock %}">
+						<li class="{% block newsfeed_class %}{% endblock %}">
 							<a href="{% url newsfeed %}" class="no-submenu">
 								뉴스 피드
 							</a>
 						</li>
-						<li class="{% block forum-class %}{% endblock %}">
+						<li class="{% block forum_class %}{% endblock %}">
 							<a href="#">
 								포럼
 							</a>
@@ -99,22 +99,22 @@
 								{% endfor %}
 							</ul>
 						</li>
-						<li class="{% block wiki-class %}{% endblock %}" >
+						<li class="{% block wiki_class %}{% endblock %}" >
 							<a href="{% url wiki-detail "Main_Page" %}" class="no-submenu">
 								위키
 							</a>
 						</li>
-						<li class="{% block judge-class %}{% endblock %}">
+						<li class="{% block judge_class %}{% endblock %}">
 							<a href="/" class="">
 								온라인 저지
 							</a>
 							<ul>
-								<li class="{% block judge-problem-class %}{% endblock %}">
+								<li class="{% block judge_problem_class %}{% endblock %}">
 									<a href="{% url judge-problem-list %}">
 										문제 풀기
 									</a>
 								</li>
-								<li class="{% block judge-submission-class %}{% endblock %}"><a href="{% url judge-submission-recent %}">
+								<li class="{% block judge_submission_class %}{% endblock %}"><a href="{% url judge-submission-recent %}">
 										최근 제출된 답안
 									</a>
 								</li>
@@ -135,7 +135,7 @@
 								</li>
 							</ul>
 						</li>
-						<li class="{% block calendar-class %}{% endblock %}"><a href="/" class="no-submenu">캘린더</a></li>
+						<li class="{% block calendar_class %}{% endblock %}"><a href="/" class="no-submenu">캘린더</a></li>
 						{% if user.is_superuser %}
 							<li><a href="/admin" class="no-submenu">관리자 페이지</a></li>
 						{% endif %}
@@ -174,16 +174,16 @@
 
 						<!-- Article Header -->
 						<header>
-							<h2>{% block page-title %}Default Page Title {% endblock %}</h2>
+							<h2>{% block page_title %}Default Page Title {% endblock %}</h2>
 							<!-- Article Header Tab Navigation -->
-							{% block page-tabs %}
+							{% block page_tabs %}
 							{% endblock %}
 							<!-- /Article Header Tab Navigation -->
 						</header>
 						<!-- /Article Header -->
 
 						<!-- Article Content -->
-						{% block page-contents %}
+						{% block page_contents %}
 						{% endblock %}
 
 						<!-- Article Footer -->
@@ -198,7 +198,7 @@
 				</article>
 				<!-- /Full Content Block -->
 
-				{% block other-blocks %}
+				{% block other_blocks %}
 				{% endblock %}
 
 			</section>

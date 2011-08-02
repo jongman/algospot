@@ -6,11 +6,11 @@ hello hahaha
 {% endblock %}
 
 
-{% block page-title %}
+{% block page_title %}
 	History: {{ title }}
 {% endblock %}
 
-{% block page-contents %} 
+{% block page_contents %} 
 	<section>
 		<table class="wiki-history">
 			<thead>
@@ -49,10 +49,10 @@ hello hahaha
 	</section>
 {% endblock %}
 
-{% block page-footer %}
+{% block page_footer %}
 	<p>
 		<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="wiki_diff('{% url wiki-diff-home %}');" class="button-link" class="eng">diff</a>
 	</p>
 {% endblock %}
 
-{% block wiki-history-class %}default-tab{% endblock %}
+{% block wiki_history_class %}default-tab{% endblock %}

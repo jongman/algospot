@@ -4,13 +4,13 @@
 {% endblock %}
 
 
-{% block page-title %}
+{% block page_title %}
 	{{ category.name }}
 {% endblock %}
 
-{% block forum-write-class-tabs %}{% endblock %}
+{% block forum_write_class_tabs %}{% endblock %}
 
-{% block page-contents %} 
+{% block page_contents %} 
 	{% load common_tags %}
 	{% load comments %}
 	<!-- 음.. 내가 왜 테이블을 안쓰고 ul 을 써서 게시판을 만들었을까? 미친거지 -->
@@ -74,17 +74,17 @@
 <article>
 	{{ pagination.render }}
 {% endblock %}
-{% block page-tabs %}
+{% block page_tabs %}
 	<nav>
 		<ul class="tab-switch">
-			<li><a class="{% block forum-write-class %}{% endblock %}" href="{% url forum-write category.slug %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
+			<li><a class="{% block forum_write_class %}{% endblock %}" href="{% url forum-write category.slug %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
 		</ul>
 	</nav>
 {% endblock %}
 
-{% block other-blocks %}
+{% block other_blocks %}
 {% endblock %}
 
-{% block page-footer %}
+{% block page_footer %}
 {% endblock %}
 

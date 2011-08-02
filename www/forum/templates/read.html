@@ -4,13 +4,13 @@
 {% endblock %}
 
 
-{% block page-title %}
+{% block page_title %}
 	{{ post.title }}
 {% endblock %}
 
 <!-- TODO: link back to board -->
 
-{% block page-contents %} 
+{% block page_contents %} 
 	{% load common_tags %}
 	{% load avatar_tags %}
 	<section>
@@ -39,17 +39,17 @@
 		</ul>
 	</section>
 {% endblock %}
-{% block other-blocks %}
+{% block other_blocks %}
 
 	{% with commentobject=post %}
 		{% include "comment_block.html" %}
 	{% endwith %}
 {% endblock %}
 
-{% block page-tabs %}
+{% block page_tabs %}
 {% endblock %}
 
 
-{% block page-footer %}
+{% block page_footer %}
 {% endblock %}
 

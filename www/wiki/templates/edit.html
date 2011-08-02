@@ -5,11 +5,11 @@ hello hahaha
 {% endblock %}
 
 
-{% block page-title %}
+{% block page_title %}
 	{{ action }}: {{ title }}
 {% endblock %}
 
-{% block page-contents %} 
+{% block page_contents %} 
 	<section>
 		<div class="wiki-edit">
 			<form action="" method="post">
@@ -24,14 +24,14 @@ hello hahaha
 	</section>
 {% endblock %}
 
-{% block other-blocks %}
+{% block other_blocks %}
 
 	{% include "markdown_cheatsheet.html" %}
 
 {% endblock %}
 
-{% block page-footer %}
+{% block page_footer %}
 	Page is last modified on {{ modified }}
 {% endblock %}
 
-{% block wiki-edit-class %}default-tab{% endblock %}
+{% block wiki_edit_class %}default-tab{% endblock %}
