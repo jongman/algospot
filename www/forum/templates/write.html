@@ -10,21 +10,23 @@
 
 {% block forum-write-class %}current{% endblock %}
 {% block page-contents %} 
-<div class="forum_edit">
-	<form action="" method="post">
-		{% csrf_token %}
-		<fieldset class="kor">
-			<legend>{{ action }}</legend>
-			{% include "print_form.html" %}
-		</fieldset>
-		<button type="submit">Submit</button> 
-	</form>
-</div>
+	<section>
+		<div class="forum_edit">
+			<form action="" method="post">
+				{% csrf_token %}
+				<fieldset class="kor">
+					<legend>{{ action }}</legend>
+					{% include "print_form.html" %}
+				</fieldset>
+				<button type="submit">Submit</button> 
+			</form>
+		</div>
+	</section>
 {% endblock %}
 
 {% block other-blocks %}
 
-{% include "markdown_cheatsheet.html" %}
+	{% include "markdown_cheatsheet.html" %}
 
 {% endblock %}
 
