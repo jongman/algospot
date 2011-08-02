@@ -58,7 +58,7 @@
 						<a href="{% url user_profile user.id %}">{% avatar user 45 %}</a>
 						<div>
 							<a href="#">{{ user|print_username }}</a>
-							<em>
+							<em class="kor">
 								글 {{ user.get_profile.posts }}개,
 								문제 {{ user.get_profile.solved_problems }}개
 							</em>
@@ -70,7 +70,7 @@
 					{% else %}
 						<img src="/static/images/unknown-user.png" alt="Not logged in yet">
 						<div>
-							<em>로그인하세요.</em>
+							<em class="kor">로그인하세요.</em>
 							<ul>
 								<li><a class="button-link" href="{% url auth_login %}" title="로그인" rel="tooltip">sign in</a></li>
 								<li><a class="button-link" href="{% url registration_register %}" title="회원 가입" rel="tooltip">sign up</a></li>
@@ -81,7 +81,7 @@
 				<!-- /User Info -->
 
 				<!-- Main Navigation -->
-				<nav id="main-nav">
+				<nav id="main-nav" class="kor">
 					<ul>
 						<li class="{% block newsfeed_class %}{% endblock %}">
 							<a href="{% url newsfeed %}" class="no-submenu">
@@ -164,7 +164,7 @@
 			<!-- /Aside Block -->
 
 			<!-- Main Content -->
-			<section role="main">
+			<section role="main" id="main_section">
 
 				<!-- Full Content Block -->
 				<!-- Note that only 1st article need clearfix class for clearing -->

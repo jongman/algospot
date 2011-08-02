@@ -48,7 +48,7 @@ body, select, input, textarea { color:#666; }
 body {
 	background:url('/static/images/bgs/bg_aside_main.png') repeat-y 263px 0;
 	font-family:'PT Sans', Arial, sans-serif;
-	font-size:13px;
+	font-size:14px;
 	*font-size:small;
 	zoom:1;
 }
@@ -134,7 +134,7 @@ section[role=navigation] header h1 {
 	background:url('/static/images/bgs/bg_aside_userinfo.png') no-repeat;
 	border-top:1px solid;
 	margin:0 2px 25px 0;
-	padding:18px 25px;
+	padding:18px;
 }
 #user-info img {
 	width:48px;

@@ -1,5 +1,14 @@
 @charset "utf-8";
 
+/* 링크 밑줄 is so 1990 */
+a { text-decoration: none; }
+
+/* 폰트 리셋: 버튼들 빼곤 전부 나눔고딕으로 치환한다 */
+body { font-family: NanumGothic,나눔고딕; }
+.button-link { font-family: 'PT Sans', Arial; }
+
+
+
 /* .markup-intro td { */
 /* 	text-align:left; */
 /* 	padding-left: 12px; */
