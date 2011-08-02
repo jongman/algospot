@@ -5,44 +5,45 @@
 	{% load avatar_tags %}
 	{% load avatar_custom_tags %}
 
-	<form method="POST" action="" id="choiceform">
-		{% csrf_token %}
-		<input type="hidden" name="choice" id="choice" value=""/>
-	</form>
+	<section>
+		<form method="POST" action="" id="choiceform">
+			{% csrf_token %}
+			<input type="hidden" name="choice" id="choice" value=""/>
+		</form>
 
-	<form enctype="multipart/form-data" method="POST" action="">
-		<fieldset class="kor">
-		<dl>
-			<dt><label>현재 사진</label></dt>
-			<dd>{% avatar user %}</dd>
-		</dl>
-		<dl>
-			<dt><label>사진 선택</label></dt>
-			<dd>
-				{% if not avatars %}
-					<p>사진이 없습니다. 업로드해 주세요.</p>
-				{% else %}
-					{% for avatar in avatars %}
-						{% if not avatar.primary %}
-						<a href="javascript:avatar_select({{ avatar.id }});"><img src="{{ avatar|avatar_url }}"/></a>
+		<form enctype="multipart/form-data" method="POST" action="">
+			<fieldset class="kor">
+				<dl>
+					<dt><label>현재 사진</label></dt>
+					<dd>{% avatar user %}</dd>
+				</dl>
+				<dl>
+					<dt><label>사진 선택</label></dt>
+					<dd>
+						{% if not avatars %}
+							<p>사진이 없습니다. 업로드해 주세요.</p>
 						{% else %}
-						<a href="javascript:void();" title="현재 선택되었습니다."><img src="{{ avatar|avatar_url }}" class="selected"/></a>
-						{% endif %}
-					{% endfor %}
+							{% for avatar in avatars %}
+								{% if not avatar.primary %}
+									<a href="javascript:avatar_select({{ avatar.id }});"><img src="{{ avatar|avatar_url }}"/></a>
+								{% else %}
+									<a href="javascript:void();" title="현재 선택되었습니다."><img src="{{ avatar|avatar_url }}" class="selected"/></a>
+								{% endif %}
+							{% endfor %}
 
-				{% endif %}
-			</dd>
-		</dl>
-		<dl>
-			<dt><label>새 사진 추가</label></dt>
-			<dd>
-					{% csrf_token %}
-					<input type="file" name="avatar" value="새 사진" />
-					<input type="submit" class="button eng" value="Upload"/>
-					<p>사진은 자동으로 80x80 과 45x45 사이즈로 변경됩니다.</p>
-				</form>
-			</dd>
-		</dl>
-		</fieldset>
-	</form>
+						{% endif %}
+					</dd>
+				</dl>
+				<dl>
+					<dt><label>새 사진 추가</label></dt>
+					<dd>
+						{% csrf_token %}
+						<input type="file" name="avatar" value="새 사진" />
+						<input type="submit" class="button eng" value="Upload"/>
+						<p>사진은 자동으로 80x80 과 45x45 사이즈로 변경됩니다.</p>
+					</dd>
+				</dl>
+			</fieldset>
+		</form>
+	</section>
 {% endblock %}

@@ -2,201 +2,197 @@
 {% load common_tags %}
 <!doctype html>
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
-<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
-<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
-<head>
-	<title>algospot.com :: {% block title %}main{% endblock %}</title>
-	<meta charset="UTF-8">
-	<meta name="description" content="">
-	<meta name="author" content="">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
-	<link rel="shortcut icon" href="/favicon.ico">
-	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-	
-	<!-- CSS Styles -->
-	<link rel="stylesheet" href="/static/css/style.css">
-	<link rel="stylesheet" href="/static/css/colors.css">
-	<link rel="stylesheet" href="/static/css/code.css">
-	<link rel="stylesheet" href="/static/css/jquery.tipsy.css">
-	<link rel="stylesheet" href="/static/css/jquery.wysiwyg.css">
-	<link rel="stylesheet" href="/static/css/jquery.datatables.css">
-	<link rel="stylesheet" href="/static/css/jquery.nyromodal.css">
-	<link rel="stylesheet" href="/static/css/jquery.datepicker.css">
-	<link rel="stylesheet" href="/static/css/jquery.fileinput.css">
-	<link rel="stylesheet" href="/static/css/jquery.fullcalendar.css">
-	<link rel="stylesheet" href="/static/css/jquery.visualize.css">
+	<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+		<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+			<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+				<head>
+					<title>algospot.com :: {% block title %}main{% endblock %}</title>
+					<meta charset="UTF-8">
+					<meta name="description" content="">
+					<meta name="author" content="">
+					<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- Google WebFonts -->
-	<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+					<link rel="shortcut icon" href="/favicon.ico">
+					<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-	<script src="/static/js/libs/modernizr-1.7.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-	<script>!window.jQuery && document.write(unescape('%3Cscript src="/static/js/jquery/jquery-1.5.1.min.js"%3E%3C/script%3E'))</script>
-</head>
+					<!-- CSS Styles -->
+					<link rel="stylesheet" href="/static/css/style.css">
+					<link rel="stylesheet" href="/static/css/colors.css">
+					<link rel="stylesheet" href="/static/css/code.css">
+					<link rel="stylesheet" href="/static/css/jquery.tipsy.css">
+					<link rel="stylesheet" href="/static/css/jquery.wysiwyg.css">
+					<link rel="stylesheet" href="/static/css/jquery.datatables.css">
+					<link rel="stylesheet" href="/static/css/jquery.nyromodal.css">
+					<link rel="stylesheet" href="/static/css/jquery.datepicker.css">
+					<link rel="stylesheet" href="/static/css/jquery.fileinput.css">
+					<link rel="stylesheet" href="/static/css/jquery.fullcalendar.css">
+					<link rel="stylesheet" href="/static/css/jquery.visualize.css">
 
-<!-- Add class .fixed for fixed layout. You would need also edit CSS file for width -->
-<body class="fixed">
+					<!-- Google WebFonts -->
+					<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
 
-	<!-- Fixed Layout Wrapper -->
-	<div class="fixed-wraper">
+					<script src="/static/js/libs/modernizr-1.7.min.js"></script>
+					<script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+					<script>!window.jQuery && document.write(unescape('%3Cscript src="/static/js/jquery/jquery-1.5.1.min.js"%3E%3C/script%3E'))</script>
+				</head>
 
-	<!-- Aside Block -->
-	<section role="navigation">
-		<!-- Header with logo and headline -->
-		<header>
-			<a href="/" title="처음으로"></a>
-			<h1>place for fighting programmers since 2007</h1>
-		</header>
-		
-		<!-- User Info -->
-		<section id="user-info">
-		{% if user.is_authenticated %}
-			<a href="{% url user_profile user.id %}">{% avatar user 45 %}</a>
-			<div>
-				<a href="#">{{ user|print_username }}</a>
-				<em>
-					글 {{ user.get_profile.posts }}개,
-					문제 {{ user.get_profile.solved_problems }}개
-				</em>
-                <ul>
-					<li><a class="button-link" href="{% url user_settings user.id %}" title="설정" rel="tooltip">settings</a></li>
-					<li><a class="button-link" href="{% url auth_logout %}" title="로그아웃" rel="tooltip">sign out</a></li>
-				</ul>
-			</div>
-		{% else %}
-			<img src="/static/images/unknown-user.png" alt="Not logged in yet">
-			<div>
-				<em>로그인하세요.</em>
-				<ul>
-					<li><a class="button-link" href="{% url auth_login %}" title="로그인" rel="tooltip">sign in</a></li>
-					<li><a class="button-link" href="{% url registration_register %}" title="회원 가입" rel="tooltip">sign up</a></li>
-				</ul>
-			</div>
-		{% endif %}
-		</section>
-		<!-- /User Info -->
-		
-		<!-- Main Navigation -->
-		<nav id="main-nav">
-			<ul>
-                <li class="{% block newsfeed-class %}{% endblock %}"><a href="{% url newsfeed %}" class="no-submenu">뉴스 피드</a></li>
-                <li class="{% block forum-class %}{% endblock %}"><a href="#">포럼</a>
-                    <ul>
-                        {% for cat in forum_categories %}
-                        <li class="{% if cat == category %}current{% endif %}">
-                            <a href="{% url forum-list cat.slug 1 %}">{{ cat.name }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-				<li class="{% block wiki-class %}{% endblock %}" ><a href="{% url wiki-detail "Main_Page" %}" class="no-submenu">위키</a></li>
-				<li class="{% block judge-class %}{% endblock %}">
-					<a href="/" class="">온라인 저지</a>
-					<ul>
-						<li class="{% block judge-problem-class %}{% endblock %}"><a href="{% url judge-problem-list %}">문제 풀기</a></li>
-                        <li class="{% block judge-submission-class %}{% endblock %}"><a href="{% url judge-submission-recent %}">최근 제출된 답안</a></li>
-						<li><a href="/">랭킹 및 통계</a></li>
-						<li><a href="/">대회</a></li>
-						<li><a href="/">튜토리얼</a></li>
-					</ul>
-				</li>
-				<li class="{% block calendar-class %}{% endblock %}"><a href="/" class="no-submenu">캘린더</a></li>
-                {% if user.is_superuser %}
-                <li><a href="/admin" class="no-submenu">관리자 페이지</a></li>
-                {% endif %}
-			</ul>
-		</nav>
-		<!-- /Main Navigation -->
-		
-		<!--Sidebar -->
-		<section class="sidebar nested">
-			<h2>다가오는 이벤트들</h2>
-			<p>TCO11 Marathon Match R3 (6/30)</p>
-			<p class="separator">SRM 511 (7/2 11:00 AM)</p>
-			<p class="separator">TCO11 Online Round 3 (7/9 11:00 AM)</p>
-			<p class="separator">SRM 512 (7/13 10:00 AM)</p>
-			<p class="separator">TCO11 Online Round 4 (7/23 11:00 AM)</p>
-			<p class="separator">SRM 513 (7/26 6:00 AM)</p>
-			<p class="separator">TCO11 Online Round 5 (8/6 11:00 AM)</p>
-			<p class="separator">SRM 514 (8/9 8:00 PM)</p>
-			<p class="separator">SRM 515 (8/20 11:00 AM)</p>
-			<a class="button-link" href="#" title="See all events!">see all</a>
-		</section>
-		<!-- /Sidebar -->
-	</section>
-		
-	<!-- /Aside Block -->
-	
-	<!-- Main Content -->
-	<section role="main">
+				<!-- Add class .fixed for fixed layout. You would need also edit CSS file for width -->
+				<body class="fixed">
 
-		<!-- Full Content Block -->
-		<!-- Note that only 1st article need clearfix class for clearing -->
-		<article class="full-block clearfix">
-		
-			<!-- Article Container for safe floating -->
-			<div class="article-container">
-			
-				<!-- Article Header -->
-				<header>
-				<h2>{% block page-title %}Default Page Title {% endblock %}</h2>
-					<!-- Article Header Tab Navigation -->
-					{% block page-tabs %}
-					{% endblock %}
-					<!-- /Article Header Tab Navigation -->
-				</header>
-				<!-- /Article Header -->
-				
-				<!-- Article Content -->
-				<!-- TODO: section 을 contents 안에서 쓰기 -->
-				<section>
-					{% block page-contents %}
-					{% endblock %}
-				</section>
-				<!-- /Article Content -->
-				
-                <!-- Article Footer -->
+					<!-- Fixed Layout Wrapper -->
+					<div class="fixed-wraper">
 
-				<footer>
-				</footer>
-				<!-- /Article Footer -->
-			
-			</div>
-			<!-- /Article Container -->
-			
-		</article>
-		<!-- /Full Content Block -->
+						<!-- Aside Block -->
+						<section role="navigation">
+							<!-- Header with logo and headline -->
+							<header>
+								<a href="/" title="처음으로"></a>
+								<h1>place for fighting programmers since 2007</h1>
+							</header>
 
-		{% block other-blocks %}
-		{% endblock %}
-		
-	</section>
-	<!-- /Main Content -->
-	
-	</div>
-	<!-- /Fixed Layout Wrapper -->
+							<!-- User Info -->
+							<section id="user-info">
+								{% if user.is_authenticated %}
+									<a href="{% url user_profile user.id %}">{% avatar user 45 %}</a>
+									<div>
+										<a href="#">{{ user|print_username }}</a>
+										<em>
+											글 {{ user.get_profile.posts }}개,
+											문제 {{ user.get_profile.solved_problems }}개
+										</em>
+										<ul>
+											<li><a class="button-link" href="{% url user_settings user.id %}" title="설정" rel="tooltip">settings</a></li>
+											<li><a class="button-link" href="{% url auth_logout %}" title="로그아웃" rel="tooltip">sign out</a></li>
+										</ul>
+									</div>
+								{% else %}
+									<img src="/static/images/unknown-user.png" alt="Not logged in yet">
+									<div>
+										<em>로그인하세요.</em>
+										<ul>
+											<li><a class="button-link" href="{% url auth_login %}" title="로그인" rel="tooltip">sign in</a></li>
+											<li><a class="button-link" href="{% url registration_register %}" title="회원 가입" rel="tooltip">sign up</a></li>
+										</ul>
+									</div>
+								{% endif %}
+							</section>
+							<!-- /User Info -->
 
-	<!-- JS Libs at the end for faster loading -->
-	<script src="/static/js/libs/selectivizr.js"></script>
-	<script src="/static/js/jquery/jquery.nyromodal.js"></script>
-	<script src="/static/js/jquery/jquery.tipsy.js"></script>
-	<script src="/static/js/jquery/jquery.wysiwyg.js"></script>
-	<script src="/static/js/jquery/jquery.datatables.js"></script>
-	<script src="/static/js/jquery/jquery.datepicker.js"></script>
-	<script src="/static/js/jquery/jquery.fileinput.js"></script>
-	<script src="/static/js/jquery/jquery.fullcalendar.min.js"></script>
-	<script src="/static/js/jquery/excanvas.js"></script>
-	<script src="/static/js/jquery/jquery.visualize.js"></script>
-	<script src="/static/js/jquery/jquery.visualize.tooltip.js"></script>
-	<script src="/static/js/script.js"></script>
-	
-	<script>
-		var _gaq=[['_setAccount','UA-XXXXXXX'],['_trackPageview']];
-		(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-		g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-		s.parentNode.insertBefore(g,s)}(document,'script'));
-	</script>
-</body>
-</html>
+							<!-- Main Navigation -->
+							<nav id="main-nav">
+								<ul>
+									<li class="{% block newsfeed-class %}{% endblock %}"><a href="{% url newsfeed %}" class="no-submenu">뉴스 피드</a></li>
+									<li class="{% block forum-class %}{% endblock %}"><a href="#">포럼</a>
+									<ul>
+										{% for cat in forum_categories %}
+											<li class="{% if cat == category %}current{% endif %}">
+											<a href="{% url forum-list cat.slug 1 %}">{{ cat.name }}</a>
+											</li>
+										{% endfor %}
+									</ul>
+									</li>
+									<li class="{% block wiki-class %}{% endblock %}" ><a href="{% url wiki-detail "Main_Page" %}" class="no-submenu">위키</a></li>
+									<li class="{% block judge-class %}{% endblock %}">
+									<a href="/" class="">온라인 저지</a>
+									<ul>
+										<li class="{% block judge-problem-class %}{% endblock %}"><a href="{% url judge-problem-list %}">문제 풀기</a></li>
+										<li class="{% block judge-submission-class %}{% endblock %}"><a href="{% url judge-submission-recent %}">최근 제출된 답안</a></li>
+										<li><a href="/">랭킹 및 통계</a></li>
+										<li><a href="/">대회</a></li>
+										<li><a href="/">튜토리얼</a></li>
+									</ul>
+									</li>
+									<li class="{% block calendar-class %}{% endblock %}"><a href="/" class="no-submenu">캘린더</a></li>
+									{% if user.is_superuser %}
+										<li><a href="/admin" class="no-submenu">관리자 페이지</a></li>
+									{% endif %}
+								</ul>
+							</nav>
+							<!-- /Main Navigation -->
+
+							<!--Sidebar -->
+							<section class="sidebar nested">
+								<h2>다가오는 이벤트들</h2>
+								<p>TCO11 Marathon Match R3 (6/30)</p>
+								<p class="separator">SRM 511 (7/2 11:00 AM)</p>
+								<p class="separator">TCO11 Online Round 3 (7/9 11:00 AM)</p>
+								<p class="separator">SRM 512 (7/13 10:00 AM)</p>
+								<p class="separator">TCO11 Online Round 4 (7/23 11:00 AM)</p>
+								<p class="separator">SRM 513 (7/26 6:00 AM)</p>
+								<p class="separator">TCO11 Online Round 5 (8/6 11:00 AM)</p>
+								<p class="separator">SRM 514 (8/9 8:00 PM)</p>
+								<p class="separator">SRM 515 (8/20 11:00 AM)</p>
+								<a class="button-link" href="#" title="See all events!">see all</a>
+							</section>
+							<!-- /Sidebar -->
+						</section>
+
+						<!-- /Aside Block -->
+
+						<!-- Main Content -->
+						<section role="main">
+
+							<!-- Full Content Block -->
+							<!-- Note that only 1st article need clearfix class for clearing -->
+							<article class="full-block clearfix">
+
+								<!-- Article Container for safe floating -->
+								<div class="article-container">
+
+									<!-- Article Header -->
+									<header>
+										<h2>{% block page-title %}Default Page Title {% endblock %}</h2>
+										<!-- Article Header Tab Navigation -->
+										{% block page-tabs %}
+										{% endblock %}
+										<!-- /Article Header Tab Navigation -->
+									</header>
+									<!-- /Article Header -->
+
+									<!-- Article Content -->
+									{% block page-contents %}
+									{% endblock %}
+
+									<!-- Article Footer -->
+
+									<footer>
+									</footer>
+									<!-- /Article Footer -->
+
+								</div>
+								<!-- /Article Container -->
+
+							</article>
+							<!-- /Full Content Block -->
+
+							{% block other-blocks %}
+							{% endblock %}
+
+						</section>
+						<!-- /Main Content -->
+
+					</div>
+					<!-- /Fixed Layout Wrapper -->
+
+					<!-- JS Libs at the end for faster loading -->
+					<script src="/static/js/libs/selectivizr.js"></script>
+					<script src="/static/js/jquery/jquery.nyromodal.js"></script>
+					<script src="/static/js/jquery/jquery.tipsy.js"></script>
+					<script src="/static/js/jquery/jquery.wysiwyg.js"></script>
+					<script src="/static/js/jquery/jquery.datatables.js"></script>
+					<script src="/static/js/jquery/jquery.datepicker.js"></script>
+					<script src="/static/js/jquery/jquery.fileinput.js"></script>
+					<script src="/static/js/jquery/jquery.fullcalendar.min.js"></script>
+					<script src="/static/js/jquery/excanvas.js"></script>
+					<script src="/static/js/jquery/jquery.visualize.js"></script>
+					<script src="/static/js/jquery/jquery.visualize.tooltip.js"></script>
+					<script src="/static/js/script.js"></script>
+
+					<script>
+						var _gaq=[['_setAccount','UA-XXXXXXX'],['_trackPageview']];
+						(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+							g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+							s.parentNode.insertBefore(g,s)}(document,'script'));
+					</script>
+				</body>
+			</html>

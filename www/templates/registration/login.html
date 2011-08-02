@@ -2,25 +2,28 @@
 {% block title %}Sign in{% endblock %}
 {% block page-title %}알고스팟 회원 로그인{% endblock %}
 {% block page-contents %} 
-<div class="signin-form">
-	{% include "print_non_field_error.html" %}
-	<form method="post" action="">
-		{% csrf_token %}
-		<fieldset class="kor">
-			<legend>로그인하기</legend>
-			{% include "print_form.html" %}
-		</fieldset>
-		<button type="submit">Sign In</button> 
-		<input type="hidden" name="next" value="{{ next }}" />
-	</form>
+	<section>
+		<div class="signin-form">
+			{% include "print_non_field_error.html" %}
+			<form method="post" action="">
+				{% csrf_token %}
+				<fieldset class="kor">
+					<legend>로그인하기</legend>
+					{% include "print_form.html" %}
+				</fieldset>
+				<button type="submit">Sign In</button> 
+				<input type="hidden" name="next" value="{{ next }}" />
+			</form>
 
-	<ul class="kor">
-		<li>비밀번호를 잊으셨나요? <a href="{% url auth_password_reset %}">리셋하기</a></li>
-		<li>회원이 아니신가요? <a href="{% url registration_register %}">회원 가입하기</a></li>
-	</ul>     
-	{% autoescape off %}
-	<script language="javascript">
-		$("#id_username").focus();
-	</script>
-	{% endautoescape %}
+			<ul class="kor">
+				<li>비밀번호를 잊으셨나요? <a href="{% url auth_password_reset %}">리셋하기</a></li>
+				<li>회원이 아니신가요? <a href="{% url registration_register %}">회원 가입하기</a></li>
+			</ul>     
+			{% autoescape off %}
+			<script language="javascript">
+				$("#id_username").focus();
+			</script>
+			{% endautoescape %}
+		</div>
+	</section>
 {% endblock %}

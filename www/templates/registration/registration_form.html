@@ -1,16 +1,18 @@
 {% extends "registration/registration_base.html" %}
 {% block page-contents %} 
-<div class="signup-form kor">
-	{% include "print_non_field_error.html" %}
-	<form action="" method="post">
-		{% csrf_token %}
-		<fieldset>
-			<legend>회원 정보 입력</legend>
-			{% include "print_form.html" %}
-		</fieldset>
-		<button type="submit">Sign Up</button> 
-	</form>
-</div>
+	<section>
+		<div class="signup-form kor">
+			{% include "print_non_field_error.html" %}
+			<form action="" method="post">
+				{% csrf_token %}
+				<fieldset>
+					<legend>회원 정보 입력</legend>
+					{% include "print_form.html" %}
+				</fieldset>
+				<button type="submit">Sign Up</button> 
+			</form>
+		</div>
+	</section>
 {% endblock %}
 
 
