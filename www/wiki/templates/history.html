@@ -11,45 +11,47 @@ hello hahaha
 {% endblock %}
 
 {% block page-contents %} 
-<table class="wiki-history">
-	<thead>
-		<tr>
-			<th> ID </th>
-			<th> 날짜 </th>
-			<th> 편집자 </th>
-			<th> 한마디 </th>
-			<th> 선택 </th>
-			<th> 할일 </th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for revision in revisions %}
-		<tr>
-			<td>{{ revision.id }}</td>
-			<td>{{ revision.created_on|print_datetime }}</td>
-			<td>{{ revision.user|print_username }}</td>
-			<td>{{ revision.edit_summary }}</td>
-			<td>
-				<input type="radio" name="diff1" value="{{ revision.id }}" {% if second_last_rev == revision.id %}checked{% endif %}/>
-				<input type="radio" name="diff2" value="{{ revision.id }}" {% if last_rev == revision.id %}checked{% endif %}/>
-			</td>
-			<td>
-				<a class="button-link" href="{% url wiki-old revision.id slug %}" rel="tooltip" original-title="보기">
-					see
-				</a>
-				<a class="button-link" title="복구하기" href="javascript:void();" onclick="wiki_revert('{% url wiki-revert revision.id slug %}');" rel="tooltip" original-title="복구하기">
-					revert
-				</a>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
+	<section>
+		<table class="wiki-history">
+			<thead>
+				<tr>
+					<th> ID </th>
+					<th> 날짜 </th>
+					<th> 편집자 </th>
+					<th> 한마디 </th>
+					<th> 선택 </th>
+					<th> 할일 </th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for revision in revisions %}
+					<tr>
+						<td>{{ revision.id }}</td>
+						<td>{{ revision.created_on|print_datetime }}</td>
+						<td>{{ revision.user|print_username }}</td>
+						<td>{{ revision.edit_summary }}</td>
+						<td>
+							<input type="radio" name="diff1" value="{{ revision.id }}" {% if second_last_rev == revision.id %}checked{% endif %}/>
+							<input type="radio" name="diff2" value="{{ revision.id }}" {% if last_rev == revision.id %}checked{% endif %}/>
+						</td>
+						<td>
+							<a class="button-link" href="{% url wiki-old revision.id slug %}" rel="tooltip" original-title="보기">
+								see
+							</a>
+							<a class="button-link" title="복구하기" href="javascript:void();" onclick="wiki_revert('{% url wiki-revert revision.id slug %}');" rel="tooltip" original-title="복구하기">
+								revert
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
 {% endblock %}
 
 {% block page-footer %}
 	<p>
-	<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="wiki_diff('{% url wiki-diff-home %}');" class="button-link" class="eng">diff</a>
+		<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="wiki_diff('{% url wiki-diff-home %}');" class="button-link" class="eng">diff</a>
 	</p>
 {% endblock %}
 

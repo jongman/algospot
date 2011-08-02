@@ -19,15 +19,15 @@ hello hahaha
 {% endblock %}
 
 {% block page-footer %}
-<p class="kor">
-    페이지가 마지막으로 {{ modified|print_datetime }}에 수정되었습니다.
-</p>
+	<p class="kor">
+		페이지가 마지막으로 {{ modified|print_datetime }}에 수정되었습니다.
+	</p>
 {% endblock %}
 
 {% block other-blocks %}
-    {% with commentobject=page %}
-        {% include "comment_block.html" %}
-    {% endwith %}
+	{% with commentobject=page %}
+		{% include "comment_block.html" %}
+	{% endwith %}
 {% endblock %}
 
 {% block wiki-read-class %}default-tab{% endblock %}
