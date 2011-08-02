@@ -4,54 +4,56 @@
 {% block judge-problem-admin-class %}current{% endblock %}
 
 {% block page-title %}
-문제 편집: {{ problem.name }}
+	문제 편집: {{ problem.name }}
 {% endblock %}
 
 {% block page-contents %}
-<div class="kor problem_edit">
-	<form action="" method="post">
-		{% csrf_token %}
-		<fieldset>
-			<legend>편집하기</legend>
-			{% include "print_form.html" %}
-		</fieldset>
-		<fieldset class="attachments">
-			<legend>첨부파일</legend>
-			<table id="attachments">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>파일명</th>
-						<th>파일크기</th>
-						<th>동작</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-			<div class="uploadbutton">
-				<a href="javascript:;" class="button" id="upload_button">업로드</a>
-			</div>
-		</fieldset>
-		<button type="submit">Submit</button>
-	</form>
-</div>
-<script language="javascript">
-	var table = null;
-	$(document).ready(function() {
-		table = $("#attachments").dataTable({
-			"bProcessing": true,
-			"bLengthChange": false,
-			"bPaginate": false,
-			"bFilter": false,
-			"bInfo": false,
-			"bSort": false,
-			"bSearch": false,
-			//"bServerSide": true,
-			"iDisplayLength": 100,
-			"sAjaxSource": "{% url judge-problem-list-attachments problem.id %}",
-			"aaSorting": [[0, "asc"]],
-			"aoColumns": [
+	<section>
+		<div class="kor problem_edit">
+			<form action="" method="post">
+				{% csrf_token %}
+				<fieldset>
+					<legend>편집하기</legend>
+					{% include "print_form.html" %}
+				</fieldset>
+				<fieldset class="attachments">
+					<legend>첨부파일</legend>
+					<table id="attachments">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>파일명</th>
+								<th>파일크기</th>
+								<th>동작</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<div class="uploadbutton">
+						<a href="javascript:;" class="button" id="upload_button">업로드</a>
+					</div>
+				</fieldset>
+				<button type="submit">Submit</button>
+			</form>
+		</div>
+	</section>
+	<script language="javascript">
+		var table = null;
+		$(document).ready(function() {
+			table = $("#attachments").dataTable({
+				"bProcessing": true,
+				"bLengthChange": false,
+				"bPaginate": false,
+				"bFilter": false,
+				"bInfo": false,
+				"bSort": false,
+				"bSearch": false,
+				//"bServerSide": true,
+				"iDisplayLength": 100,
+				"sAjaxSource": "{% url judge-problem-list-attachments problem.id %}",
+				"aaSorting": [[0, "asc"]],
+				"aoColumns": [
 				null,
 				{
 					"fnRender": function(obj) {
@@ -68,28 +70,28 @@
 						].join(' ');
 					}
 				}
-			]
-		});
+				]
+			});
 
-        new AjaxUpload("upload_button", {
-			action: "{% url judge-problem-add-attachment problem.id %}",
-            data: {
-				csrfmiddlewaretoken: $("form input[name=csrfmiddlewaretoken]").val()
-			},
-            name: "file",
-            autoSubmit: true,
-            responseType: "json",
-            onSubmit: function(file, extension) {
-            },
-            onComplete: function(file, response) {
-                if(response.success) {
-                    alert("업로드가 성공했습니다.");
-                    table.fnReloadAjax();
-                }
-                else
-                    alert(response.error);
-            }});
-	});
-</script>
-<script language="javascript" src="/static/js/ajaxupload.js"></script>
+			new AjaxUpload("upload_button", {
+				action: "{% url judge-problem-add-attachment problem.id %}",
+				data: {
+					csrfmiddlewaretoken: $("form input[name=csrfmiddlewaretoken]").val()
+				},
+				name: "file",
+				autoSubmit: true,
+				responseType: "json",
+				onSubmit: function(file, extension) {
+				},
+				onComplete: function(file, response) {
+					if(response.success) {
+						alert("업로드가 성공했습니다.");
+						table.fnReloadAjax();
+					}
+					else
+					alert(response.error);
+			}});
+		});
+	</script>
+	<script language="javascript" src="/static/js/ajaxupload.js"></script>
 {% endblock %}

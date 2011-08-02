@@ -2,58 +2,60 @@
 {% load common_tags %}
 {% load judge_tags %}
 {% block page-title %}
-답안 번호 #{{ submission.id }}
+   답안 번호 #{{ submission.id }}
 {% endblock %}
 {% block page-contents %} 
-<ul class="submissioninfo tabular kor">
-	<li class="header">
-		<ul>
-			<li class="problemid">문제</li>
-			<li class="user">제출자</li>
-			<li class="submitted_on">제출 시간</li>
-			<li class="length">길이</li>
-			<li class="time">수행 시간</li>
-			<li class="memory">메모리 사용량</li>
-			<li class="verdict">채점 결과</li>
+   <section>
+		<ul class="submissioninfo tabular kor">
+			<li class="header">
+				<ul>
+					<li class="problemid">문제</li>
+					<li class="user">제출자</li>
+					<li class="submitted_on">제출 시간</li>
+					<li class="length">길이</li>
+					<li class="time">수행 시간</li>
+					<li class="memory">메모리 사용량</li>
+					<li class="verdict">채점 결과</li>
+				</ul>
+			</li>
+			<li class="content">
+				<ul>
+					<li class="problemid"><a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a></li>
+					<li class="user">{{ submission.user|print_username }}</li>
+					<li class="submitted_on">{{ submission.submitted_on|print_datetime }}</li>
+					<li class="length">
+						{{ submission.length|print_length }}
+					</li>
+					<li class="time">
+						{% if submission.time %}
+	   <b>{{ submission.time}}</b>ms
+						{% endif %}
+					</li>
+					<li class="memory">
+						{% if submission.memory %}
+	   <b>{{ submission.memory}}</b>kb
+						{% endif %}
+					</li>
+					<li class="verdict">
+						<span class="submission{{ submission.name_eng }}">
+							{{ submission.name_kor }}
+						</span>
+					</li>
+				</ul>
+			</li>
+			</li>
 		</ul>
-	</li>
-	<li class="content">
-		<ul>
-			<li class="problemid"><a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a></li>
-			<li class="user">{{ submission.user|print_username }}</li>
-			<li class="submitted_on">{{ submission.submitted_on|print_datetime }}</li>
-			<li class="length">
-				{{ submission.length|print_length }}
-			</li>
-			<li class="time">
-				{% if submission.time %}
-				<b>{{ submission.time}}</b>ms
-				{% endif %}
-			</li>
-			<li class="memory">
-				{% if submission.memory %}
-				<b>{{ submission.memory}}</b>kb
-				{% endif %}
-			</li>
-			<li class="verdict">
-				<span class="submission{{ submission.name_eng }}">
-					{{ submission.name_kor }}
-				</span>
-			</li>
-		</ul>
-	</li>
-	</li>
-</ul>
-</section>
-{% if submission.has_messages %}
-	<section class="submission_message">
-	<h4 class="kor">에러 메시지</h4>
-	<pre class="highlight">{{ submission.message }}</pre>
 	</section>
-{% endif %}
-<section class="sourcecode">
-<h4 class="kor">소스 코드</h4>
-{% syntax_highlight submission.source submission.language %}
+	{% if submission.has_messages %}
+	   <section class="submission_message">
+			<h4 class="kor">에러 메시지</h4>
+			<pre class="highlight">{{ submission.message }}</pre>
+		</section>
+	{% endif %}
+	<section class="sourcecode">
+		<h4 class="kor">소스 코드</h4>
+		{% syntax_highlight submission.source submission.language %}
 
+	</section>
 {% endblock %}
 

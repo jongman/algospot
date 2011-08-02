@@ -8,15 +8,17 @@
 {% endblock %}
 
 {% block page-contents %} 
-    <form action="" method="POST" class="kor">
-        {% csrf_token %}
-        <fieldset>
-            <legend>소스 코드</legend>
-            {% include "print_form.html" %}
-        </fieldset>
-        <button type="submit">제출하기</button> 
-        or
-        <a href="{% url judge-problem-read problem.slug %}">돌아가기</a>
-    </form>
+	<section>
+		<form action="" method="POST" class="kor">
+			{% csrf_token %}
+			<fieldset>
+				<legend>소스 코드</legend>
+				{% include "print_form.html" %}
+			</fieldset>
+			<button type="submit">제출하기</button> 
+			or
+			<a href="{% url judge-problem-read problem.slug %}">돌아가기</a>
+		</form>
+	</section>
 {% endblock %}
 
