@@ -185,6 +185,12 @@ div.pagination .disabled_tnt_pagination {
 	cursor:default;
 }
 
+/* 문법 강조 */
+.highlight {
+	background-color: #eee;
+	border: 1px solid #ccc;
+	line-height: 150%;
+}
 /* 페이지별 엘레멘트들 ***************************************************/
 
 /* 아바타 변경 */
@@ -257,6 +263,30 @@ table.submission_list tbody .submission_state a { text-decoration: underline; }
 .submissionTIME_LIMIT_EXCEEDED * { font-weight: bold; color: rgb(64, 64, 128); }
 .submissionCANT_BE_JUDGED * { font-weight: bold; color: rgb(64, 255, 64); text-decoration: underline; }
 .submissionREJUDGE_REQUESTED * { color: silver; }
+
+/* 답안 보기 */
+.submission_info ul li {
+	width: 14%;
+}
+
+/* 문제 편집 */
+
+section.problem_edit textarea, section.problem_edit input {
+    width: 80%;
+}
+section..problem_edit textarea#id_description {
+    height: 400px;
+}
+fieldset.attachments .dataTables_wrapper { min-height: 0px; }
+fieldset.attachments td, .attachments th {
+	text-align: left;
+	margin-left: 8px;
+	padding: 0;
+	padding-left: 8px;
+}
+fieldset.attachments div.uploadbutton {
+	margin-bottom: 16px;
+}
 
 /* 뉴스 피드 */
 ul.newsfeed {

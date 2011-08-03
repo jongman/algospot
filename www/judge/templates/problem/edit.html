@@ -8,35 +8,33 @@
 {% endblock %}
 
 {% block page_contents %}
-	<section>
-		<div class="kor problem_edit">
-			<form action="" method="post">
-				{% csrf_token %}
-				<fieldset>
-					<legend>편집하기</legend>
-					{% include "print_form.html" %}
-				</fieldset>
-				<fieldset class="attachments">
-					<legend>첨부파일</legend>
-					<table id="attachments">
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>파일명</th>
-								<th>파일크기</th>
-								<th>동작</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-					<div class="uploadbutton">
-						<a href="javascript:;" class="button" id="upload_button">업로드</a>
-					</div>
-				</fieldset>
-				<button type="submit">Submit</button>
-			</form>
-		</div>
+	<section class="problem_edit">
+		<form action="" method="post">
+			{% csrf_token %}
+			<fieldset>
+				<legend>편집하기</legend>
+				{% include "print_form.html" %}
+			</fieldset>
+			<fieldset class="attachments">
+				<legend>첨부파일</legend>
+				<table id="attachments">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>파일명</th>
+							<th>파일크기</th>
+							<th>동작</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+				<div class="uploadbutton">
+					<a href="javascript:;" class="button" id="upload_button">업로드</a>
+				</div>
+			</fieldset>
+			<button type="submit">Submit</button>
+		</form>
 	</section>
 	<script language="javascript">
 		var table = null;
