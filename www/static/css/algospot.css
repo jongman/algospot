@@ -22,7 +22,13 @@ a.username { font-weight: bold; }
 
 /* 글로벌 엘레멘트들 ***************************************************/
 
-/* header h2 { width: 500px; } */
+section.navigation header h1 { 
+	font-size: 11px; 
+	font-style: normal;
+	margin-left: auto;
+	margin-right: auto;
+	letter-spacing: 12px;
+}
 
 /* 코멘트 목록 */
 ul.comments {
