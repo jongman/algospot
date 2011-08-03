@@ -75,7 +75,7 @@ $(function () {
 
 	// Menu Dropdown
 	$('#main-nav li ul').hide(); //Hide all sub menus
-	$('#main-nav li.current a').parent().find('ul').slideToggle('slow'); // Slide down the current sub menu
+	$('#main-nav li.current a').parent().find('ul').slideToggle(0); // Slide down the current sub menu
 	$('#main-nav li a.no-submenu, #main-nav li li a').click(
 		function(e) {
 			window.location.href=(this.href); // Open link instead of a sub menu
