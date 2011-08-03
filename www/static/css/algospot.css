@@ -13,21 +13,56 @@ body, textarea, input, select { font-family: NanumGothic,나눔고딕; }
 a.username { font-weight: bold; }
 
 /* 테이블 속성 오버라이드 */
-
 #main_section td, #main_section th {
 	height: 0px;
 	padding: 10px 4px;
 	vertical-align: top;
 }
 
+/* 섹션들은 margin-bottom 을 좀 둔다 */
+#main_section section {
+	margin-bottom: 8px;
+}
+
 /* 글로벌 엘레멘트들 ***************************************************/
 
+/* 로고 밑에 글자 */
 section.navigation header h1 { 
 	font-size: 11px; 
 	font-style: normal;
 	margin-left: auto;
 	margin-right: auto;
 	letter-spacing: 12px;
+}
+
+/* ul 을 테이블 형태로 보여주기용 */
+.tabular, .tabular ul, .tabular li
+{
+	margin:0;
+	padding:0;
+}
+.tabular li {
+	display: block;
+	list-style: none;
+	overflow: hidden;
+	background: none;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.tabular li.header {
+	font-weight: bold;
+}
+.tabular li.content {
+	background-color: #f0f0f0;
+	border-top: 1px solid;
+	border-bottom: 1px solid;;
+	border-color: silver;
+}
+.tabular li li {
+	list-style: none;
+	background: none;
+	text-align: center;
+	float: left;
 }
 
 /* 코멘트 목록 */
@@ -176,16 +211,30 @@ table.forum_list span.very_heated_discussions,
 table.forum_list span.wow { color: #666; font-weight: bold; }
 
 /* 저지 문제 목록 */
-
-table.problem_list .accepted { width: 8%; }
-table.problem_list .id { width: 12%; }
-table.problem_list .name { width: 40%; }
-table.problem_list .writer { width: 16%; }
+table.problem_list .accepted { width: 10%; }
+table.problem_list .id { width: 16%; }
+table.problem_list .name {  }
+table.problem_list .writer { width: 12%; }
 table.problem_list .submissions { width: 12%; }
-table.problem_list .accepted { width: 12%; }
+table.problem_list .accepted_ratio { width: 12%; }
 table.problem_list tbody .id,
 table.problem_list tbody .name {
 	text-align: left;
+}
+
+/* 저지 문제 보기 */
+ul.problem_info { width: 100%; }
+ul.problem_info ul li { width: 20%; }
+ul.problem_info li.source { width: 40%; }
+ul.problem_info li.category { width: 40%; }
+section.problem_statement pre,
+section.problem_sample_input pre,
+section.problem_sample_output pre
+{
+	font-family: monospace;
+	background-color: #f0f0f0;
+	padding: 12px;
+	border: 1px solid silver;
 }
 
 /* 저지 답안 목록 */
@@ -583,14 +632,14 @@ ul.newsfeed li .newsfeed-timestamp {
 /* 	text-align: center; */
 /* 	float: left; */
 /* } */
-/* .probleminfo a { text-decoration: none; } */
-/* .probleminfo ul li { */
+/* .problem_info a { text-decoration: none; } */
+/* .problem_info ul li { */
 /* 	width: 20%; */
 /* } */
-/* .probleminfo li.source { */
+/* .problem_info li.source { */
 /* 	width: 40%; */
 /* } */
-/* .probleminfo li.category { */
+/* .problem_info li.category { */
 /* 	width: 40%; */
 /* } */
 /* .submissioninfo a { text-decoration: none; } */

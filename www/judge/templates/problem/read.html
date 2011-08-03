@@ -4,10 +4,10 @@
 {% block judge_problem_read_class %}current{% endblock %}
 
 {% block page_contents %} 
-	<section class="problem_statement kor">
-		{% load judge_tags %}
+	{% load judge_tags %}
+	<section class="problem_info">
 		<h4>문제 정보</h4>
-		<ul class="probleminfo tabular">
+		<ul class="problem_info tabular">
 			<li class="header">
 				<ul>
 					<li class="problemid">문제 ID</li>
@@ -41,20 +41,30 @@
 				</ul>
 			</li>
 		</ul>
+	</section>
+	<section class="problem_statement">
 		<h4>문제</h4>
 		<p class="kor">
 			{{ problem.description|render_text }}
 		</p>
+	</section>
+	<section class="problem_input">
 		<h4>입력</h4>
 		<p class="kor">
 			{{ problem.input|render_text }}
 		</p>
+	</section>
+	<section class="problem_output">
 		<h4>출력</h4>
 		<p class="kor">
 			{{ problem.output|render_text }}
 		</p>
+	</section>
+	<section class="problem_sample_input">
 		<h4>예제 입력</h4>
 		<pre>{{ problem.sample_input }}</pre>
+	</section>
+	<section class="problem_sample_output">
 		<h4>예제 출력</h4>
 		<pre>{{ problem.sample_output }}</pre>
 	</section>
