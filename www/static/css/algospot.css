@@ -129,7 +129,9 @@ table.forum_list thead th {
 	padding: 5px 0;
 }
 table.forum_list tbody td {
-	padding: 0px 4px;
+	height: 0px;
+	padding: 8px 4px;
+	vertical-align: top;
 }
 table.forum_list tbody td.title_col {
 	text-align: left;
