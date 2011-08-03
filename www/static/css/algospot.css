@@ -221,6 +221,14 @@ table.forum_list span.heated_discussions,
 table.forum_list span.very_heated_discussions, 
 table.forum_list span.wow { color: #666; font-weight: bold; }
 
+/* 포럼 글쓰기 */
+section.forum_edit textarea, section.forum_edit input {
+    width: 80%;
+}
+section.forum_edit textarea#id_text {
+    height: 400px;
+}
+
 /* 저지 문제 목록 */
 table.problem_list .accepted { width: 10%; }
 table.problem_list .id { width: 16%; }
@@ -275,7 +283,6 @@ table.submission_list tbody .submission_state a { text-decoration: underline; }
 }
 
 /* 문제 편집 */
-
 section.problem_edit textarea, section.problem_edit input {
     width: 80%;
 }

@@ -10,17 +10,15 @@
 
 {% block forum_write_class %}current{% endblock %}
 {% block page_contents %} 
-	<section>
-		<div class="forum_edit">
-			<form action="" method="post">
-				{% csrf_token %}
-				<fieldset class="kor">
-					<legend>{{ action }}</legend>
-					{% include "print_form.html" %}
-				</fieldset>
-				<button type="submit">Submit</button> 
-			</form>
-		</div>
+	<section class="forum_edit">
+		<form action="" method="post">
+			{% csrf_token %}
+			<fieldset class="kor">
+				<legend>{{ action }}</legend>
+				{% include "print_form.html" %}
+			</fieldset>
+			<button type="submit">Submit</button> 
+		</form>
 	</section>
 {% endblock %}
 
