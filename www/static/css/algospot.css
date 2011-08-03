@@ -191,6 +191,11 @@ div.pagination .disabled_tnt_pagination {
 	border: 1px solid #ccc;
 	line-height: 150%;
 }
+/* 마크업 문법 안내*/
+.markup-intro td {
+	text-align:left;
+	padding-left: 12px;
+}
 /* 페이지별 엘레멘트들 ***************************************************/
 
 /* 아바타 변경 */
@@ -321,10 +326,6 @@ ul.newsfeed li .newsfeed-timestamp {
  *
  */
 
-/* .markup-intro td { */
-/* 	text-align:left; */
-/* 	padding-left: 12px; */
-/* } */
 /*  */
 /* a.missing { */
 /* 	color: #2E43AE; */
