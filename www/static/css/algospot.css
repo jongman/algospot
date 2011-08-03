@@ -6,7 +6,7 @@
 a { text-decoration: none; }
 
 /* 폰트 리셋: 버튼들 빼곤 전부 나눔고딕으로 치환한다 */
-body { font-family: NanumGothic,나눔고딕; }
+body, textarea, input, select { font-family: NanumGothic,나눔고딕; }
 .button-link { font-family: 'PT Sans', Arial; }
 
 /* 사용자 핸들은 굵은 글씨로 */
@@ -65,6 +65,26 @@ ul.comments li.comment .operations {
 ul.comments li.comment .operations .button-link {
 	font-size: 10px;
 	line-height: 130%;
+}
+
+ul.comments li.comment_form form {
+	margin-top: 0px;
+}
+
+ul.comments li.comment_form dd {
+	position: static;
+}
+
+ul.comments li.comment_form textarea {
+	width: 480px;
+	height: 70px;
+}
+
+ul.comments li.comment_form input.button {
+	position: absolute;
+	font-size: 12px;
+	right: 5px;
+	top: 5px;
 }
 
 /* 페이지네이션 */

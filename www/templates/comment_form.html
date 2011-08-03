@@ -6,12 +6,12 @@
 	{% csrf_token %}
 	<dl>
 		<dt class="comment_user">
-		<img src="{% avatar_url user 45 %}" class="comment_form_avatar" alt="{{user.username}}"/>
-		{{ user|print_username }}
+			<img src="{% avatar_url user 45 %}" class="comment_form_avatar" alt="{{user.username}}"/>
+			{{ user|print_username }}
 		</dt>
 		<dd class="comment_content">
-		{{ form.comment }}
-		<input type="submit" class="eng button" value="Comment"/>
+			{{ form.comment }}
+			<input type="submit" class="eng button" value="Comment"/>
 		</dd>
 	</dl>
 	{{ form.content_type }}
