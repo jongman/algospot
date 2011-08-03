@@ -14,9 +14,172 @@ a.username { font-weight: bold; }
 
 /* 글로벌 엘레멘트들 ***************************************************/
 
-/* 내비게이션 바 */
-#user-info div > a { font-size: 100%; }
-#user-info div > em { font-size: 80%; }
+/* header h2 { width: 500px; } */
+
+/* 코멘트 목록 */
+ul.comments {
+	border-top: 1px solid;
+	border-color: #D6D6D6;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+ul.comments li.comment {
+	background:none;
+	display: block;
+	list-style:none;
+	padding: 5px 5px;
+	margin: 0;
+	border-bottom: 1px solid;
+	border-color: #D6D6D6;
+	min-height: 60px;
+	overflow: hidden;
+	position: relative;
+}
+ul.comments li.comment dt.comment_user {
+	width: 80px;
+	overflow: hidden;
+	margin-right: 10px;
+	float: left;
+	text-align: center;
+}
+ul.comments li.comment dd.comment_content {
+	display: table-cell;
+}
+ul.comments li.comment dd.comment_content p {
+	color: #444
+}
+ul.comments.background-color .comment:nth-child(odd) {
+	background-color: #F4F4F4;
+}
+ul.comments .comment .datetime {
+	color: #aaa;
+	font-size: 90%;
+}
+ul.comments li.comment .operations {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+}
+ul.comments li.comment .operations .button-link {
+	font-size: 10px;
+	line-height: 130%;
+}
+
+/* 페이지네이션 */
+
+section.pagination {
+	padding: 8px;
+}
+
+div.pagination {
+	width: 100%;
+	text-align: center;
+	display:block;
+	clear:both;
+	line-height: 35px;
+	font-size:12px;
+}
+
+div.pagination a:link, .pagination a:visited {
+	padding:7px 9px;
+	border:1px solid #EBEBEB;
+	margin-left:10px;
+	text-decoration:none;
+	background-color:#F5F5F5;
+	width:22px;
+	font-weight:normal;
+}
+
+div.pagination a:hover {
+	background-color:#DDEEFF;
+	border:1px solid #BBDDFF;
+}
+
+div.pagination .active_link {
+	color: #036 !important;
+	border:1px solid #BBDDFF !important;
+	background-color:#DDEEFF !important;
+	cursor:default;
+}
+
+div.pagination .disabled_tnt_pagination {
+	padding:7px;
+	padding-top:2px;
+	padding-bottom:2px;
+	border:1px solid #EBEBEB;
+	margin-left:10px;
+	text-decoration:none;
+	background-color:#F5F5F5;
+	color:#D7D7D7;
+	cursor:default;
+}
+
+/* 페이지별 엘레멘트들 ***************************************************/
+
+/* 아바타 변경 */
+section.avatar_change img.selected {
+	background-color:#111;
+}
+
+/* 포럼 글 목록 */
+table.forum_list thead th {
+	font-size: 14px;
+	padding: 5px 0;
+}
+table.forum_list tbody td {
+	padding: 0px 4px;
+}
+table.forum_list tbody td.title_col {
+	text-align: left;
+}
+
+table.forum_list .num_col { width: 8%; }
+table.forum_list .title_col { width: 50%; }
+table.forum_list .user_col, 
+table.forum_list .lastcommenter_col { width: 12%; }
+table.forum_list .comments_col { width: 8%; }
+table.forum_list .updated_col { width: 10%; }
+table.forum_list span.none { color: #999; }
+table.forum_list span.has_comment, 
+table.forum_list span.some_discussions { color: #666; }
+table.forum_list span.heated_discussions, 
+table.forum_list span.very_heated_discussions, 
+table.forum_list span.wow { color: #666; font-weight: bold; }
+
+/* 뉴스 피드 */
+ul.newsfeed {
+	margin:0;
+	padding:0;
+	width: 590px;
+}
+ul.newsfeed li {
+	background-position:10px 10px;
+	background-repeat:no-repeat;
+	background-image:url('/static/images/icons/icon_event.png');
+	list-style:none;
+	display:block;
+	padding:5px 5px 5px 35px;
+	overflow:hidden;
+	margin: 0px;;
+	line-height:100%;
+	width: 90%;
+}
+ul.newsfeed li.wiki-edit { background-image:url('/static/images/icons/icon_nav_articles.png'); }
+ul.newsfeed li.commented { background-image:url('/static/images/icons/icon_notification_information.png'); }
+ul.newsfeed li.posted { background-image:url('/static/images/icons/icon_event_log.png'); }
+ul.newsfeed li .newsfeed-timestamp {
+	margin-top: 4px;
+	margin-left: 16px;
+	float:right;
+	font-size:93%;
+}
+
+/* 할일들:
+ * kor, eng 클래스 지우기
+ *
+ */
 
 /* .markup-intro td { */
 /* 	text-align:left; */

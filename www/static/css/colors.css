@@ -35,7 +35,7 @@ section[role=navigation] header h1, article footer, .widget.add-new-widget a:hov
 .widget.increase strong, #new-tasks span { color:#77ab13; }
 .widget .close-widget, input:disabled, input.disabled { color:#bfbfbf; }
 .htmlcalendar .day.today, .htmlcalendar tr:nth-child(even) .day.today { color:#737373; }
-#user-info div > a { color:#4c4c4c; }
+/* #user-info div > a { color:#4c4c4c; } */
 .htmlcalendar .week { color:#d6d6d6; }
 .htmlcalendar .day { color:#a6a6a6; }
 dd p { color:#888; }

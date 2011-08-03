@@ -150,11 +150,11 @@ section[role=navigation] header h1 {
 }
 #user-info div > a {
 	display:block;
-	font-size:108%;
+	/*font-size:108%;*/
 	text-decoration:none;
 	line-height:100%;
 }
-#user-info em { font-size:93%; }
+#user-info em { font-size:80%; }
 #user-info ul {
 	margin:5px 0 0;
 	list-style:none;

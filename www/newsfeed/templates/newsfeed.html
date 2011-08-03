@@ -10,7 +10,7 @@
 	{% load avatar_tags %}
 	{% load common_tags %}
 	{% load	newsfeed_tags %}
-	<section>
+	<section class="newsfeed">
 		<ul class="comments background-color">
 			{% for user, actions in pagination.page|aggregate_by_user %}
 				<li class="comment">
@@ -36,9 +36,9 @@
 			{% endfor %}
 		</ul>
 	</section>
-</article>
-<article>
-	{{ pagination.render }}
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
 
 {% endblock %}
 

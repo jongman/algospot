@@ -2,12 +2,14 @@
 	<span class="step-links">
 		{% if first %}
 		<a href="{{ first.link }}">{{ first.label }}</a>
+
 		...
 		{% endif %}
 		{% for number, link, active in links %}
 		<a href="{{ link }}" class="{% if active %}active_link{% endif %}">{{ number }}</a>
 		{% endfor %}
 		{% if last %}
+
 		...
 		<a href="{{ last.link }}">{{ last.label }}</a>
 		{% endif %}

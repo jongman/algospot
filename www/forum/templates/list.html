@@ -13,66 +13,64 @@
 {% block page_contents %} 
 	{% load common_tags %}
 	{% load comments %}
-	<!-- 음.. 내가 왜 테이블을 안쓰고 ul 을 써서 게시판을 만들었을까? 미친거지 -->
-	<!-- TODO: 테이블로 다시 바꾸자.. -->
-	<ul class="forumlist kor">
-		<li class="forumlist-header">
-			<ul>
-				<li class="forumlist-num">번호</li>
-				<li class="forumlist-title">제목</li>
-				<li class="forumlist-user">글쓴이</li>
-				<li class="forumlist-comments">댓글수</li>
-				<li class="forumlist-lastcommenter">마지막 댓글</li>
-				<li class="forumlist-updated">갱신</li>
-			</ul>
-		</li>
-		{% if pagination.page.object_list.count == 0 %}
-			<li class="forumlist-entry">
-				<ul>
-					<li class="forumlist-empty">
-						글이 아직 없습니다.
-					</li>
-				</ul>
-			</li>
-		{% endif %}
-		{% for post in pagination.page.object_list %}
-			<li class="forumlist-entry">
-				<ul>
-					<li class="forumlist-num">
-						{{ post.id }}
-					</li>
-					<li class="forumlist-title">
-						<a href="{% url forum-read post.id %}">{{ post.title }}</a>
-					</li>
-					{% get_comment_count for post as cc %}
-					{% get_last_comment for post as lc %}
-					<li class="forumlist-user">
-						{{ post.user|print_username }}
-					</li>
-					<li class="forumlist-comments">
-						<span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span>
-					</li>
-					<li class="forumlist-lastcommenter">
-						{% if lc %}
-							{{ lc.user|print_username }}
-						{% else %}
-							없음
-						{% endif %}
-					</li>
-					<li class="forumlist-updated">
-						{% if lc %}
-							{{ lc.submit_date|print_datetime}}
-						{% else %}
-							{{ post.created_on|print_datetime}}
-						{% endif %}
-					</li>
-				</ul>
-			</li>
-		{% endfor %}
-	</ul>
-</article>
-<article>
-	{{ pagination.render }}
+	<section>
+		<table class="forum_list">
+			<thead>
+				<tr>
+					<th class="num_col">번호</th>
+					<th class="title_col">제목</th>
+					<th class="user_col">글쓴이</th>
+					<th class="comments_col">댓글수</th>
+					<th class="last_commenter_col">마지막 댓글</th>
+					<th class="updated_col">갱신</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if pagination.page.object_list.count == 0 %}
+					<tr>
+						<td colspan="6" class="empty_message">
+							글이 아직 없습니다.
+						</td>
+					</tr>
+				{% endif %}
+				{% for post in pagination.page.object_list %}
+					<tr>
+						<td class="num_col">
+							{{ post.id}}
+						</td>
+						<td class="title_col">
+							<a href="{% url forum-read post.id %}">{{ post.title }}</a>
+						</td>
+						{% get_comment_count for post as cc %}
+						{% get_last_comment for post as lc %}
+						<td class="user_col">
+							{{ post.user|print_username }}
+						</td>
+						<td class="comments_col">
+							<span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span>
+						</td>
+						<td class="last_commenter_col">
+							{% if lc %}
+								{{ lc.user|print_username }}
+							{% else %}
+								없음
+							{% endif %}
+						</td>
+						<td class="updated_col">
+							{% if lc %}
+								{{ lc.submit_date|print_datetime}}
+							{% else %}
+								{{ post.created_on|print_datetime}}
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
 {% endblock %}
 {% block page_tabs %}
 	<nav>

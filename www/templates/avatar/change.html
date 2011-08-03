@@ -5,7 +5,7 @@
 	{% load avatar_tags %}
 	{% load avatar_custom_tags %}
 
-	<section>
+	<section class="avatar_change">
 		<form method="POST" action="" id="choiceform">
 			{% csrf_token %}
 			<input type="hidden" name="choice" id="choice" value=""/>
