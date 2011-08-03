@@ -16,7 +16,7 @@
 {% block page_contents %}
 	{% load judge_tags %}
 	<section>
-		<table class="submissions kor">
+		<table class="submission_list">
 			<thead>
 				<tr>
 					<th class="id">#</th>
@@ -52,20 +52,19 @@
 						</td>
 						<td class="length">{{ sub.length|print_length }}</td>
 						<td class="state">
-							{% if sub.has_messages %}
-								{% if user == sub.user or user.is_superuser %}
-									<a href="{% url judge-submission-details sub.id %}">
-									{% endif %}
-								{% endif %}
-								<span class="submission{{ sub.name_eng }}">
-									{{ sub.name_kor }}
-								</span>
+							<span class="submission_state submission{{ sub.name_eng }}">
 								{% if sub.has_messages %}
 									{% if user == sub.user or user.is_superuser %}
-									</a>
+										<a href="{% url judge-submission-details sub.id %}">
+									{% endif %}
 								{% endif %}
-							{% endif %}
-
+								<span>{{ sub.name_kor }}</span>
+								{% if sub.has_messages %}
+									{% if user == sub.user or user.is_superuser %}
+										</a>
+									{% endif %}
+								{% endif %}
+							</span>
 						</td>
 						<td class="stats">
 							{% if sub.has_run %}
@@ -78,7 +77,7 @@
 			</tbody>
 		</table>
 	</section>
-	<section>
+	<section class="pagination">
 		{{ pagination.render }}
 	</section>
 	<section>

@@ -12,6 +12,14 @@ body, textarea, input, select { font-family: NanumGothic,나눔고딕; }
 /* 사용자 핸들은 굵은 글씨로 */
 a.username { font-weight: bold; }
 
+/* 테이블 속성 오버라이드 */
+
+#main_section td, #main_section th {
+	height: 0px;
+	padding: 10px 4px;
+	vertical-align: top;
+}
+
 /* 글로벌 엘레멘트들 ***************************************************/
 
 /* header h2 { width: 500px; } */
@@ -144,15 +152,6 @@ section.avatar_change img.selected {
 }
 
 /* 포럼 글 목록 */
-table.forum_list thead th {
-	font-size: 14px;
-	padding: 5px 0;
-}
-table.forum_list tbody td {
-	height: 0px;
-	padding: 8px 4px;
-	vertical-align: top;
-}
 table.forum_list tbody td.title_col {
 	text-align: left;
 }
@@ -169,6 +168,40 @@ table.forum_list span.some_discussions { color: #666; }
 table.forum_list span.heated_discussions, 
 table.forum_list span.very_heated_discussions, 
 table.forum_list span.wow { color: #666; font-weight: bold; }
+
+/* 저지 문제 목록 */
+
+table.problem_list .accepted { width: 8%; }
+table.problem_list .id { width: 12%; }
+table.problem_list .name { width: 40%; }
+table.problem_list .writer { width: 16%; }
+table.problem_list .submissions { width: 12%; }
+table.problem_list .accepted { width: 12%; }
+table.problem_list tbody .id,
+table.problem_list tbody .name {
+	text-align: left;
+}
+
+/* 저지 답안 목록 */
+table.submission_list td, table.submission_list th { text-align: left; }
+table.submission_list .id { width: 8%; }
+table.submission_list .problem { width: 14%; }
+table.submission_list .user { width: 14%; }
+table.submission_list .language { width: 8%; }
+table.submission_list .length { width: 8%; }
+table.submission_list .state { width: 12%; }
+table.submission_list .stats { width: 18%; }
+table.submission_list .submitted_on { width: 18%; }
+table.submission_list tbody .submission_state a { text-decoration: underline; }
+.submissionRECEIVED * { color: silver; }
+.submissionCOMPILING * { color: gray; }
+.submissionCOMPILE_ERROR * { font-weight: bold; color: rgb(64, 64, 255); }
+.submissionACCEPTED * { font-weight: bold; color: rgb(255, 64, 64); }
+.submissionWRONG_ANSWER * { font-weight: bold; color: rgb(64, 128, 64); }
+.submissionRUNTIME_ERROR * { font-weight: bold; color: rgb(64, 196, 64); }
+.submissionTIME_LIMIT_EXCEEDED * { font-weight: bold; color: rgb(64, 64, 128); }
+.submissionCANT_BE_JUDGED * { font-weight: bold; color: rgb(64, 255, 64); text-decoration: underline; }
+.submissionREJUDGE_REQUESTED * { color: silver; }
 
 /* 뉴스 피드 */
 ul.newsfeed {
