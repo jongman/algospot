@@ -1,5 +1,6 @@
 {% load common_tags %}
 {% load judge_tags %}
+{% load tagging_tags %}
 <section class="problem_info">
 	<h4>문제 정보</h4>
 	<ul class="problem_info tabular">
@@ -32,8 +33,24 @@
 			<ul>
 				<li class="author">{{ problem.user|print_username }}</li>
 				<li class="source"><a href="{% url judge-problem-list %}?source={{ problem.source|urlencode }}">{{ problem.source }}</a></li>
-				<li class="category"><a href="#">보기</a></li>
+				<li class="category">
+					<a href="#" id="show_category">보기</a>
+					{% tags_for_object problem as tags %}
+					<span id="problem_category" style="display: none;">
+						{% for tag in tags %}
+						<a href="{% url judge-problem-list %}?tag={{ tag.name|urlencode }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+						{% endfor %}
+					</span>
+				</li>
 			</ul>
+			<script language="javascript">
+				$(function() {
+					$("#show_category").click(function() {
+						$(this).hide();
+						$("#problem_category").fadeIn("slow");
+					});
+				});
+			</script>
 		</li>
 	</ul>
 </section>
