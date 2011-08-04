@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block page_contents %} 
+	{% include "problem/info_block.html" %}
 	<section>
 		<form action="" method="POST" class="kor">
 			{% csrf_token %}

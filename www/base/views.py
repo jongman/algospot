@@ -7,7 +7,9 @@ from django.contrib.comments.models import Comment
 from forms import SettingsForm
 
 def profile(request, user_id):
-    pass
+    user = get_object_or_404(User, id=user_id)
+    return render(request, "user_profile.html",
+                  {"user": user})
 
 def settings(request, user_id):
     user = get_object_or_404(User, id=user_id)

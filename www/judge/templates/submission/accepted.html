@@ -1,16 +1,11 @@
-{% extends "judge-base.html" %}
+{% extends "problem/problem-base.html" %}
 {% load common_tags %}
-{% block title %} 
-	{{ title }}
-{% endblock %}
-
 
 {% block page_title %}
 	정답 목록: {{ problem.name }}
 {% endblock %}
 
-{% block page_tabs %}
-{% endblock %}
+{% block judge_problem_stats_class %}current{% endblock %}
 
 {% block page_contents %}
 	{% load judge_tags %}
