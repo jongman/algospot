@@ -1,5 +1,6 @@
 {% extends "problem/problem-base.html" %}
 {% load common_tags %}
+{% load tagging_tags %}
 
 {% block judge_problem_admin_class %}current{% endblock %}
 
@@ -89,6 +90,18 @@
 					else
 					alert(response.error);
 			}});
+
+			$("#id_tags").superblyTagField({
+				allowNewTags: true,
+				showTagsNumber: 10,
+				preset: $("#id_tags").val().split(","),
+				{% tags_for_model judge.Problem as tags %}
+				tags: [
+					{% for tag in tags %}
+						"{{ tag.name }}",
+					{% endfor %}
+				]});
+					
 		});
 	</script>
 	<script language="javascript" src="/static/js/ajaxupload.js"></script>
