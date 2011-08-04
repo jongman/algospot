@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'registration',
     'avatar',
     'djcelery',
+    'tagging',
     #'actstream',
 
     'base',

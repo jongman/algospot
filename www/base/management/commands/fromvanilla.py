@@ -38,6 +38,7 @@ def fetch_all(db, table, **where):
     if where:
         where_clause = "WHERE " + " AND ".join(["%s=%s" % it for it in
             where.items()])
+
     c.execute("SELECT * FROM %s %s;" % (table, where_clause))
     return c.fetchall()
 def migrate_user(db):
@@ -145,6 +146,10 @@ def migrate_problems(db):
         "Submissions": "submissions_count",
     }
     imported = 0
+    categories = dict([(cat["No"], cat["Name"])
+                       for cat in fetch_all(db, "GDN_ProblemCategory")])
+    for k, v in categories.items():
+        print k, v
     for problem in fetch_all(db, "GDN_Problem", State=3):
         kwargs = {}
         kwargs["user"] = User.objects.get(id=problem["Author"])
@@ -152,6 +157,16 @@ def migrate_problems(db):
             kwargs[v] = problem[k]
         new_problem = Problem(**kwargs)
         new_problem.save()
+
+        tags = []
+        for rel in fetch_all(db, "GDN_ProblemCategoryActualRelation",
+                             Problem=problem["No"]):
+            if rel["Category"] in categories:
+                tags.append(categories[rel["Category"]])
+        print new_problem.slug, tags
+        new_problem.tags = ",".join(tags)
+        new_problem.save()
+
         # delete new problem entry: we don't have timestamp information for
         # old problems.
         get_activity(key="new-problem-%d" % new_problem.id).delete()
@@ -174,6 +189,7 @@ def migrate_submissions(db):
     imported = 0
     submissions = fetch_all(db, "GDN_Submission")
     Submission.objects.all().delete()
+    Activity.objects.filter(key__startswith="solved-").delete()
     for submission in submissions:
         kwargs = {}
         try:

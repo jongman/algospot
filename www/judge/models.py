@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db.models.signals import pre_save, post_save
 from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
+import tagging
 
 class Problem(models.Model):
     DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
@@ -36,6 +37,8 @@ class Problem(models.Model):
 
     def get_absolute_url(self):
         return reverse("judge-problem-read", kwargs={"slug": self.slug})
+
+tagging.register(Problem)
 
 class Attachment(models.Model):
     problem = models.ForeignKey(Problem)
