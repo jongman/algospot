@@ -36,7 +36,7 @@
 						{% else %}
 							<a href="{% url judge-submission-accepted problem.slug "time" 1 %}">
 						{% endif %}
-						시간/메모리
+						수행시간
 						{% if order_by == "time" %} ↓ {% endif %}
 						{% if order_by == "-time" %} ↑ {% endif %}
 						</a>
@@ -69,7 +69,7 @@
 						<td class="length">{{ sub.length|print_length }}</td>
 						<td class="stats">
 							{% if sub.has_run %}
-								{{ sub.time }}ms/{{ sub.memory }}KB
+								{{ sub.time }}ms
 							{% endif %}
 						</td>
 						<td class="submitted_on">{{ sub.submitted_on|print_datetime}}</td>

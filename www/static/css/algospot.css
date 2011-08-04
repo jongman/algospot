@@ -403,7 +403,7 @@ table.submission_list tbody .submission_state a { text-decoration: underline; }
 
 /* 답안 보기 */
 .submission_info ul li {
-	width: 14%;
+	width: 16%;
 }
 
 /* 문제 편집 */

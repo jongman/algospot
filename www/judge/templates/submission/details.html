@@ -14,7 +14,6 @@
 					<li class="submitted_on">제출 시간</li>
 					<li class="length">길이</li>
 					<li class="time">수행 시간</li>
-					<li class="memory">메모리 사용량</li>
 					<li class="verdict">채점 결과</li>
 				</ul>
 			</li>
@@ -31,14 +30,9 @@
 	   <b>{{ submission.time}}</b>ms
 						{% endif %}
 					</li>
-					<li class="memory">
-						{% if submission.memory %}
-	   <b>{{ submission.memory}}</b>kb
-						{% endif %}
-					</li>
 					<li class="verdict">
 						<span class="submission{{ submission.name_eng }}">
-							{{ submission.name_kor }}
+							<span>{{ submission.name_kor }}</span>
 						</span>
 					</li>
 				</ul>

@@ -25,7 +25,7 @@
 					<th class="language">언어</th>
 					<th class="length">길이</th>
 					<th class="state">결과</th>
-					<th class="stats">시간/메모리</th>
+					<th class="stats">수행시간</th>
 					<th class="submitted_on">제출시간</th>
 				</tr>
 			</thead>
@@ -68,7 +68,7 @@
 						</td>
 						<td class="stats">
 							{% if sub.has_run %}
-								{{ sub.time }}ms/{{ sub.memory }}KB
+								{{ sub.time }}ms
 							{% endif %}
 						</td>
 						<td class="submitted_on">{{ sub.submitted_on|print_datetime}}</td>
