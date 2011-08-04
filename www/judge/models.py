@@ -106,6 +106,36 @@ class Submission(models.Model):
     def get_absolute_url(self):
         return reverse("judge-submission-details", kwargs={"id": self.id})
 
+class Solver(models.Model):
+    problem = models.ForeignKey(Problem)
+    user = models.ForeignKey(User)
+    incorrect_tries = models.IntegerField(default=0)
+    fastest_submission = models.ForeignKey(Submission, null=True,
+                                           related_name="+")
+    shortest_submission = models.ForeignKey(Submission, null=True,
+                                           related_name="+")
+
+    @staticmethod
+    def refresh(problem, user):
+        # TODO: 언젠가.. 최적화한다. -_-
+        instance = get_or_none(Solver, problem=problem, user=user)
+        if not instance:
+            instance = Solver(problem=problem, user=user)
+            instance.save()
+        submissions = Submission.object.filter(problem=problem,
+                                               user=user).order_by("id")
+        accepted = submissions.filter(state=Submission.ACCEPTED)
+        if accepted.count() == 0:
+            instance.incorrect_tries = submissions.count()
+            instance.fastest_submission = instance.shortest_submission = None
+        else:
+            incorrect = submissions.filter(state__neq=Submission.ACCEPTED)
+            instance.incorrect_tries = incorrect.count()
+            instance.fastest_submission = accepted.order_by("time")[0]
+            instance.shortest_submission = accepted.order_by("length")[0]
+        instance.save()
+        return instance
+
 # SIGNAL HANDLERS
 def saved_problem(sender, **kwargs):
     instance = kwargs["instance"]
