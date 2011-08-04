@@ -298,12 +298,13 @@ div.pagination .disabled_tnt_pagination {
 }   
    
 .superblySuggestItems .superblySuggestItem{
+	background-image: none;
     font-size:11px;
     padding: 3px;
     padding-left: 5px;
     padding-right: 5px;
-	background-color: #bbcee4;
-    border: solid 1px #bbcee4;
+	background-color: #e6e6e6;
+    border: solid 1px #ddd;
 	list-style: none;
 	float: none;
     color: #000000;
@@ -311,12 +312,12 @@ div.pagination .disabled_tnt_pagination {
    
 .superblySuggestItems .superblySuggestItem:hover {
    	cursor: pointer;
-    border: solid 1px #181B38;
+	background-color: #fff;
 }
    
 .superblySuggestItems .selected{
-	background-color: #7aa9e3;
-    border: solid 1px #7aa9e3;
+	background-color: #e6e6e6
+    border: solid 1px #ddd;
 }
 
 /* 페이지별 엘레멘트들 ***************************************************/
