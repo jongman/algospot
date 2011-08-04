@@ -54,7 +54,7 @@
 							</a>
 						</td>
 						<td class="accepted">
-							<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}&state={{ ACCEPTED }}&order_by=length">
+							<a href="{% url judge-submission-accepted problem %}">
 								{% percentage problem.accepted_count problem.submissions_count %}%
 							</a>
 						</td>
