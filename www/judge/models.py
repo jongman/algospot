@@ -74,8 +74,10 @@ class Submission(models.Model):
                        (REJUDGE_REQUESTED, "REJUDGE_REQUESTED")])
 
 
-    PROGRAM_HAS_RUN = [OK, ACCEPTED, WRONG_ANSWER]
-    HAS_MESSAGES = [COMPILE_ERROR, RUNTIME_ERROR]
+    JUDGED = (ACCEPTED, WRONG_ANSWER, RUNTIME_ERROR, TIME_LIMIT_EXCEEDED,
+              CANT_BE_JUDGED)
+    PROGRAM_HAS_RUN = (OK, ACCEPTED, WRONG_ANSWER)
+    HAS_MESSAGES = (COMPILE_ERROR, RUNTIME_ERROR)
 
     submitted_on = models.DateTimeField(auto_now_add=True)
     problem = models.ForeignKey(Problem)
@@ -114,6 +116,7 @@ class Solver(models.Model):
     problem = models.ForeignKey(Problem)
     user = models.ForeignKey(User)
     incorrect_tries = models.IntegerField(default=0)
+    solved = models.BooleanField(default=False)
     fastest_submission = models.ForeignKey(Submission, null=True,
                                            related_name="+")
     shortest_submission = models.ForeignKey(Submission, null=True,
@@ -126,22 +129,53 @@ class Solver(models.Model):
     @staticmethod
     def refresh(problem, user):
         # TODO: 언젠가.. 최적화한다. -_-
+
+        # Solver 인스턴스를 찾음. 없으면 만듬.
         instance = get_or_none(Solver, problem=problem, user=user)
         if not instance:
             instance = Solver(problem=problem, user=user)
             instance.save()
+        # 이 사람의 서브미션 목록을 찾는다
         submissions = Submission.objects.filter(problem=problem,
                                                 user=user).order_by("id")
         accepted = submissions.filter(state=Submission.ACCEPTED)
+
+        # 풀었나? 못 풀었나?
+        prev_solved = instance.solved
         if accepted.count() == 0:
+            instance.solved = False
             instance.incorrect_tries = submissions.count()
             instance.fastest_submission = instance.shortest_submission = None
         else:
+            instance.solved = True
             incorrect = submissions.exclude(state=Submission.ACCEPTED)
             instance.incorrect_tries = incorrect.count()
             instance.fastest_submission = accepted.order_by("time")[0]
             instance.shortest_submission = accepted.order_by("length")[0]
         instance.save()
+        if instance.solved != prev_solved:
+            # 유저 프로필에 푼 문제 수 업데이트
+            profile = user.get_profile()
+            profile.solved_problems = Solver.objects.filter(user=user,
+                                                            solved=True).count()
+            profile.save()
+
+            # 처음으로 풀었을 경우 알림을 보낸다
+            id = "solved-%d-%d" % (problem.id, user.id)
+            if instance.solved:
+                # 풀었다!
+                publish(id, "solved", "judge",
+                        target=problem,
+                        actor=user,
+                        timestamp=instance.fastest_submission.submitted_on,
+                        verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." %
+                        (instance.incorrect_tries + 1))
+            else:
+                # 리저지 등 관계로 풀었던 문제를 못푼게 됨.
+                depublish(id)
+
+            # TODO: 가장 빠른 솔루션, 가장 짧은 솔루션이 등장했을 경우
+            # newsfeed entry를 보낸다
         return instance
 
 # SIGNAL HANDLERS
@@ -160,82 +194,23 @@ def saved_problem(sender, **kwargs):
             activity.actor = instance.user
             activity.save()
 
-def solved_problem(user, problem, submission):
-    accepted = Submission.objects.filter(user=user,
-                                         problem=problem,
-                                         state=Submission.ACCEPTED).count()
-    # 이미 푼 문젤까?
-    if accepted > 0: return
-    # 오오 풀었당!
-    subs = Submission.objects.filter(user=user,
-                                     problem=problem).count()
-    publish("solved-%d-%d-%d" % (user.id, problem.id, submission.id),
-            "solved",
-            "judge",
-            target=problem,
-            actor=user,
-            timestamp=submission.submitted_on,
-            verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." % subs)
-    profile = user.get_profile()
-    profile.solved_problems += 1
-    profile.save()
-
-def unsolved_problem(user, problem, submission):
-    activity_id = "solved-%d-%d-%d" % (user.id, problem.id, submission.id)
-    # 첫 번째 AC가 없어지지 않는한 신경 안 쓴다
-    if not has_activity(activity_id): return
-    depublish(activity_id)
-    # 이후에 AC받은 전적이 있나?
-    next_accepted = get_or_none(Submission,
-                                user=user,
-                                problem=problem,
-                                state=Submission.ACCEPTED,
-                                id__gt=submission.id)
-    # 그렇다면 새로 publish 하고 끝
-    if next_accepted:
-        subs = Submission.objects.filter(user=user,
-                                         problem=problem,
-                                         id__lte=next_accepted.id).count()
-        publish("solved-%d-%d-%d" % (user.id, problem.id, next_accepted.id),
-                "solved",
-                "judge",
-                target=problem,
-                actor=user,
-                timestamp=next_accepted.submitted_on,
-                verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." % subs)
-    else:
-        # 이제 이 문제 못풀었어요 프로필 빠빠이..
-        profile = user.get_profile()
-        profile.solved_profiles -= 1
-        profile.save()
-
-def will_save_submission(sender, **kwargs):
-    submission = kwargs["instance"]
-    if not submission.id: return
-    current_sub = get_or_none(Submission, id=submission.id)
-    if not current_sub: return
-    old_state = current_sub.state
-    if old_state == submission.state: return
-    # 풀었다!
-    if submission.state == Submission.ACCEPTED:
-        solved_problem(submission.user, submission.problem, submission)
-    # 리저지?
-    elif old_state == Submission.ACCEPTED:
-        unsolved_problem(submission.user, submission.problem, submission)
-
 def saved_submission(sender, **kwargs):
-    created, submission = kwargs["created"], kwargs["instance"]
-    if created:
-        if submission.state == Submission.RECEIVED:
-            import tasks
-            tasks.judge_submission.delay(submission)
+    submission = kwargs["instance"]
+    if submission.state in [Submission.RECEIVED,
+                            Submission.REJUDGE_REQUESTED]:
+        import tasks
+        tasks.judge_submission.delay(submission)
+
+    if submission.state in Submission.JUDGED:
         profile = submission.user.get_profile()
-        profile.submissions += 1
+        submissions = Submission.objects.filter(user=submission.user)
+        profile.submissions = submissions.count()
+        profile.accepted = submissions.filter(state=Submission.ACCEPTED).count()
         profile.save()
+
+        Solver.refresh(submission.problem, submission.user)
 
 post_save.connect(saved_problem, sender=Problem,
                  dispatch_uid="saved_problem")
-pre_save.connect(will_save_submission, sender=Submission,
-                 dispatch_uid="will_save_submission")
 post_save.connect(saved_submission, sender=Submission,
                   dispatch_uid="saved_submission")

@@ -207,10 +207,9 @@ def migrate_submissions(db):
         new_submission.state = submission["State"]
         new_submission.submitted_on = submission["Submitted"]
         new_submission.save()
-        patch("solved-%d-%d-%d" % (submission["Author"],
-                                   submission["Problem"],
-                                   submission["No"]),
-              submission["Submitted"])
+        if kwargs["state"] == Submission.ACCEPTED:
+            patch("solved-%d-%d" % (submission["Problem"], submission["Author"]),
+                  submission["Submitted"])
 
         imported += 1
         if imported % 100 == 0:

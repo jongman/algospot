@@ -14,8 +14,11 @@ class UserProfile(models.Model):
     """Stores additional information about users."""
     user = models.OneToOneField(User)
     posts = models.IntegerField(null=False, default=0)
+
     submissions = models.IntegerField(null=False, default=0)
+    accepted = models.IntegerField(null=False, default=0)
     solved_problems = models.IntegerField(null=False, default=0)
+
     intro = models.TextField(default="")
 
     def is_authorized(self):
