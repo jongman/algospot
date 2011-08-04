@@ -33,4 +33,8 @@
 		<pre>{{ problem.sample_output }}</pre>
 	</section>
 {% endblock %}
-
+{% block other_blocks %}
+	{% with commentobject=problem hide_comments=1 %}
+		{% include "comment_block.html" %}
+	{% endwith %}
+{% endblock %}
