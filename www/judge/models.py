@@ -90,6 +90,10 @@ class Submission(models.Model):
     time = models.IntegerField(null=True)
     memory = models.IntegerField(null=True)
 
+    def __unicode__(self):
+        return "%s: %s" % (self.problem.slug,
+                           self.user.username)
+
     def has_run(self):
         return self.state in self.PROGRAM_HAS_RUN
 
@@ -114,6 +118,10 @@ class Solver(models.Model):
                                            related_name="+")
     shortest_submission = models.ForeignKey(Submission, null=True,
                                            related_name="+")
+
+    def __unicode__(self):
+        return "%s: %s" % (self.problem.slug,
+                           self.user.username)
 
     @staticmethod
     def refresh(problem, user):
