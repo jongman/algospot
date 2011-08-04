@@ -5,43 +5,7 @@
 
 {% block page_contents %} 
 	{% load judge_tags %}
-	<section class="problem_info">
-		<h4>문제 정보</h4>
-		<ul class="problem_info tabular">
-			<li class="header">
-				<ul>
-					<li class="problemid">문제 ID</li>
-					<li class="timelimit">시간 제한</li>
-					<li class="memorylimit">메모리 제한</li>
-					<li class="submissions">제출 회수</li>
-					<li class="accepted">정답 회수 (비율)</li>
-				</ul>
-			</li>
-			<li class="content">
-				<ul>
-					<li class="problem-id">{{ problem.slug }}</li>
-					<li class="timelimit"><b>{{ problem.time_limit }}</b>ms</li>
-					<li class="memorylimit"><b>{{ problem.memory_limit }}</b>kb</li>
-					<li class="submissions"><b>{{ problem.submissions_count }}</b></li>
-					<li class="accepted"><b>{{ problem.accepted_count }}</b> (<b>{% percentage problem.accepted_count problem.submissions_count %}</b>%)</li>
-				</ul>
-			</li>
-			<li class="header">
-				<ul>
-					<li class="author">출제자</li>
-					<li class="source">출처</li>
-					<li class="category">분류</li>
-				</ul>
-			</li>
-			<li class="content">
-				<ul>
-					<li class="author">{{ problem.user|print_username }}</li>
-					<li class="source"><a href="{% url judge-problem-list %}?source={{ problem.source|urlencode }}">{{ problem.source }}</a></li>
-					<li class="category"><a href="#">보기</a></li>
-				</ul>
-			</li>
-		</ul>
-	</section>
+	{% include "problem/info_block.html" %}
 	<section class="problem_statement">
 		<h4>문제</h4>
 		<p class="kor">
