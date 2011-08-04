@@ -35,6 +35,21 @@ section.navigation header h1 {
 	letter-spacing: 12px;
 }
 
+/* 검색폼 */
+section#search {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 16px;
+}
+input#search_query {
+	margin: 0 auto;
+	height: 24px;
+	width: 130px;
+	padding-left: 26px;
+	background: url(/static/images/icons/magnifier.png) no-repeat scroll 6px 6px;
+	background-color: #f3f3f3;
+}
+
 /* ul 을 테이블 형태로 보여주기용 */
 .tabular, .tabular ul, .tabular li
 {

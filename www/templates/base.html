@@ -144,6 +144,14 @@
 				</nav>
 				<!-- /Main Navigation -->
 
+				<!-- Search -->
+				<section id="search">
+					<form method="post" action="">
+						{% csrf_token %}
+						<input name="q" id="search_query" placeholder="검색하기"/>
+					</form>
+				</section>
+				<!-- /Search -->
 				<!--Sidebar -->
 				<section class="sidebar nested">
 					<h2>다가오는 이벤트들</h2>
