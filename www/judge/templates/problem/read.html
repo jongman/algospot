@@ -36,7 +36,7 @@
 			<li class="content">
 				<ul>
 					<li class="author">{{ problem.user|print_username }}</li>
-					<li class="source"><a href="#">{{ problem.source }}</a></li>
+					<li class="source"><a href="{% url judge-problem-list %}?source={{ problem.source|urlencode }}">{{ problem.source }}</a></li>
 					<li class="category"><a href="#">보기</a></li>
 				</ul>
 			</li>
