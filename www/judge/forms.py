@@ -5,8 +5,10 @@ from models import Problem, Submission
 from django.contrib.auth.models import User
 import languages
 import differs
+import tagging
 
 class ProblemEditForm(forms.ModelForm):
+    tags = tagging.forms.TagField(label=u"문제 분류", required=False)
     user = forms.ModelChoiceField(label=u"작성자", queryset=User.objects.order_by("username"))
     class Meta:
         model = Problem
@@ -15,6 +17,18 @@ class ProblemEditForm(forms.ModelForm):
             "judge_module": forms.Select(choices=[(key, key + ": " + val.DESC)
                                                   for key, val in differs.modules.iteritems()])
         }
+    def __init__(self, *args, **kwargs):
+        super(ProblemEditForm, self).__init__(*args, **kwargs)
+        if "instance" in kwargs:
+            instance = kwargs["instance"]
+            self.initial["tags"] = ",".join([tag.name for tag in instance.tags])
+
+    def save(self, commit=True):
+        instance = super(ProblemEditForm, self).save(commit=False)
+        instance.tags = self.cleaned_data["tags"]
+        if commit:
+            instance.save()
+        return instance
 
 class RestrictedProblemEditForm(ProblemEditForm):
     class Meta:
