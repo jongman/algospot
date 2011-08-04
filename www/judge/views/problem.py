@@ -84,9 +84,13 @@ def list_attachments(request, id):
     return HttpResponse(json.dumps(ret))
 
 def list(request, page=1):
-    problems = Problem.objects.order_by("slug")
     filters = {}
     title_options = []
+    problems = Problem.objects.all()
+    if request.GET.get("tag"):
+        tag = filters["tag"] = request.GET["tag"]
+        problems = Problem.tagged.with_all([tag])
+        title_options.append(tag)
     if request.GET.get("source"):
         source = filters["source"] = request.GET["source"]
         problems = problems.filter(source=source)
@@ -96,6 +100,7 @@ def list(request, page=1):
         author = get_object_or_404(User, username=filters["author"])
         problems = problems.filter(user=author)
         title_options.append(author.username)
+    problems = problems.order_by("slug")
 
     # options = {}
     # TODO: 카테고리별 문제 보기
@@ -104,6 +109,7 @@ def list(request, page=1):
                       Problem.objects.values("source").distinct()])
     authors = sorted([User.objects.get(id=entry["user"]).username
                       for entry in Problem.objects.values("user").distinct()])
+    tags = sorted([tag.name for tag in Problem.tags.all()])
 
     if title_options:
         title = u"문제 목록: " + u", ".join(title_options)
@@ -113,6 +119,7 @@ def list(request, page=1):
                   {"title": title,
                    "sources": sources,
                    "authors": authors,
+                   "tags": tags,
                    "filters": filters,
                    "pagination": setup_paginator(problems, page,
                                                  "judge-problem-list", {})})

@@ -72,6 +72,17 @@
 				<legend>골라보기</legend>
 				<dl>
 					<dt>
+						문제 분류
+					</dt>
+					<dd>
+						<select name="tag">
+							<option value=""></option>
+							{% for tag in tags %}
+								<option {% if tag == filters.tag %}selected{% endif %} value="{{ tag }}">{{ tag }}</option>
+							{% endfor %}
+						</select>
+					</dd>
+					<dt>
 						출처
 					</dt>
 					<dd>
