@@ -62,12 +62,16 @@ class Activity(models.Model):
         return Activity.objects.filter(**Activity.translate(kwargs)).delete()
 
     def render(self):
+        from judge.models import Problem
         def wrap_in_link(object):
             if not object: return ""
             if isinstance(object, Comment):
-                unicode_rep = object.comment
-                if len(unicode_rep) > 50:
-                    unicode_rep = unicode_rep[:47] + ".."
+                if isinstance(self.target, Problem):
+                    unicode_rep = u"[스포일러 방지를 위해 보이지 않습니다]"
+                else:
+                    unicode_rep = object.comment
+                    if len(unicode_rep) > 50:
+                        unicode_rep = unicode_rep[:47] + ".."
             else:
                 unicode_rep = unicode(object)
             if object.get_absolute_url:
