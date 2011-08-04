@@ -122,14 +122,14 @@ class Solver(models.Model):
         if not instance:
             instance = Solver(problem=problem, user=user)
             instance.save()
-        submissions = Submission.object.filter(problem=problem,
-                                               user=user).order_by("id")
+        submissions = Submission.objects.filter(problem=problem,
+                                                user=user).order_by("id")
         accepted = submissions.filter(state=Submission.ACCEPTED)
         if accepted.count() == 0:
             instance.incorrect_tries = submissions.count()
             instance.fastest_submission = instance.shortest_submission = None
         else:
-            incorrect = submissions.filter(state__neq=Submission.ACCEPTED)
+            incorrect = submissions.exclude(state=Submission.ACCEPTED)
             instance.incorrect_tries = incorrect.count()
             instance.fastest_submission = accepted.order_by("time")[0]
             instance.shortest_submission = accepted.order_by("length")[0]
