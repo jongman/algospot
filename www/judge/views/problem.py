@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.core.files.storage import DefaultStorage
 from djangoutils import setup_paginator, get_or_none
+from django.contrib.auth.models import User
 from ..models import Problem, Submission, Attachment
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
 import json
@@ -83,13 +84,36 @@ def list_attachments(request, id):
     return HttpResponse(json.dumps(ret))
 
 def list(request, page=1):
-    problems = Problem.objects.all().order_by("slug")
+    problems = Problem.objects.order_by("slug")
+    filters = {}
+    title_options = []
+    if request.GET.get("source"):
+        source = filters["source"] = request.GET["source"]
+        problems = problems.filter(source=source)
+        title_options.append(source)
+    if request.GET.get("author"):
+        filters["author"] = request.GET["author"]
+        author = get_object_or_404(User, username=filters["author"])
+        problems = problems.filter(user=author)
+        title_options.append(author.username)
+
     # options = {}
     # TODO: 카테고리별 문제 보기
     # TODO: 난이도 순으로 정렬하기
+    sources = sorted([entry["source"] for entry in
+                      Problem.objects.values("source").distinct()])
+    authors = sorted([User.objects.get(id=entry["user"]).username
+                      for entry in Problem.objects.values("user").distinct()])
+
+    if title_options:
+        title = u"문제 목록: " + u", ".join(title_options)
+    else:
+        title = u"문제 목록 보기"
     return render(request, "problem/list.html",
-                  {"title": u"문제 목록 보기",
-                   "ACCEPTED": Submission.ACCEPTED,
+                  {"title": title,
+                   "sources": sources,
+                   "authors": authors,
+                   "filters": filters,
                    "pagination": setup_paginator(problems, page,
                                                  "judge-problem-list", {})})
 def read(request, slug):
