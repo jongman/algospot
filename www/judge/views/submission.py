@@ -6,10 +6,12 @@ from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
 from ..models import Problem, Submission
+import urllib
 
 @login_required
 def mine(request):
-    return redirect(reverse("judge-submission-recent"))
+    return redirect(reverse("judge-submission-recent") + "?user=" +
+                    urllib.quote(request.user.username))
 
 def accepted(request, problem, order_by="length", page=1):
     problem = get_object_or_404(Problem, slug=problem)
@@ -22,6 +24,16 @@ def accepted(request, problem, order_by="length", page=1):
                                                  "judge-submission-accepted",
                                                  {"problem": problem.slug,
                                                   "order_by": order_by})})
+
+def rejudge(request, id):
+    submission = get_object_or_404(Submission, id=id)
+    if submission.user != request.user and not request.user.is_superuser:
+        return HttpResponseForbidden()
+    submission.message = ""
+    submission.time = None
+    submission.state = Submission.REJUDGE_REQUESTED
+    submission.save()
+    return redirect(reverse("judge-submission-mine"))
 
 def recent(request, page=1):
     # TODO: hide non-public submission

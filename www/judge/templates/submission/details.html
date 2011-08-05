@@ -27,7 +27,7 @@
 					</li>
 					<li class="time">
 						{% if submission.time %}
-	   <b>{{ submission.time}}</b>ms
+   <b>{{ submission.time}}</b>ms
 						{% endif %}
 					</li>
 					<li class="verdict">
@@ -40,8 +40,21 @@
 			</li>
 		</ul>
 	</section>
+	{% if submission.user == user or user.is_superuser %}
+		{% if not submission.is_accepted %}
+		<section class="request_rejudge">
+			<h4>재채점 요청</h4>
+			<p>
+				재채점을 요청할 수 있습니다. 자동적으로 틀린 답이 옳게 바뀌는 것이 아니므로, 문제가 있는 경우에만 요청하시기 바랍니다.
+			</p>			
+			<form method="GET" action="{% url judge-submission-rejudge submission.id %}">
+				<input class="button" type="submit" value="Request Rejudge"/>
+			</form>
+		</section>
+		{% endif %}
+	{% endif %}
 	{% if submission.has_messages %}
-	   <section class="submission_message">
+	    <section class="submission_message">
 			<h4 class="kor">에러 메시지</h4>
 			<pre class="highlight">{{ submission.message }}</pre>
 		</section>

@@ -110,6 +110,12 @@ class Submission(models.Model):
     def has_messages(self):
         return bool(self.message)
 
+    def is_judged(self):
+        return self.state in Submission.JUDGED
+
+    def is_accepted(self):
+        return self.state == Submission.ACCEPTED
+
     def name_kor(self):
         return self.STATES_KOR[self.state]
 
