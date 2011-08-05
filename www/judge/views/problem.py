@@ -122,7 +122,8 @@ def list(request, page=1):
                    "tags": tags,
                    "filters": filters,
                    "pagination": setup_paginator(problems, page,
-                                                 "judge-problem-list", {})})
+                                                 "judge-problem-list", {},
+                                                 request.GET)})
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
     return render(request, "problem/read.html", {"problem": problem})
