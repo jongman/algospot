@@ -26,7 +26,7 @@ def makedir(path):
 class TimeOutException(Exception):
     pass
 
-def execute(command, redirect=True, time_limit=None):
+def execute(command, redirect=True, time_limit=None, kill_command=[]):
     """ time_limit must be in seconds """
     assert isinstance(command, list)
     kwargs = {"close_fds": True}
@@ -43,7 +43,11 @@ def execute(command, redirect=True, time_limit=None):
             time.sleep(0.1)
         wait = popen.poll()
         if wait is None:
-            popen.kill()
+            if kill_command:
+                subprocess.call(kill_command)
+                popen.wait()
+            else:
+                popen.kill()
             raise TimeOutException
     ret = {"returncode": wait}
     if redirect:
@@ -152,7 +156,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
     def _umount(self, mounted):
         if not self.am_i_root: return
         if mounted not in self.mounts: return
-        execute(["umount", self.mounted])
+        execute(["umount", mounted])
         self.mounts.remove(mounted)
 
     def mount_home(self, home_type):
@@ -263,10 +267,13 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
                             "-l", "INFO",
                             "su", self.user.pw_name, "-c", "sh", join(self.user.pw_dir, "entrypoint.sh")],
                            redirect=redirect,
-                           time_limit=time_limit)
+                           time_limit=time_limit,
+                           kill_command=["lxc-stop",
+                                         "-n", self.name])
         return execute(["sh", join(self.home_in_mounted, "entrypoint.sh")],
                        redirect=redirect,
                        time_limit=time_limit)
+
 
 def main():
     def print_result(x):
