@@ -2,7 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save
 from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
 import tagging
@@ -14,11 +14,13 @@ class Problem(models.Model):
                      (HIDDEN, "HIDDEN"),
                      (PUBLISHED, "PUBLISHED"))
 
-    slug = models.SlugField(u"문제 ID", blank=True,max_length=100)
+    slug = models.SlugField(u"문제 ID", blank=True, max_length=100)
     updated_on = models.DateTimeField(auto_now=True)
-    state = models.SmallIntegerField(u"문제 상태", default=DRAFT, choices=STATE_CHOICES)
-    user = models.ForeignKey(User, verbose_name=u"작성자")
-    source = models.CharField(u"출처", max_length=100, blank=True)
+    state = models.SmallIntegerField(u"문제 상태", default=DRAFT,
+                                     choices=STATE_CHOICES,
+                                     db_index=True)
+    user = models.ForeignKey(User, verbose_name=u"작성자", db_index=True)
+    source = models.CharField(u"출처", max_length=100, blank=True, db_index=True)
     name = models.CharField(u"이름", max_length=100, blank=True)
     description = models.TextField(u"설명", blank=True)
     input = models.TextField(u"입력 설명", blank=True)
@@ -35,13 +37,17 @@ class Problem(models.Model):
     def __unicode__(self):
         return self.slug
 
+    def was_solved_by(self, user):
+        return Solver.objects.filter(problem=self, user=user,
+                                     solved=True).exists()
+
     def get_absolute_url(self):
         return reverse("judge-problem-read", kwargs={"slug": self.slug})
 
 tagging.register(Problem)
 
 class Attachment(models.Model):
-    problem = models.ForeignKey(Problem)
+    problem = models.ForeignKey(Problem, db_index=True)
     file = models.FileField(max_length=1024, upload_to='/will_not_be_used/')
 
 class Submission(models.Model):
@@ -80,16 +86,17 @@ class Submission(models.Model):
     HAS_MESSAGES = (COMPILE_ERROR, RUNTIME_ERROR)
 
     submitted_on = models.DateTimeField(auto_now_add=True)
-    problem = models.ForeignKey(Problem)
+    problem = models.ForeignKey(Problem, db_index=True)
     is_public = models.BooleanField(default=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, db_index=True)
     language = models.TextField(max_length=100)
     state = models.SmallIntegerField(default=RECEIVED,
-                                     choices=STATES_ENG.items())
-    length = models.IntegerField()
+                                     choices=STATES_ENG.items(),
+                                     db_index=True)
+    length = models.IntegerField(db_index=True)
     source = models.TextField()
     message = models.TextField(blank=True, default="")
-    time = models.IntegerField(null=True)
+    time = models.IntegerField(null=True, db_index=True)
     memory = models.IntegerField(null=True)
 
     def __unicode__(self):
@@ -113,10 +120,10 @@ class Submission(models.Model):
         return reverse("judge-submission-details", kwargs={"id": self.id})
 
 class Solver(models.Model):
-    problem = models.ForeignKey(Problem)
-    user = models.ForeignKey(User)
+    problem = models.ForeignKey(Problem, db_index=True)
+    user = models.ForeignKey(User, db_index=True)
     incorrect_tries = models.IntegerField(default=0)
-    solved = models.BooleanField(default=False)
+    solved = models.BooleanField(default=False, db_index=True)
     fastest_submission = models.ForeignKey(Submission, null=True,
                                            related_name="+")
     shortest_submission = models.ForeignKey(Submission, null=True,

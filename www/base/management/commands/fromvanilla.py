@@ -15,6 +15,7 @@ import shutil
 import os
 import re
 import string
+import time
 
 def patch(key, val):
     act = get_or_none(Activity, key=key)
@@ -66,7 +67,7 @@ def migrate_user(db):
         if created % 10 == 0:
             print "created %d users so far" % created
         username_seen.add(u["Name"])
-    u = User.get(username="JongMan")
+    u = User.objects.get(username="JongMan")
     u.is_superuser = True
     u.save()
     print "created %d users." % created
@@ -117,7 +118,7 @@ def migrate_forum(db):
                     site_id=settings.SITE_ID,
                     submit_date=comment["DateInserted"])
             new_comment.save()
-            patch("forum-post-%d" % new_comment.id, comment["DateInserted"])
+            patch("comment-%d" % new_comment.id, comment["DateInserted"])
             copied_comments += 1
         copied_posts += 1
         if copied_posts % 10 == 0:
@@ -190,6 +191,7 @@ def migrate_submissions(db):
     submissions = fetch_all(db, "GDN_Submission")
     Submission.objects.all().delete()
     Activity.objects.filter(key__startswith="solved-").delete()
+    start = time.time()
     for submission in submissions:
         kwargs = {}
         try:
@@ -213,8 +215,12 @@ def migrate_submissions(db):
 
         imported += 1
         if imported % 100 == 0:
-            print "Migrated %d of %d submissions." % (imported,
-                    len(submissions))
+            print "Migrated %d of %d submissions. (%d submissions/sec)" % (imported,
+                                                                           len(submissions),
+                                                                           len(submissions)
+                                                                           /
+                                                                           (time.time()-start)
+                                                                          )
     print "Migrated %d submissions." % imported
 
 def md5file(file_path):
