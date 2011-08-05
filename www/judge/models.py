@@ -134,6 +134,7 @@ class Solver(models.Model):
                                            related_name="+")
     shortest_submission = models.ForeignKey(Submission, null=True,
                                            related_name="+")
+    when = models.DateTimeField(null=True)
 
     def __unicode__(self):
         return "%s: %s" % (self.problem.slug,
@@ -161,7 +162,9 @@ class Solver(models.Model):
             instance.fastest_submission = instance.shortest_submission = None
         else:
             instance.solved = True
-            incorrect = submissions.exclude(state=Submission.ACCEPTED)
+            first = accepted[0]
+            instance.when = first.submitted_on
+            incorrect = submissions.filter(id__lt=first.id)
             instance.incorrect_tries = incorrect.count()
             instance.fastest_submission = accepted.order_by("time")[0]
             instance.shortest_submission = accepted.order_by("length")[0]
