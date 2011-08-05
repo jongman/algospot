@@ -174,7 +174,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         for destination in list(reversed(self.mounts)):
             self._umount(destination)
 
-        #if os.path.exists(self.root): shutil.rmtree(self.root)
+        if os.path.exists(self.root): shutil.rmtree(self.root)
 
     def get_file_path(self, in_home):
         return join(self.home_in_mounted, in_home)
