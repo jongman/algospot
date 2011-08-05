@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
 from ..models import Problem, Submission
 
 @login_required
@@ -78,6 +79,8 @@ def recent(request, page=1):
 def details(request, id):
     submission = get_object_or_404(Submission, id=id)
     problem = submission.problem
+    if not problem.was_solved_by(request.user):
+        return HttpResponseForbidden()
     return render(request, "submission/details.html",
                   {"title": u"답안 보기",
                    "submission": submission,

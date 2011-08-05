@@ -42,7 +42,8 @@
 						<td class="problem"><a href="{{ sub.problem.get_absolute_url }}">{{ sub.problem.slug }}</a></td>
 						<td class="user">{{ sub.user|print_username }}</td>
 						<td class="language">
-							{% if user == sub.user or user.is_superuser %}
+							{% get_has_solved sub.problem by user as solved %}
+							{% if user == sub.user or user.is_superuser or solved %}
 								<a href="{% url judge-submission-details sub.id %}">
 								{% endif %}					
 								{{ sub.language }}
@@ -54,13 +55,13 @@
 						<td class="state">
 							<span class="submission_state submission{{ sub.name_eng }}">
 								{% if sub.has_messages %}
-									{% if user == sub.user or user.is_superuser %}
+									{% if user == sub.user or user.is_superuser or solved %}
 										<a href="{% url judge-submission-details sub.id %}">
 									{% endif %}
 								{% endif %}
 								<span>{{ sub.name_kor }}</span>
 								{% if sub.has_messages %}
-									{% if user == sub.user or user.is_superuser %}
+									{% if user == sub.user or user.is_superuser or solved %}
 										</a>
 									{% endif %}
 								{% endif %}
