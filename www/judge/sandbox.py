@@ -38,8 +38,8 @@ def execute(command, redirect=True, time_limit=None, kill_command=[]):
         wait = popen.wait()
     else:
         start = time.time()
-        # 실제 수행하는 데는 2초를 더 준다.
-        while time.time() < start + time_limit + 2 and popen.poll() is None:
+        # 실제 수행하는 데는 4초를 더 준다.
+        while time.time() < start + time_limit + 4 and popen.poll() is None:
             time.sleep(0.1)
         wait = popen.poll()
         if wait is None:
@@ -233,6 +233,8 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         if stdin: cmd += ["-i", stdin]
         if stdout: cmd += ["-o", stdout]
         if stderr: cmd += ["-e", stderr]
+        cmd += ["-m", str(self.memory_limit * 1024)]
+        cmd += ["-t", str(int(time_limit + 1.1))]
         cmd.append('"%s"' % command)
 
         self.create_entrypoint(" ".join(cmd))
