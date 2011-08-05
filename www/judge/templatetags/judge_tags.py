@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import template
-from ..models import Problem, Submission
+from ..models import Submission
 
 register = template.Library()
 
