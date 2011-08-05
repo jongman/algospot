@@ -33,7 +33,7 @@ def rejudge(request, id):
     submission.time = None
     submission.state = Submission.REJUDGE_REQUESTED
     submission.save()
-    return redirect(reverse("judge-submission-mine"))
+    return redirect(reverse("judge-submission-details", kwargs={"id": id}))
 
 def recent(request, page=1):
     # TODO: hide non-public submission
