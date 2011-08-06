@@ -36,7 +36,7 @@ class Activity(models.Model):
     action_object_object_id = models.PositiveIntegerField(blank=True,null=True)
     action_object = generic.GenericForeignKey('action_object_content_type',
                                               'action_object_object_id')
-    timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(db_index=True)
 
     @staticmethod
     def translate(kwargs):
