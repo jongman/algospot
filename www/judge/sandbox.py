@@ -234,7 +234,8 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         if stdout: cmd += ["-o", stdout]
         if stderr: cmd += ["-e", stderr]
         cmd += ["-m", str(self.memory_limit * 1024)]
-        cmd += ["-t", str(int(time_limit + 1.1))]
+        if time_limit != None:
+            cmd += ["-t", str(int(time_limit + 1.1))]
         cmd.append('"%s"' % command)
 
         self.create_entrypoint(" ".join(cmd))
@@ -286,14 +287,13 @@ def main():
                 print x[key]
 
     try:
-        """
         sandbox = Sandbox("runner", home_type="bind")
         sandbox.run_interactive("bash")
-        sandbox.mount_home("cow")
-        sandbox.run_interactive("bash")
-        sandbox.mount_home("cow")
-        sandbox.run_interactive("bash")
         """
+        sandbox.mount_home("cow")
+        sandbox.run_interactive("bash")
+        sandbox.mount_home("cow")
+        sandbox.run_interactive("bash")
         sandbox = Sandbox("runner", memory_limit=65536, home_type="bind")
         import sys
         for file in sys.argv[1:]:
@@ -303,6 +303,7 @@ def main():
         print sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
                                  stderr=".compile.stderr")
         print sandbox.run("./dp", "inp", ".stdout", ".stderr")
+        """
     finally:
         sandbox.teardown()
 
