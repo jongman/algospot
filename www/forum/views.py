@@ -8,6 +8,7 @@ from djangoutils import setup_paginator
 from models import Category, Post
 from forms import WriteForm
 from django.contrib.comments.models import Comment
+from django.contrib.auth.models import User
 
 def list(request, slug, page=1):
     category = get_object_or_404(Category, slug=slug)
@@ -16,6 +17,13 @@ def list(request, slug, page=1):
                   {"category": category,
                    "pagination": setup_paginator(posts, page, "forum-list",
                                                  {"slug": category.slug})})
+def by_user(request, id, page=1):
+    user = get_object_or_404(User, id=id)
+    posts = Post.objects.filter(user=user).order_by("-id")
+    return render(request, "by_user.html",
+                  {"filter_user": user,
+                   "pagination": setup_paginator(posts, page, "forum-byuser",
+                                                 {"id": user.id})})
 
 def read(request, id):
     post = get_object_or_404(Post, id=id)

@@ -8,8 +8,12 @@ from forms import SettingsForm
 
 def profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
+    comment_count = Comment.objects.filter(user=user).count()
     return render(request, "user_profile.html",
-                  {"user": user})
+                  {"profile_user": user,
+                   "post_count": user.get_profile().posts - comment_count,
+                   "comment_count": comment_count,
+                  })
 
 def settings(request, user_id):
     user = get_object_or_404(User, id=user_id)

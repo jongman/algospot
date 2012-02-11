@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.username }} {% endblock %}
+{% block page_title %}{{ profile_user.username }}{% endblock %}
+{% block page_contents %}
+	{% load common_tags %}
+	{% load avatar_tags %}
+	<section>
+		<dl>
+			<dt class="profile_picture">{% avatar profile_user 120 %}</dt>
+			<dd>
+				<p>
+					{{ profile_user.date_joined|print_datetime }}에 회원으로 가입해서, 
+					<a href="{% url forum-byuser profile_user.id %}">{{ post_count }}개의 글</a>을 쓰고
+					{{ comment_count }}개의 코멘트를 달고
+					{{ profile_user.get_profile.solved_problems }}개의 문제를 풀었습니다.
+				</p>
+
+				<ul class="profile_achievements">
+					{% for achievement in achievements %}
+					<li>
+						<span rel="tooltip" title="{{ achievement.description }}">{{ achievement.name }}</span>
+					</li>
+					{% endfor %}
+				</ul>
+			</dd>
+		</dl>
+	</section>
+
+	<section>
+		<h3>온라인 저지 통계</h3>
+	</section>
+
+{% endblock %}

@@ -12,5 +12,6 @@ urlpatterns = patterns(
     url(r'^write/(?P<slug>.*)/$', views.write, name="forum-write",
         kwargs={"id": None}),
     url(r'^delete/(?P<id>[0-9]+)/$', views.delete, name="forum-delete"),
+    url(r'^by_user/(?P<id>[0-9]+)/$', views.by_user, name="forum-byuser"),
 )
 
