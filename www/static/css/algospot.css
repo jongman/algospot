@@ -362,19 +362,33 @@ section.profile blockquote.speech:before
 }
 section.profile ul.user_stats {
 	margin-top: 16px;
-	width: 480px;
+	width: 490px;
 }
 section.profile ul.user_stats li li {
 	width: 96px;
 }
-section.profile ul.user_stats li.header li { 
+ul.stats li.header li { 
 	font-weight: normal;
 }
-section.profile ul.user_stats li.content li {
+ul.stats li.content li {
 	font-size: 120%;
 	font-weight: bold;
 	color: #666;
 }
+section.online_judge_stat {
+	margin-top: 16px;
+}
+section.online_judge_stat ul.judge_stats {
+	width: 100%;
+}
+section.online_judge_stat ul.judge_stats li.rank { width: 20%; }
+section.online_judge_stat ul.judge_stats li.attempts { width: 20%; }
+section.online_judge_stat ul.judge_stats li.solved { width: 20%; }
+section.online_judge_stat ul.judge_stats li.submissions { width: 20%; }
+section.online_judge_stat ul.judge_stats li.accepted { width: 20%; }
+section.online_judge_stat ul.judge_stats_charts li.submissions { width: 25%; }
+section.online_judge_stat ul.judge_stats_charts li.category { width: 75%; }
+
 
 /* 포럼 글 목록 */
 table.forum_list tbody td.title_col {

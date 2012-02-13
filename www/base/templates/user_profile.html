@@ -8,9 +8,13 @@
 		{% avatar profile_user 120 %}
 		<div>
 			<blockquote class="speech">
-				{{ profile_user.get_profile.intro }}
+				{% if profile_user.get_profile.intro %}
+					{{ profile_user.get_profile.intro }}
+				{% else %}
+					(한 마디 소개가 없습니다.)
+				{% endif %}
 			</blockquote>
-			<ul class="tabular user_stats">
+			<ul class="tabular user_stats stats">
 				<li class="header">
 					<ul>	
 						<li class="joined">회원 가입</li>
@@ -24,48 +28,59 @@
 					<ul>	
 						<li class="joined">{{ profile_user.date_joined|print_datetime }}</li>
 						<li class="articles"><a href="{% url forum-byuser profile_user.id %}">{{ post_count }}개</a></li>
-						<li class="comments">{{ comment_count }}개</li>
+						<li class="comments"><a href="{% url newsfeed-filter profile_user.id 'commented' %}">{{ comment_count }}개</a></li>
 						<li class="solved" >{{ profile_user.get_profile.solved_problems }}개</li>
-						<li class="problems">{{ problem_count }}개</li>
+						<li class="problems"><a href="{% url judge-problem-list %}?author={{ profile_user.username }}">{{ problem_count }}개</a></li>
 					</ul>
 				</li>
 			</ul>
 		</div>
 
-<!--		<dl>-->
-<!--			<dt class="profile_picture">{% avatar profile_user 120 %}</dt>-->
-<!--			<dd>-->
-<!--				<ul class="tabular user_profile">-->
-<!--					<li class="header">-->
-<!--						<ul>	-->
-<!--							<li>회원 가입일</li>-->
-<!--							<li>쓴 글 수</li>-->
-<!--							<li>코멘트 수</li>-->
-<!--							<li>푼 문제 수</li>-->
-<!--							<li>출제한 문제 수</li>-->
-<!--						</ul>-->
-<!--					</li>-->
-<!--				</ul>-->
-<!--				<p>-->
-<!--					{{ profile_user.date_joined|print_datetime }}에 회원으로 가입해서, -->
-<!--					<a href="{% url forum-byuser profile_user.id %}">{{ post_count }}개의 글</a>을 쓰고-->
-<!--					{{ comment_count }}개의 코멘트를 달고-->
-<!--					{{ profile_user.get_profile.solved_problems }}개의 문제를 풀었습니다.-->
-<!--				</p>-->
-<!---->
-<!--				<ul class="profile_achievements">-->
-<!--					{% for achievement in achievements %}-->
-<!--					<li>-->
-<!--						<span rel="tooltip" title="{{ achievement.description }}">{{ achievement.name }}</span>-->
-<!--					</li>-->
-<!--					{% endfor %}-->
-<!--				</ul>-->
-<!--			</dd>-->
-<!--		</dl>-->
 	</section>
 
-	<section>
+	<section class="online_judge_stat">
 		<h3>온라인 저지 통계</h3>
+		<ul class="tabular judge_stats">
+			<li class="header">
+				<ul>	
+					<li class="rank">랭크</li>
+					<li class="attempts">시도한 문제 수</li>
+					<li class="solved">푼 문제 수</li>
+					<li class="submissions">제출 답안 수</li>
+					<li class="accepted">정답 수</li>
+				</ul>
+			</li>
+			<li class="content">
+				<ul>
+					<!-- TODO: add appropriate link-->
+					<li class="rank"><a href="#">{{ oj_rank }}</a></li>
+					<li class="attempts">{{ attempted_problem_count }}/{{ all_problems_count }} 
+						({% percentage attempted_problem_count all_problems_count %}%)
+					</li>
+					<li class="solved">{{ profile_user.get_profile.solved_problems }} 
+						({% percentage profile_user.get_profile.solved_problems attempted_problem_count %}%)
+					</li>
+					<li class="submissions">{{ profile_user.get_profile.submissions }}</li>
+					<li class="accepted">{{ profile_user.get_profile.accepted }}
+						({% percentage profile_user.get_profile.accepted profile_user.get_profile.submissions %}%)
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<ul class="tabular judge_stats_charts">
+			<li class="header">
+				<ul>	
+					<li class="submissions">서브미션 결과 분포</li>
+					<li class="category">문제 종류별 진행 상황</li>
+				</ul>
+			</li>
+			<li class="content">
+				<ul>	
+					<li class="submissions"></li>
+					<li class="category"></li>
+				</ul>
+			</li>
+		</ul>
 	</section>
 
 {% endblock %}

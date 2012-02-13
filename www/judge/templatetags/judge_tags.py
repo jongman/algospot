@@ -4,21 +4,6 @@ from ..models import Submission
 
 register = template.Library()
 
-class PercentNode(template.Node):
-    def __init__(self, a, b):
-        self.a = template.Variable(a)
-        self.b = template.Variable(b)
-    def render(self, context):
-        a = self.a.resolve(context)
-        b = self.b.resolve(context)
-        return str(a * 100 / b) if b else "0"
-
-@register.tag
-def percentage(parser, token):
-    toks = token.split_contents()
-    a, b = toks[1:3]
-    return PercentNode(a, b)
-
 class HasSolvedNode(template.Node):
     def __init__(self, problem, user, result):
         self.problem = template.Variable(problem)

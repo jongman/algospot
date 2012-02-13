@@ -5,17 +5,25 @@ from django.http import HttpResponseForbidden
 from django.contrib.comments.views.moderation import perform_delete
 from django.contrib.comments.models import Comment
 from forms import SettingsForm
-from judge.models import Problem
+from judge.models import Problem, Solver
+from base.models import UserProfile
 
 def profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     comment_count = Comment.objects.filter(user=user).count()
     problem_count = Problem.objects.filter(user=user).count()
+    oj_rank = UserProfile.objects.filter(solved_problems__gt=user.get_profile().solved_problems).count() + 1
+    attempted_problem_count = Solver.objects.filter(user=user).count()
+    all_problems_count = Problem.objects.filter(state=Problem.PUBLISHED).count()
+
     return render(request, "user_profile.html",
                   {"profile_user": user,
                    "post_count": user.get_profile().posts - comment_count,
                    "problem_count": problem_count,
                    "comment_count": comment_count,
+                   "oj_rank": oj_rank,
+                   "attempted_problem_count": attempted_problem_count,
+                   "all_problems_count": all_problems_count,
                   })
 
 def settings(request, user_id):
