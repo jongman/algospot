@@ -6,8 +6,9 @@ from django.http import HttpResponseForbidden
 from django.contrib.comments.views.moderation import perform_delete
 from django.contrib.comments.models import Comment
 from forms import SettingsForm
-from tagging.models import TaggedItem
 from django.contrib.contenttypes.models import ContentType
+from tagging.models import TaggedItem
+from newsfeed.models import Activity
 from judge.models import Problem, Solver, Submission
 from base.models import UserProfile
 import pygooglechart as pgc
@@ -98,6 +99,7 @@ def profile(request, user_id):
         else:
             failed_problems.add(s.problem)
     category_chart = get_category_chart(user, solved_problems)
+    actions = Activity.objects.filter(actor=user).order_by("-timestamp")[:10].all()
 
     return render(request, "user_profile.html",
                   {"profile_user": user,
@@ -111,6 +113,7 @@ def profile(request, user_id):
                    "category_chart_url": category_chart,
                    "solved_problems": sorted(p.slug for p in solved_problems),
                    "failed_problems": sorted(p.slug for p in failed_problems),
+                   "actions": actions,
                   })
 
 def settings(request, user_id):

@@ -60,7 +60,7 @@
 					<li class="solved">{{ profile_user.get_profile.solved_problems }} 
 						({% percentage profile_user.get_profile.solved_problems attempted_problem_count %}%)
 					</li>
-					<li class="submissions">{{ profile_user.get_profile.submissions }}</li>
+					<li class="submissions"><a href="{% url judge-submission-recent %}?user={{ profile_user.username }}">{{ profile_user.get_profile.submissions }}</a></li>
 					<li class="accepted">{{ profile_user.get_profile.accepted }}
 						({% percentage profile_user.get_profile.accepted profile_user.get_profile.submissions %}%)
 					</li>
@@ -121,6 +121,11 @@
 				</ul>
 			</li>
 		</ul>
+	</section>
+	
+	<section class="recent_activity">
+		<h3>최근 한 일들 (<a href="{% url newsfeed-byuser user.id %}">더 보기</a>)</h3>
+		{% include "newsfeed_block.html" %}
 	</section>
 
 {% endblock %}

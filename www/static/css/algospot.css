@@ -376,7 +376,9 @@ ul.stats li.content li {
 	font-weight: bold;
 	color: #666;
 }
-section.online_judge_stat {
+section.online_judge_stat,
+section.recent_activity
+{
 	margin-top: 16px;
 }
 section.online_judge_stat ul.judge_stats {
