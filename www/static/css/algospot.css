@@ -376,31 +376,6 @@ section.profile ul.user_stats li.content li {
 	color: #666;
 }
 
-
-/* section.profile blockquote{ */
-/* 	padding: 18px; */
-/* 	 */
-/* 	-webkit-border-radius: 12px;   */
-/* 	-moz-border-radius: 12px;   */
-/* 	border-radius: 12px;   */
-/*  */
-/* 	color: #000; */
-/* 	background-color: #f4f4f4;  */
-/*  */
-/* 	font-style: italic; */
-/* 	text-align: center; */
-/* } */
-/* section.profile blockquote:before { */
-/* { */
-/* 	content: 'fsdhgfjkasdhgkjasfhdkgdashf'; */
-/* 	/* width: 0; */ */
-/* 	/* height: 0; */ */
-/* 	/* left: 0px; */ */
-/* 	/* top: 12px; */ */
-/* 	border: 25px solid; */
-/* 	border-color: red blue green yellow; */
-/* } */
-/*  */
 /* 포럼 글 목록 */
 table.forum_list tbody td.title_col {
 	text-align: left;
