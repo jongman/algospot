@@ -22,8 +22,7 @@ def by_user(request, id, page=1):
     posts = Post.objects.filter(user=user).order_by("-id")
     return render(request, "by_user.html",
                   {"filter_user": user,
-                   "pagination": setup_paginator(posts, page, "forum-byuser",
-                                                 {"id": user.id})})
+                   "pagination": setup_paginator(posts, page, "forum-byuser", {"id": user.id})})
 
 def read(request, id):
     post = get_object_or_404(Post, id=id)
