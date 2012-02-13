@@ -79,6 +79,8 @@ input#search_query {
 	text-align: center;
 	float: left;
 }
+.tabular.full { width: 100%; }
+.tabular li.full { width: 100%; }
 
 /* 코멘트 목록 */
 ul.comments {
@@ -366,8 +368,7 @@ section.profile ul.user_stats {
 }
 section.profile ul.user_stats li li {
 	width: 96px;
-}
-ul.stats li.header li { 
+} ul.stats li.header li { 
 	font-weight: normal;
 }
 ul.stats li.content li {
@@ -386,8 +387,18 @@ section.online_judge_stat ul.judge_stats li.attempts { width: 20%; }
 section.online_judge_stat ul.judge_stats li.solved { width: 20%; }
 section.online_judge_stat ul.judge_stats li.submissions { width: 20%; }
 section.online_judge_stat ul.judge_stats li.accepted { width: 20%; }
-section.online_judge_stat ul.judge_stats_charts li.submissions { width: 25%; }
-section.online_judge_stat ul.judge_stats_charts li.category { width: 75%; }
+section.online_judge_stat ul.judge_stats_charts li.submissions { width: 30%; }
+section.online_judge_stat ul.judge_stats_charts li.category { width: 70%; }
+section.online_judge_stat ul.judge_stats_charts img { border: 0; background-color: transparent; }
+section.online_judge_stat ul.solved_problems li.content li,
+section.online_judge_stat ul.failed_problems li.content li { 
+	padding: 18px; 
+	text-align: left; 
+}
+section.online_judge_stat ul.solved_problems li.content li a,
+section.online_judge_stat ul.failed_problems li.content li a { 
+	margin: 8px; 
+}
 
 
 /* 포럼 글 목록 */

@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save
+from django.db.models import Count
 from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
 import tagging
@@ -124,6 +125,13 @@ class Submission(models.Model):
 
     def get_absolute_url(self):
         return reverse("judge-submission-details", kwargs={"id": self.id})
+
+    @staticmethod
+    def get_stat_for_user(user):
+        ret = {}
+        for entry in Submission.objects.filter(user=user).values('state').annotate(Count('state')):
+            ret[entry['state']] = entry['state__count']
+        return ret
 
 class Solver(models.Model):
     problem = models.ForeignKey(Problem, db_index=True)

@@ -71,13 +71,53 @@
 			<li class="header">
 				<ul>	
 					<li class="submissions">서브미션 결과 분포</li>
-					<li class="category">문제 종류별 진행 상황</li>
+					<li class="category">문제 해결 진행 상황</li>
 				</ul>
 			</li>
 			<li class="content">
 				<ul>	
-					<li class="submissions"></li>
-					<li class="category"></li>
+					<li class="submissions"><img src="{{ submission_chart_url }}"/></li>
+					<li class="category"><img src="{{ category_chart_url }}"/></li>
+				</ul>
+			</li>
+		</ul>
+		<ul class="tabular full solved_problems">
+			<li class="header">
+				<ul>	
+					<li class="full">해결한 문제들 목록</li>
+				</ul>
+			</li>
+			<li class="content">
+				<ul>	
+					<li class="full">
+						{% if solved_problems %}
+							{% for p in solved_problems %}
+								<a class="problem_link" href="{% url judge-problem-read p %}">{{ p }}</a>
+							{% endfor %}
+						{% else %}
+								<em>해결한 문제가 없습니다.</em>
+						{% endif %}
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<ul class="tabular full failed_problems">
+			<li class="header">
+				<ul>	
+					<li class="full">시도했지만 해결하지 못한 문제들 목록</li>
+				</ul>
+			</li>
+			<li class="content">
+				<ul>	
+					<li class="full">
+						{% if failed_problems %}
+							{% for p in failed_problems %}
+								<a class="problem_link" href="{% url judge-problem-read p %}">{{ p }}</a>
+							{% endfor %}
+						{% else %}
+								<em>실패한 문제가 없습니다.</em>
+						{% endif %}
+					</li>
 				</ul>
 			</li>
 		</ul>
