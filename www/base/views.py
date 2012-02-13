@@ -5,13 +5,16 @@ from django.http import HttpResponseForbidden
 from django.contrib.comments.views.moderation import perform_delete
 from django.contrib.comments.models import Comment
 from forms import SettingsForm
+from judge.models import Problem
 
 def profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     comment_count = Comment.objects.filter(user=user).count()
+    problem_count = Problem.objects.filter(user=user).count()
     return render(request, "user_profile.html",
                   {"profile_user": user,
                    "post_count": user.get_profile().posts - comment_count,
+                   "problem_count": problem_count,
                    "comment_count": comment_count,
                   })
 

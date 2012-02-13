@@ -328,20 +328,79 @@ section.avatar_change img.selected {
 }
 
 /* 사용자 프로필 */
-dt.profile_picture { 
+section.profile div, section.profile img {
+	float: left;
+	margin-right: 36px;
+}
+section.profile dt.profile_picture { 
 	width: 140px; 
 	text-align: center; 
 	float: left;
 	margin-right: 10px;
 }
-.profile_achievements span {
+section.profile blockquote.speech
+{
+	position: relative;
+	padding: 18px;
 	background-color: #f4f4f4;
-	border: 1px solid #999;
-	padding: 3px;
-	margin: 3px;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+}
+section.profile blockquote.speech:before
+{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: -24px;
+	top: 16px;
+	border: 12px solid;
+	/* border-color: red green blue yellow; */
+	border-color: #f4f4f4 #f4f4f4 transparent transparent; 
+	border-color: transparent #f4f4f4 #f4f4f4 transparent; 
+}
+section.profile ul.user_stats {
+	margin-top: 16px;
+	width: 480px;
+}
+section.profile ul.user_stats li li {
+	width: 96px;
+}
+section.profile ul.user_stats li.header li { 
+	font-weight: normal;
+}
+section.profile ul.user_stats li.content li {
+	font-size: 120%;
 	font-weight: bold;
+	color: #666;
 }
 
+
+/* section.profile blockquote{ */
+/* 	padding: 18px; */
+/* 	 */
+/* 	-webkit-border-radius: 12px;   */
+/* 	-moz-border-radius: 12px;   */
+/* 	border-radius: 12px;   */
+/*  */
+/* 	color: #000; */
+/* 	background-color: #f4f4f4;  */
+/*  */
+/* 	font-style: italic; */
+/* 	text-align: center; */
+/* } */
+/* section.profile blockquote:before { */
+/* { */
+/* 	content: 'fsdhgfjkasdhgkjasfhdkgdashf'; */
+/* 	/* width: 0; */ */
+/* 	/* height: 0; */ */
+/* 	/* left: 0px; */ */
+/* 	/* top: 12px; */ */
+/* 	border: 25px solid; */
+/* 	border-color: red blue green yellow; */
+/* } */
+/*  */
 /* 포럼 글 목록 */
 table.forum_list tbody td.title_col {
 	text-align: left;
