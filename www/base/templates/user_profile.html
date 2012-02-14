@@ -20,7 +20,6 @@
 						<li class="joined">회원 가입</li>
 						<li class="articles">쓴 글 수</li>
 						<li class="comments">코멘트 수</li>
-						<li class="solved" >푼 문제 수</li>
 						<li class="problems">출제한 문제 수</li>
 					</ul>
 				</li>
@@ -29,7 +28,6 @@
 						<li class="joined">{{ profile_user.date_joined|print_datetime }}</li>
 						<li class="articles"><a href="{% url forum-byuser profile_user.id %}">{{ post_count }}개</a></li>
 						<li class="comments"><a href="{% url newsfeed-filter profile_user.id 'commented' %}">{{ comment_count }}개</a></li>
-						<li class="solved" >{{ profile_user.get_profile.solved_problems }}개</li>
 						<li class="problems"><a href="{% url judge-problem-list %}?author={{ profile_user.username }}">{{ problem_count }}개</a></li>
 					</ul>
 				</li>
@@ -44,8 +42,9 @@
 			<li class="header">
 				<ul>	
 					<li class="rank">랭크</li>
-					<li class="attempts">시도한 문제 수</li>
-					<li class="solved">푼 문제 수</li>
+					<li class="attempts">시도한 문제</li>
+					<li class="solved">푼 문제</li>
+					<li class="failed">못 푼 문제</li>
 					<li class="submissions">제출 답안 수</li>
 					<li class="accepted">정답 수</li>
 				</ul>
@@ -54,11 +53,14 @@
 				<ul>
 					<!-- TODO: add appropriate link-->
 					<li class="rank"><a href="#">{{ oj_rank }}</a></li>
-					<li class="attempts">{{ attempted_problem_count }}/{{ all_problems_count }} 
-						({% percentage attempted_problem_count all_problems_count %}%)
+					<li class="attempts"><a href="{% url judge-problem-userlist profile_user.id "all" %}">{{ attempted_problem_count }}/{{ all_problem_count }} 
+							({% percentage attempted_problem_count all_problem_count %}%)</a>
 					</li>
-					<li class="solved">{{ profile_user.get_profile.solved_problems }} 
-						({% percentage profile_user.get_profile.solved_problems attempted_problem_count %}%)
+					<li class="solved"><a href="{% url judge-problem-userlist profile_user.id "solved" %}">{{ profile_user.get_profile.solved_problems }}/{{ attempted_problem_count }} 
+							({% percentage profile_user.get_profile.solved_problems attempted_problem_count %}%)</a>
+					</li>
+					<li class="failed"><a href="{% url judge-problem-userlist profile_user.id "failed" %}">{{ failed_problem_count }}/{{ attempted_problem_count }} 
+							({% percentage failed_problem_count attempted_problem_count %}%)</a>
 					</li>
 					<li class="submissions"><a href="{% url judge-submission-recent %}?user={{ profile_user.username }}">{{ profile_user.get_profile.submissions }}</a></li>
 					<li class="accepted">{{ profile_user.get_profile.accepted }}
@@ -78,46 +80,6 @@
 				<ul>	
 					<li class="submissions"><img src="{{ submission_chart_url }}"/></li>
 					<li class="category"><img src="{{ category_chart_url }}"/></li>
-				</ul>
-			</li>
-		</ul>
-		<ul class="tabular full solved_problems">
-			<li class="header">
-				<ul>	
-					<li class="full">해결한 문제들 목록</li>
-				</ul>
-			</li>
-			<li class="content">
-				<ul>	
-					<li class="full">
-						{% if solved_problems %}
-							{% for p in solved_problems %}
-								<a class="problem_link" href="{% url judge-problem-read p %}">{{ p }}</a>
-							{% endfor %}
-						{% else %}
-								<em>해결한 문제가 없습니다.</em>
-						{% endif %}
-					</li>
-				</ul>
-			</li>
-		</ul>
-		<ul class="tabular full failed_problems">
-			<li class="header">
-				<ul>	
-					<li class="full">시도했지만 해결하지 못한 문제들 목록</li>
-				</ul>
-			</li>
-			<li class="content">
-				<ul>	
-					<li class="full">
-						{% if failed_problems %}
-							{% for p in failed_problems %}
-								<a class="problem_link" href="{% url judge-problem-read p %}">{{ p }}</a>
-							{% endfor %}
-						{% else %}
-								<em>실패한 문제가 없습니다.</em>
-						{% endif %}
-					</li>
 				</ul>
 			</li>
 		</ul>

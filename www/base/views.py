@@ -89,15 +89,12 @@ def profile(request, user_id):
     problem_count = Problem.objects.filter(user=user).count()
     oj_rank = UserProfile.objects.filter(solved_problems__gt=user.get_profile().solved_problems).count() + 1
     attempted_problem_count = Solver.objects.filter(user=user).count()
-    all_problems_count = Problem.objects.filter(state=Problem.PUBLISHED).count()
+    all_problem_count = Problem.objects.filter(state=Problem.PUBLISHED).count()
     submission_chart = get_submission_chart_url(user)
     solved_problems = set()
-    failed_problems = set()
-    for s in Solver.objects.filter(user=user):
-        if s.solved:
-            solved_problems.add(s.problem)
-        else:
-            failed_problems.add(s.problem)
+    for s in Solver.objects.filter(user=user, solved=True):
+        solved_problems.add(s.problem)
+    failed_problem_count = Solver.objects.filter(user=user, solved=False).count()
     category_chart = get_category_chart(user, solved_problems)
     actions = Activity.objects.filter(actor=user).order_by("-timestamp")[:10].all()
 
@@ -108,11 +105,10 @@ def profile(request, user_id):
                    "comment_count": comment_count,
                    "oj_rank": oj_rank,
                    "attempted_problem_count": attempted_problem_count,
-                   "all_problems_count": all_problems_count,
+                   "all_problem_count": all_problem_count,
+                   "failed_problem_count": failed_problem_count,
                    "submission_chart_url": submission_chart,
                    "category_chart_url": category_chart,
-                   "solved_problems": sorted(p.slug for p in solved_problems),
-                   "failed_problems": sorted(p.slug for p in failed_problems),
                    "actions": actions,
                   })
 

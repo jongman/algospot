@@ -6,7 +6,7 @@ from django.http import Http404, HttpResponse
 from django.core.files.storage import DefaultStorage
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
-from ..models import Problem, Submission, Attachment
+from ..models import Problem, Submission, Attachment, Solver
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
 import json
 import os
@@ -124,6 +124,30 @@ def list(request, page=1):
                    "pagination": setup_paginator(problems, page,
                                                  "judge-problem-list", {},
                                                  request.GET)})
+
+def userlist(request, id, type, page=1):
+    user = get_object_or_404(User, id=id)
+    solvers = Solver.objects.filter(user=user)
+    if type == "solved":
+        solvers = solvers.filter(solved=True)
+        title = user.username + u": 푼 문제들"
+    elif type == "failed":
+        solvers = solvers.filter(solved=False)
+        title = user.username + u": 실패한 문제들"
+    else:
+        title = user.username + u": 시도한 문제들"
+
+    problems = sorted([solver.problem for solver in solvers],
+                      cmp=lambda a,b: cmp(a.slug, b.slug))
+    return render(request, "problem/userlist.html",
+                  {"title": title,
+                   "pagination": setup_paginator(problems, page,
+                                                 "judge-problem-userlist",
+                                                 {"id": id, "type": type},
+                                                 request.GET)})
+
+
+
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
     return render(request, "problem/read.html", {"problem": problem})

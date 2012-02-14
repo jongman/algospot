@@ -1,0 +1,25 @@
+{% extends "judge-base.html" %}
+{% load common_tags %}
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+
+{% block page_title %}
+	{{ title }}
+{% endblock %}
+
+{% block page_tabs %}
+{% endblock %}
+
+{% block judge_problem_class %}current{% endblock %}
+{% block page_contents %}
+	{% load judge_tags %}
+	{% load common_tags %}
+	<section>
+		{% include "problem/problemlist_block.html" %}
+	</section>
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
+{% endblock %}

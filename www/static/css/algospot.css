@@ -367,7 +367,7 @@ section.profile ul.user_stats {
 	width: 490px;
 }
 section.profile ul.user_stats li li {
-	width: 96px;
+	width: 122px;
 } ul.stats li.header li { 
 	font-weight: normal;
 }
@@ -384,10 +384,11 @@ section.recent_activity
 section.online_judge_stat ul.judge_stats {
 	width: 100%;
 }
-section.online_judge_stat ul.judge_stats li.rank { width: 20%; }
-section.online_judge_stat ul.judge_stats li.attempts { width: 20%; }
-section.online_judge_stat ul.judge_stats li.solved { width: 20%; }
-section.online_judge_stat ul.judge_stats li.submissions { width: 20%; }
+section.online_judge_stat ul.judge_stats li.rank { width: 8%; }
+section.online_judge_stat ul.judge_stats li.attempts { width: 18%; }
+section.online_judge_stat ul.judge_stats li.solved { width: 18%; }
+section.online_judge_stat ul.judge_stats li.failed { width: 18%; }
+section.online_judge_stat ul.judge_stats li.submissions { width: 15%; }
 section.online_judge_stat ul.judge_stats li.accepted { width: 20%; }
 section.online_judge_stat ul.judge_stats_charts li.submissions { width: 30%; }
 section.online_judge_stat ul.judge_stats_charts li.category { width: 70%; }

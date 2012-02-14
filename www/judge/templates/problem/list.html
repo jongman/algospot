@@ -17,51 +17,7 @@
 	{% load judge_tags %}
 	{% load common_tags %}
 	<section>
-		<table class="problem_list">
-			<thead>
-				<tr>
-					<th class="accepted">풀었나?</th>
-					<th class="id">문제ID</th>
-					<th class="name">문제 제목</th>
-					<th class="writer">출제자</th>
-					<th class="submissions">답안수</th>
-					<th class="accepted_ratio">정답비율</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for problem in pagination.page.object_list %}
-					<tr>
-						<td class="accepted">
-							{% if user.is_authenticated %}
-								{% get_has_solved problem by user as solved %}
-								{% if solved %}
-									네!
-								{% endif %}
-							{% endif %}
-						</td>
-						<td class="id">
-							<a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a>
-						</td>
-						<td class="name">
-							<a href="{% url judge-problem-read problem.slug %}">{{ problem.name }}</a>
-						</td>
-						<td class="writer">
-							{{ problem.user|print_username }}
-						</td>
-						<td class="submissions">
-							<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}">
-								{{ problem.submissions_count }}
-							</a>
-						</td>
-						<td class="accepted">
-							<a href="{% url judge-submission-accepted problem %}">
-								{% percentage problem.accepted_count problem.submissions_count %}%
-							</a>
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+		{% include "problem/problemlist_block.html" %}
 	</section>
 	<section class="pagination">
 		{{ pagination.render }}
