@@ -19,7 +19,10 @@ def get_submission_chart_url(user):
     return Submission.get_verdict_distribution_graph(by_user)
 
 # TODO: cache this function somehow
-def get_category_chart(user, solved_problems):
+def get_category_chart(user):
+    solved_problems = set()
+    for s in Solver.objects.filter(user=user, solved=True):
+        solved_problems.add(s.problem)
     problem_count = defaultdict(int)
     solved_count = defaultdict(int)
     # 문제/태그 쌍을 모두 순회하자.
@@ -66,11 +69,8 @@ def profile(request, user_id):
     attempted_problem_count = Solver.objects.filter(user=user).count()
     all_problem_count = Problem.objects.filter(state=Problem.PUBLISHED).count()
     submission_chart = get_submission_chart_url(user)
-    solved_problems = set()
-    for s in Solver.objects.filter(user=user, solved=True):
-        solved_problems.add(s.problem)
     failed_problem_count = Solver.objects.filter(user=user, solved=False).count()
-    category_chart = get_category_chart(user, solved_problems)
+    category_chart = get_category_chart(user)
     actions = Activity.objects.filter(actor=user).order_by("-timestamp")[:10].all()
 
     return render(request, "user_profile.html",
