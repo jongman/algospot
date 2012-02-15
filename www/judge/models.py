@@ -193,7 +193,7 @@ class Solver(models.Model):
         for entry in solvers.values('incorrect_tries').annotate(Count('incorrect_tries')):
             dist[entry['incorrect_tries']] = entry['incorrect_tries__count']
 
-        max_fails = max(dist.keys())
+        max_fails = max(dist.keys()) if dist else 0
         steps = max(1, max_fails / 20)
         chart = pgc.StackedVerticalBarChart(400, 120)
         chart.add_data([dist.get(i, 0) for i in xrange(max_fails + 1)])
