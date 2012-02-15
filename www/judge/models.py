@@ -193,14 +193,16 @@ class Solver(models.Model):
         for entry in solvers.values('incorrect_tries').annotate(Count('incorrect_tries')):
             dist[entry['incorrect_tries']] = entry['incorrect_tries__count']
 
+        max_fails = max(dist.keys())
+        steps = max(1, max_fails / 20)
         chart = pgc.StackedVerticalBarChart(400, 120)
-        chart.add_data([dist.get(i, 0) for i in xrange(max(dist.keys()) + 1)])
+        chart.add_data([dist.get(i, 0) for i in xrange(max_fails + 1)])
         chart.set_colours(['C02942'])
-        chart.set_axis_range(pgc.Axis.BOTTOM, 0, max(dist.keys()))
+        chart.set_axis_labels(pgc.Axis.BOTTOM,
+                              [str(i) if i % steps == 0 else ''
+                               for i in xrange(max_fails + 1)])
         chart.fill_solid("bg", "65432100")
         return chart.get_url() + '&chbh=r,3'
-
-
 
     @staticmethod
     def refresh(problem, user):
