@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.db.models import Count
 from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
+import pygooglechart as pgc
 import tagging
 
 class Problem(models.Model):
@@ -127,6 +128,43 @@ class Submission(models.Model):
         return reverse("judge-submission-details", kwargs={"id": self.id})
 
     @staticmethod
+    def get_verdict_distribution(queryset):
+        ret = {}
+        for entry in queryset.values('state').annotate(Count('state')):
+            ret[entry['state']] = entry['state__count']
+        return ret
+
+    @staticmethod
+    def get_verdict_distribution_graph(queryset):
+        take = (Submission.ACCEPTED, Submission.WRONG_ANSWER,
+                Submission.TIME_LIMIT_EXCEEDED)
+        # AC, WA, TLE 이외의 것들을 하나의 카테고리로 모음
+        cleaned = {-1: 0}
+        for t in take: cleaned[t] = 0
+        for verdict, count in Submission.get_verdict_distribution(queryset).items():
+            if verdict in take:
+                cleaned[verdict] = count
+            else:
+                cleaned[-1] += count
+
+        # 구글 차트
+        pie = pgc.PieChart2D(200, 120)
+        if sum(cleaned.values()) == 0:
+            pie.add_data([100])
+            pie.set_legend(['NONE'])
+            pie.set_colours(['999999'])
+        else:
+            pie.add_data([cleaned[Submission.ACCEPTED],
+                          cleaned[Submission.WRONG_ANSWER],
+                          cleaned[Submission.TIME_LIMIT_EXCEEDED],
+                          cleaned[-1]])
+        pie.set_legend(['AC', 'WA', 'TLE', 'OTHER'])
+        pie.set_colours(["C02942", "53777A", "542437", "ECD078"])
+        pie.fill_solid("bg", "65432100")
+        return pie.get_url() + "&chp=4.712"
+
+
+    @staticmethod
     def get_stat_for_user(user):
         ret = {}
         for entry in Submission.objects.filter(user=user).values('state').annotate(Count('state')):
@@ -147,6 +185,22 @@ class Solver(models.Model):
     def __unicode__(self):
         return "%s: %s" % (self.problem.slug,
                            self.user.username)
+
+    @staticmethod
+    def get_incorrect_tries_chart(problem):
+        solvers = Solver.objects.filter(problem=problem, solved=True)
+        dist = {}
+        for entry in solvers.values('incorrect_tries').annotate(Count('incorrect_tries')):
+            dist[entry['incorrect_tries']] = entry['incorrect_tries__count']
+
+        chart = pgc.StackedVerticalBarChart(400, 120)
+        chart.add_data([dist.get(i, 0) for i in xrange(max(dist.keys()) + 1)])
+        chart.set_colours(['C02942'])
+        chart.set_axis_range(pgc.Axis.BOTTOM, 0, max(dist.keys()))
+        chart.fill_solid("bg", "65432100")
+        return chart.get_url() + '&chbh=r,3'
+
+
 
     @staticmethod
     def refresh(problem, user):

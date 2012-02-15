@@ -15,33 +15,8 @@ import pygooglechart as pgc
 from collections import defaultdict
 
 def get_submission_chart_url(user):
-    take = (Submission.ACCEPTED, Submission.WRONG_ANSWER,
-            Submission.TIME_LIMIT_EXCEEDED)
-    # AC, WA, TLE 이외의 것들을 하나의 카테고리로 모음
-    cleaned = {-1: 0}
-    for t in take: cleaned[t] = 0
-    for verdict, count in Submission.get_stat_for_user(user).items():
-        if verdict in take:
-            cleaned[verdict] = count
-        else:
-            cleaned[-1] += count
-
-    # 구글 차트
-    pie = pgc.PieChart2D(200, 120)
-
-    if sum(cleaned.values()) == 0:
-        pie.add_data([100])
-        pie.set_legend(['NONE'])
-        pie.set_colours(['999999'])
-    else:
-        pie.add_data([cleaned[Submission.ACCEPTED],
-                      cleaned[Submission.WRONG_ANSWER],
-                      cleaned[Submission.TIME_LIMIT_EXCEEDED],
-                      cleaned[-1]])
-        pie.set_legend(['AC', 'WA', 'TLE', 'OTHER'])
-        pie.set_colours(["C02942", "53777A", "542437", "ECD078"])
-    pie.fill_solid("bg", "65432100")
-    return pie.get_url() + "&chp=4.712"
+    by_user = Submission.objects.filter(user=user)
+    return Submission.get_verdict_distribution_graph(by_user)
 
 # TODO: cache this function somehow
 def get_category_chart(user, solved_problems):
@@ -76,11 +51,11 @@ def get_category_chart(user, solved_problems):
     chart = pgc.StackedVerticalBarChart(400, 120, y_range=(0, 100))
     chart.add_data(progress)
     chart.set_grid(0, 25, 5, 5)
-    chart.set_colours(['76A4FBD0'])
+    chart.set_colours(['C02942'])
     chart.set_axis_labels(pgc.Axis.LEFT, ["", "25", "50", "75", "100"])
     chart.set_axis_labels(pgc.Axis.BOTTOM, labels)
     chart.fill_solid("bg", "65432100")
-    return chart.get_url() + "&chbh=a,20"
+    return chart.get_url() + "&chbh=r,3"
 
 
 def profile(request, user_id):

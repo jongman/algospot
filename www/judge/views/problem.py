@@ -125,6 +125,31 @@ def list(request, page=1):
                                                  "judge-problem-list", {},
                                                  request.GET)})
 
+def stat(request, slug, order_by='shortest', page=1):
+    problem = get_object_or_404(Problem, slug=slug)
+    submissions = Submission.objects.filter(problem=problem)
+    verdict_chart = Submission.get_verdict_distribution_graph(submissions)
+    incorrect_tries_chart = Solver.get_incorrect_tries_chart(problem)
+
+    solvers = Solver.objects.filter(problem=problem, solved=True)
+    if order_by.endswith('fastest'):
+        solvers = solvers.order_by(order_by + '_submission__time')
+    elif order_by.endswith('shortest'):
+        solvers = solvers.order_by(order_by + '_submission__length')
+    else:
+        solvers = solvers.order_by(order_by)
+    pagination = setup_paginator(solvers, page, 'judge-problem-stat',
+                                 {'slug': slug, 'order_by': order_by}, request.GET)
+    title = problem.slug + u': 해결한 사람들'
+    return render(request, "problem/stat.html",
+                  {'title': title,
+                   'problem': problem,
+                   'order_by': order_by,
+                   'verdict_chart': verdict_chart,
+                   'incorrects_chart': incorrect_tries_chart,
+                   'pagination': pagination,
+                  })
+
 def userlist(request, id, type, page=1):
     user = get_object_or_404(User, id=id)
     solvers = Solver.objects.filter(user=user)
@@ -145,8 +170,6 @@ def userlist(request, id, type, page=1):
                                                  "judge-problem-userlist",
                                                  {"id": id, "type": type},
                                                  request.GET)})
-
-
 
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)

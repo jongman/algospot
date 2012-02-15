@@ -26,6 +26,8 @@ a.username { font-weight: bold; }
 
 /* 글로벌 엘레멘트들 ***************************************************/
 
+img.chart { border: 0; background-color: transparent; }
+
 /* 로고 밑에 글자 */
 section.navigation header h1 { 
 	font-size: 11px; 
@@ -392,7 +394,6 @@ section.online_judge_stat ul.judge_stats li.submissions { width: 15%; }
 section.online_judge_stat ul.judge_stats li.accepted { width: 20%; }
 section.online_judge_stat ul.judge_stats_charts li.submissions { width: 30%; }
 section.online_judge_stat ul.judge_stats_charts li.category { width: 70%; }
-section.online_judge_stat ul.judge_stats_charts img { border: 0; background-color: transparent; }
 section.online_judge_stat ul.solved_problems li.content li,
 section.online_judge_stat ul.failed_problems li.content li { 
 	padding: 18px; 
@@ -447,6 +448,8 @@ ul.problem_info { width: 100%; }
 ul.problem_info ul li { width: 20%; }
 ul.problem_info li.source { width: 40%; }
 ul.problem_info li.category { width: 40%; }
+ul.problem_info li.verdict_chart { width: 30%; }
+ul.problem_info li.incorrects_chart { width: 70%; }
 section.problem_statement pre,
 section.problem_sample_input pre,
 section.problem_sample_output pre

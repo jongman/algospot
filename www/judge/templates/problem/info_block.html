@@ -52,5 +52,17 @@
 				});
 			</script>
 		</li>
+		{% if verdict_chart %}
+		<li class="header">
+			<ul>
+				<li class="verdict_chart">채점 결과 분포</li>
+				<li class="incorrects_chart">처음 풀기까지 틀린 회수 분포</li>
+			</ul>
+		</li>
+		<li class="content">
+			<ul>
+				<li class="verdict_chart"><img class="chart" src="{{ verdict_chart }}"/></li>
+				<li class="incorrects_chart"><img class="chart" src="{{ incorrects_chart }}"/></li>
+		{% endif %}
 	</ul>
 </section>
