@@ -22,6 +22,7 @@
 	<section class="pagination">
 		{{ pagination.render }}
 	</section>
+	{% if filters %}
 	<section>
 		<form method="GET" action="">
 			<fieldset class="kor problem-filter">
@@ -70,5 +71,5 @@
 			</fieldset>
 		</form>
 	</section>
-</script>
+	{% endif %}
 {% endblock %}

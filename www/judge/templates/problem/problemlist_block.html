@@ -5,11 +5,51 @@
 			<thead>
 				<tr>
 					<th class="accepted">풀었나?</th>
-					<th class="id">문제ID</th>
-					<th class="name">문제 제목</th>
-					<th class="writer">출제자</th>
-					<th class="submissions">답안수</th>
-					<th class="accepted_ratio">정답비율</th>
+					<th class="id">
+						{% if order_by == "slug" %}
+							<a href="{% url judge-problem-list "-slug" 1 %}?{{ get_params }}">
+						{% else %}
+							<a href="{% url judge-problem-list "slug" 1 %}?{{ get_params }}">
+						{% endif %}문제ID
+						{% if order_by == "slug" %} ↓ {% endif %}
+						{% if order_by == "-slug" %} ↑ {% endif %}</a>
+					</th>
+					<th class="name">
+						{% if order_by == "name" %}
+							<a href="{% url judge-problem-list "-name" 1 %}?{{ get_params }}">
+						{% else %}
+							<a href="{% url judge-problem-list "name" 1 %}?{{ get_params }}">
+						{% endif %}문제 제목
+						{% if order_by == "name" %} ↓ {% endif %}
+						{% if order_by == "-name" %} ↑ {% endif %}</a>
+					</th>
+					<th class="writer">
+						{% if order_by == "user" %}
+							<a href="{% url judge-problem-list "-user" 1 %}?{{ get_params }}">
+						{% else %}
+							<a href="{% url judge-problem-list "user" 1 %}?{{ get_params }}">
+						{% endif %}출제자
+						{% if order_by == "user" %} ↓ {% endif %}
+						{% if order_by == "-user" %} ↑ {% endif %}</a>
+					</th>
+					<th class="submissions">
+						{% if order_by == "submissions_count" %}
+							<a href="{% url judge-problem-list "-submissions_count" 1 %}?{{ get_params }}">
+						{% else %}
+							<a href="{% url judge-problem-list "submissions_count" 1 %}?{{ get_params }}">
+						{% endif %}답안수
+						{% if order_by == "submissions_count" %} ↓ {% endif %}
+						{% if order_by == "-submissions_count" %} ↑ {% endif %}</a>
+					</th>
+					<th class="accepted_ratio">
+						{% if order_by == "ratio" %}
+							<a href="{% url judge-problem-list "-ratio" 1 %}?{{ get_params }}">
+						{% else %}
+							<a href="{% url judge-problem-list "ratio" 1 %}?{{ get_params }}">
+						{% endif %}정답비율
+						{% if order_by == "ratio" %} ↓ {% endif %}
+						{% if order_by == "-ratio" %} ↑ {% endif %}</a>
+					</th>
 				</tr>
 			</thead>
 			<tbody>

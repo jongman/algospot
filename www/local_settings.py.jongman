@@ -4,7 +4,7 @@ import settings
 
 USE_TOOLBAR = False
 USE_PROFILING = False
-# USE_TOOLBAR = True
+USE_TOOLBAR = True
 
 # Use a local mysql database
 settings.DATABASES = {

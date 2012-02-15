@@ -83,7 +83,7 @@ def list_attachments(request, id):
            "aaData": data}
     return HttpResponse(json.dumps(ret))
 
-def list(request, page=1):
+def list(request, order_by='slug', page=1):
     filters = {}
     title_options = []
     problems = Problem.objects.all()
@@ -100,7 +100,33 @@ def list(request, page=1):
         author = get_object_or_404(User, username=filters["author"])
         problems = problems.filter(user=author)
         title_options.append(author.username)
-    problems = problems.order_by("slug")
+    if title_options:
+        title = u"문제 목록: " + u", ".join(title_options)
+    else:
+        title = u"문제 목록 보기"
+
+    if request.GET.get('user_tried'):
+        filters = None
+        id = request.GET.get('user_tried')
+        user = get_object_or_404(User, id=id)
+        verdict = request.GET.get('verdict')
+        if verdict == 'solved':
+            title = user.username + u': 해결한 문제들'
+            problems = problems.filter(solver__user=user, solver__solved=True)
+        elif verdict == 'failed':
+            title = user.username + u': 실패한 문제들'
+            problems = problems.filter(solver__user=user, solver__solved=False)
+        else:
+            title = user.username + u': 시도한 문제들'
+            problems = problems.filter(solver__user=user)
+
+    if order_by.endswith('ratio'):
+        problems = problems.extra(select={'ratio':
+                                          'accepted_count / submissions_count'})
+    if order_by.endswith('user'):
+        problems = problems.order_by(order_by + '__username')
+    else:
+        problems = problems.order_by(order_by)
 
     # options = {}
     # TODO: 카테고리별 문제 보기
@@ -111,18 +137,18 @@ def list(request, page=1):
                       for entry in Problem.objects.values("user").distinct()])
     tags = sorted([tag.name for tag in Problem.tags.all()])
 
-    if title_options:
-        title = u"문제 목록: " + u", ".join(title_options)
-    else:
-        title = u"문제 목록 보기"
+    get_params = '&'.join(k + '=' + v for k, v in request.GET.items())
     return render(request, "problem/list.html",
                   {"title": title,
                    "sources": sources,
                    "authors": authors,
                    "tags": tags,
                    "filters": filters,
+                   "get_params": get_params,
+                   "order_by": order_by,
                    "pagination": setup_paginator(problems, page,
-                                                 "judge-problem-list", {},
+                                                 "judge-problem-list",
+                                                 {'order_by': order_by},
                                                  request.GET)})
 
 def stat(request, slug, order_by='shortest', page=1):
