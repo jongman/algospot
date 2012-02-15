@@ -19,11 +19,6 @@ urlpatterns = patterns(
     url(r'^problem/stat/(?P<slug>[^/]+)/(?P<order_by>.+)/(?P<page>.+)/$', views.problem.stat,
         name='judge-problem-stat'),
 
-    url(r'^problem/userlist/(?P<id>[0-9]+)/(?P<type>all|solved|failed)/$', views.problem.userlist,
-        name='judge-problem-userlist'),
-    url(r'^problem/userlist/(?P<id>[0-9]+)/(?P<type>all|solved|failed)/(?P<page>.+)$', views.problem.userlist,
-        name='judge-problem-userlist'),
-
     url(r'^problem/attachment/list/(?P<id>.+)$', views.problem.list_attachments,
         name='judge-problem-list-attachments'),
     url(r'^problem/attachment/delete/(?P<id>.*)$', views.problem.delete_attachment,

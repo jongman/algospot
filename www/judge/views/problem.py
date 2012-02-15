@@ -84,6 +84,7 @@ def list_attachments(request, id):
     return HttpResponse(json.dumps(ret))
 
 def list(request, order_by='slug', page=1):
+    use_filter = True
     filters = {}
     title_options = []
     problems = Problem.objects.all()
@@ -106,7 +107,7 @@ def list(request, order_by='slug', page=1):
         title = u"문제 목록 보기"
 
     if request.GET.get('user_tried'):
-        filters = None
+        use_filter = False
         id = request.GET.get('user_tried')
         user = get_object_or_404(User, id=id)
         verdict = request.GET.get('verdict')
@@ -143,6 +144,7 @@ def list(request, order_by='slug', page=1):
                    "sources": sources,
                    "authors": authors,
                    "tags": tags,
+                   "use_filter": use_filter,
                    "filters": filters,
                    "get_params": get_params,
                    "order_by": order_by,
@@ -175,27 +177,6 @@ def stat(request, slug, order_by='shortest', page=1):
                    'incorrects_chart': incorrect_tries_chart,
                    'pagination': pagination,
                   })
-
-def userlist(request, id, type, page=1):
-    user = get_object_or_404(User, id=id)
-    solvers = Solver.objects.filter(user=user)
-    if type == "solved":
-        solvers = solvers.filter(solved=True)
-        title = user.username + u": 푼 문제들"
-    elif type == "failed":
-        solvers = solvers.filter(solved=False)
-        title = user.username + u": 실패한 문제들"
-    else:
-        title = user.username + u": 시도한 문제들"
-
-    problems = sorted([solver.problem for solver in solvers],
-                      cmp=lambda a,b: cmp(a.slug, b.slug))
-    return render(request, "problem/userlist.html",
-                  {"title": title,
-                   "pagination": setup_paginator(problems, page,
-                                                 "judge-problem-userlist",
-                                                 {"id": id, "type": type},
-                                                 request.GET)})
 
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
