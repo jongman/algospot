@@ -86,7 +86,7 @@
 	</section>
 	
 	<section class="recent_activity">
-		<h3>최근 한 일들 (<a href="{% url newsfeed-byuser user.id %}">더 보기</a>)</h3>
+		<h3>최근 한 일들 (<a href="{% url newsfeed-byuser profile_user.id %}">더 보기</a>)</h3>
 		{% include "newsfeed_block.html" %}
 	</section>
 
