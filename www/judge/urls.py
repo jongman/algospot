@@ -6,11 +6,14 @@ urlpatterns = patterns(
     'judge.views',
     url(r'^$', views.index,
         name='judge-index'),
+    url(r'^ranking/$', views.ranking, name='judge-ranking'),
+    url(r'^ranking/(?P<order_by>[^/]+)/(?P<page>.+)/$', views.ranking,
+        name='judge-ranking'),
+
     url(r'^problem/read/(?P<slug>.+)$', views.problem.read,
         name='judge-problem-read'),
 
-    url(r'^problem/list/$', views.problem.list,
-        name='judge-problem-list'),
+    url(r'^problem/list/$', views.problem.list, name='judge-problem-list'),
     url(r'^problem/list/(?P<order_by>.+)/(?P<page>.+)$', views.problem.list,
         name='judge-problem-list'),
 

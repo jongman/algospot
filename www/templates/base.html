@@ -119,8 +119,8 @@
 										최근 제출된 답안
 									</a>
 								</li>
-								<li>
-									<a href="/">
+								<li class="{% block judge_ranking_class %}{% endblock %}">
+									<a href="{% url judge-ranking %}">
 										사용자 랭킹
 									</a>
 								</li>

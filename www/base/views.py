@@ -6,6 +6,7 @@ from django.http import HttpResponseForbidden
 from django.contrib.comments.views.moderation import perform_delete
 from django.contrib.comments.models import Comment
 from forms import SettingsForm
+from django.conf import settings as django_settings
 from django.contrib.contenttypes.models import ContentType
 from tagging.models import TaggedItem
 from newsfeed.models import Activity
@@ -65,26 +66,27 @@ def profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     comment_count = Comment.objects.filter(user=user).count()
     problem_count = Problem.objects.filter(user=user).count()
-    oj_rank = UserProfile.objects.filter(solved_problems__gt=user.get_profile().solved_problems).count() + 1
     attempted_problem_count = Solver.objects.filter(user=user).count()
     all_problem_count = Problem.objects.filter(state=Problem.PUBLISHED).count()
     submission_chart = get_submission_chart_url(user)
     failed_problem_count = Solver.objects.filter(user=user, solved=False).count()
     category_chart = get_category_chart(user)
     actions = Activity.objects.filter(actor=user).order_by("-timestamp")[:10].all()
-
+    rank = UserProfile.objects.filter(solved_problems__gt=
+                                      user.get_profile().solved_problems).count()
     return render(request, "user_profile.html",
                   {"profile_user": user,
                    "post_count": user.get_profile().posts - comment_count,
                    "problem_count": problem_count,
                    "comment_count": comment_count,
-                   "oj_rank": oj_rank,
                    "attempted_problem_count": attempted_problem_count,
                    "all_problem_count": all_problem_count,
                    "failed_problem_count": failed_problem_count,
                    "submission_chart_url": submission_chart,
                    "category_chart_url": category_chart,
                    "actions": actions,
+                   "oj_rank": rank+1,
+                   "oj_rank_page": (rank / django_settings.ITEMS_PER_PAGE)+1,
                   })
 
 def settings(request, user_id):

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import template
 from ..models import Submission
+from base.models import UserProfile
 
 register = template.Library()
 
@@ -27,3 +28,9 @@ def get_has_solved(parser, token):
 def print_length(length):
     if length < 1024: return "%dB" % length
     return "%.1lfKB" % (length / 1024.)
+
+@register.filter
+def user_rank(profile):
+    qs = UserProfile.objects.filter(solved_problems__gt=profile.solved_problems)
+    return str(qs.count() + 1)
+
