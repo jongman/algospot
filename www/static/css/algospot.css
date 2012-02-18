@@ -26,6 +26,7 @@ a.username { font-weight: bold; }
 
 /* 글로벌 엘레멘트들 ***************************************************/
 
+.template { display: none; }
 img.chart { border: 0; background-color: transparent; }
 
 /* 로고 밑에 글자 */

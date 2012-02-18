@@ -412,3 +412,38 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallba
 		}
 	}, oSettings );
 };
+
+$(function() {
+	function pad(str, len) {
+		str = str.toString();
+		while(str.length < len) {
+			str = "0" + str;
+		}
+		return str;
+	}
+	var url = 'https://www.googleapis.com/calendar/v3/calendars/pl39rk6qf5h2bqvrjc7vqsqvtg%40group.calendar.google.com/events?maxResults=10&orderBy=startTime&singleEvents=true&pp=1&key=AIzaSyA2g8QdzZpfchYfJt2bFotADZAkB0EjLS8&timeMin=' + (new Date().toISOString()) + "&callback=?";
+	$.getJSON(url, function(data) {
+		var container = $("#calendar_events_container");
+		var template = container.find(".template");
+		for(var i in data.items) {
+			var item = data.items[i];
+			var entry = template.clone();
+			entry.removeClass('template');
+			if(i > 0) entry.addClass('separator');
+			entry.find("a.anchor").html(item.summary).attr('href', item.htmlLink);
+			// date only?
+			if(item.start.date) {
+				var d = new Date(item.start.date);
+				entry.find('.starttime').html('(' + (d.getMonth() + 1) + '/' + d.getDate() + ')');
+			}
+			else {
+				var d = new Date(item.start.dateTime);
+				entry.find('.starttime').html('(' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + 
+					pad(d.getHours(), 2) + ':' + pad(d.getMinutes(), 2) + ')');
+			}
+
+			entry.appendTo(container);
+		}
+	});
+
+});

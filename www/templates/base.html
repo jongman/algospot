@@ -153,18 +153,25 @@
 				</section>
 				<!-- /Search -->
 				<!--Sidebar -->
-				<section class="sidebar nested">
+				<section class="sidebar nested" id="calendar_upcoming">
 					<h2>다가오는 이벤트들</h2>
-					<p>TCO11 Marathon Match R3 (6/30)</p>
-					<p class="separator">SRM 511 (7/2 11:00 AM)</p>
-					<p class="separator">TCO11 Online Round 3 (7/9 11:00 AM)</p>
-					<p class="separator">SRM 512 (7/13 10:00 AM)</p>
-					<p class="separator">TCO11 Online Round 4 (7/23 11:00 AM)</p>
-					<p class="separator">SRM 513 (7/26 6:00 AM)</p>
-					<p class="separator">TCO11 Online Round 5 (8/6 11:00 AM)</p>
-					<p class="separator">SRM 514 (8/9 8:00 PM)</p>
-					<p class="separator">SRM 515 (8/20 11:00 AM)</p>
-					<a class="button-link" href="#" title="See all events!">see all</a>
+					<span id="calendar_events_container">
+						<p class="template">
+							<a href="#" class="anchor"></a>
+							<span class="starttime"></span>
+						</p>
+					<!-- <p class="separator"><a href="#">TCO11 Marathon Match R3</a> (6/30)</p> -->
+					<!-- <p>TCO11 Marathon Match R3 (6/30)</p> -->
+					<!-- <p class="separator">SRM 511 (7/2 11:00 AM)</p> -->
+					<!-- <p class="separator">TCO11 Online Round 3 (7/9 11:00 AM)</p> -->
+					<!-- <p class="separator">SRM 512 (7/13 10:00 AM)</p> -->
+					<!-- <p class="separator">TCO11 Online Round 4 (7/23 11:00 AM)</p> -->
+					<!-- <p class="separator">SRM 513 (7/26 6:00 AM)</p> -->
+					<!-- <p class="separator">TCO11 Online Round 5 (8/6 11:00 AM)</p> -->
+					<!-- <p class="separator">SRM 514 (8/9 8:00 PM)</p> -->
+					<!-- <p class="separator">SRM 515 (8/20 11:00 AM)</p> -->
+					</span>
+					<a class="button-link" href="{% url calendar %}" title="See all events!">see all</a>
 				</section>
 				<!-- /Sidebar -->
 			</section>
