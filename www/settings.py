@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'avatar',
     'djcelery',
     'tagging',
+    'calendarpage',
     #'actstream',
 
     'base',

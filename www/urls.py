@@ -10,6 +10,7 @@ urlpatterns = patterns(
     url(r'^user/', include('base.urls')),
     url(r'^newsfeed/', include('newsfeed.urls')),
     url(r'^judge/', include('judge.urls')),
+    url(r'^calendar/', 'calendarpage.views.index', name='calendar'),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/logout', 'django.contrib.auth.views.logout',

@@ -136,7 +136,7 @@
 								</li>
 							</ul>
 						</li>
-						<li class="{% block calendar_class %}{% endblock %}"><a href="/" class="no-submenu">캘린더</a></li>
+						<li class="{% block calendar_class %}{% endblock %}"><a href="{% url calendar %}" class="no-submenu">캘린더</a></li>
 						{% if user.is_superuser %}
 							<li><a href="/admin" class="no-submenu">관리자 페이지</a></li>
 						{% endif %}
