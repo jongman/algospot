@@ -14,9 +14,21 @@ def list(request, slug, page=1):
     category = get_object_or_404(Category, slug=slug)
     posts = Post.objects.filter(category=category).order_by("-id")
     return render(request, "list.html",
-                  {"category": category,
+                  {"write_at": category.slug,
+                   "title": category.name,
+                   "category": category,
                    "pagination": setup_paginator(posts, page, "forum-list",
                                                  {"slug": category.slug})})
+
+def all(request, page=1):
+    category = get_object_or_404(Category, slug='free')
+    posts = Post.objects.order_by("-id")
+    return render(request, "list.html",
+                  {"show_category": True,
+                   'write_at': category.slug,
+                   "title": u"모든 글 보기",
+                   "pagination": setup_paginator(posts, page, "forum-all", {})})
+
 def by_user(request, id, page=1):
     user = get_object_or_404(User, id=id)
     posts = Post.objects.filter(user=user).order_by("-id")

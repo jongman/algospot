@@ -411,7 +411,8 @@ table.forum_list tbody td.title_col {
 }
 
 table.forum_list .num_col { width: 8%; }
-table.forum_list .title_col { width: 50%; }
+table.forum_list .category { width: 12%; }
+/* table.forum_list .title_col { width: 50%; } */
 table.forum_list .user_col, 
 table.forum_list .lastcommenter_col { width: 12%; }
 table.forum_list .comments_col { width: 8%; }

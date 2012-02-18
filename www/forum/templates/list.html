@@ -1,11 +1,11 @@
 {% extends "forum-base.html" %}
 {% block title %} 
-	{{ category.name }}
+	{{ title }}
 {% endblock %}
 
 
 {% block page_title %}
-	{{ category.name }}
+	{{ title }}
 {% endblock %}
 
 {% block forum_write_class_tabs %}{% endblock %}
@@ -18,6 +18,9 @@
 			<thead>
 				<tr>
 					<th class="num_col">번호</th>
+					{% if show_category %}
+						<th class="category">게시판</th>
+					{% endif %}
 					<th class="title_col">제목</th>
 					<th class="user_col">글쓴이</th>
 					<th class="comments_col">댓글수</th>
@@ -38,6 +41,11 @@
 						<td class="num_col">
 							{{ post.id}}
 						</td>
+						{% if show_category %}
+							<td class="category">
+								<a href="{% url forum-list post.category.slug 1 %}">{{ post.category.name }}</a>
+							</td>
+						{% endif %}
 						<td class="title_col">
 							<a href="{% url forum-read post.id %}">{{ post.title }}</a>
 						</td>
@@ -75,7 +83,7 @@
 {% block page_tabs %}
 	<nav>
 		<ul class="tab-switch">
-			<li><a class="{% block forum_write_class %}{% endblock %}" href="{% url forum-write category.slug %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
+			<li><a class="{% block forum_write_class %}{% endblock %}" href="{% url forum-write write_at %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
 		</ul>
 	</nav>
 {% endblock %}

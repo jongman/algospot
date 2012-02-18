@@ -89,7 +89,7 @@
 							</a>
 						</li>
 						<li class="{% block forum_class %}{% endblock %}">
-							<a href="#">
+							<a href="{% url forum-all 1 %}">
 								포럼
 							</a>
 							<ul>
@@ -106,7 +106,7 @@
 							</a>
 						</li>
 						<li class="{% block judge_class %}{% endblock %}">
-							<a href="/" class="">
+							<a href="{% url judge-problem-list %}" class="">
 								온라인 저지
 							</a>
 							<ul>
