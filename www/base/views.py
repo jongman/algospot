@@ -122,3 +122,6 @@ def delete_comment(request, comment_id):
         return render(request, "comments/delete.html",
                       {"comment": comment,
                        "next": request.GET.get("next", "/")})
+
+def calendar(request):
+    return render(request, "calendar.html", {'title': u'알고스팟 캘린더'})
