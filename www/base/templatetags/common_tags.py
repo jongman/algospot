@@ -40,19 +40,26 @@ def syntax_highlight(parser, token):
     return SourceCodeNode(code, lang)
 
 class TableHeaderNode(template.Node):
-    def __init__(self, column_name, order_by, is_default=False):
+    def __init__(self, column_name, order_by, options):
         self.column_name = template.Variable(column_name)
         self.order_by = template.Variable(order_by)
-        self.is_default = is_default
+        self.options = set(options)
 
     def render(self, context):
         current_order = context['request'].GET.get('order_by', '')
         column_name = self.column_name.resolve(context)
         order_by = self.order_by.resolve(context)
         arrow = ""
-        if current_order == order_by or (not current_order and self.is_default):
-            new_order = '-' + order_by
+        is_default = 'default' in self.options
+        if is_default and current_order == '': current_order = order_by
+
+        can_toggle = 'notoggle' not in self.options
+        if order_by == current_order:
             arrow = u"↓"
+            if not can_toggle:
+                return column_name + arrow
+            else:
+                new_order = '-' + order_by
         else:
             new_order = order_by
             if current_order.endswith(order_by):
@@ -68,11 +75,7 @@ class TableHeaderNode(template.Node):
 def sortable_table_header(parser, token):
     toks = token.split_contents()
     column_name, order_by = toks[1:3]
-    if len(toks) > 3:
-        is_default = toks[3] == 'default'
-    else:
-        is_default = False
-    return TableHeaderNode(column_name, order_by, is_default)
+    return TableHeaderNode(column_name, order_by, toks[3:])
 
 @register.filter
 def get_comment_hotness(count):

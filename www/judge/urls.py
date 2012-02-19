@@ -7,8 +7,7 @@ urlpatterns = patterns(
     url(r'^$', views.index,
         name='judge-index'),
     url(r'^ranking/$', views.ranking, name='judge-ranking'),
-    url(r'^ranking/(?P<order_by>[^/]+)/(?P<page>.+)/$', views.ranking,
-        name='judge-ranking'),
+    url(r'^ranking/(?P<page>.+)/$', views.ranking, name='judge-ranking'),
 
     url(r'^problem/read/(?P<slug>.+)$', views.problem.read,
         name='judge-problem-read'),
