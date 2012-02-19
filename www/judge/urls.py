@@ -41,8 +41,6 @@ urlpatterns = patterns(
 
     url(r'^submission/detail/(?P<id>.+)$', views.submission.details,
         name='judge-submission-details'),
-    url(r'^submission/mine/$', views.submission.mine,
-        name='judge-submission-mine'),
     url(r'^submission/recent/$', views.submission.recent,
         name='judge-submission-recent'),
     url(r'^submission/recent/(?P<page>.+)$', views.submission.recent,

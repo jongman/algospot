@@ -1,17 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
 from ..models import Problem, Submission
-import urllib
-
-@login_required
-def mine(request):
-    return redirect(reverse("judge-submission-recent") + "?user=" +
-                    urllib.quote(request.user.username))
 
 def rejudge(request, id):
     submission = get_object_or_404(Submission, id=id)
@@ -33,7 +26,8 @@ def recent(request, page=1):
 
     # only superuser can see all nonpublic submissions.
     # as an exception, if we are filtering by a problem, the author can see
-    # nonpublic submissions.
+    # nonpublic submissions. also, everybody can see their nonpublic
+    # submissions.
     only_public = not request.user.is_superuser
 
     if request.GET.get("problem"):
@@ -54,9 +48,6 @@ def recent(request, page=1):
         title_add.append(slug)
         filters["problem"] = slug
 
-    if only_public:
-        submissions = submissions.filter(is_public=True)
-
     if "state" in request.GET:
         state = request.GET["state"]
         submissions = submissions.filter(state=state)
@@ -73,6 +64,11 @@ def recent(request, page=1):
             submissions = submissions.filter(user=user)
         filters["user"] = username
         title_add.append(username)
+        if user == request.user:
+            only_public = False
+
+    if only_public:
+        submissions = submissions.filter(is_public=True)
 
     problems = Problem.objects.filter(state=Problem.PUBLISHED).order_by("slug")
     users = User.objects.order_by("username")

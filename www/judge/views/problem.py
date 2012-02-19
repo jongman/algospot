@@ -14,6 +14,7 @@ import json
 import os
 import hashlib
 import uuid
+import urllib
 
 @login_required
 def new(request):
@@ -247,7 +248,10 @@ def submit(request, slug):
                           public=(problem.state == Problem.PUBLISHED))
     if request.method == "POST" and form.is_valid():
         form.save(request.user, problem)
-        return redirect(reverse("judge-submission-mine"))
+        return redirect(reverse("judge-submission-recent") +
+                       "?user=%s&problem=%s" %
+                        (urllib.quote(request.user.username),
+                         problem.slug))
 
     return render(request, "problem/submit.html", {"form": form,
         "problem": problem})
