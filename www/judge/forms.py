@@ -32,22 +32,28 @@ class ProblemEditForm(forms.ModelForm):
 
 class RestrictedProblemEditForm(forms.ModelForm):
     tags = tagging.forms.TagField(label=u"문제 분류", required=False)
+    review = forms.BooleanField(label=u'운영진 리뷰 요청', required=False)
     class Meta:
         model = Problem
         exclude = ('submissions_count', 'accepted_count', 'user', 'state')
         widgets = {
             "judge_module": forms.Select(choices=[(key, key + ": " + val.DESC)
-                                                  for key, val in differs.modules.iteritems()])
+                                                  for key, val in
+                                                  differs.modules.iteritems()]),
         }
     def __init__(self, *args, **kwargs):
         super(RestrictedProblemEditForm, self).__init__(*args, **kwargs)
         if "instance" in kwargs:
             instance = kwargs["instance"]
             self.initial["tags"] = ",".join([tag.name for tag in instance.tags])
+            self.initial["review"] = instance.state != Problem.DRAFT
 
     def save(self, commit=True):
         instance = super(RestrictedProblemEditForm, self).save(commit=False)
         instance.tags = self.cleaned_data["tags"]
+        instance.state = (Problem.PENDING_REVIEW if self.cleaned_data["review"]
+                          else Problem.DRAFT)
+
         if commit:
             instance.save()
         return instance

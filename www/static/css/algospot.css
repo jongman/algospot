@@ -492,6 +492,9 @@ table.submission_list tbody .submission_state a { text-decoration: underline; }
 section.problem_edit textarea, section.problem_edit input {
     width: 80%;
 }
+section.problem_edit input[type="checkbox"] {
+    width: 50px;
+}
 section..problem_edit textarea#id_description {
     height: 400px;
 }

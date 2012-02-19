@@ -50,6 +50,7 @@
 							{{ problem.user|print_username }}
 						</td>
 						<td class="action">
+							<a href="{% url judge-problem-edit problem.id %}" class="button-link">edit</a>
 							{% if problem.solver__count == 0 %}
 								<a href="javascript:delete_problem('{% url judge-problem-delete problem.id %}');" class="button-link">delete</a>
 							{% endif %}
