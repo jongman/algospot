@@ -6,6 +6,7 @@ from django.http import Http404, HttpResponse
 from django.core.files.storage import DefaultStorage
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
+from django.db.models import Count
 from base.decorators import authorization_required
 from ..models import Problem, Submission, Attachment, Solver
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm, RestrictedProblemEditForm
@@ -23,6 +24,21 @@ def new(request):
     new_problem.save()
     return redirect(reverse('judge-problem-edit',
                             kwargs={'id': new_problem.id}))
+
+@login_required
+def delete(request, id):
+    problem = get_object_or_404(Problem, id=id)
+    if not request.user.is_superuser and problem.user != request.user:
+        raise Http404
+    Solver.objects.filter(problem=problem).delete()
+    Submission.objects.filter(problem=problem).delete()
+    for attach in Attachment.objects.filter(problem=problem):
+        attach.file.delete(False)
+        attach.delete()
+    del problem.tags
+    problem.save()
+    problem.delete()
+    return redirect(reverse('judge-problem-mine'))
 
 @login_required
 def edit(request, id):
@@ -108,6 +124,7 @@ def my_problems(request, page=1):
         title = u'준비 중인 문제들'
 
     order_by = request.GET.get("order_by", 'slug')
+    problems = problems.annotate(Count('solver'))
     if order_by.lstrip('-') in ('slug', 'name', 'state'):
         problems = problems.order_by(order_by)
     else:
@@ -220,10 +237,14 @@ def read(request, slug):
 
 def submit(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
-    if request.user == problem.user or request.user.is_superuser:
+    # superusers and problem authors can opt in for nonpublic submissions.
+    # nobody can submit public submissions to problems that are not published.
+    if ((request.user == problem.user or request.user.is_superuser) and
+        problem.state == Problem.PUBLISHED):
         form = AdminSubmitForm(data=request.POST or None)
     else:
-        form = SubmitForm(data=request.POST or None)
+        form = SubmitForm(data=request.POST or None,
+                          public=(problem.state == Problem.PUBLISHED))
     if request.method == "POST" and form.is_valid():
         form.save(request.user, problem)
         return redirect(reverse("judge-submission-mine"))

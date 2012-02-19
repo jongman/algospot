@@ -52,7 +52,7 @@
 			<li class="content">
 				<ul>
 					<!-- TODO: add appropriate link-->
-					<li class="rank"><a href="{% url judge-ranking "solved" oj_rank_page %}">{{ oj_rank }}</a></li>
+					<li class="rank"><a href="{% url judge-ranking oj_rank_page %}">{{ oj_rank }}</a></li>
 					<li class="attempts"><a href="{% url judge-problem-list %}?user_tried={{ profile_user.id }}&verdict=">{{ attempted_problem_count }}/{{ all_problem_count }} 
 							({% percentage attempted_problem_count all_problem_count %}%)</a>
 					</li>

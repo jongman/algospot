@@ -30,10 +30,27 @@ class ProblemEditForm(forms.ModelForm):
             instance.save()
         return instance
 
-class RestrictedProblemEditForm(ProblemEditForm):
+class RestrictedProblemEditForm(forms.ModelForm):
+    tags = tagging.forms.TagField(label=u"문제 분류", required=False)
     class Meta:
         model = Problem
-        exclude = ('state', 'user', 'submissions_count', 'accepted_count')
+        exclude = ('submissions_count', 'accepted_count', 'user', 'state')
+        widgets = {
+            "judge_module": forms.Select(choices=[(key, key + ": " + val.DESC)
+                                                  for key, val in differs.modules.iteritems()])
+        }
+    def __init__(self, *args, **kwargs):
+        super(RestrictedProblemEditForm, self).__init__(*args, **kwargs)
+        if "instance" in kwargs:
+            instance = kwargs["instance"]
+            self.initial["tags"] = ",".join([tag.name for tag in instance.tags])
+
+    def save(self, commit=True):
+        instance = super(RestrictedProblemEditForm, self).save(commit=False)
+        instance.tags = self.cleaned_data["tags"]
+        if commit:
+            instance.save()
+        return instance
 
 class SubmitForm(forms.Form):
     language = forms.ChoiceField([(key, "%s: %s" % (val.LANGUAGE, val.VERSION))
@@ -43,9 +60,17 @@ class SubmitForm(forms.Form):
                                                           "rows": "12"}),
                              label=u"소스코드")
 
+    def __init__(self, *args, **kwargs):
+        self.public = kwargs.get('public', True)
+        if 'public' in kwargs:
+            del kwargs['public']
+
+        super(SubmitForm, self).__init__(*args, **kwargs)
+
     def save(self, user, problem):
         new_submission = Submission(problem=problem,
                                     user=user,
+                                    is_public=self.public,
                                     language=self.cleaned_data["language"],
                                     length=len(self.cleaned_data["source"]),
                                     source=self.cleaned_data["source"])

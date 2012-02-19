@@ -307,6 +307,14 @@ function wiki_revert(destination) {
 	}
 }
 
+function delete_problem(destination) {
+	var choice = window.prompt("정말 삭제하시겠어요? 돌이킬 수 없습니다. 정말 삭제하시려면 'yes'를 입력하세요.", 'no');
+	if(choice == 'yes') {
+		console.log('choice', choice, 'dest', destination);
+		window.location.href = destination;
+	}
+}
+
 function wiki_diff(diff_path) {
 	var diff1 = $('input:radio[name=diff1]:checked').val();
 	var diff2 = $('input:radio[name=diff2]:checked').val();

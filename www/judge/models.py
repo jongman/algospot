@@ -290,6 +290,7 @@ def saved_submission(sender, **kwargs):
         tasks.judge_submission.delay(submission)
 
     if submission.state in Submission.JUDGED:
+        if not submission.is_public: return
         profile = submission.user.get_profile()
         submissions = Submission.objects.filter(user=submission.user)
         profile.submissions = submissions.count()

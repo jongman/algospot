@@ -30,6 +30,7 @@ def get_category_chart(user):
     problem_id = ContentType.objects.get_for_model(Problem).id
     for item in TaggedItem.objects.filter(content_type=problem_id).all():
         problem, tag = item.object, item.tag
+        if problem.state != Problem.PUBLISHED: continue
         problem_count[tag] += 1
         if problem in solved_problems:
             solved_count[tag] += 1
@@ -65,7 +66,7 @@ def get_category_chart(user):
 def profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     comment_count = Comment.objects.filter(user=user).count()
-    problem_count = Problem.objects.filter(user=user).count()
+    problem_count = Problem.objects.filter(user=user, state=Problem.PUBLISHED).count()
     attempted_problem_count = Solver.objects.filter(user=user).count()
     all_problem_count = Problem.objects.filter(state=Problem.PUBLISHED).count()
     submission_chart = get_submission_chart_url(user)
