@@ -50,10 +50,5 @@ urlpatterns = patterns(
     url(r'^submission/rejudge/(?P<id>.+)$', views.submission.rejudge,
         name='judge-submission-rejudge'),
 
-    url(r'^submission/accepted/(?P<problem>[^/]+)$', views.submission.accepted,
-        name='judge-submission-accepted'),
-    url(r'^submission/accepted/(?P<problem>.+)/(?P<order_by>.+)/(?P<page>.+)$', views.submission.accepted,
-        name='judge-submission-accepted'),
-
 )
 

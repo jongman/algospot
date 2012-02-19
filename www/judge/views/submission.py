@@ -13,18 +13,6 @@ def mine(request):
     return redirect(reverse("judge-submission-recent") + "?user=" +
                     urllib.quote(request.user.username))
 
-def accepted(request, problem, order_by="length", page=1):
-    problem = get_object_or_404(Problem, slug=problem)
-    submissions = Submission.objects.filter(state=Submission.ACCEPTED,
-                                            problem=problem).order_by(order_by)
-    return render(request, "submission/accepted.html",
-                  {"problem": problem,
-                   "order_by": order_by,
-                   "pagination": setup_paginator(submissions, page,
-                                                 "judge-submission-accepted",
-                                                 {"problem": problem.slug,
-                                                  "order_by": order_by})})
-
 def rejudge(request, id):
     submission = get_object_or_404(Submission, id=id)
     if submission.user != request.user and not request.user.is_superuser:
