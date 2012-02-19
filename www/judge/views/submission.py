@@ -91,7 +91,10 @@ def recent(request, page=1):
 def details(request, id):
     submission = get_object_or_404(Submission, id=id)
     problem = submission.problem
-    if not problem.was_solved_by(request.user) and not request.user.is_superuser:
+    if (not problem.was_solved_by(request.user) and
+            not request.user.is_superuser and
+            submission.user != request.user and
+            problem.user != request.user):
         return HttpResponseForbidden()
     return render(request, "submission/details.html",
                   {"title": u"답안 보기",
