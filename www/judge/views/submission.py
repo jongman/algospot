@@ -24,8 +24,6 @@ def rejudge(request, id):
     return redirect(reverse("judge-submission-details", kwargs={"id": id}))
 
 def recent(request, page=1):
-    # TODO: hide non-public submission
-    # TODO: handle non-public submissions in general
     submissions = Submission.objects.all().order_by("-id")
 
     filters = {}
@@ -33,9 +31,16 @@ def recent(request, page=1):
     empty_message = u"제출된 답안이 없습니다."
     title_add = []
 
+    # only superuser can see all nonpublic submissions.
+    # as an exception, if we are filtering by a problem, the author can see
+    # nonpublic submissions.
+    only_public = not request.user.is_superuser
+
     if request.GET.get("problem"):
         slug = request.GET["problem"]
         problem = get_or_none(Problem, slug=slug)
+        if request.user == problem.user:
+            only_public = False
 
         if (not problem or
                 (problem.state != Problem.PUBLISHED and
@@ -48,6 +53,9 @@ def recent(request, page=1):
 
         title_add.append(slug)
         filters["problem"] = slug
+
+    if only_public:
+        submissions = submissions.filter(is_public=True)
 
     if "state" in request.GET:
         state = request.GET["state"]
