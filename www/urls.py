@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
+from base.feeds import PostFeed
 admin.autodiscover()
 
 urlpatterns = patterns(
@@ -11,6 +12,7 @@ urlpatterns = patterns(
     url(r'^newsfeed/', include('newsfeed.urls')),
     url(r'^judge/', include('judge.urls')),
     url(r'^calendar/', 'base.views.calendar', name='calendar'),
+    url(r'^feed/posts/', PostFeed(), name='postfeed'),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/logout', 'django.contrib.auth.views.logout',

@@ -5,11 +5,7 @@ from django.utils.safestring import mark_safe
 from django import template
 from django.contrib.comments.templatetags.comments import BaseCommentNode
 import datetime
-import re
-import markdown
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import HtmlFormatter
+from djangoutils import render_text as dj_render_text
 
 register = template.Library()
 
@@ -117,27 +113,9 @@ def print_datetime(dt):
     return mark_safe(u'<span class="%s" title="%s">%s</span>' % (class_name,
         fallback, format_readable(diff) or fallback))
 
-code_pattern = re.compile(r'<code lang=([^>]+)>(.+?)</code>', re.DOTALL)
-def highlight_code_section(text):
-    def proc(match):
-        lang = match.group(1).strip('"\'')
-        lexer = get_lexer_by_name(lang, stripall=True)
-        formatter = HtmlFormatter(style="colorful")
-        code = match.group(2).replace("\t", "  ")
-        highlighted = highlight(code, lexer, formatter)
-        return highlighted.replace("\n", "<br/>")
-    return code_pattern.sub(proc, text)
-
 @register.filter
 def render_text(text):
-    text = highlight_code_section(text)
-    text = markdown.markdown(text, extensions=["toc"])
-    try:
-        from wiki.utils import link_to_pages
-        text = link_to_pages(text)
-    except:
-        pass
-    return mark_safe(text)
+    return mark_safe(dj_render_text(text))
 
 class PercentNode(template.Node):
     def __init__(self, a, b):

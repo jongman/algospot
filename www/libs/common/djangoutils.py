@@ -3,6 +3,11 @@ import hotshot
 import os
 import urllib
 import time
+import re
+import markdown
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import HtmlFormatter
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
@@ -103,3 +108,25 @@ def profile(log_file):
 
         return _inner
     return _outer
+
+code_pattern = re.compile(r'<code lang=([^>]+)>(.+?)</code>', re.DOTALL)
+def highlight_code_section(text):
+    def proc(match):
+        lang = match.group(1).strip('"\'')
+        lexer = get_lexer_by_name(lang, stripall=True)
+        formatter = HtmlFormatter(style="colorful")
+        code = match.group(2).replace("\t", "  ")
+        highlighted = highlight(code, lexer, formatter)
+        return highlighted.replace("\n", "<br/>")
+
+    return code_pattern.sub(proc, text)
+
+def render_text(text):
+    text = highlight_code_section(text)
+    text = markdown.markdown(text, extensions=["toc"])
+    try:
+        from wiki.utils import link_to_pages
+        text = link_to_pages(text)
+    except:
+        pass
+    return text
