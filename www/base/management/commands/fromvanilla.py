@@ -15,6 +15,7 @@ import shutil
 import os
 import re
 import string
+import time
 
 def patch(key, val):
     act = get_or_none(Activity, key=key)
@@ -38,6 +39,7 @@ def fetch_all(db, table, **where):
     if where:
         where_clause = "WHERE " + " AND ".join(["%s=%s" % it for it in
             where.items()])
+
     c.execute("SELECT * FROM %s %s;" % (table, where_clause))
     return c.fetchall()
 def migrate_user(db):
@@ -65,7 +67,7 @@ def migrate_user(db):
         if created % 10 == 0:
             print "created %d users so far" % created
         username_seen.add(u["Name"])
-    u = User.get(username="JongMan")
+    u = User.objects.get(username="JongMan")
     u.is_superuser = True
     u.save()
     print "created %d users." % created
@@ -116,7 +118,7 @@ def migrate_forum(db):
                     site_id=settings.SITE_ID,
                     submit_date=comment["DateInserted"])
             new_comment.save()
-            patch("forum-post-%d" % new_comment.id, comment["DateInserted"])
+            patch("comment-%d" % new_comment.id, comment["DateInserted"])
             copied_comments += 1
         copied_posts += 1
         if copied_posts % 10 == 0:
@@ -145,6 +147,10 @@ def migrate_problems(db):
         "Submissions": "submissions_count",
     }
     imported = 0
+    categories = dict([(cat["No"], cat["Name"])
+                       for cat in fetch_all(db, "GDN_ProblemCategory")])
+    for k, v in categories.items():
+        print k, v
     for problem in fetch_all(db, "GDN_Problem", State=3):
         kwargs = {}
         kwargs["user"] = User.objects.get(id=problem["Author"])
@@ -152,6 +158,16 @@ def migrate_problems(db):
             kwargs[v] = problem[k]
         new_problem = Problem(**kwargs)
         new_problem.save()
+
+        tags = []
+        for rel in fetch_all(db, "GDN_ProblemCategoryActualRelation",
+                             Problem=problem["No"]):
+            if rel["Category"] in categories:
+                tags.append(categories[rel["Category"]])
+        print new_problem.slug, tags
+        new_problem.tags = ",".join(tags)
+        new_problem.save()
+
         # delete new problem entry: we don't have timestamp information for
         # old problems.
         get_activity(key="new-problem-%d" % new_problem.id).delete()
@@ -174,6 +190,8 @@ def migrate_submissions(db):
     imported = 0
     submissions = fetch_all(db, "GDN_Submission")
     Submission.objects.all().delete()
+    Activity.objects.filter(key__startswith="solved-").delete()
+    start = time.time()
     for submission in submissions:
         kwargs = {}
         try:
@@ -191,15 +209,18 @@ def migrate_submissions(db):
         new_submission.state = submission["State"]
         new_submission.submitted_on = submission["Submitted"]
         new_submission.save()
-        patch("solved-%d-%d-%d" % (submission["Author"],
-                                   submission["Problem"],
-                                   submission["No"]),
-              submission["Submitted"])
+        if kwargs["state"] == Submission.ACCEPTED:
+            patch("solved-%d-%d" % (submission["Problem"], submission["Author"]),
+                  submission["Submitted"])
 
         imported += 1
         if imported % 100 == 0:
-            print "Migrated %d of %d submissions." % (imported,
-                    len(submissions))
+            print "Migrated %d of %d submissions. (%d submissions/sec)" % (imported,
+                                                                           len(submissions),
+                                                                           len(submissions)
+                                                                           /
+                                                                           (time.time()-start)
+                                                                          )
     print "Migrated %d submissions." % imported
 
 def md5file(file_path):

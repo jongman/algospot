@@ -2,9 +2,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import post_save
+from django.db.models import Count
 from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
+import pygooglechart as pgc
+import tagging
 
 class Problem(models.Model):
     DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
@@ -13,11 +16,13 @@ class Problem(models.Model):
                      (HIDDEN, "HIDDEN"),
                      (PUBLISHED, "PUBLISHED"))
 
-    slug = models.SlugField(u"문제 ID", blank=True,max_length=100)
+    slug = models.SlugField(u"문제 ID", max_length=100, unique=True)
     updated_on = models.DateTimeField(auto_now=True)
-    state = models.SmallIntegerField(u"문제 상태", default=DRAFT, choices=STATE_CHOICES)
-    user = models.ForeignKey(User, verbose_name=u"작성자")
-    source = models.CharField(u"출처", max_length=100, blank=True)
+    state = models.SmallIntegerField(u"문제 상태", default=DRAFT,
+                                     choices=STATE_CHOICES,
+                                     db_index=True)
+    user = models.ForeignKey(User, verbose_name=u"작성자", db_index=True)
+    source = models.CharField(u"출처", max_length=100, blank=True, db_index=True)
     name = models.CharField(u"이름", max_length=100, blank=True)
     description = models.TextField(u"설명", blank=True)
     input = models.TextField(u"입력 설명", blank=True)
@@ -34,11 +39,20 @@ class Problem(models.Model):
     def __unicode__(self):
         return self.slug
 
+    def get_state_name(self):
+        return Problem.STATE_CHOICES[self.state][1]
+
+    def was_solved_by(self, user):
+        return Solver.objects.filter(problem=self, user=user,
+                                     solved=True).exists()
+
     def get_absolute_url(self):
         return reverse("judge-problem-read", kwargs={"slug": self.slug})
 
+tagging.register(Problem)
+
 class Attachment(models.Model):
-    problem = models.ForeignKey(Problem)
+    problem = models.ForeignKey(Problem, db_index=True)
     file = models.FileField(max_length=1024, upload_to='/will_not_be_used/')
 
 class Submission(models.Model):
@@ -71,21 +85,28 @@ class Submission(models.Model):
                        (REJUDGE_REQUESTED, "REJUDGE_REQUESTED")])
 
 
-    PROGRAM_HAS_RUN = [OK, ACCEPTED, WRONG_ANSWER]
-    HAS_MESSAGES = [COMPILE_ERROR, RUNTIME_ERROR]
+    JUDGED = (ACCEPTED, WRONG_ANSWER, RUNTIME_ERROR, TIME_LIMIT_EXCEEDED,
+              CANT_BE_JUDGED)
+    PROGRAM_HAS_RUN = (OK, ACCEPTED, WRONG_ANSWER)
+    HAS_MESSAGES = (COMPILE_ERROR, RUNTIME_ERROR)
 
     submitted_on = models.DateTimeField(auto_now_add=True)
-    problem = models.ForeignKey(Problem)
+    problem = models.ForeignKey(Problem, db_index=True)
     is_public = models.BooleanField(default=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, db_index=True)
     language = models.TextField(max_length=100)
     state = models.SmallIntegerField(default=RECEIVED,
-                                     choices=STATES_ENG.items())
-    length = models.IntegerField()
+                                     choices=STATES_ENG.items(),
+                                     db_index=True)
+    length = models.IntegerField(db_index=True)
     source = models.TextField()
     message = models.TextField(blank=True, default="")
-    time = models.IntegerField(null=True)
+    time = models.IntegerField(null=True, db_index=True)
     memory = models.IntegerField(null=True)
+
+    def __unicode__(self):
+        return "%s: %s" % (self.problem.slug,
+                           self.user.username)
 
     def has_run(self):
         return self.state in self.PROGRAM_HAS_RUN
@@ -93,6 +114,12 @@ class Submission(models.Model):
     # TODO: has_messages => has_message
     def has_messages(self):
         return bool(self.message)
+
+    def is_judged(self):
+        return self.state in Submission.JUDGED
+
+    def is_accepted(self):
+        return self.state == Submission.ACCEPTED
 
     def name_kor(self):
         return self.STATES_KOR[self.state]
@@ -102,6 +129,142 @@ class Submission(models.Model):
 
     def get_absolute_url(self):
         return reverse("judge-submission-details", kwargs={"id": self.id})
+
+    @staticmethod
+    def get_verdict_distribution(queryset):
+        ret = {}
+        for entry in queryset.values('state').annotate(Count('state')):
+            ret[entry['state']] = entry['state__count']
+        return ret
+
+    @staticmethod
+    def get_verdict_distribution_graph(queryset):
+        take = (Submission.ACCEPTED, Submission.WRONG_ANSWER,
+                Submission.TIME_LIMIT_EXCEEDED)
+        # AC, WA, TLE 이외의 것들을 하나의 카테고리로 모음
+        cleaned = {-1: 0}
+        for t in take: cleaned[t] = 0
+        for verdict, count in Submission.get_verdict_distribution(queryset).items():
+            if verdict in take:
+                cleaned[verdict] = count
+            else:
+                cleaned[-1] += count
+
+        # 구글 차트
+        pie = pgc.PieChart2D(200, 120)
+        if sum(cleaned.values()) == 0:
+            pie.add_data([100])
+            pie.set_legend(['NONE'])
+            pie.set_colours(['999999'])
+        else:
+            pie.add_data([cleaned[Submission.ACCEPTED],
+                          cleaned[Submission.WRONG_ANSWER],
+                          cleaned[Submission.TIME_LIMIT_EXCEEDED],
+                          cleaned[-1]])
+        pie.set_legend(['AC', 'WA', 'TLE', 'OTHER'])
+        pie.set_colours(["C02942", "53777A", "542437", "ECD078"])
+        pie.fill_solid("bg", "65432100")
+        return pie.get_url() + "&chp=4.712"
+
+
+    @staticmethod
+    def get_stat_for_user(user):
+        ret = {}
+        for entry in Submission.objects.filter(user=user).values('state').annotate(Count('state')):
+            ret[entry['state']] = entry['state__count']
+        return ret
+
+class Solver(models.Model):
+    problem = models.ForeignKey(Problem, db_index=True)
+    user = models.ForeignKey(User, db_index=True)
+    incorrect_tries = models.IntegerField(default=0)
+    solved = models.BooleanField(default=False, db_index=True)
+    fastest_submission = models.ForeignKey(Submission, null=True,
+                                           related_name="+")
+    shortest_submission = models.ForeignKey(Submission, null=True,
+                                           related_name="+")
+    when = models.DateTimeField(null=True)
+
+    def __unicode__(self):
+        return "%s: %s" % (self.problem.slug,
+                           self.user.username)
+
+    @staticmethod
+    def get_incorrect_tries_chart(problem):
+        solvers = Solver.objects.filter(problem=problem, solved=True)
+        dist = {}
+        for entry in solvers.values('incorrect_tries').annotate(Count('incorrect_tries')):
+            dist[entry['incorrect_tries']] = entry['incorrect_tries__count']
+
+        max_fails = max(dist.keys()) if dist else 0
+        steps = max(1, max_fails / 20)
+        chart = pgc.StackedVerticalBarChart(400, 120)
+        chart.add_data([dist.get(i, 0) for i in xrange(max_fails + 1)])
+        chart.set_colours(['C02942'])
+        chart.set_axis_labels(pgc.Axis.BOTTOM,
+                              [str(i) if i % steps == 0 else ''
+                               for i in xrange(max_fails + 1)])
+        chart.fill_solid("bg", "65432100")
+        return chart.get_url() + '&chbh=r,3'
+
+    @staticmethod
+    def refresh(problem, user):
+        # TODO: 언젠가.. 최적화한다. -_-
+
+        # PUBLISHED 가 아니면 Solver 인스턴스는 존재하지 않는다.
+        if problem.state != Problem.PUBLISHED:
+            return
+
+        # Solver 인스턴스를 찾음. 없으면 만듬.
+        instance = get_or_none(Solver, problem=problem, user=user)
+        if not instance:
+            instance = Solver(problem=problem, user=user)
+            instance.save()
+        # 이 사람의 서브미션 목록을 찾는다
+        submissions = Submission.objects.filter(problem=problem,
+                                                is_public=True,
+                                                user=user).order_by("id")
+        accepted = submissions.filter(state=Submission.ACCEPTED)
+
+        # 풀었나? 못 풀었나?
+        prev_solved = instance.solved
+        if accepted.count() == 0:
+            instance.solved = False
+            instance.incorrect_tries = submissions.count()
+            instance.fastest_submission = instance.shortest_submission = None
+        else:
+            instance.solved = True
+            first = accepted[0]
+            instance.when = first.submitted_on
+            incorrect = submissions.filter(id__lt=first.id)
+            instance.incorrect_tries = incorrect.count()
+            instance.fastest_submission = accepted.order_by("time")[0]
+            instance.shortest_submission = accepted.order_by("length")[0]
+        instance.save()
+        if instance.solved != prev_solved:
+            # 유저 프로필에 푼 문제 수 업데이트
+            profile = user.get_profile()
+            profile.solved_problems = Solver.objects.filter(user=user,
+                                                            solved=True).count()
+            profile.save()
+
+            # 처음으로 풀었을 경우 알림을 보낸다
+            id = "solved-%d-%d" % (problem.id, user.id)
+            if instance.solved:
+                # 풀었다!
+                publish(id, "solved", "judge",
+                        target=problem,
+                        actor=user,
+                        timestamp=instance.fastest_submission.submitted_on,
+                        verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." %
+                        (instance.incorrect_tries + 1))
+            else:
+                # 리저지 등 관계로 풀었던 문제를 못푼게 됨.
+                depublish(id)
+
+            # TODO: 가장 빠른 솔루션, 가장 짧은 솔루션이 등장했을 경우
+            # newsfeed entry를 보낸다
+        return instance
 
 # SIGNAL HANDLERS
 def saved_problem(sender, **kwargs):
@@ -119,82 +282,24 @@ def saved_problem(sender, **kwargs):
             activity.actor = instance.user
             activity.save()
 
-def solved_problem(user, problem, submission):
-    accepted = Submission.objects.filter(user=user,
-                                         problem=problem,
-                                         state=Submission.ACCEPTED).count()
-    # 이미 푼 문젤까?
-    if accepted > 0: return
-    # 오오 풀었당!
-    subs = Submission.objects.filter(user=user,
-                                     problem=problem).count()
-    publish("solved-%d-%d-%d" % (user.id, problem.id, submission.id),
-            "solved",
-            "judge",
-            target=problem,
-            actor=user,
-            timestamp=submission.submitted_on,
-            verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." % subs)
-    profile = user.get_profile()
-    profile.solved_problems += 1
-    profile.save()
-
-def unsolved_problem(user, problem, submission):
-    activity_id = "solved-%d-%d-%d" % (user.id, problem.id, submission.id)
-    # 첫 번째 AC가 없어지지 않는한 신경 안 쓴다
-    if not has_activity(activity_id): return
-    depublish(activity_id)
-    # 이후에 AC받은 전적이 있나?
-    next_accepted = get_or_none(Submission,
-                                user=user,
-                                problem=problem,
-                                state=Submission.ACCEPTED,
-                                id__gt=submission.id)
-    # 그렇다면 새로 publish 하고 끝
-    if next_accepted:
-        subs = Submission.objects.filter(user=user,
-                                         problem=problem,
-                                         id__lte=next_accepted.id).count()
-        publish("solved-%d-%d-%d" % (user.id, problem.id, next_accepted.id),
-                "solved",
-                "judge",
-                target=problem,
-                actor=user,
-                timestamp=next_accepted.submitted_on,
-                verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." % subs)
-    else:
-        # 이제 이 문제 못풀었어요 프로필 빠빠이..
-        profile = user.get_profile()
-        profile.solved_profiles -= 1
-        profile.save()
-
-def will_save_submission(sender, **kwargs):
-    submission = kwargs["instance"]
-    if not submission.id: return
-    current_sub = get_or_none(Submission, id=submission.id)
-    if not current_sub: return
-    old_state = current_sub.state
-    if old_state == submission.state: return
-    # 풀었다!
-    if submission.state == Submission.ACCEPTED:
-        solved_problem(submission.user, submission.problem, submission)
-    # 리저지?
-    elif old_state == Submission.ACCEPTED:
-        unsolved_problem(submission.user, submission.problem, submission)
-
 def saved_submission(sender, **kwargs):
-    created, submission = kwargs["created"], kwargs["instance"]
-    if created:
-        if submission.state == Submission.RECEIVED:
-            import tasks
-            tasks.judge_submission.delay(submission)
+    submission = kwargs["instance"]
+    if submission.state in [Submission.RECEIVED,
+                            Submission.REJUDGE_REQUESTED]:
+        import tasks
+        tasks.judge_submission.delay(submission)
+
+    if submission.state in Submission.JUDGED:
+        if not submission.is_public: return
         profile = submission.user.get_profile()
-        profile.submissions += 1
+        submissions = Submission.objects.filter(user=submission.user)
+        profile.submissions = submissions.count()
+        profile.accepted = submissions.filter(state=Submission.ACCEPTED).count()
         profile.save()
+
+        Solver.refresh(submission.problem, submission.user)
 
 post_save.connect(saved_problem, sender=Problem,
                  dispatch_uid="saved_problem")
-pre_save.connect(will_save_submission, sender=Submission,
-                 dispatch_uid="will_save_submission")
 post_save.connect(saved_submission, sender=Submission,
                   dispatch_uid="saved_submission")

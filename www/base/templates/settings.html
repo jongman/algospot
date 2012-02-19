@@ -1,32 +1,34 @@
 {% extends "base.html" %}
 {% block title %} 회원 정보 갱신 {% endblock %}
-{% block page-title %} {{ settings_user.username }}: 회원 정보 갱신{% endblock %}
-{% block page-contents %}
-{% load avatar_tags %}
-<div class="user-settings">
-	{% include "print_non_field_error.html" %}
-	<form action="" method="post">
-		{% csrf_token %}
-		<fieldset class="kor">
-			<legend>회원 정보 갱신</legend>
-			<dl>
-				<dt><label>회원 ID</label></dt>
-				<dd>{{ settings_user.username }}</dd>
-			</dl>
-			<dl>
-				<dt><label>내 사진</label></dt>
-				<dd>
-					{% avatar settings_user 120 %}
-					{% if settings_user == user %} 
-					<br/>
-					<a href="{% url avatar_change %}" class="button eng">Change</a>
-					{% endif %}
-				</dd>
-			</dl>
-			{% include "print_form.html" %}
-		</fieldset>
-		<button type="submit">Submit</button>
-	</form>
-</div>
+{% block page_title %} {{ settings_user.username }}: 회원 정보 갱신{% endblock %}
+{% block page_contents %}
+	{% load avatar_tags %}
+	<section>
+		<div class="user-settings">
+			{% include "print_non_field_error.html" %}
+			<form action="" method="post">
+				{% csrf_token %}
+				<fieldset class="kor">
+					<legend>회원 정보 갱신</legend>
+					<dl>
+						<dt><label>회원 ID</label></dt>
+						<dd>{{ settings_user.username }}</dd>
+					</dl>
+					<dl>
+						<dt><label>내 사진</label></dt>
+						<dd>
+							{% avatar settings_user 120 %}
+							{% if settings_user == user %} 
+								<br/>
+								<a href="{% url avatar_change %}" class="button eng">Change</a>
+							{% endif %}
+						</dd>
+					</dl>
+					{% include "print_form.html" %}
+				</fieldset>
+				<button type="submit">Submit</button>
+			</form>
+		</div>
+	</section>
 
 {% endblock %}

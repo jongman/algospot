@@ -5,11 +5,7 @@ from django.utils.safestring import mark_safe
 from django import template
 from django.contrib.comments.templatetags.comments import BaseCommentNode
 import datetime
-import re
-import markdown
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import HtmlFormatter
+from djangoutils import render_text as dj_render_text
 
 register = template.Library()
 
@@ -39,6 +35,44 @@ def syntax_highlight(parser, token):
     code, lang = toks[1:3]
     return SourceCodeNode(code, lang)
 
+class TableHeaderNode(template.Node):
+    def __init__(self, column_name, order_by, options):
+        self.column_name = template.Variable(column_name)
+        self.order_by = template.Variable(order_by)
+        self.options = set(options)
+
+    def render(self, context):
+        current_order = context['request'].GET.get('order_by', '')
+        column_name = self.column_name.resolve(context)
+        order_by = self.order_by.resolve(context)
+        arrow = ""
+        is_default = 'default' in self.options
+        if is_default and current_order == '': current_order = order_by
+
+        can_toggle = 'notoggle' not in self.options
+        if order_by == current_order:
+            arrow = u"↓"
+            if not can_toggle:
+                return column_name + arrow
+            else:
+                new_order = '-' + order_by
+        else:
+            new_order = order_by
+            if current_order.endswith(order_by):
+                arrow = u"↑"
+
+        get_params = dict(context['request'].GET)
+        get_params['order_by'] = [new_order]
+        get_params = '&'.join('%s=%s' % (k, v[0]) for k, v in get_params.items())
+        full_path = context['request'].get_full_path().split('?')[0]
+        return mark_safe(u"""<a href="%s?%s">%s%s</a>""" % (full_path, get_params, column_name, arrow))
+
+@register.tag
+def sortable_table_header(parser, token):
+    toks = token.split_contents()
+    column_name, order_by = toks[1:3]
+    return TableHeaderNode(column_name, order_by, toks[3:])
+
 @register.filter
 def get_comment_hotness(count):
     threshold = [1, 5, 10, 50, 100]
@@ -53,7 +87,7 @@ def get_comment_hotness(count):
 @register.filter
 def print_username(user):
     profile_link = reverse('user_profile', kwargs={"user_id": user.id})
-    return mark_safe('<a href="%s" class="userlink">%s</a>' %
+    return mark_safe('<a href="%s" class="username">%s</a>' %
             (profile_link, user.username))
 
 units = [(int(365.2425*24*60*60), u"년"),
@@ -79,26 +113,21 @@ def print_datetime(dt):
     return mark_safe(u'<span class="%s" title="%s">%s</span>' % (class_name,
         fallback, format_readable(diff) or fallback))
 
-code_pattern = re.compile(r'<code lang=([^>]+)>(.+?)</code>', re.DOTALL)
-def highlight_code_section(text):
-    def proc(match):
-        lang = match.group(1).strip('"\'')
-        lexer = get_lexer_by_name(lang, stripall=True)
-        formatter = HtmlFormatter(style="colorful")
-        code = match.group(2).replace("\t", "  ")
-        highlighted = highlight(code, lexer, formatter)
-        return highlighted.replace("\n", "<br/>")
-    return code_pattern.sub(proc, text)
-
 @register.filter
 def render_text(text):
-    text = highlight_code_section(text)
-    text = markdown.markdown(text, extensions=["toc"])
-    try:
-        from wiki.utils import link_to_pages
-        text = link_to_pages(text)
-    except:
-        pass
-    return mark_safe(text)
+    return mark_safe(dj_render_text(text))
 
+class PercentNode(template.Node):
+    def __init__(self, a, b):
+        self.a = template.Variable(a)
+        self.b = template.Variable(b)
+    def render(self, context):
+        a = self.a.resolve(context)
+        b = self.b.resolve(context)
+        return str(int(a * 100 / b)) if b else "0"
 
+@register.tag
+def percentage(parser, token):
+    toks = token.split_contents()
+    a, b = toks[1:3]
+    return PercentNode(a, b)

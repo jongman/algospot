@@ -5,16 +5,23 @@
 {% endblock %}
 
 
-{% block page-title %}
+{% block page_title %}
 	{{ title }}
 {% endblock %}
 
-{% block page-tabs %}
+{% block page_tabs %}
 {% endblock %}
-
-<nav>
-	<ul class="tab-switch">
-		<li><a class="{% block judge-submission-mine-class %}{% endblock %}" href="{% url judge-submission-mine %}" rel="tooltip" title="My submissions only">내가 제출한 답안</a></li>
-		<li><a class="{% block judge-submission-recent-class %}{% endblock %}" href="{% url judge-submission-recent %}" rel="tooltip" title="All recent submissions">전체 답안</a></li>
-	</ul>
-</nav>
+<!--<nav>-->
+<!--	<ul class="tab-switch">-->
+<!--		<li>-->
+<!--			<a class="{% block judge_submission_mine_class %}{% endblock %}" href="{% url judge-submission-mine %}" rel="tooltip" title="My submissions only">-->
+<!--				내가 제출한 답안-->
+<!--			</a>-->
+<!--		</li>-->
+<!--		<li>-->
+<!--			<a class="{% block judge_submission_recent_class %}{% endblock %}" href="{% url judge-submission-recent %}" rel="tooltip" title="All recent submissions">-->
+<!--				전체 답안-->
+<!--			</a>-->
+<!--		</li>-->
+<!--	</ul>-->
+<!--</nav>-->

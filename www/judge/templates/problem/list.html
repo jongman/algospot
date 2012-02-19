@@ -1,68 +1,129 @@
 {% extends "judge-base.html" %}
 {% load common_tags %}
 {% block title %}
-{{ title }}
+	{{ title }}
 {% endblock %}
 
 
-{% block page-title %}
-{{ title }}
+{% block page_title %}
+	{{ title }}
 {% endblock %}
 
-{% block page-tabs %}
+{% block page_tabs %}
 {% endblock %}
 
-{% block judge-problem-class %}current{% endblock %}
-{% block page-contents %}
-{% load judge_tags %}
-{% load common_tags %}
-<table class="problems kor">
-	<thead>
-		<tr>
-			<th class="accepted">풀었나?</th>
-			<th class="id">문제ID</th>
-			<th class="name">문제 제목</th>
-			<th class="writer">출제자</th>
-			<th class="submissions">답안수</th>
-			<th class="accepted">정답비율</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for problem in pagination.page.object_list %}
-		<tr>
-			<td class="accepted">
-				{% if user.is_authenticated %}
-					{% get_has_solved problem by user as solved %}
-					{% if solved %}
-					네!
-					{% endif %}
-				{% endif %}
-			</td>
-			<td class="id">
-				<a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a>
-			</td>
-			<td class="name">
-				<a href="{% url judge-problem-read problem.slug %}">{{ problem.name }}</a>
-			</td>
-			<td class="writer">
-				{{ problem.user|print_username }}
-			</td>
-			<td class="submissions">
-				<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}">
-					{{ problem.submissions_count }}
-				</a>
-			</td>
-			<td class="accepted">
-				<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}&state={{ ACCEPTED }}&order_by=length">
-					{% percentage problem.accepted_count problem.submissions_count %}%
-				</a>
-			</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
-</section>
-</article>
-<article>
-{{ pagination.render }}
+{% block judge_problem_class %}current{% endblock %}
+{% block page_contents %}
+	{% load judge_tags %}
+	{% load common_tags %}
+	<section>
+		<table class="problem_list">
+			<thead>
+				<tr>
+					<th class="accepted">풀었나?</th>
+					<th class="id">
+						{% sortable_table_header "문제ID" "slug" default %}
+					</th>
+					<th class="name">
+						{% sortable_table_header "문제 이름" "name" %}
+					</th>
+					<th class="writer">
+						{% sortable_table_header "출제자" "user" %}
+					</th>
+					<th class="submissions">
+						{% sortable_table_header "답안수" "submissions_count" %}
+					</th>
+					<th class="accepted_ratio">
+						{% sortable_table_header "정답비율" "ratio" %}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for problem in pagination.page.object_list %}
+					<tr>
+						<td class="accepted">
+							{% if user.is_authenticated %}
+								{% get_has_solved problem by user as solved %}
+								{% if solved %}
+									네!
+								{% endif %}
+							{% endif %}
+						</td>
+						<td class="id">
+							<a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a>
+						</td>
+						<td class="name">
+							<a href="{% url judge-problem-read problem.slug %}">{{ problem.name }}</a>
+						</td>
+						<td class="writer">
+							{{ problem.user|print_username }}
+						</td>
+						<td class="submissions">
+							<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}">
+								{{ problem.submissions_count }}
+							</a>
+						</td>
+						<td class="accepted">
+							<a href="{% url judge-problem-stat problem %}">
+								{% percentage problem.accepted_count problem.submissions_count %}%
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
+	{% if use_filter %}
+	<section>
+		<form method="GET" action="">
+			<fieldset class="kor problem-filter">
+				<legend>골라보기</legend>
+				<dl>
+					<dt>
+						문제 분류
+					</dt>
+					<dd>
+						<select name="tag">
+							<option value=""></option>
+							{% for tag in tags %}
+								<option {% if tag == filters.tag %}selected{% endif %} value="{{ tag }}">{{ tag }}</option>
+							{% endfor %}
+						</select>
+					</dd>
+					<dt>
+						출처
+					</dt>
+					<dd>
+						<select name="source">
+							<option value=""></option>
+							{% for source in sources %}
+								<option {% if source == filters.source %}selected{% endif %} value="{{ source }}">{{ source }}</option>
+							{% endfor %}
+						</select>
+					</dd>
+					<dt>
+						출제자
+					</dt>
+					<dd>
+						<select name="author">
+							<option value=""></option>
+							{% for author in authors %}
+								<option {% if author == filters.author %}selected{% endif %} value="{{ author }}">{{ author }}</option>
+							{% endfor %}
+						</select>
+					</dd>
+					<dt>
+						적용
+					</dt>
+					<dd>
+						<button type="submit">적용하기</button>
+					</dd>
+				</dl>
+			</fieldset>
+		</form>
+	</section>
+	{% endif %}
 {% endblock %}

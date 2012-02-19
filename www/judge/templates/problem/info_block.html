@@ -1,0 +1,68 @@
+{% load common_tags %}
+{% load judge_tags %}
+{% load tagging_tags %}
+<section class="problem_info">
+	<h4>문제 정보</h4>
+	<ul class="problem_info tabular">
+		<li class="header">
+			<ul>
+				<li class="problemid">문제 ID</li>
+				<li class="timelimit">시간 제한</li>
+				<li class="memorylimit">메모리 제한</li>
+				<li class="submissions">제출 회수</li>
+				<li class="accepted">정답 회수 (비율)</li>
+			</ul>
+		</li>
+		<li class="content">
+			<ul>
+				<li class="problem-id"><a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a></li>
+				<li class="timelimit"><b>{{ problem.time_limit }}</b>ms</li>
+				<li class="memorylimit"><b>{{ problem.memory_limit }}</b>kb</li>
+				<li class="submissions"><a href="{% url judge-submission-recent %}?problem={{ problem.slug }}"><b>{{ problem.submissions_count }}</b></a></li>
+				<li class="accepted"><a href="{% url judge-problem-stat problem.slug %}"><b>{{ problem.accepted_count }}</b> (<b>{% percentage problem.accepted_count problem.submissions_count %}</b>%)</a></li>
+			</ul>
+		</li>
+		<li class="header">
+			<ul>
+				<li class="author">출제자</li>
+				<li class="source">출처</li>
+				<li class="category">분류</li>
+			</ul>
+		</li>
+		<li class="content">
+			<ul>
+				<li class="author">{{ problem.user|print_username }}</li>
+				<li class="source"><a href="{% url judge-problem-list %}?source={{ problem.source|urlencode }}">{{ problem.source }}</a></li>
+				<li class="category">
+					<a href="#" id="show_category">보기</a>
+					{% tags_for_object problem as tags %}
+					<span id="problem_category" style="display: none;">
+						{% for tag in tags %}
+						<a href="{% url judge-problem-list %}?tag={{ tag.name|urlencode }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+						{% endfor %}
+					</span>
+				</li>
+			</ul>
+			<script language="javascript">
+				$(function() {
+					$("#show_category").click(function() {
+						$(this).hide();
+						$("#problem_category").fadeIn("slow");
+					});
+				});
+			</script>
+		</li>
+		{% if verdict_chart %}
+		<li class="header">
+			<ul>
+				<li class="verdict_chart">채점 결과 분포</li>
+				<li class="incorrects_chart">처음 풀기까지 틀린 회수 분포</li>
+			</ul>
+		</li>
+		<li class="content">
+			<ul>
+				<li class="verdict_chart"><img class="chart" src="{{ verdict_chart }}"/></li>
+				<li class="incorrects_chart"><img class="chart" src="{{ incorrects_chart }}"/></li>
+		{% endif %}
+	</ul>
+</section>

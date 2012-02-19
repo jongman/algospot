@@ -9,8 +9,19 @@ def get_parser():
     parser.add_argument("-i", "--input", default=None)
     parser.add_argument("-e", "--error", default=None)
     parser.add_argument("-o", "--output", default=None)
+    parser.add_argument("-t", "--time", default=None, type=int)
+    parser.add_argument("-m", "--memory", default=None)
+    parser.add_argument("-p", "--processes", default=None, type=int)
     parser.add_argument("command")
     return parser
+
+def parse_memory(mem):
+    suffixes = {"K": 2**10, "M": 2**20, "G": 2**30,
+                "KB": 2**10, "MB": 2**20, "GB": 2**30}
+    for suf in suffixes:
+        if mem.endswith(suf):
+            return int(mem[:-len(suf)]) * suffixes[suf]
+    return int(mem)
 
 def main():
     args = get_parser().parse_args()
@@ -18,6 +29,17 @@ def main():
     if args.input: kwargs["stdin"] = open(args.input, "r")
     if args.error: kwargs["stderr"] = open(args.error, "w")
     if args.output: kwargs["stdout"] = open(args.output, "w")
+
+    if args.time:
+        resource.setrlimit(resource.RLIMIT_CPU, (args.time, args.time))
+
+    if args.memory:
+        parsed = parse_memory(args.memory)
+        resource.setrlimit(resource.RLIMIT_RSS, (parsed, parsed))
+
+    if args.processes:
+        resource.setrlimit(resource.RLIMIT_NPROC,
+                           (args.processes, args.processes))
 
     try:
         process = subprocess.Popen(args.command.split(), **kwargs)

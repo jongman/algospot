@@ -1,0 +1,71 @@
+{% extends "problem/problem-base.html" %}
+{% load common_tags %}
+
+{% block judge_problem_stats_class %}current{% endblock %}
+{% block page_title %}
+	통계: {{ problem.name }}
+{% endblock %}
+{% block page_contents %}
+	{% load judge_tags %}
+	{% load common_tags %}
+	{% include "problem/info_block.html" %}
+	{% get_has_solved problem by user as solved %}
+	<section>
+		<h4>푼 사람들</h4>
+		<table class="solver_list">
+			<thead>
+				<tr>
+					<th class="solver">푼 사람</th>
+					<th class="when">
+						{% sortable_table_header "처음 푼 시간" "when" %}
+					</th>
+					<th class="fastest"> 
+						{% sortable_table_header "가장 빠른 답안" "fastest" %}
+					</th>
+					<th class="shortest">
+						{% sortable_table_header "가장 짧은 답안" "shortest" default %}
+					</th>
+					<th class="incorrect">
+						{% sortable_table_header "실패 횟수" "incorrect_tries" %}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for solver in pagination.page.object_list %}
+					<tr>
+						<td class="solver">
+							{{ solver.user|print_username }}
+						</td>
+						<td class="when">
+							{{ solver.when|print_datetime }}
+						</td>
+						<td class="fastest">
+							{% if user == solver.user or user.is_superuser or solved or user == problem.user %}
+								<a href="{% url judge-submission-details solver.fastest_submission.id %}">
+							{% endif %}
+								{{ solver.fastest_submission.time }}ms ({{ solver.fastest_submission.language }})
+							{% if user == solver.user or user.is_superuser or solved or user == problem.user %}
+								</a>
+							{% endif %}
+						</td>
+						<td class="shortest">
+							{% if user == solver.user or user.is_superuser or solved or user == problem.user %}
+								<a href="{% url judge-submission-details solver.shortest_submission.id %}">
+							{% endif %}
+							{{ solver.shortest_submission.length|print_length }} ({{ solver.shortest_submission.language }})
+							{% if user == solver.user or user.is_superuser or solved %}
+								</a>
+							{% endif %}
+						</td>
+						<td class="incorrect">
+							{{ solver.incorrect_tries }}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
+{% endblock %}

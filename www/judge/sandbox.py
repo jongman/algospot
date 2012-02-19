@@ -26,7 +26,7 @@ def makedir(path):
 class TimeOutException(Exception):
     pass
 
-def execute(command, redirect=True, time_limit=None):
+def execute(command, redirect=True, time_limit=None, kill_command=[]):
     """ time_limit must be in seconds """
     assert isinstance(command, list)
     kwargs = {"close_fds": True}
@@ -38,12 +38,16 @@ def execute(command, redirect=True, time_limit=None):
         wait = popen.wait()
     else:
         start = time.time()
-        # 실제 수행하는 데는 2초를 더 준다.
-        while time.time() < start + time_limit + 2 and popen.poll() is None:
+        # 실제 수행하는 데는 4초를 더 준다.
+        while time.time() < start + time_limit + 4 and popen.poll() is None:
             time.sleep(0.1)
         wait = popen.poll()
         if wait is None:
-            popen.kill()
+            if kill_command:
+                subprocess.call(kill_command)
+                popen.wait()
+            else:
+                popen.kill()
             raise TimeOutException
     ret = {"returncode": wait}
     if redirect:
@@ -152,7 +156,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
     def _umount(self, mounted):
         if not self.am_i_root: return
         if mounted not in self.mounts: return
-        execute(["umount", self.mounted])
+        execute(["umount", mounted])
         self.mounts.remove(mounted)
 
     def mount_home(self, home_type):
@@ -174,7 +178,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         for destination in list(reversed(self.mounts)):
             self._umount(destination)
 
-        #if os.path.exists(self.root): shutil.rmtree(self.root)
+        if os.path.exists(self.root): shutil.rmtree(self.root)
 
     def get_file_path(self, in_home):
         return join(self.home_in_mounted, in_home)
@@ -229,6 +233,9 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         if stdin: cmd += ["-i", stdin]
         if stdout: cmd += ["-o", stdout]
         if stderr: cmd += ["-e", stderr]
+        cmd += ["-m", str(self.memory_limit * 1024)]
+        if time_limit != None:
+            cmd += ["-t", str(int(time_limit + 1.1))]
         cmd.append('"%s"' % command)
 
         self.create_entrypoint(" ".join(cmd))
@@ -263,10 +270,13 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
                             "-l", "INFO",
                             "su", self.user.pw_name, "-c", "sh", join(self.user.pw_dir, "entrypoint.sh")],
                            redirect=redirect,
-                           time_limit=time_limit)
+                           time_limit=time_limit,
+                           kill_command=["lxc-stop",
+                                         "-n", self.name])
         return execute(["sh", join(self.home_in_mounted, "entrypoint.sh")],
                        redirect=redirect,
                        time_limit=time_limit)
+
 
 def main():
     def print_result(x):
@@ -277,14 +287,13 @@ def main():
                 print x[key]
 
     try:
-        """
         sandbox = Sandbox("runner", home_type="bind")
         sandbox.run_interactive("bash")
-        sandbox.mount_home("cow")
-        sandbox.run_interactive("bash")
-        sandbox.mount_home("cow")
-        sandbox.run_interactive("bash")
         """
+        sandbox.mount_home("cow")
+        sandbox.run_interactive("bash")
+        sandbox.mount_home("cow")
+        sandbox.run_interactive("bash")
         sandbox = Sandbox("runner", memory_limit=65536, home_type="bind")
         import sys
         for file in sys.argv[1:]:
@@ -294,6 +303,7 @@ def main():
         print sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
                                  stderr=".compile.stderr")
         print sandbox.run("./dp", "inp", ".stdout", ".stderr")
+        """
     finally:
         sandbox.teardown()
 

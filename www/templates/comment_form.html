@@ -3,7 +3,7 @@
 {% load comments %}
 
 <form method="POST" action="{% comment_form_target %}">
-{% csrf_token %}
+	{% csrf_token %}
 	<dl>
 		<dt class="comment_user">
 			<img src="{% avatar_url user 45 %}" class="comment_form_avatar" alt="{{user.username}}"/>

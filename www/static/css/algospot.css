@@ -1,0 +1,991 @@
+@charset "utf-8";
+
+/* 광역 효과 ***************************************************/
+
+/* 링크 밑줄 is so 1990 */
+a { text-decoration: none; }
+
+/* 폰트 리셋: 버튼들 빼곤 전부 나눔고딕으로 치환한다 */
+body, textarea, input, select { font-family: NanumGothic,나눔고딕; }
+.button-link { font-family: 'PT Sans', Arial; }
+
+/* 사용자 핸들은 굵은 글씨로 */
+a.username { font-weight: bold; }
+
+/* 테이블 속성 오버라이드 */
+#main_section td, #main_section th {
+	height: 0px;
+	padding: 10px 4px;
+	vertical-align: top;
+}
+
+/* 섹션들은 margin-bottom 을 좀 둔다 */
+#main_section section {
+	margin-bottom: 8px;
+}
+
+/* 글로벌 엘레멘트들 ***************************************************/
+
+.template { display: none; }
+img.chart { border: 0; background-color: transparent; }
+
+/* 로고 밑에 글자 */
+section.navigation header h1 { 
+	font-size: 11px; 
+	font-style: normal;
+	margin-left: auto;
+	margin-right: auto;
+	letter-spacing: 12px;
+}
+
+/* 검색폼 */
+section#search {
+	width: 100%;
+	text-align: center;
+	margin-bottom: 16px;
+}
+input#search_query {
+	margin: 0 auto;
+	height: 24px;
+	width: 130px;
+	padding-left: 26px;
+	background: url(/static/images/icons/magnifier.png) no-repeat scroll 6px 6px;
+	background-color: #f3f3f3;
+}
+
+/* ul 을 테이블 형태로 보여주기용 */
+.tabular, .tabular ul, .tabular li
+{
+	margin:0;
+	padding:0;
+}
+.tabular li {
+	display: block;
+	list-style: none;
+	overflow: hidden;
+	background: none;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.tabular li.header {
+	font-weight: bold;
+}
+.tabular li.content {
+	background-color: #f0f0f0;
+	border-top: 1px solid;
+	border-bottom: 1px solid;;
+	border-color: silver;
+}
+.tabular li li {
+	list-style: none;
+	background: none;
+	text-align: center;
+	float: left;
+}
+.tabular.full { width: 100%; }
+.tabular li.full { width: 100%; }
+
+/* 코멘트 목록 */
+ul.comments {
+	border-top: 1px solid;
+	border-color: #D6D6D6;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+ul.comments li.comment {
+	background:none;
+	display: block;
+	list-style:none;
+	padding: 5px 5px;
+	margin: 0;
+	border-bottom: 1px solid;
+	border-color: #D6D6D6;
+	min-height: 60px;
+	overflow: hidden;
+	position: relative;
+}
+ul.comments li.comment dt.comment_user {
+	width: 80px;
+	overflow: hidden;
+	margin-right: 10px;
+	float: left;
+	text-align: center;
+}
+ul.comments li.comment dd.comment_content {
+	display: table-cell;
+}
+ul.comments li.comment dd.comment_content p {
+	color: #444
+}
+ul.comments.background-color .comment:nth-child(odd) {
+	background-color: #F4F4F4;
+}
+ul.comments .comment .datetime {
+	color: #aaa;
+	font-size: 90%;
+}
+ul.comments li.comment .operations {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+}
+ul.comments li.comment .operations .button-link {
+	font-size: 10px;
+	line-height: 130%;
+}
+
+ul.comments li.comment_form form {
+	margin-top: 0px;
+}
+
+ul.comments li.comment_form dd {
+	position: static;
+}
+
+ul.comments li.comment_form textarea {
+	width: 480px;
+	height: 70px;
+}
+
+ul.comments li.comment_form input.button {
+	position: absolute;
+	font-size: 12px;
+	right: 5px;
+	top: 5px;
+}
+
+/* 페이지네이션 */
+
+section.pagination {
+	padding: 8px;
+}
+
+div.pagination {
+	width: 100%;
+	text-align: center;
+	display:block;
+	clear:both;
+	line-height: 35px;
+	font-size:12px;
+}
+
+div.pagination a:link, .pagination a:visited {
+	padding:7px 9px;
+	border:1px solid #EBEBEB;
+	margin-left:10px;
+	text-decoration:none;
+	background-color:#F5F5F5;
+	width:22px;
+	font-weight:normal;
+}
+
+div.pagination a:hover {
+	background-color:#DDEEFF;
+	border:1px solid #BBDDFF;
+}
+
+div.pagination .active_link {
+	color: #036 !important;
+	border:1px solid #BBDDFF !important;
+	background-color:#DDEEFF !important;
+	cursor:default;
+}
+
+div.pagination .disabled_tnt_pagination {
+	padding:7px;
+	padding-top:2px;
+	padding-bottom:2px;
+	border:1px solid #EBEBEB;
+	margin-left:10px;
+	text-decoration:none;
+	background-color:#F5F5F5;
+	color:#D7D7D7;
+	cursor:default;
+}
+
+/* 문법 강조 */
+.highlight {
+	background-color: #eee;
+	border: 1px solid #ccc;
+	line-height: 150%;
+}
+/* 마크업 문법 안내*/
+.markup-intro td {
+	text-align:left;
+	padding-left: 12px;
+}
+
+/* 태깅 폼 */
+.superblyTagfieldDiv{
+	min-height: 27px;
+	border: 1px solid #ddd;
+	width: 82%;
+    background-color: #FAFAFA;
+	-webkit-box-shadow:inset 0 0 4px #d9d9d9;
+	-moz-box-shadow:inset 0 0 4px #d9d9d9;
+	box-shadow:inset 0 0 4px #d9d9d9;
+}
+
+.superblyTagfieldClearer{
+	clear: both;
+}
+	
+.superblyTagfieldDiv ul{
+	margin: 0;
+	padding: 0;
+}
+	
+.superblyTagfield{
+	/* if no javascript */
+	outline: none;
+	width: 100%;
+	height: 28px;
+	border: solid 1px;
+    background-color: #FFFFFF;
+}
+   
+.superblyTagInput{
+	border: none;
+	outline: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.superblyTagInputItem,
+.superblyTagInputItem input {
+	padding: 0px;
+	margin: 0px;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+
+}
+	
+.superblyTagItems > li{
+    font-size:11px;
+	background-image: none;
+	list-style: none;
+	float: left;
+	padding: 3px;
+	margin: 3px;
+	position: relative;
+}
+
+.superblyTagItems .superblyTagItem{
+	color: #444;
+	border: solid 1px #ddd;
+    background-color: #e6e6e6;
+}
+
+.superblyTagItems .superblyTagItem a{
+    color: #000000;
+    cursor: pointer;
+    font-style:normal;
+}
+
+.superblyTagItems .superblyTagItem a:hover {
+    color: #FFFFFF;
+}
+
+.superblyTagItems .superblyTagItem a.hover {
+    color: #FFFFFF;
+}
+
+
+.superblySuggestItems{
+    min-width:100px;
+ 	position: absolute;
+	left: 0;
+	top: 30px;
+	z-index: 100;
+}   
+   
+.superblySuggestItems .superblySuggestItem{
+	background-image: none;
+    font-size:11px;
+    padding: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+	background-color: #e6e6e6;
+    border: solid 1px #ddd;
+	list-style: none;
+	float: none;
+    color: #000000;
+}
+   
+.superblySuggestItems .superblySuggestItem:hover {
+   	cursor: pointer;
+	background-color: #fff;
+}
+   
+.superblySuggestItems .selected{
+	background-color: #e6e6e6
+    border: solid 1px #ddd;
+}
+
+/* 페이지별 엘레멘트들 ***************************************************/
+
+/* 아바타 변경 */
+section.avatar_change img.selected {
+	background-color:#111;
+}
+
+/* 사용자 프로필 */
+section.profile div, section.profile img {
+	float: left;
+	margin-right: 36px;
+}
+section.profile dt.profile_picture { 
+	width: 140px; 
+	text-align: center; 
+	float: left;
+	margin-right: 10px;
+}
+section.profile blockquote.speech
+{
+	position: relative;
+	padding: 18px;
+	background-color: #f4f4f4;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+}
+section.profile blockquote.speech:before
+{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+	left: -24px;
+	top: 16px;
+	border: 12px solid;
+	/* border-color: red green blue yellow; */
+	border-color: #f4f4f4 #f4f4f4 transparent transparent; 
+	border-color: transparent #f4f4f4 #f4f4f4 transparent; 
+}
+section.profile ul.user_stats {
+	margin-top: 16px;
+	width: 490px;
+}
+section.profile ul.user_stats li li {
+	width: 122px;
+} ul.stats li.header li { 
+	font-weight: normal;
+}
+ul.stats li.content li {
+	font-size: 120%;
+	font-weight: bold;
+	color: #666;
+}
+section.online_judge_stat,
+section.recent_activity
+{
+	margin-top: 16px;
+}
+section.online_judge_stat ul.judge_stats {
+	width: 100%;
+}
+section.online_judge_stat ul.judge_stats li.rank { width: 8%; }
+section.online_judge_stat ul.judge_stats li.attempts { width: 18%; }
+section.online_judge_stat ul.judge_stats li.solved { width: 18%; }
+section.online_judge_stat ul.judge_stats li.failed { width: 18%; }
+section.online_judge_stat ul.judge_stats li.submissions { width: 15%; }
+section.online_judge_stat ul.judge_stats li.accepted { width: 20%; }
+section.online_judge_stat ul.judge_stats_charts li.submissions { width: 30%; }
+section.online_judge_stat ul.judge_stats_charts li.category { width: 70%; }
+section.online_judge_stat ul.solved_problems li.content li,
+section.online_judge_stat ul.failed_problems li.content li { 
+	padding: 18px; 
+	text-align: left; 
+}
+section.online_judge_stat ul.solved_problems li.content li a,
+section.online_judge_stat ul.failed_problems li.content li a { 
+	margin: 8px; 
+}
+
+
+/* 포럼 글 목록 */
+table.forum_list tbody td.title_col {
+	text-align: left;
+}
+
+table.forum_list .num_col { width: 8%; }
+table.forum_list .category { width: 12%; }
+/* table.forum_list .title_col { width: 50%; } */
+table.forum_list .user_col, 
+table.forum_list .lastcommenter_col { width: 12%; }
+table.forum_list .comments_col { width: 8%; }
+table.forum_list .updated_col { width: 10%; }
+table.forum_list span.none { color: #999; }
+table.forum_list span.has_comment, 
+table.forum_list span.some_discussions { color: #666; }
+table.forum_list span.heated_discussions, 
+table.forum_list span.very_heated_discussions, 
+table.forum_list span.wow { color: #666; font-weight: bold; }
+
+/* 포럼 글쓰기 */
+section.forum_edit textarea, section.forum_edit input {
+    width: 80%;
+}
+section.forum_edit textarea#id_text {
+    height: 400px;
+}
+
+/* 저지 문제 목록 */
+table.problem_list .accepted { width: 10%; }
+table.problem_list .id { width: 16%; }
+table.problem_list .name {  }
+table.problem_list .writer { width: 12%; }
+table.problem_list .submissions { width: 12%; }
+table.problem_list .accepted_ratio { width: 12%; }
+table.problem_list tbody .id,
+table.problem_list tbody .name {
+	text-align: left;
+}
+
+/* 저지 문제 보기 */
+ul.problem_info { width: 100%; }
+ul.problem_info ul li { width: 20%; }
+ul.problem_info li.source { width: 40%; }
+ul.problem_info li.category { width: 40%; }
+ul.problem_info li.verdict_chart { width: 30%; }
+ul.problem_info li.incorrects_chart { width: 70%; }
+section.problem_statement pre,
+section.problem_sample_input pre,
+section.problem_sample_output pre
+{
+	font-family: monospace;
+	background-color: #f0f0f0;
+	padding: 12px;
+	border: 1px solid silver;
+}
+
+/* 저지 답안 목록 */
+table.submission_list td, table.submission_list th { text-align: left; }
+table.submission_list .id { width: 8%; }
+table.submission_list .problem { width: 14%; }
+table.submission_list .user { width: 14%; }
+table.submission_list .language { width: 8%; }
+table.submission_list .length { width: 8%; }
+table.submission_list .state { width: 12%; }
+table.submission_list .stats { width: 18%; }
+table.submission_list .submitted_on { width: 18%; }
+table.submission_list tbody .submission_state a { text-decoration: underline; }
+.submissionRECEIVED * { color: silver; }
+.submissionCOMPILING * { color: gray; }
+.submissionCOMPILE_ERROR * { font-weight: bold; color: rgb(64, 64, 255); }
+.submissionACCEPTED * { font-weight: bold; color: rgb(255, 64, 64); }
+.submissionWRONG_ANSWER * { font-weight: bold; color: rgb(64, 128, 64); }
+.submissionRUNTIME_ERROR * { font-weight: bold; color: rgb(64, 196, 64); }
+.submissionTIME_LIMIT_EXCEEDED * { font-weight: bold; color: rgb(64, 64, 128); }
+.submissionCANT_BE_JUDGED * { font-weight: bold; color: rgb(64, 255, 64); text-decoration: underline; }
+.submissionREJUDGE_REQUESTED * { color: silver; }
+
+/* 답안 보기 */
+.submission_info ul li {
+	width: 16%;
+}
+
+/* 문제 편집 */
+section.problem_edit textarea, section.problem_edit input {
+    width: 80%;
+}
+section.problem_edit input[type="checkbox"] {
+    width: 50px;
+}
+section..problem_edit textarea#id_description {
+    height: 400px;
+}
+fieldset.attachments .dataTables_wrapper { min-height: 0px; }
+fieldset.attachments td, .attachments th {
+	text-align: left;
+	margin-left: 8px;
+	padding: 0;
+	padding-left: 8px;
+}
+fieldset.attachments div.uploadbutton {
+	margin-bottom: 16px;
+}
+
+/* 뉴스 피드 */
+ul.newsfeed {
+	margin:0;
+	padding:0;
+	width: 590px;
+}
+ul.newsfeed li {
+	background-position:10px 10px;
+	background-repeat:no-repeat;
+	background-image:url('/static/images/icons/icon_event.png');
+	list-style:none;
+	display:block;
+	padding:5px 5px 5px 35px;
+	overflow:hidden;
+	margin: 0px;;
+	line-height:100%;
+	width: 90%;
+}
+ul.newsfeed li.wiki-edit { background-image:url('/static/images/icons/icon_nav_articles.png'); }
+ul.newsfeed li.commented { background-image:url('/static/images/icons/icon_notification_information.png'); }
+ul.newsfeed li.posted { background-image:url('/static/images/icons/icon_event_log.png'); }
+ul.newsfeed li .newsfeed-timestamp {
+	margin-top: 4px;
+	margin-left: 16px;
+	float:right;
+	font-size:93%;
+}
+
+/* 할일들:
+ * kor, eng 클래스 지우기
+ *
+ */
+
+/*  */
+/* a.missing { */
+/* 	color: #2E43AE; */
+/* } */
+/*  */
+/* .problem_edit input, */
+/* .problem_edit textarea, */
+/* form dd select, */
+/* .comment_form textarea, */
+/* .kor, */
+/* .wiki-history *, */
+/* .markup-intro, */
+/* article header h2, */
+/* div.wiki-text *, */
+/* div.wiki-edit textarea, */
+/* div.wiki-edit legend, */
+/* div.wiki-edit input, */
+/* ul.tab-switch li a, */
+/* ul#breadcrumbs li, */
+/* section.sidebar, /* sidebar item */ */
+/* #main-nav ul li a, /* major menu item */ */
+/* #main-nav ul li li a /* minor menu item */ */
+/* { */
+/* 	font-family:NanumGothic,나눔고딕 !important; */
+/* } */
+/*  */
+/* .eng { */
+/* 	font-family:'PT Sans', Arial, sans-serif !important; */
+/* } */
+/*  */
+/* .added { */
+/* 	background-color: #43ae2e; */
+/* 	color: white; */
+/* } */
+/* .removed { */
+/* 	background-color: #ae432e; */
+/* 	color: white; */
+/* } */
+/*  */
+/* article section { */
+/* 	font-size: 15px; */
+/* } */
+/*  */
+/* article img.selected { */
+/* 	background-color:#111; */
+/* } */
+/*  */
+/* article header h3 { */
+/* 	font-size:131%; */
+/* 	float:left; */
+/* } */
+/*  */
+/*  */
+/* .comments { */
+/* 	border-top: 1px solid; */
+/* 	border-color: #D6D6D6; */
+/* 	overflow: hidden; */
+/* 	margin:0; */
+/* 	padding:0; */
+/* } */
+/* .comments .comment { */
+/* 	background:none; */
+/* 	display: block; */
+/* 	list-style:none; */
+/* 	padding: 5px 5px; */
+/* 	margin: 0; */
+/* 	border-bottom: 1px solid; */
+/* 	border-color: #D6D6D6; */
+/* 	min-height: 60px; */
+/* 	overflow: hidden; */
+/* 	position: relative; */
+/* } */
+/* .comments .comment .comment_user { */
+/* 	width: 80px; */
+/* 	overflow: hidden; */
+/* 	margin-right: 10px; */
+/* 	float: left; */
+/* 	text-align: center; */
+/* } */
+/* .comments .comment .comment_content { */
+/* 	display: table-cell; */
+/* 	font-size: 90%; */
+/* } */
+/* .comments .comment .comment_content p { */
+/* 	color: #444 */
+/* } */
+/* .comments.background-color .comment:nth-child(odd) { */
+/* 	background-color: #F4F4F4; */
+/* } */
+/*  */
+/* .comments.background-color .comment:nth-child(even) { */
+/* 	/*background-color: #EAEAEA;*/ */
+/* } */
+/* .comments .comment .datetime { */
+/* 	color: #aaa; */
+/* 	font-size: 80%; */
+/* } */
+/* .comments .comment .operations { */
+/* 	position: absolute; */
+/* 	bottom: 5px; */
+/* 	right: 5px; */
+/* } */
+/* .comments .comment .operations .button-link { */
+/* 	font-size: 10px; */
+/* 	line-height: 130%; */
+/* } */
+/* .comments .comment-reply-form { */
+/* 	margin-left: 55px; */
+/* 	background-color: blue; */
+/* } */
+/*  */
+/* .comments.post .comment { */
+/* 	background-color: #fff; */
+/* 	border: 0; */
+/* } */
+/* .comments.post { */
+/* 	border: 0; */
+/* } */
+/*  */
+/* .comment form { */
+/* 	margin: 0; */
+/* 	padding: 0; */
+/* } */
+/*  */
+/* .comment_form dd { */
+/* 	position: static; */
+/* 	top: 0px !important; */
+/* 	left: 0px !important; */
+/* } */
+/*  */
+/* .comment_form textarea { */
+/* 	width: 480px; */
+/* 	height: 70px; */
+/* } */
+/*  */
+/* .comment_form input.button { */
+/* 	position: absolute; */
+/* 	right: 5px; */
+/* 	top: 5px; */
+/* } */
+/*  */
+/* .comment_reply_form { */
+/* 	margin-left: 24px !important; */
+/* } */
+/*  */
+/* a.userlink { */
+/* 	text-decoration: none; */
+/* 	font-family:NanumGothic,나눔고딕 !important; */
+/* 	font-size: 13px !important; */
+/* 	font-weight: bold !important; */
+/* } */
+/*  */
+/* .comment-delete  { */
+/* 	padding: 25px !important; */
+/* } */
+/*  */
+/* .highlight { */
+/* 	background-color: #eee; */
+/* 	border: 1px solid #ccc; */
+/* } */
+/*  */
+/* .forumlist, .forumlist ul, .forumlist ul ul { */
+/* 	overflow:hidden; */
+/* 	margin:0; */
+/* 	padding:0; */
+/* } */
+/* .forumlist li { */
+/* 	font-size: 14px; */
+/* 	display:block; */
+/* 	list-style:none; */
+/* 	background:none; */
+/* 	padding:0; */
+/* 	margin:0; */
+/* 	height:100%; */
+/* } */
+/* .forumlist li li { float:left; } */
+/* .forumlist .forumlist-header { */
+/* 	width:100%; */
+/* 	padding-bottom:10px; */
+/* 	border-bottom:1px solid; */
+/* 	border-color: #ccc; */
+/* } */
+/* .forumlist-header li, .forumlist-entry li { */
+/* 	text-align:center; */
+/* 	padding:0; */
+/* } */
+/* .forumlist-header li { font-weight: bold; } */
+/* .forumlist-empty { width: 100%; } */
+/*  */
+/*  */
+/* .forumlist-entry li { color: #999; font-size: 14px; text-align: center; } */
+/* .forumlist-num { width: 8%; } */
+/* .forumlist-title { width: 50%; } */
+/* .forumlist-user, .forumlist-lastcommenter { width: 12%; } */
+/* .forumlist-comments { width: 8%; } */
+/* .forumlist-updated { width: 10%; } */
+/* .forumlist-title a { text-decoration: none; } */
+/* .forumlist-entry .forumlist-title { text-align: left !important; } */
+/* .forumlist .forumlist-entry ul { */
+/* 	margin-top: 5px; */
+/* 	margin-bottom:5px; */
+/* } */
+/* .forumlist .forumlist-entry { */
+/* 	padding:0; */
+/* 	line-height: 100%; */
+/* 	margin:0; */
+/* 	border-bottom:1px solid; */
+/* 	border-color: #ccc; */
+/* 	overflow:hidden; */
+/* } */
+/* .forumlist .forumlist-entry { background-color: #f2f2f2; } */
+/* .forumlist .forumlist-entry:nth-child(2n+1) { background-color: #fafafa; } */
+/* .forumlist .forumlist-entry:hover { background-color: #faf2f2; } */
+/* .forumlist .forumlist-entry span.hot { color: #c33; } */
+/*  */
+/* .none { color: #999; } */
+/* .has_comment, .some_discussions { color: #666; } */
+/* .heated_discussions, .very_heated_discussions, .wow { color: #666; font-weight: bold; } */
+/*  */
+/* .pagination { */
+/* 	width: 100%; */
+/* 	text-align: center; */
+/* 	display:block; */
+/* 	height:22px; */
+/* 	line-height:21px; */
+/* 	clear:both; */
+/* 	padding-top:3px; */
+/* 	font-size:12px; */
+/* 	font-weight:normal; */
+/* } */
+/*  */
+/* .pagination a:link, .pagination a:visited { */
+/* 	padding:7px; */
+/* 	padding-top:2px; */
+/* 	padding-bottom:2px; */
+/* 	border:1px solid #EBEBEB; */
+/* 	margin-left:10px; */
+/* 	text-decoration:none; */
+/* 	background-color:#F5F5F5; */
+/* 	width:22px; */
+/* 	font-weight:normal; */
+/* } */
+/*  */
+/* .pagination a:hover { */
+/* 	background-color:#DDEEFF; */
+/* 	border:1px solid #BBDDFF; */
+/* } */
+/*  */
+/* .pagination .active_link { */
+/* 	color: #036 !important; */
+/* 	border:1px solid #BBDDFF !important; */
+/* 	background-color:#DDEEFF !important; */
+/* 	cursor:default; */
+/* } */
+/*  */
+/* .pagination .disabled_tnt_pagination { */
+/* 	padding:7px; */
+/* 	padding-top:2px; */
+/* 	padding-bottom:2px; */
+/* 	border:1px solid #EBEBEB; */
+/* 	margin-left:10px; */
+/* 	text-decoration:none; */
+/* 	background-color:#F5F5F5; */
+/* 	color:#D7D7D7; */
+/* 	cursor:default; */
+/* } */
+/*  */
+/* .newsfeed { */
+/* 	margin:0; */
+/* 	padding:0; */
+/* 	width: 590px; */
+/* } */
+/* .newsfeed li { */
+/* 	background-position:10px 10px; */
+/* 	background-repeat:no-repeat; */
+/* 	background-image:url('/static/images/icons/icon_event.png'); */
+/* 	list-style:none; */
+/* 	display:block; */
+/* 	padding:5px 5px 5px 35px; */
+/* 	overflow:hidden; */
+/* 	margin: 0px;; */
+/* 	line-height:100%; */
+/* 	width: 90%; */
+/* } */
+/* .newsfeed li.wiki-edit { */
+/* 	background-image:url('/static/images/icons/icon_nav_articles.png'); */
+/* } */
+/* .newsfeed li a { */
+/* 	text-decoration: none; */
+/* } */
+/* .newsfeed li.commented { background-image:url('/static/images/icons/icon_notification_information.png'); } */
+/* .newsfeed li.posted { background-image:url('/static/images/icons/icon_event_log.png'); } */
+/* .newsfeed li .newsfeed-timestamp { */
+/* 	margin-top: 4px; */
+/* 	margin-left: 16px; */
+/* 	float:right; */
+/* 	font-size:93%; */
+/* } */
+/* .newsfeed li .newsfeed-meta a { text-decoration:none; } */
+/* article header h2 { width: 500px; } */
+/*  */
+/* /* online judge */ */
+/*  */
+/* .tabular, .tabular ul, .tabular li */
+/* { */
+/* 	margin:0; */
+/* 	padding:0; */
+/* } */
+/*  */
+/* .tabular { */
+/* 	width: 100%; */
+/* 	margin-bottom: 16px; */
+/* 	font-size: 13px; */
+/* } */
+/* .tabular li { */
+/* 	display: block; */
+/* 	list-style: none; */
+/* 	overflow: hidden; */
+/* 	background: none; */
+/* 	padding-top: 2px; */
+/* 	padding-bottom: 2px; */
+/* } */
+/* .tabular li.header { */
+/* 	font-weight: bold; */
+/* } */
+/* .tabular li.content { */
+/* 	background-color: #f0f0f0; */
+/* 	border-top: 1px solid; */
+/* 	border-bottom: 1px solid;; */
+/* 	border-color: silver; */
+/* } */
+/* .tabular li li { */
+/* 	list-style: none; */
+/* 	background: none; */
+/* 	text-align: center; */
+/* 	float: left; */
+/* } */
+/* .problem_info a { text-decoration: none; } */
+/* .problem_info ul li { */
+/* 	width: 20%; */
+/* } */
+/* .problem_info li.source { */
+/* 	width: 40%; */
+/* } */
+/* .problem_info li.category { */
+/* 	width: 40%; */
+/* } */
+/* .submissioninfo a { text-decoration: none; } */
+/* .submissioninfo ul li { */
+/* 	width: 14%; */
+/* } */
+/* .submission_message .highlight { */
+/* 	margin-left: 32px; */
+/* } */
+/* .sourcecode .highlight { */
+/* 	margin-left: 32px; */
+/* } */
+/* .problem_statement p, .problem_statement pre, .problem_statement ul { */
+/* 	margin-left: 16px; */
+/* 	margin-bottom: 16px; */
+/* } */
+/* .problem_statement pre { */
+/* 	font-family: monospace; */
+/* 	background-color: #f0f0f0; */
+/* 	padding: 12px; */
+/* 	border: 1px solid silver; */
+/* } */
+/*  */
+/* .submissions td, .submissions th,  */
+/* .submissions_accepted td, .submissions_accepted th { */
+/* 	padding-left: 8px; */
+/* 	text-align: left; */
+/* } */
+/* .submissions td, .submissions th, */
+/* .submissions_accepted td, .submissions_accepted th  */
+/* { */
+/* 	height: 24px; */
+/* 	font-size: 13px; */
+/* } */
+/* .submissions_accepted td, .submissions_accepted th { */
+/* 	width: 10%; */
+/* } */
+/* .submissions_accepted td.user, .submissions_accepted th.user, */
+/* .submissions_accepted td.stats, .submissions_accepted th.stats */
+/* { */
+/* 	width: 30%; */
+/* } */
+/* .submissions a, */
+/* .submissions_accepted a */
+/* { text-decoration: none; } */
+/* .submissionRECEIVED { color: silver; } */
+/* .submissionCOMPILING { color: gray; } */
+/* .submissionCOMPILE_ERROR { font-weight: bold; color: rgb(64, 64, 255); } */
+/* a .submissionCOMPILE_ERROR { text-decoration: underline; } */
+/* /* Accepted */ */
+/* .submissionACCEPTED { font-weight: bold; color: rgb(255, 64, 64); } */
+/* /* Wrong Answer */ */
+/* .submissionWRONG_ANSWER { font-weight: bold; color: rgb(64, 128, 64); } */
+/* /* Runtime Error */ */
+/* .submissionRUNTIME_ERROR { font-weight: bold; color: rgb(64, 196, 64); } */
+/* a .submissionRUNTIME_ERROR { text-decoration: underline; } */
+/* /* Time Limit Exceeded */ */
+/* .submissionTIME_LIMIT_EXCEEDED { font-weight: bold; color: rgb(64, 64, 128); } */
+/* /* Can't Be Judged */ */
+/* .submissionCANT_BE_JUDGED { font-weight: bold; color: rgb(64, 255, 64); text-decoration: underline; } */
+/* .submissionREJUDGE_REQUESTED{ color: silver; } */
+/*  */
+/* .problem_edit textarea, .forum_edit textarea, .forum_edit input, .problem_edit input { */
+/*     width: 80%; */
+/* } */
+/* .problem_edit textarea#id_description, .forum_edit textarea { */
+/*     height: 400px; */
+/* } */
+/*  */
+/* .problems td, .problems th, .attachments td, .attachments th { */
+/* 	height: 24px; */
+/* 	font-size: 13px; */
+/* } */
+/*  */
+/* .problems td.id, .problems td.name { text-align: left; } */
+/*  */
+/* .problems a { text-decoration: none; } */
+/*  */
+/* .attachments .dataTables_wrapper { min-height: 0px; } */
+/* .attachments a { text-decoration: none; } */
+/* .attachments td, .attachments th { */
+/* 	text-align: left; */
+/* 	margin-left: 8px; */
+/* 	padding: 0; */
+/* 	padding-left: 8px; */
+/* } */
+/* .attachments div.uploadbutton { */
+/* 	margin-bottom: 16px; */
+/* } */
+/*  */
+/* .submission-filter select { */
+/* 	font-size: 12px; */
+/* } */
+/*  */
+/* .submission-filter { */
+/* 	margin-bottom: 200px; */
+/* } */
+/*  */
+/* /* disable default li styling for chosen */ */
+/* ul.chzn-results li { */
+/* 	background-image: none; */
+/* } */

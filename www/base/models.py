@@ -14,12 +14,15 @@ class UserProfile(models.Model):
     """Stores additional information about users."""
     user = models.OneToOneField(User)
     posts = models.IntegerField(null=False, default=0)
+
     submissions = models.IntegerField(null=False, default=0)
+    accepted = models.IntegerField(null=False, default=0)
     solved_problems = models.IntegerField(null=False, default=0)
+
     intro = models.TextField(default="")
 
     def is_authorized(self):
-        return self.solved_problems >= USER_AUTHORIZATION_LIMIT
+        return self.solved_problems >= USER_AUTHORIZATION_LIMIT or self.user.is_superuser
 
 @receiver(post_save, sender=User)
 def user_added(sender, **kwargs):

@@ -1,0 +1,79 @@
+{% extends "judge-base.html" %}
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+
+{% block page_title %}
+	{{ title }}
+{% endblock %}
+
+{% block page_tabs %}
+{% endblock %}
+
+{% block judge_problem_class %}current{% endblock %}
+{% block page_contents %}
+	{% load judge_tags %}
+	{% load common_tags %}
+	<section>
+		<table class="judge_ranking">
+			<thead>
+				<tr>
+					<th class="rank">랭킹</th>
+					<th class="user">
+						사용자
+					</th>
+					<th class="comment">
+						한마디
+					</th>
+					<th class="solved_problems">
+						{% sortable_table_header "푼 문제" "solved" default notoggle %}
+					</th>
+					<th class="authored_problems">
+						{% sortable_table_header "출제" "authored" notoggle %}
+					</th>
+					<th class="submissions">
+						답안 수
+					</th>
+					<th class="accepted_ratio">
+						{% sortable_table_header "정답 비율" "ratio" notoggle %}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for profile in pagination.page.object_list %}
+					<tr>
+						<td class="rank">
+							{{ profile|user_rank }}
+						</td>
+						<td class="user">
+							{{ profile.user|print_username }}
+						</td>
+						<td class="comment">
+							{{ profile.intro }}
+						</td>
+						<td class="solved_problems">
+							<a href="{% url judge-problem-list %}?user_tried={{ profile.user.id }}&verdict=solved">{{ profile.solved_problems }}</a>
+						</td>
+						<td class="authored_problems">
+							<a href="{% url judge-problem-list %}?author={{ profile.user.username }}">
+								{{ profile.user__problem__count }}
+							</a>
+						</td>
+						<td class="submissions">
+							<a href="{% url judge-submission-recent %}?user={{ profile.user.username }}">
+								{{ profile.submissions }}
+							</a>
+						</td>
+						<td class="accepted_ratio">
+								{{ profile.accepted }} ({% percentage profile.accepted profile.submissions %}%)
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
+{% endblock %}

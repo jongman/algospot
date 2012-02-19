@@ -1,23 +1,9 @@
 # -*- coding: utf-8 -*-
 from django import template
-from ..models import Problem, Submission
+from ..models import Submission
+from base.models import UserProfile
 
 register = template.Library()
-
-class PercentNode(template.Node):
-    def __init__(self, a, b):
-        self.a = template.Variable(a)
-        self.b = template.Variable(b)
-    def render(self, context):
-        a = self.a.resolve(context)
-        b = self.b.resolve(context)
-        return str(a * 100 / b) if b else "0"
-
-@register.tag
-def percentage(parser, token):
-    toks = token.split_contents()
-    a, b = toks[1:3]
-    return PercentNode(a, b)
 
 class HasSolvedNode(template.Node):
     def __init__(self, problem, user, result):
@@ -42,3 +28,9 @@ def get_has_solved(parser, token):
 def print_length(length):
     if length < 1024: return "%dB" % length
     return "%.1lfKB" % (length / 1024.)
+
+@register.filter
+def user_rank(profile):
+    qs = UserProfile.objects.filter(solved_problems__gt=profile.solved_problems)
+    return str(qs.count() + 1)
+

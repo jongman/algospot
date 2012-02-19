@@ -4,11 +4,11 @@
 	{{ slug }} 
 {% endblock %}
 
-{% block page-title %}
-History: {{ title }}
+{% block page_title %}
+	History: {{ title }}
 {% endblock %}
 
-{% block page-contents %} 
+{% block page_contents %} 
 	<section>
 		<div class="wiki-text">
 			{{ text|render_text }}
@@ -16,10 +16,10 @@ History: {{ title }}
 	</section>
 {% endblock %}
 
-{% block page-footer %}
-<p class="kor">
-	{{ modified|print_datetime }}의 페이지입니다.
-</p>
+{% block page_footer %}
+	<p class="kor">
+		{{ modified|print_datetime }}의 페이지입니다.
+	</p>
 {% endblock %}
 
-{% block wiki-history-class %}default-tab{% endblock %}
+{% block wiki_history_class %}default-tab{% endblock %}

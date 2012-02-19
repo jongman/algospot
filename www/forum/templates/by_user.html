@@ -1,0 +1,81 @@
+{% extends "forum-base.html" %}
+{% block title %} 
+	{{ filter_user.username }}: 쓴 글들
+{% endblock %}
+
+
+{% block page_title %}
+	{{ filter_user.username }}: 쓴 글들
+{% endblock %}
+
+{% block forum_write_class_tabs %}{% endblock %}
+
+{% block page_contents %} 
+	{% load common_tags %}
+	{% load comments %}
+	<section>
+		<table class="forum_list">
+			<thead>
+				<tr>
+					<th class="num_col">번호</th>
+					<th class="title_col">제목</th>
+					<th class="user_col">글쓴이</th>
+					<th class="comments_col">댓글수</th>
+					<th class="last_commenter_col">마지막 댓글</th>
+					<th class="updated_col">갱신</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if pagination.page.object_list.count == 0 %}
+					<tr>
+						<td colspan="6" class="empty_message">
+							글이 아직 없습니다.
+						</td>
+					</tr>
+				{% endif %}
+				{% for post in pagination.page.object_list %}
+					<tr>
+						<td class="num_col">
+							{{ post.id}}
+						</td>
+						<td class="title_col">
+							<a href="{% url forum-read post.id %}">{{ post.title }}</a>
+						</td>
+						{% get_comment_count for post as cc %}
+						{% get_last_comment for post as lc %}
+						<td class="user_col">
+							{{ post.user|print_username }}
+						</td>
+						<td class="comments_col">
+							<span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span>
+						</td>
+						<td class="last_commenter_col">
+							{% if lc %}
+								{{ lc.user|print_username }}
+							{% else %}
+								없음
+							{% endif %}
+						</td>
+						<td class="updated_col">
+							{% if lc %}
+								{{ lc.submit_date|print_datetime}}
+							{% else %}
+								{{ post.created_on|print_datetime}}
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
+{% endblock %}
+
+{% block other_blocks %}
+{% endblock %}
+
+{% block page_footer %}
+{% endblock %}
+

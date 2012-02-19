@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block title %} Forbidden operation {% endblock %}
 
-{% block page-title %}
+{% block page_title %}
 	권한이 없습니다
 {% endblock %}
 
-{% block page-contents %} 
+{% block page_contents %} 
 	<section>
 		<p class="kor">
-            정회원 권한이 있어야 편집하실 수 있습니다. 정회원이 되시려면
-            온라인 저지에서 {{ limit }}문제 이상을 푸셔야
+			정회원 권한이 있어야 편집하실 수 있습니다. 정회원이 되시려면
+			온라인 저지에서 {{ limit }}문제 이상을 푸셔야
 			합니다. 현재 {{ solved }}문제를 푸셨습니다.
 
 			{% comment %}
-			<a href="{% url aoj %}" class="button">Go to Online Judge</a>
+				<a href="{% url aoj %}" class="button">Go to Online Judge</a>
 			{% endcomment %}
 		</p>
 	</section>

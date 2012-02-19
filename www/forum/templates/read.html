@@ -4,50 +4,52 @@
 {% endblock %}
 
 
-{% block page-title %}
+{% block page_title %}
 	{{ post.title }}
 {% endblock %}
 
 <!-- TODO: link back to board -->
 
-{% block page-contents %} 
-{% load common_tags %}
-{% load avatar_tags %}
-<ul class="comments post kor">
-	<li class="comment">
-		<dl>
-			<dt class="comment_user">
-				{% avatar post.user 45 %}<br/>
-				{{ post.user|print_username }}
-			</dt>
-			<dd class="comment_content">
-				{{ post.text|render_text }}
-				<br/>
-				<span class="datetime">{{ post.created_on|print_datetime }}</span>
-				<span class="operations">
-					{% if user.is_authenticated %}
-						{% if user.is_superuser or user == post.user %}
-						<a href="{% url forum-edit post.id %}" class="button-link">edit</a> 
-						<a href="{% url forum-delete post.id %}" class="button-link">delete</a>
-						{% endif %}
-					{% endif %}
-				</span>
-			</dd>
-		</dl>
-	</li>
-</ul>
+{% block page_contents %} 
+	{% load common_tags %}
+	{% load avatar_tags %}
+	<section>
+		<ul class="comments post kor">
+			<li class="comment">
+				<dl>
+					<dt class="comment_user">
+						{% avatar post.user 45 %}<br/>
+						{{ post.user|print_username }}
+					</dt>
+					<dd class="comment_content">
+						{{ post.text|render_text }}
+						<br/>
+						<span class="datetime">{{ post.created_on|print_datetime }}</span>
+						<span class="operations">
+							{% if user.is_authenticated %}
+								{% if user.is_superuser or user == post.user %}
+									<a href="{% url forum-edit post.id %}" class="button-link">edit</a> 
+									<a href="{% url forum-delete post.id %}" class="button-link">delete</a>
+								{% endif %}
+							{% endif %}
+						</span>
+					</dd>
+				</dl>
+			</li>
+		</ul>
+	</section>
 {% endblock %}
-{% block other-blocks %}
+{% block other_blocks %}
 
-{% with commentobject=post %}
-	{% include "comment_block.html" %}
-{% endwith %}
+	{% with commentobject=post %}
+		{% include "comment_block.html" %}
+	{% endwith %}
 {% endblock %}
 
-{% block page-tabs %}
+{% block page_tabs %}
 {% endblock %}
 
 
-{% block page-footer %}
+{% block page_footer %}
 {% endblock %}
 

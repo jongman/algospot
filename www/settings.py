@@ -121,7 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    #'django.contrib.sites',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'registration',
     'avatar',
     'djcelery',
+    'tagging',
     #'actstream',
 
     'base',
@@ -210,7 +211,7 @@ JUDGE_SETTINGS = {
 
 # PAGINATION SETTINGS
 ITEMS_PER_PAGE = 20
-PAGINATOR_RANGE = 10
+PAGINATOR_RANGE = 5
 
 # PROFILE SETTINGS
 PROFILE_LOG_BASE = None

@@ -1,30 +1,22 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
 from ..models import Problem, Submission
 
-@login_required
-def mine(request):
-    return redirect(reverse("judge-submission-recent"))
-
-def accepted(request, problem, order_by="length", page=1):
-    problem = get_object_or_404(Problem, slug=problem)
-    submissions = Submission.objects.filter(state=Submission.ACCEPTED,
-                                            problem=problem).order_by(order_by)
-    return render(request, "submission/accepted.html",
-                  {"problem": problem,
-                   "order_by": order_by,
-                   "pagination": setup_paginator(submissions, page,
-                                                 "judge-submission-accepted",
-                                                 {"problem": problem.slug,
-                                                  "order_by": order_by})})
+def rejudge(request, id):
+    submission = get_object_or_404(Submission, id=id)
+    if submission.user != request.user and not request.user.is_superuser:
+        return HttpResponseForbidden()
+    submission.message = ""
+    submission.time = None
+    submission.state = Submission.REJUDGE_REQUESTED
+    submission.save()
+    return redirect(reverse("judge-submission-details", kwargs={"id": id}))
 
 def recent(request, page=1):
-    # TODO: hide non-public submission
-    # TODO: handle non-public submissions in general
     submissions = Submission.objects.all().order_by("-id")
 
     filters = {}
@@ -32,11 +24,22 @@ def recent(request, page=1):
     empty_message = u"제출된 답안이 없습니다."
     title_add = []
 
+    # only superuser can see all nonpublic submissions.
+    # as an exception, if we are filtering by a problem, the author can see
+    # nonpublic submissions. also, everybody can see their nonpublic
+    # submissions.
+    only_public = not request.user.is_superuser
+
     if request.GET.get("problem"):
         slug = request.GET["problem"]
         problem = get_or_none(Problem, slug=slug)
+        if request.user == problem.user:
+            only_public = False
 
-        if not problem:
+        if (not problem or
+                (problem.state != Problem.PUBLISHED and
+                 not request.user.is_superuser and
+                 request.user != problem.user)):
             empty_message = u"해당 문제가 없습니다."
             submissions = submissions.none()
         else:
@@ -61,6 +64,11 @@ def recent(request, page=1):
             submissions = submissions.filter(user=user)
         filters["user"] = username
         title_add.append(username)
+        if user == request.user:
+            only_public = False
+
+    if only_public:
+        submissions = submissions.filter(is_public=True)
 
     problems = Problem.objects.filter(state=Problem.PUBLISHED).order_by("slug")
     users = User.objects.order_by("username")
@@ -78,6 +86,11 @@ def recent(request, page=1):
 def details(request, id):
     submission = get_object_or_404(Submission, id=id)
     problem = submission.problem
+    if (not problem.was_solved_by(request.user) and
+            not request.user.is_superuser and
+            submission.user != request.user and
+            problem.user != request.user):
+        return HttpResponseForbidden()
     return render(request, "submission/details.html",
                   {"title": u"답안 보기",
                    "submission": submission,

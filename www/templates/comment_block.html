@@ -2,12 +2,20 @@
 {% load common_tags %}
 {% load comments %}
 <article class="full-block">
-<div class="article-container">
-        {% get_comment_count for commentobject as cc %}
+	<div class="article-container">
+		{% get_comment_count for commentobject as cc %}
 		<section class="kor">
 			{% get_comment_list for commentobject as comment_list %}
-			<h5>{{ cc }}개의 댓글이 있습니다.</h5>
-			<ul class="comments background-color">
+			<h5>
+				{% if hide_comments %}
+					<a href="javascript:;" id="toggle_comments">
+				{% endif %}
+					{{ cc }}개의 댓글이 있습니다.
+				{% if hide_comments %}
+					</a>
+				{% endif %}
+			</h5>
+			<ul id="comment_list" class="comments background-color" {% if hide_comments %}style="display: none;"{% endif %}>
 				{% for comment in comment_list %}
 				<li class="comment">
 					<dl>
@@ -23,12 +31,12 @@
 								<a name="c{{ comment.id }}"></a>
 								<a href="#c{{ comment.id }}" class="button-link gray">link</a>
 								{% if user.is_authenticated %}
-									{% if user.is_superuser or user == comment.user %}
-									<a href="{% url comment-delete-algospot comment.id %}?next={{ request.get_full_path }}" class="button-link gray">delete</a> 
-									{% endif %}
-									{% comment %}
-									<a href="javascript:comment_reply_form_toggle({{ comment.id }});" class="button-link gray">reply</a>
-									{% endcomment %}
+								{% if user.is_superuser or user == comment.user %}
+								<a href="{% url comment-delete-algospot comment.id %}?next={{ request.get_full_path }}" class="button-link gray">delete</a> 
+								{% endif %}
+								{% comment %}
+								<a href="javascript:comment_reply_form_toggle({{ comment.id }});" class="button-link gray">reply</a>
+								{% endcomment %}
 								{% endif %}
 							</span>
 						</dd>
@@ -36,25 +44,45 @@
 				</li>
 				{% comment %}
 				{% if user.is_authenticated %}
-					<li class="comment comment_reply_form comment_form" style="display: none;" id="replyform_{{ comment.id }}">
-						{% get_comment_form for comment as form %}
-						{% include "comment_form.html" %}
-					</li>
-					{% endif %}
+				<li class="comment comment_reply_form comment_form" style="display: none;" id="replyform_{{ comment.id }}">
+					{% get_comment_form for comment as form %}
+					{% include "comment_form.html" %}
+				</li>
+				{% endif %}
 				{% endcomment %}
-			{% endfor %}
-            {% if user.is_authenticated %}
-                {% get_comment_form for commentobject as form %}
+				{% endfor %}
+				{% if user.is_authenticated %}
+				{% get_comment_form for commentobject as form %}
 				<li class="comment comment_form">
-				{% include "comment_form.html" %}
+					{% include "comment_form.html" %}
 				</li>
 
-            {% else %}
-            	<li class="comment">
-	                <p>댓글을 남기시려면 <a href="{% url auth_login %}">로그인</a>하세요.
+				{% else %}
+				<li class="comment">
+					<p>
+						댓글을 남기시려면 <a href="{% url auth_login %}">로그인</a>하세요.
+					</p>
 				</li>
-            {% endif %}
-				</ul>
-        </section>
-    </div>
+				{% endif %}
+			</ul>
+		</section>
+	</div>
 </article>
+{% if hide_comments %}
+<script language="javascript">
+	$(function() {
+		$("#toggle_comments").click(function(e) {
+			e.stopPropagation();
+			e.preventDefault();
+			$("#comment_list").slideToggle();
+			return false;
+		});
+		if(window.location.hash) {
+			$("#comment_list").show();
+			var hash = window.location.hash;
+			var target_top = $(hash).offset().top;
+			$("html, body").animate({scrollTop: target_top}, 500);
+		}
+	});
+</script>
+{% endif %}

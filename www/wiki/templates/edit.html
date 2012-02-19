@@ -5,31 +5,33 @@ hello hahaha
 {% endblock %}
 
 
-{% block page-title %}
+{% block page_title %}
 	{{ action }}: {{ title }}
 {% endblock %}
 
-{% block page-contents %} 
-<div class="wiki-edit">
-	<form action="" method="post">
-		{% csrf_token %}
-		<fieldset>
-			<legend>편집하기</legend>
-			{% include "print_form.html" %}
-		</fieldset>
-		<button type="submit">Submit</button> or <a href="{% url wiki-detail slug %}">Cancel</a>
-	</form>
-</div>
+{% block page_contents %} 
+	<section>
+		<div class="wiki-edit">
+			<form action="" method="post">
+				{% csrf_token %}
+				<fieldset>
+					<legend>편집하기</legend>
+					{% include "print_form.html" %}
+				</fieldset>
+				<button type="submit">Submit</button> or <a href="{% url wiki-detail slug %}">Cancel</a>
+			</form>
+		</div>
+	</section>
 {% endblock %}
 
-{% block other-blocks %}
+{% block other_blocks %}
 
-{% include "markdown_cheatsheet.html" %}
+	{% include "markdown_cheatsheet.html" %}
 
 {% endblock %}
 
-{% block page-footer %}
-Page is last modified on {{ modified }}
+{% block page_footer %}
+	Page is last modified on {{ modified }}
 {% endblock %}
 
-{% block wiki-edit-class %}default-tab{% endblock %}
+{% block wiki_edit_class %}default-tab{% endblock %}

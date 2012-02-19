@@ -1,39 +1,41 @@
 {% extends "base.html" %}
 {% block title %}Delete a comment{% endblock %}
-{% block page-title %}댓글 삭제하기{% endblock %}
+{% block page_title %}댓글 삭제하기{% endblock %}
 
-{% block page-contents %}
+{% block page_contents %}
 	{% load common_tags %}
 	{% load avatar_tags %}
 	{% load avatar_custom_tags %}
-	<ul class="comments kor">
-		<li class="comment">
-			<dl>
-				<dt class="comment_user">
-					{% avatar comment.user 45 %}<br/>
-					{{ comment.user|print_username }}
-				</dt>
-				<dd class="comment_content">
-					{{ comment.comment }}
-					<br/>
-					<span class="datetime">{{ comment.submit_date|print_datetime }}</span>
-				</dd>
-			</dl>
-		</li>
-	</ul>
-</section>
-<section>
+	<section>
+		<ul class="comments kor">
+			<li class="comment">
+				<dl>
+					<dt class="comment_user">
+						{% avatar comment.user 45 %}<br/>
+						{{ comment.user|print_username }}
+					</dt>
+					<dd class="comment_content">
+						{{ comment.comment }}
+						<br/>
+						<span class="datetime">{{ comment.submit_date|print_datetime }}</span>
+					</dd>
+				</dl>
+			</li>
+		</ul>
+	</section>
 
-	<form action="." method="POST">
-		<fieldset class="kor comment-delete">
-			<legend>이 댓글을 정말 삭제하시겠습니까?</legend>
-			{% csrf_token %}
-			{% if next %}
-				<input type="hidden" name="next" value="{{ next }}" id="next" />
-			{% endif %}
-			<p>
-				<input type="submit" name="submit" value="Delete" class="eng button" /> 혹은 <a href="{{ next }}">Cancel</a>
-			</p>
-		</fieldset>
-	</form>
+	<section>
+		<form action="." method="POST">
+			<fieldset class="kor comment-delete">
+				<legend>이 댓글을 정말 삭제하시겠습니까?</legend>
+				{% csrf_token %}
+				{% if next %}
+					<input type="hidden" name="next" value="{{ next }}" id="next" />
+				{% endif %}
+				<p>
+					<input type="submit" name="submit" value="Delete" class="eng button" /> 혹은 <a href="{{ next }}">Cancel</a>
+				</p>
+			</fieldset>
+		</form>
+	</section>
 {% endblock %}

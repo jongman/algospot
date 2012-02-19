@@ -1,0 +1,77 @@
+{% extends "judge-base.html" %}
+{% load common_tags %}
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+
+{% block page_title %}
+	{{ title }}
+{% endblock %}
+
+{% block judge_author_class %}current{% endblock %}
+{% block page_contents %}
+	{% load judge_tags %}
+	{% load common_tags %}
+	<section>
+		<table class="problem_list">
+			<thead>
+				<tr>
+					<th class="state">
+						{% sortable_table_header "상태" "state" %}
+					</th>
+					<th class="id">
+						{% sortable_table_header "문제ID" "slug" default %}
+					</th>
+					<th class="name">
+						{% sortable_table_header "문제 제목" "name" %}
+					</th>
+					<th class="writer">
+						{% sortable_table_header "출제자" "user" %}
+					</th>
+					<th class="action">
+						동작
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for problem in pagination.page.object_list %}
+					<tr>
+						<td class="state">
+							{{ problem.get_state_name }}
+						</td>
+						<td class="id">
+							<a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a>
+						</td>
+						<td class="name">
+							<a href="{% url judge-problem-read problem.slug %}">{{ problem.name }}</a>
+						</td>
+						<td class="writer">
+							{{ problem.user|print_username }}
+						</td>
+						<td class="action">
+							<a href="{% url judge-problem-edit problem.id %}" class="button-link">edit</a>
+							{% if problem.solver__count == 0 %}
+								<a href="javascript:delete_problem('{% url judge-problem-delete problem.id %}');" class="button-link">delete</a>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
+{% endblock %}
+{% block page_tabs %}
+	<nav>
+		<ul class="tab-switch">
+			<li>
+				<a href="{% url judge-problem-new %}" rel="tooltip" title="New problem">
+					새 문제 작성하기
+				</a>
+			</li>
+		</ul>
+	</nav>
+{% endblock %}

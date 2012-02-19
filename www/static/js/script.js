@@ -74,21 +74,25 @@ $(function () {
 	$('.ie7').find(':disabled').addClass('disabled');
 
 	// Menu Dropdown
-	$('#main-nav li ul').hide(); //Hide all sub menus
-	$('#main-nav li.current a').parent().find('ul').slideToggle('slow'); // Slide down the current sub menu
-	$('#main-nav li a').click(
-		function () {
-			$(this).parent().siblings().find('ul').slideUp('normal'); // Slide up all menus except the one clicked
-			$(this).parent().find('ul').slideToggle('normal'); // Slide down the clicked sub menu
-			return false;
-		}
-	);
-	$('#main-nav li a.no-submenu, #main-nav li li a').click(
-		function () {
-			window.location.href=(this.href); // Open link instead of a sub menu
-			return false;
-		}
-	);
+	// $('#main-nav li ul').hide(); //Hide all sub menus
+	// $('#main-nav li.current a').parent().find('ul').slideToggle(0); // Slide down the current sub menu
+	// $('#main-nav li a.no-submenu, #main-nav li li a').click(
+	// 	function(e) {
+	// 		window.location.href=(this.href); // Open link instead of a sub menu
+	// 		return false;
+	// 	}
+	// );
+	// $('#main-nav li a').each(function(index, element) {
+	// 	if(!$(element).hasClass("no-submenu")) {
+	// 		$(element).click(
+	// 			function () {
+	// 				$(this).parent().siblings().find('ul').slideUp('normal'); // Slide up all menus except the one clicked
+	// 				$(this).parent().find('ul').slideToggle('normal'); // Slide down the clicked sub menu
+	// 				return false;
+	// 			}
+	// 		);
+	// 	}
+	// });
 
 	// Widget Close Button
 	$('.close-widget').click(
@@ -303,6 +307,14 @@ function wiki_revert(destination) {
 	}
 }
 
+function delete_problem(destination) {
+	var choice = window.prompt("정말 삭제하시겠어요? 돌이킬 수 없습니다. 정말 삭제하시려면 'yes'를 입력하세요.", 'no');
+	if(choice == 'yes') {
+		console.log('choice', choice, 'dest', destination);
+		window.location.href = destination;
+	}
+}
+
 function wiki_diff(diff_path) {
 	var diff1 = $('input:radio[name=diff1]:checked').val();
 	var diff2 = $('input:radio[name=diff2]:checked').val();
@@ -408,3 +420,38 @@ $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallba
 		}
 	}, oSettings );
 };
+
+$(function() {
+	function pad(str, len) {
+		str = str.toString();
+		while(str.length < len) {
+			str = "0" + str;
+		}
+		return str;
+	}
+	var url = 'https://www.googleapis.com/calendar/v3/calendars/pl39rk6qf5h2bqvrjc7vqsqvtg%40group.calendar.google.com/events?maxResults=10&orderBy=startTime&singleEvents=true&pp=1&key=AIzaSyA2g8QdzZpfchYfJt2bFotADZAkB0EjLS8&timeMin=' + (new Date().toISOString()) + "&callback=?";
+	$.getJSON(url, function(data) {
+		var container = $("#calendar_events_container");
+		var template = container.find(".template");
+		for(var i in data.items) {
+			var item = data.items[i];
+			var entry = template.clone();
+			entry.removeClass('template');
+			if(i > 0) entry.addClass('separator');
+			entry.find("a.anchor").html(item.summary).attr('href', item.htmlLink);
+			// date only?
+			if(item.start.date) {
+				var d = new Date(item.start.date);
+				entry.find('.starttime').html('(' + (d.getMonth() + 1) + '/' + d.getDate() + ')');
+			}
+			else {
+				var d = new Date(item.start.dateTime);
+				entry.find('.starttime').html('(' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + 
+					pad(d.getHours(), 2) + ':' + pad(d.getMinutes(), 2) + ')');
+			}
+
+			entry.appendTo(container);
+		}
+	});
+
+});

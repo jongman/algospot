@@ -1,76 +1,96 @@
 {% extends "forum-base.html" %}
 {% block title %} 
-	{{ category.name }}
+	{{ title }}
 {% endblock %}
 
 
-{% block page-title %}
-	{{ category.name }}
+{% block page_title %}
+	{{ title }}
 {% endblock %}
 
-{% block forum-write-class-tabs %}{% endblock %}
+{% block forum_write_class_tabs %}{% endblock %}
 
-{% block page-contents %} 
-{% load common_tags %}
-{% load comments %}
-<ul class="forumlist kor">
-	<li class="forumlist-header">
-		<ul>
-			<li class="forumlist-num">번호</li>
-			<li class="forumlist-title">제목</li>
-			<li class="forumlist-user">글쓴이</li>
-			<li class="forumlist-comments">댓글수</li>
-			<li class="forumlist-lastcommenter">마지막 댓글</li>
-			<li class="forumlist-updated">갱신</li>
-		</ul>
-	</li>
-	{% if pagination.page.object_list.count == 0 %}
-	<li class="forumlist-entry"><ul>
-		<li class="forumlist-empty">
-		글이 아직 없습니다.
-		</li>
-	</li>
-	{% endif %}
-	{% for post in pagination.page.object_list %}
-	<li class="forumlist-entry"><ul>
-			<li class="forumlist-num">{{ post.id }}</li>
-			<li class="forumlist-title"><a href="{% url forum-read post.id %}">{{ post.title }}</a></li>
-			{% get_comment_count for post as cc %}
-			{% get_last_comment for post as lc %}
-			<li class="forumlist-user">{{ post.user|print_username }}</li>
-			<li class="forumlist-comments"><span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span></li>
-			<li class="forumlist-lastcommenter">
-				{% if lc %}
-					{{ lc.user|print_username }}
-				{% else %}
-					없음
+{% block page_contents %} 
+	{% load common_tags %}
+	{% load comments %}
+	<section>
+		<table class="forum_list">
+			<thead>
+				<tr>
+					<th class="num_col">번호</th>
+					{% if show_category %}
+						<th class="category">게시판</th>
+					{% endif %}
+					<th class="title_col">제목</th>
+					<th class="user_col">글쓴이</th>
+					<th class="comments_col">댓글수</th>
+					<th class="last_commenter_col">마지막 댓글</th>
+					<th class="updated_col">갱신</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if pagination.page.object_list.count == 0 %}
+					<tr>
+						<td colspan="6" class="empty_message">
+							글이 아직 없습니다.
+						</td>
+					</tr>
 				{% endif %}
-			</li>
-			<li class="forumlist-updated">
-				{% if lc %}
-					{{ lc.submit_date|print_datetime}}
-				{% else %}
-					{{ post.created_on|print_datetime}}
-				{% endif %}
-			</li>
-		</ul></li>
-	{% endfor %}
-</ul>
-</article>
-<article>
-	{{ pagination.render }}
+				{% for post in pagination.page.object_list %}
+					<tr>
+						<td class="num_col">
+							{{ post.id}}
+						</td>
+						{% if show_category %}
+							<td class="category">
+								<a href="{% url forum-list post.category.slug 1 %}">{{ post.category.name }}</a>
+							</td>
+						{% endif %}
+						<td class="title_col">
+							<a href="{% url forum-read post.id %}">{{ post.title }}</a>
+						</td>
+						{% get_comment_count for post as cc %}
+						{% get_last_comment for post as lc %}
+						<td class="user_col">
+							{{ post.user|print_username }}
+						</td>
+						<td class="comments_col">
+							<span class="comment_count {{ cc|get_comment_hotness }}">{{ cc }}개</span>
+						</td>
+						<td class="last_commenter_col">
+							{% if lc %}
+								{{ lc.user|print_username }}
+							{% else %}
+								없음
+							{% endif %}
+						</td>
+						<td class="updated_col">
+							{% if lc %}
+								{{ lc.submit_date|print_datetime}}
+							{% else %}
+								{{ post.created_on|print_datetime}}
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	<section class="pagination">
+		{{ pagination.render }}
+	</section>
 {% endblock %}
-{% block page-tabs %}
+{% block page_tabs %}
 	<nav>
 		<ul class="tab-switch">
-			<li><a class="{% block forum-write-class %}{% endblock %}" href="{% url forum-write category.slug %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
+			<li><a class="{% block forum_write_class %}{% endblock %}" href="{% url forum-write write_at %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
 		</ul>
 	</nav>
 {% endblock %}
 
-{% block other-blocks %}
+{% block other_blocks %}
 {% endblock %}
 
-{% block page-footer %}
+{% block page_footer %}
 {% endblock %}
 

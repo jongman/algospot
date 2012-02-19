@@ -1,22 +1,25 @@
 {% extends "problem/problem-base.html" %}
 {% load common_tags %}
 
-{% block judge-problem-submit-class %}current{% endblock %}
+{% block judge_problem_submit_class %}current{% endblock %}
 
-{% block page-title %}
+{% block page_title %}
 	제출하기: {{ problem.name }}
 {% endblock %}
 
-{% block page-contents %} 
-    <form action="" method="POST" class="kor">
-        {% csrf_token %}
-        <fieldset>
-            <legend>소스 코드</legend>
-            {% include "print_form.html" %}
-        </fieldset>
-        <button type="submit">제출하기</button> 
-        or
-        <a href="{% url judge-problem-read problem.slug %}">돌아가기</a>
-    </form>
+{% block page_contents %} 
+	{% include "problem/info_block.html" %}
+	<section>
+		<form action="" method="POST" class="kor">
+			{% csrf_token %}
+			<fieldset>
+				<legend>소스 코드</legend>
+				{% include "print_form.html" %}
+			</fieldset>
+			<button type="submit">제출하기</button> 
+			or
+			<a href="{% url judge-problem-read problem.slug %}">돌아가기</a>
+		</form>
+	</section>
 {% endblock %}
 

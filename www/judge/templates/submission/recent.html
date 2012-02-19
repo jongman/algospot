@@ -5,81 +5,80 @@
 {% endblock %}
 
 
-{% block page-title %}
+{% block page_title %}
 	{{ title }}
 {% endblock %}
 
-{% block page-tabs %}
+{% block page_tabs %}
 {% endblock %}
 
-{% block judge-submission-class %}current{% endblock %}
-{% block page-contents %}
-{% load judge_tags %}
-<table class="submissions kor">
-	<thead>
-		<tr>
-			<th class="id">#</th>
-			<th class="problem">문제</th>
-			<th class="user">제출자</th>
-			<th class="language">언어</th>
-			<th class="length">길이</th>
-			<th class="state">결과</th>
-			<th class="stats">시간/메모리</th>
-			<th class="submitted_on">제출시간</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for sub in pagination.page.object_list %}
-		<tr>
-			<td class="id">
-				{% if sub.is_public %}
-					{{ sub.id }}
-				{% else %}
-					NP
-				{% endif %}
-			</td>
-			<td class="problem"><a href="{{ sub.problem.get_absolute_url }}">{{ sub.problem.slug }}</a></td>
-			<td class="user">{{ sub.user|print_username }}</td>
-			<td class="language">
-				{% if user == sub.user or user.is_superuser %}
-				<a href="{% url judge-submission-details sub.id %}">
-				{% endif %}					
-					{{ sub.language }}
-				{% if user == sub.user or user.is_superuser %}
-				</a>
-				{% endif %}					
-			</td>
-			<td class="length">{{ sub.length|print_length }}</td>
-			<td class="state">
-				{% if sub.has_messages %}
-					{% if user == sub.user or user.is_superuser %}
-						<a href="{% url judge-submission-details sub.id %}">
-					{% endif %}
-				{% endif %}
-				<span class="submission{{ sub.name_eng }}">
-					{{ sub.name_kor }}
-				</span>
-				{% if sub.has_messages %}
-					{% if user == sub.user or user.is_superuser %}
-						</a>
-					{% endif %}
-				{% endif %}
-
-			</td>
-			<td class="stats">
-				{% if sub.has_run %}
-					{{ sub.time }}ms/{{ sub.memory }}KB
-				{% endif %}
-			</td>
-			<td class="submitted_on">{{ sub.submitted_on|print_datetime}}</td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</table>
-</section>
-</article>
-<article>
+{% block judge_submission_class %}current{% endblock %}
+{% block page_contents %}
+	{% load judge_tags %}
 	<section>
+		<table class="submission_list">
+			<thead>
+				<tr>
+					<th class="id">#</th>
+					<th class="problem">문제</th>
+					<th class="user">제출자</th>
+					<th class="language">언어</th>
+					<th class="length">길이</th>
+					<th class="state">결과</th>
+					<th class="stats">수행시간</th>
+					<th class="submitted_on">제출시간</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for sub in pagination.page.object_list %}
+					<tr>
+						<td class="id">
+							{% if sub.is_public %}
+								{{ sub.id }}
+							{% else %}
+								NP
+							{% endif %}
+						</td>
+						<td class="problem"><a href="{{ sub.problem.get_absolute_url }}">{{ sub.problem.slug }}</a></td>
+						<td class="user">{{ sub.user|print_username }}</td>
+						<td class="language">
+							{% get_has_solved sub.problem by user as solved %}
+							{% if user == sub.user or user.is_superuser or solved or user == sub.problem.user %}
+								<a href="{% url judge-submission-details sub.id %}">
+								{% endif %}					
+								{{ sub.language }}
+								{% if user == sub.user or user.is_superuser %}
+								</a>
+							{% endif %}					
+						</td>
+						<td class="length">{{ sub.length|print_length }}</td>
+						<td class="state">
+							<span class="submission_state submission{{ sub.name_eng }}">
+								{% if sub.has_messages %}
+									{% if user == sub.user or user.is_superuser or solved or user == sub.problem.user %}
+										<a href="{% url judge-submission-details sub.id %}">
+									{% endif %}
+								{% endif %}
+								<span>{{ sub.name_kor }}</span>
+								{% if sub.has_messages %}
+									{% if user == sub.user or user.is_superuser or solved %}
+										</a>
+									{% endif %}
+								{% endif %}
+							</span>
+						</td>
+						<td class="stats">
+							{% if sub.has_run %}
+								{{ sub.time }}ms
+							{% endif %}
+						</td>
+						<td class="submitted_on">{{ sub.submitted_on|print_datetime}}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	<section class="pagination">
 		{{ pagination.render }}
 	</section>
 	<section>
