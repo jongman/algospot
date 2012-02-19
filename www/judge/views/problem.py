@@ -8,10 +8,14 @@ from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
 from base.decorators import authorization_required
 from ..models import Problem, Submission, Attachment, Solver
-from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
+from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm, RestrictedProblemEditForm
 import json
 import os
 import hashlib
+
+@login_required
+def new(request):
+    pass
 
 @login_required
 def edit(request, id):
@@ -19,7 +23,9 @@ def edit(request, id):
     problem = get_object_or_404(Problem, id=id)
     if not request.user.is_superuser and problem.user != request.user:
         raise Http404
-    form = ProblemEditForm(data=request.POST or None, instance=problem)
+    form_class = (ProblemEditForm if request.user.is_superuser else
+                  RestrictedProblemEditForm)
+    form = form_class(data=request.POST or None, instance=problem)
     if request.method == "POST" and form.is_valid():
         form.save()
         return redirect(reverse("judge-problem-read",

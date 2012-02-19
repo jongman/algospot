@@ -9,9 +9,6 @@
 	{{ title }}
 {% endblock %}
 
-{% block page_tabs %}
-{% endblock %}
-
 {% block judge_author_class %}current{% endblock %}
 {% block page_contents %}
 	{% load judge_tags %}
@@ -57,4 +54,15 @@
 	<section class="pagination">
 		{{ pagination.render }}
 	</section>
+{% endblock %}
+{% block page_tabs %}
+	<nav>
+		<ul class="tab-switch">
+			<li>
+				<a href="{% url judge-problem-new %}" rel="tooltip" title="New problem">
+					새 문제 작성하기
+				</a>
+			</li>
+		</ul>
+	</nav>
 {% endblock %}
