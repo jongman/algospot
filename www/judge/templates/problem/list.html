@@ -22,49 +22,19 @@
 				<tr>
 					<th class="accepted">풀었나?</th>
 					<th class="id">
-						{% if order_by == "slug" %}
-							<a href="{% url judge-problem-list "-slug" 1 %}?{{ get_params }}">
-						{% else %}
-							<a href="{% url judge-problem-list "slug" 1 %}?{{ get_params }}">
-						{% endif %}문제ID
-						{% if order_by == "slug" %} ↓ {% endif %}
-						{% if order_by == "-slug" %} ↑ {% endif %}</a>
+						{% sortable_table_header "문제ID" "slug" default %}
 					</th>
 					<th class="name">
-						{% if order_by == "name" %}
-							<a href="{% url judge-problem-list "-name" 1 %}?{{ get_params }}">
-						{% else %}
-							<a href="{% url judge-problem-list "name" 1 %}?{{ get_params }}">
-						{% endif %}문제 제목
-						{% if order_by == "name" %} ↓ {% endif %}
-						{% if order_by == "-name" %} ↑ {% endif %}</a>
+						{% sortable_table_header "문제 이름" "name" %}
 					</th>
 					<th class="writer">
-						{% if order_by == "user" %}
-							<a href="{% url judge-problem-list "-user" 1 %}?{{ get_params }}">
-						{% else %}
-							<a href="{% url judge-problem-list "user" 1 %}?{{ get_params }}">
-						{% endif %}출제자
-						{% if order_by == "user" %} ↓ {% endif %}
-						{% if order_by == "-user" %} ↑ {% endif %}</a>
+						{% sortable_table_header "출제자" "user" %}
 					</th>
 					<th class="submissions">
-						{% if order_by == "submissions_count" %}
-							<a href="{% url judge-problem-list "-submissions_count" 1 %}?{{ get_params }}">
-						{% else %}
-							<a href="{% url judge-problem-list "submissions_count" 1 %}?{{ get_params }}">
-						{% endif %}답안수
-						{% if order_by == "submissions_count" %} ↓ {% endif %}
-						{% if order_by == "-submissions_count" %} ↑ {% endif %}</a>
+						{% sortable_table_header "답안수" "submissions_count" %}
 					</th>
 					<th class="accepted_ratio">
-						{% if order_by == "ratio" %}
-							<a href="{% url judge-problem-list "-ratio" 1 %}?{{ get_params }}">
-						{% else %}
-							<a href="{% url judge-problem-list "ratio" 1 %}?{{ get_params }}">
-						{% endif %}정답비율
-						{% if order_by == "ratio" %} ↓ {% endif %}
-						{% if order_by == "-ratio" %} ↑ {% endif %}</a>
+						{% sortable_table_header "정답비율" "ratio" %}
 					</th>
 				</tr>
 			</thead>
@@ -106,7 +76,7 @@
 	<section class="pagination">
 		{{ pagination.render }}
 	</section>
-	{% if use_filters %}
+	{% if use_filter %}
 	<section>
 		<form method="GET" action="">
 			<fieldset class="kor problem-filter">

@@ -17,40 +17,16 @@
 				<tr>
 					<th class="solver">푼 사람</th>
 					<th class="when">
-						{% if order_by == "when" %}
-							<a href="{% url judge-problem-stat problem.slug "-when" 1 %}">
-						{% else %}
-							<a href="{% url judge-problem-stat problem.slug "when" 1 %}">
-							{% endif %}처음 푼 시간
-						{% if order_by == "when" %} ↓ {% endif %}
-						{% if order_by == "-when" %} ↑ {% endif %}</a>
+						{% sortable_table_header "처음 푼 시간" "when" %}
 					</th>
 					<th class="fastest"> 
-						{% if order_by == "fastest" %}
-							<a href="{% url judge-problem-stat problem.slug "-fastest" 1 %}">
-						{% else %}
-							<a href="{% url judge-problem-stat problem.slug "fastest" 1 %}">
-							{% endif %}가장 빠른 답안
-						{% if order_by == "fastest" %} ↓ {% endif %}
-						{% if order_by == "-fastest" %} ↑ {% endif %}</a>
+						{% sortable_table_header "가장 빠른 답안" "fastest" %}
 					</th>
 					<th class="shortest">
-						{% if order_by == "shortest" %}
-							<a href="{% url judge-problem-stat problem.slug "-shortest" 1 %}">
-						{% else %}
-							<a href="{% url judge-problem-stat problem.slug "shortest" 1 %}">
-						{% endif %}가장 짧은 답안
-						{% if order_by == "shortest" %} ↓ {% endif %}
-						{% if order_by == "-shortest" %} ↑ {% endif %}</a>
+						{% sortable_table_header "가장 짧은 답안" "shortest" default %}
 					</th>
 					<th class="incorrect">
-						{% if order_by == "incorrect_tries" %}
-							<a href="{% url judge-problem-stat problem.slug "-incorrect_tries" 1 %}">
-						{% else %}
-							<a href="{% url judge-problem-stat problem.slug "incorrect_tries" 1 %}">
-							{% endif %}실패 횟수
-						{% if order_by == "incorrect_tries" %} ↓ {% endif %}
-						{% if order_by == "-incorrect_tries" %} ↑ {% endif %}</a>
+						{% sortable_table_header "실패 횟수" "incorrect_tries" %}
 					</th>
 				</tr>
 			</thead>

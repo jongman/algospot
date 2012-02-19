@@ -59,8 +59,8 @@ class TableHeaderNode(template.Node):
                 arrow = u"↑"
 
         get_params = dict(context['request'].GET)
-        get_params['order_by'] = new_order
-        get_params = '&'.join('%s=%s' % (k, v) for k, v in get_params.items())
+        get_params['order_by'] = [new_order]
+        get_params = '&'.join('%s=%s' % (k, v[0]) for k, v in get_params.items())
         full_path = context['request'].get_full_path().split('?')[0]
         return mark_safe(u"""<a href="%s?%s">%s%s</a>""" % (full_path, get_params, column_name, arrow))
 

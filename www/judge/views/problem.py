@@ -107,7 +107,7 @@ def my_problems(request, page=1):
                    'pagination': setup_paginator(problems, page,
                                                  'judge-problem-mine', {})})
 
-def list(request, order_by='slug', page=1):
+def list(request, page=1):
     use_filter = True
     filters = {}
     title_options = []
@@ -145,6 +145,7 @@ def list(request, order_by='slug', page=1):
             title = user.username + u': 시도한 문제들'
             problems = problems.filter(solver__user=user)
 
+    order_by = request.GET.get('order_by', 'slug')
     if order_by.endswith('ratio'):
         problems = problems.extra(select={'ratio':
                                           'accepted_count / submissions_count'})
@@ -171,19 +172,19 @@ def list(request, order_by='slug', page=1):
                    "use_filter": use_filter,
                    "filters": filters,
                    "get_params": get_params,
-                   "order_by": order_by,
                    "pagination": setup_paginator(problems, page,
                                                  "judge-problem-list",
-                                                 {'order_by': order_by},
+                                                 {},
                                                  request.GET)})
 
-def stat(request, slug, order_by='shortest', page=1):
+def stat(request, slug, page=1):
     problem = get_object_or_404(Problem, slug=slug)
     submissions = Submission.objects.filter(problem=problem)
     verdict_chart = Submission.get_verdict_distribution_graph(submissions)
     incorrect_tries_chart = Solver.get_incorrect_tries_chart(problem)
 
     solvers = Solver.objects.filter(problem=problem, solved=True)
+    order_by = request.GET.get('order_by', 'shortest')
     if order_by.endswith('fastest'):
         solvers = solvers.order_by(order_by + '_submission__time')
     elif order_by.endswith('shortest'):
@@ -191,12 +192,11 @@ def stat(request, slug, order_by='shortest', page=1):
     else:
         solvers = solvers.order_by(order_by)
     pagination = setup_paginator(solvers, page, 'judge-problem-stat',
-                                 {'slug': slug, 'order_by': order_by}, request.GET)
+                                 {'slug': slug}, request.GET)
     title = problem.slug + u': 해결한 사람들'
     return render(request, "problem/stat.html",
                   {'title': title,
                    'problem': problem,
-                   'order_by': order_by,
                    'verdict_chart': verdict_chart,
                    'incorrects_chart': incorrect_tries_chart,
                    'pagination': pagination,

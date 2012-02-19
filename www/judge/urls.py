@@ -17,13 +17,11 @@ urlpatterns = patterns(
     url(r'^problem/mine/(?P<page>.+)/$', views.problem.my_problems, name='judge-problem-mine'),
 
     url(r'^problem/list/$', views.problem.list, name='judge-problem-list'),
-    url(r'^problem/list/(?P<order_by>.+)/(?P<page>.+)$', views.problem.list,
-        name='judge-problem-list'),
+    url(r'^problem/list/(?P<page>.+)$', views.problem.list, name='judge-problem-list'),
 
     url(r'^problem/stat/(?P<slug>[^/]+)/$', views.problem.stat,
         name='judge-problem-stat'),
-    url(r'^problem/stat/(?P<slug>[^/]+)/(?P<order_by>.+)/(?P<page>.+)/$', views.problem.stat,
-        name='judge-problem-stat'),
+    url(r'^problem/stat/(?P<slug>[^/]+)/(?P<page>.+)/$', views.problem.stat, name='judge-problem-stat'),
 
     url(r'^problem/attachment/list/(?P<id>.+)$', views.problem.list_attachments,
         name='judge-problem-list-attachments'),
