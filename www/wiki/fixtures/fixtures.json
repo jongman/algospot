@@ -9,6 +9,15 @@
 		}
 	},
 	{
+		"model": "wiki.Page",
+		"pk": 2,
+		"fields": {
+			"title": "알고스팟 온라인 저지",
+			"slug": "알고스팟_온라인_저지",
+			"current_revision": 2
+		}
+	},
+	{
 		"model": "wiki.PageRevision",
 		"pk": 1,
 		"fields": {
@@ -16,6 +25,16 @@
 			"user": 1,
 			"revision_for": 1,
 			"text": "안녕하세요, 위키의 첫 페이지입니다. 오른쪽 위의 편집하기를 눌러 편집하세요."
+		}
+	},
+	{
+		"model": "wiki.PageRevision",
+		"pk": 1,
+		"fields": {
+			"edit_summary": "initial version.",
+			"user": 1,
+			"revision_for": 2,
+			"text": "알고스팟 온라인 저지 도움말 페이지"
 		}
 	}
 ]
