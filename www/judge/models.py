@@ -16,7 +16,7 @@ class Problem(models.Model):
                      (HIDDEN, "HIDDEN"),
                      (PUBLISHED, "PUBLISHED"))
 
-    slug = models.SlugField(u"문제 ID", blank=True, max_length=100)
+    slug = models.SlugField(u"문제 ID", blank=True, max_length=100, unique=True)
     updated_on = models.DateTimeField(auto_now=True)
     state = models.SmallIntegerField(u"문제 상태", default=DRAFT,
                                      choices=STATE_CHOICES,

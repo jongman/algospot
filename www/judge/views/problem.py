@@ -19,7 +19,6 @@ def new(request):
 
 @login_required
 def edit(request, id):
-    # TODO: 문제 ID가 겹치는 경우 핸들링하기
     problem = get_object_or_404(Problem, id=id)
     if not request.user.is_superuser and problem.user != request.user:
         raise Http404
