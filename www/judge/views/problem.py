@@ -6,6 +6,7 @@ from django.http import Http404, HttpResponse
 from django.core.files.storage import DefaultStorage
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
+from base.decorators import authorization_required
 from ..models import Problem, Submission, Attachment, Solver
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm
 import json
@@ -14,6 +15,7 @@ import hashlib
 
 @login_required
 def edit(request, id):
+    # TODO: 문제 ID가 겹치는 경우 핸들링하기
     problem = get_object_or_404(Problem, id=id)
     if not request.user.is_superuser and problem.user != request.user:
         raise Http404
@@ -83,11 +85,33 @@ def list_attachments(request, id):
            "aaData": data}
     return HttpResponse(json.dumps(ret))
 
+@login_required
+@authorization_required
+def my_problems(request, page=1):
+    problems = Problem.objects.exclude(state=Problem.PUBLISHED)
+    if not request.user.is_superuser:
+        title = u'내가 낸 문제들'
+        problems = problems.filter(user=request.user)
+    else:
+        title = u'준비 중인 문제들'
+
+    order_by = request.GET.get("order_by", 'slug')
+    if order_by.lstrip('-') in ('slug', 'name', 'state'):
+        problems = problems.order_by(order_by)
+    else:
+        assert order_by.endswith('user')
+        problems = problems.order_by(order_by + '__username')
+
+    return render(request, 'problem/mine.html',
+                  {'title': title,
+                   'pagination': setup_paginator(problems, page,
+                                                 'judge-problem-mine', {})})
+
 def list(request, order_by='slug', page=1):
     use_filter = True
     filters = {}
     title_options = []
-    problems = Problem.objects.all()
+    problems = Problem.objects.filter(state=Problem.PUBLISHED)
     if request.GET.get("tag"):
         tag = filters["tag"] = request.GET["tag"]
         problems = Problem.tagged.with_all([tag])

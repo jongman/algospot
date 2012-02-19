@@ -22,7 +22,7 @@ class UserProfile(models.Model):
     intro = models.TextField(default="")
 
     def is_authorized(self):
-        return self.solved_problems >= USER_AUTHORIZATION_LIMIT
+        return self.solved_problems >= USER_AUTHORIZATION_LIMIT or self.user.is_superuser
 
 @receiver(post_save, sender=User)
 def user_added(sender, **kwargs):

@@ -13,6 +13,9 @@ urlpatterns = patterns(
     url(r'^problem/read/(?P<slug>.+)$', views.problem.read,
         name='judge-problem-read'),
 
+    url(r'^problem/mine/$', views.problem.my_problems, name='judge-problem-mine'),
+    url(r'^problem/mine/(?P<page>.+)/$', views.problem.my_problems, name='judge-problem-mine'),
+
     url(r'^problem/list/$', views.problem.list, name='judge-problem-list'),
     url(r'^problem/list/(?P<order_by>.+)/(?P<page>.+)$', views.problem.list,
         name='judge-problem-list'),

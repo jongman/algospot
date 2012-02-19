@@ -39,6 +39,9 @@ class Problem(models.Model):
     def __unicode__(self):
         return self.slug
 
+    def get_state_name(self):
+        return Problem.STATE_CHOICES[self.state][1]
+
     def was_solved_by(self, user):
         return Solver.objects.filter(problem=self, user=user,
                                      solved=True).exists()
@@ -208,6 +211,10 @@ class Solver(models.Model):
     def refresh(problem, user):
         # TODO: 언젠가.. 최적화한다. -_-
 
+        # PUBLISHED 가 아니면 Solver 인스턴스는 존재하지 않는다.
+        if problem.state != Problem.PUBLISHED:
+            return
+
         # Solver 인스턴스를 찾음. 없으면 만듬.
         instance = get_or_none(Solver, problem=problem, user=user)
         if not instance:
@@ -215,6 +222,7 @@ class Solver(models.Model):
             instance.save()
         # 이 사람의 서브미션 목록을 찾는다
         submissions = Submission.objects.filter(problem=problem,
+                                                is_public=True,
                                                 user=user).order_by("id")
         accepted = submissions.filter(state=Submission.ACCEPTED)
 
