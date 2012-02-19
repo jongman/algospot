@@ -13,7 +13,7 @@ django-avatar==1.0.5
 django-celery==2.2.4
 django-debug-toolbar==0.8.5
 django-extensions==0.6
-django-haystack==1.2.4
+django-haystack==1.2.6
 django-picklefield==0.1.9
 django-registration==0.7
 django-staticfiles==1.0.1
