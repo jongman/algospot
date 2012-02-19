@@ -12,10 +12,17 @@ from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm, RestrictedProb
 import json
 import os
 import hashlib
+import uuid
 
 @login_required
 def new(request):
-    pass
+    new_problem = Problem(user=request.user, name=u"(새 문제)",
+                          slug=str(uuid.uuid4()))
+    new_problem.save()
+    new_problem.slug = 'NEWPROB' + str(new_problem.id)
+    new_problem.save()
+    return redirect(reverse('judge-problem-edit',
+                            kwargs={'id': new_problem.id}))
 
 @login_required
 def edit(request, id):
