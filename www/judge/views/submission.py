@@ -49,7 +49,10 @@ def recent(request, page=1):
         slug = request.GET["problem"]
         problem = get_or_none(Problem, slug=slug)
 
-        if not problem:
+        if (not problem or
+                (problem.state != Problem.PUBLISHED and
+                 not request.user.is_superuser and
+                 request.user != problem.user)):
             empty_message = u"해당 문제가 없습니다."
             submissions = submissions.none()
         else:

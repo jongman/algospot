@@ -18,7 +18,7 @@
 				<li class="problem-id"><a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a></li>
 				<li class="timelimit"><b>{{ problem.time_limit }}</b>ms</li>
 				<li class="memorylimit"><b>{{ problem.memory_limit }}</b>kb</li>
-				<li class="submissions"><b>{{ problem.submissions_count }}</b></li>
+				<li class="submissions"><a href="{% url judge-submission-recent %}?problem={{ problem.slug }}"><b>{{ problem.submissions_count }}</b></a></li>
 				<li class="accepted"><a href="{% url judge-problem-stat problem.slug %}"><b>{{ problem.accepted_count }}</b> (<b>{% percentage problem.accepted_count problem.submissions_count %}</b>%)</a></li>
 			</ul>
 		</li>
