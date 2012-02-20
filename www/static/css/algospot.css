@@ -101,7 +101,7 @@ ul.comments li.comment {
 	padding: 5px 5px;
 	margin: 0;
 	border-bottom: 1px solid;
-	border-color: #D6D6D6;
+	border-color: #d6d6d6;
 	min-height: 60px;
 	overflow: hidden;
 	position: relative;
@@ -536,6 +536,45 @@ ul.newsfeed li .newsfeed-timestamp {
 	float:right;
 	font-size:93%;
 }
+
+/* 검색 페이지 */
+fieldset.search-query input[type="text"] {
+	width: 80%;
+}
+ul.search {
+	margin:0 16px;
+	padding:0;
+	width: 620px;
+}
+ul.search li {
+	background-position:10px 10px;
+	background-repeat:no-repeat;
+	background-image:url('/static/images/icons/icon_event.png');
+	list-style:none;
+	display:block;
+	padding:5px 5px 5px 35px;
+	overflow:hidden;
+	margin: 0px;;
+	line-height:100%;
+	width: 100%;
+	border-bottom: 1px solid;
+	border-color: #d6d6d6;
+	min-height: 60px;
+}
+ul.search li .datetime {
+	margin-left: 16px;
+	float:right;
+	font-size:93%;
+}
+ul.search.background-color li:nth-child(odd) {
+	background-color: #F4F4F4;
+}
+ul.search li.post { background-image:url('/static/images/icons/icon_event_log.png'); }
+ul.search .highlighted {
+	font-weight: bold;
+	background-color: #ffff66;
+}
+/* 검색 결과 */
 
 /* 할일들:
  * kor, eng 클래스 지우기

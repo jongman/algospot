@@ -14,6 +14,8 @@ urlpatterns = patterns(
     url(r'^calendar/', 'base.views.calendar', name='calendar'),
     url(r'^feed/posts/', PostFeed(), name='postfeed'),
 
+    url(r'^search/', include('haystack.urls')),
+
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/logout', 'django.contrib.auth.views.logout',
         kwargs={'next_page': '/'}),

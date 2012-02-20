@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'avatar',
     'djcelery',
     'tagging',
+    'haystack',
     #'actstream',
 
     'base',
@@ -226,6 +227,11 @@ CELERYD_CONCURRENCY = 1
 # setup ghetto celery queue settings
 BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 INSTALLED_APPS += ("djkombu",)
+
+# haystack
+HAYSTACK_SITECONF = 'search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = j('whoosh_index')
 
 try:
     import local_settings

@@ -153,8 +153,7 @@
 
 				<!-- Search -->
 				<section id="search">
-					<form method="post" action="">
-						{% csrf_token %}
+					<form method="get" action="{% url haystack_search %}">
 						<input name="q" id="search_query" placeholder="검색하기"/>
 					</form>
 				</section>
