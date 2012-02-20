@@ -20,6 +20,7 @@ class Post(models.Model):
     """Stores a forum post."""
     title = models.CharField(u"제목", max_length=100)
     created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, null=False)
     text = models.TextField(u"내용")
     category = models.ForeignKey(Category, null=False, verbose_name=u"게시판")

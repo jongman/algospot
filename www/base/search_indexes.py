@@ -8,5 +8,7 @@ class CommentIndex(SearchIndex):
     date = DateTimeField(model_attr='submit_date')
     def index_queryset(self):
         return Comment.objects.filter(submit_date__lte=datetime.datetime.now())
+    def get_updated_field(self):
+        return 'submit_date'
 
 site.register(Comment, CommentIndex)
