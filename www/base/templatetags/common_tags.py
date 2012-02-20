@@ -6,6 +6,9 @@ from django import template
 from django.contrib.comments.templatetags.comments import BaseCommentNode
 import datetime
 from djangoutils import render_text as dj_render_text
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import HtmlFormatter
 
 register = template.Library()
 
