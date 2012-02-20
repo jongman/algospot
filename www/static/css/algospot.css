@@ -570,6 +570,7 @@ ul.search.background-color li:nth-child(odd) {
 	background-color: #F4F4F4;
 }
 ul.search li.post { background-image:url('/static/images/icons/icon_event_log.png'); }
+ul.search li.comment { background-image:url('/static/images/icons/icon_notification_information.png'); }
 ul.search .highlighted {
 	font-weight: bold;
 	background-color: #ffff66;
