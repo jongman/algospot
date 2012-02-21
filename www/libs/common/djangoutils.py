@@ -12,6 +12,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils.html import urlize
 
 # TODO: move this module to base app
 
@@ -124,6 +125,7 @@ def highlight_code_section(text):
 def render_text(text):
     text = highlight_code_section(text)
     text = markdown.markdown(text, extensions=["toc"])
+    text = urlize(text)
     try:
         from wiki.utils import link_to_pages
         text = link_to_pages(text)
