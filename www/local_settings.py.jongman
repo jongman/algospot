@@ -27,3 +27,7 @@ if USE_PROFILING:
     settings.PROFILE_LOG_BASE = settings.j("profiled_logs")
 
 settings.STATIC_ROOT = '/home/jongman/vcs/git/algospot/static/'
+# setup ghetto celery queue settings
+settings.BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+settings.INSTALLED_APPS += ("djkombu",)
+
