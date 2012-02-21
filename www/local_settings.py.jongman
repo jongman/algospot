@@ -25,3 +25,5 @@ if USE_TOOLBAR:
 
 if USE_PROFILING:
     settings.PROFILE_LOG_BASE = settings.j("profiled_logs")
+
+settings.STATIC_ROOT = '/home/jongman/vcs/git/algospot/static/'
