@@ -1,0 +1,6 @@
+{{ object.slug }}
+{{ object.slug }}
+{{ object.slug }}
+{{ object.name }}
+{{ object.description }}
+{{ object.source }}
