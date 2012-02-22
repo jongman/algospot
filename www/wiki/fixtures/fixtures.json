@@ -5,7 +5,8 @@
 		"fields": {
 			"title": "Main Page",
 			"slug": "Main_Page",
-			"current_revision": 1
+			"current_revision": 1,
+			"created_on": "2012-02-22 12:55:00"
 		}
 	},
 	{
@@ -14,7 +15,8 @@
 		"fields": {
 			"title": "알고스팟 온라인 저지",
 			"slug": "알고스팟_온라인_저지",
-			"current_revision": 2
+			"current_revision": 2,
+			"created_on": "2012-02-22 12:55:00"
 		}
 	},
 	{
@@ -24,7 +26,9 @@
 			"edit_summary": "initial version.",
 			"user": 1,
 			"revision_for": 1,
-			"text": "안녕하세요, 위키의 첫 페이지입니다. 오른쪽 위의 편집하기를 눌러 편집하세요."
+			"text": "안녕하세요, 위키의 첫 페이지입니다. 오른쪽 위의 편집하기를 눌러 편집하세요.",
+			"created_on": "2012-02-22 12:55:00"
+
 		}
 	},
 	{
@@ -34,7 +38,9 @@
 			"edit_summary": "initial version.",
 			"user": 1,
 			"revision_for": 2,
-			"text": "알고스팟 온라인 저지 도움말 페이지"
+			"text": "알고스팟 온라인 저지 도움말 페이지",
+			"created_on": "2012-02-22 12:55:00"
+
 		}
 	}
 ]
