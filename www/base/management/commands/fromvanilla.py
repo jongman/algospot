@@ -61,6 +61,7 @@ def migrate_user(db):
                 is_active=True,
                 last_login=u["DateLastActive"] or u["DateInserted"],
                 password=pw,
+                is_staff=(u["Admin"] == "1"),
                 is_superuser=(u["Admin"] == "1"))
         new_user.save()
         patch("joined-%d" % new_user.id, u["DateInserted"])
