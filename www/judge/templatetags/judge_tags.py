@@ -13,7 +13,8 @@ class HasSolvedNode(template.Node):
     def render(self, context):
         problem = self.problem.resolve(context)
         user = self.user.resolve(context)
-        ret = (Submission.objects.filter(problem=problem, user=user,
+        ret = (user.is_authenticated() and
+               Submission.objects.filter(problem=problem, user=user,
                                          state=Submission.ACCEPTED).count() > 0)
         context[self.result] = ret
         return ""
