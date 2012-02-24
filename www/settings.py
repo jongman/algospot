@@ -224,10 +224,6 @@ djcelery.setup_loader()
 CELERY_IMPORTS = ("judge.tasks",)
 CELERYD_CONCURRENCY = 1
 
-# setup ghetto celery queue settings
-BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
-INSTALLED_APPS += ("djkombu",)
-
 # haystack
 HAYSTACK_SITECONF = 'search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
