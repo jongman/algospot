@@ -29,6 +29,14 @@ a.username { font-weight: bold; }
 .template { display: none; }
 img.chart { border: 0; background-color: transparent; }
 
+/* RSS 피드 */
+section.feed {
+	text-align: center;
+}
+section.feed img {
+	border: 0; background-color: transparent;
+}
+
 /* 로고 밑에 글자 */
 section.navigation header h1 { 
 	font-size: 11px; 
