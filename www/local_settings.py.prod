@@ -34,3 +34,4 @@ settings.DEBUG = True
 settings.BROKER_URL = "redis://localhost:6379/0"
 settings.BROKER_TRANSPORT = 'redis'
 settings.MEDIA_URL = "http://new.algospot.com/media/"
+settings.HAYSTACK_WHOOSH_PATH = '/home/algospot/algospot/www/whoosh_index'
