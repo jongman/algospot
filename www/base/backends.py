@@ -52,10 +52,20 @@ class LegacyBackend:
     def authenticate(self, username=None, password=None):
         if not username or not password: return None
         user = get_or_none(User, username=username)
+        if not user:
+            user = get_or_none(User, email=username)
         if not user: return user
         if user.password.startswith(MAGIC):
             stored = user.password[len(MAGIC):]
             if get_hash(password, stored) == stored:
                 user.set_password(password)
                 return user
+        return None
+
+class EmailBackend:
+    def authenticate(self, username=None, password=None):
+        user = get_or_none(User, email=username)
+        if not user: return user
+        if user.check_password(password):
+            return user
         return None
