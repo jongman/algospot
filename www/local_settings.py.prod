@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import settings
+import sys
+sys.path.append('/home/algospot/algospot')
+sys.path.append('/home/algospot/algospot/www')
 
 USE_TOOLBAR = False
 USE_PROFILING = False
@@ -12,7 +15,7 @@ settings.DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'algospot',
         'USER': 'algospot',
-        'PASSWORD': 'prague2004',
+        'PASSWORD': '',
         'HOST': '',
         'PORT': '',
     }
@@ -26,13 +29,8 @@ if USE_TOOLBAR:
 if USE_PROFILING:
     settings.PROFILE_LOG_BASE = settings.j("profiled_logs")
 
-settings.STATIC_ROOT = '/home/jongman/vcs/git/algospot/static/'
-<<<<<<< HEAD
-=======
-
->>>>>>> cf2850dd5e10ea2bc0ba44ff4dececd000857e8e
-# setup ghetto celery queue settings
-settings.BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
-settings.INSTALLED_APPS += ("djkombu",)
-
-settings.MEDIA_URL = 'http://prague.algospot.com/'
+settings.STATIC_ROOT = '/home/algospot/www_static/'
+settings.DEBUG = True
+settings.BROKER_URL = "redis://localhost:6379/0"
+settings.BROKER_TRANSPORT = 'redis'
+settings.MEDIA_URL = "http://new.algospot.com/media/"

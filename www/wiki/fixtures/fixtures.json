@@ -33,7 +33,7 @@
 	},
 	{
 		"model": "wiki.PageRevision",
-		"pk": 1,
+		"pk": 2,
 		"fields": {
 			"edit_summary": "initial version.",
 			"user": 1,

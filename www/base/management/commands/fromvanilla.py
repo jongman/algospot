@@ -280,7 +280,7 @@ class Command(BaseCommand):
         site.save()
         host, user, password, db, upload = args[:5]
         db = MySQLdb.connect(host=host, user=user, passwd=password, db=db,
-                cursorclass=MySQLdb.cursors.DictCursor)
+                cursorclass=MySQLdb.cursors.DictCursor,use_unicode=True,charset='utf8')
         app = "all" if len(args) == 5 else args[5]
         if app in ["all", "user"]:
             migrate_user(db)

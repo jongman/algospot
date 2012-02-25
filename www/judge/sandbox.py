@@ -20,6 +20,7 @@ from os.path import expanduser, exists, split, join, abspath, dirname
 def makedir(path):
     path = expanduser(path)
     if not exists(path):
+        print 'RUN:', 'mkdir %s' % path
         os.makedirs(path)
     return path
 
@@ -32,7 +33,7 @@ def execute(command, redirect=True, time_limit=None, kill_command=[]):
     kwargs = {"close_fds": True}
     if redirect:
         kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
-    #print "RUN:", command
+    print "RUN:", ' '.join(command)
     popen = subprocess.Popen(command, **kwargs)
     if not time_limit:
         wait = popen.wait()
@@ -136,6 +137,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
         # LXC 용 cgroup 생성
         self.cgroup = makedir(join(self.workdir, "cgroup"))
+        #self.cgroup = '/sys/fs/cgroup'
         self.mount("cgroup", self.cgroup, "cgroup")
 
         # 루트 디렉토리를 copy-on-write 로 마운트한다.
@@ -178,7 +180,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         for destination in list(reversed(self.mounts)):
             self._umount(destination)
 
-        if os.path.exists(self.root): shutil.rmtree(self.root)
+        #if os.path.exists(self.root): shutil.rmtree(self.root)
 
     def get_file_path(self, in_home):
         return join(self.home_in_mounted, in_home)
@@ -306,6 +308,7 @@ def main():
         """
     finally:
         sandbox.teardown()
+        pass
 
 if __name__ == "__main__":
     main()
