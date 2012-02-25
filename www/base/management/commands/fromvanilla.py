@@ -65,7 +65,7 @@ def migrate_user(db):
                 is_staff=(u["Admin"] == "1"),
                 is_superuser=(u["Admin"] == "1"))
         new_user.save()
-        patch("joined-%d" % new_user.id, u["DateInserted"])
+        # patch("joined-%d" % new_user.id, u["DateInserted"])
         created += 1
         if created % 10 == 0:
             print "created %d users so far" % created
