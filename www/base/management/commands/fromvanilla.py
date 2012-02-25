@@ -219,7 +219,7 @@ def migrate_submissions(db):
         if imported % 100 == 0:
             print "Migrated %d of %d submissions. (%d submissions/sec)" % (imported,
                                                                            len(submissions),
-                                                                           len(submissions)
+                                                                           imported
                                                                            /
                                                                            (time.time()-start)
                                                                           )

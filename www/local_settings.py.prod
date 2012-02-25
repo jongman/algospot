@@ -31,3 +31,6 @@ if USE_PROFILING:
 
 settings.STATIC_ROOT = '/home/algospot/www_static/'
 settings.DEBUG = True
+settings.BROKER_URL = "redis://localhost:6379/0"
+settings.BROKER_TRANSPORT = 'redis'
+settings.MEDIA_URL = "http://new.algospot.com/media/"
