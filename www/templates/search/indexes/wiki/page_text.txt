@@ -1,0 +1,4 @@
+{{ object.title }}
+{{ object.title }}
+{{ object.slug }}
+{{ object.current_revision.text }}

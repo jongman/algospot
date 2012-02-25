@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+	검색 결과
+{% endblock %}
+{% block page_contents %}
+	{% load highlight %}
+	{% load common_tags %}
+	<form method="GET" action=".">
+		<fieldset class="search-query">
+			<legend>검색 정보</legend>
+			<dl>
+				<dt>검색어</dt>
+				<dd>
+					<input type="text" name="q" value="{{ query }}"/>
+				</dd>
+				<!--<dt>일부만 검색</dt>-->
+				<!--<dd>-->
+				<!--	<input type="checkbox" name="models" value="forum.post" {% if "forum.post" in form.cleaned_data.models.models %} checked {% endif %} /> 게시판 글-->
+				<!--	<input type="checkbox" name="models" value="comments.comment" {% if "comments.comment" in form.cleaned_data.models.models %} checked {% endif %} /> 코멘트-->
+				<!--</dd>-->
+				<dt>
+					&nbsp;
+				</dt>
+				<dd>
+					<button type="submit">검색</button>
+				</dd>
+			</dl>
+	</fieldset>
+    </form>
+
+	{% if query %}
+		<section>
+            <h2>검색 결과</h2>
+
+			<ul class="search background-color">
+				{% for result in page.object_list %}
+					<li class="{{ result.model_name }}">
+
+						{% if result.model_name == "post" %}
+							<!-- 검색 결과가 게시물 -->
+							<span class="datetime">{{ result.object.created_on|print_datetime }}</span>
+							<p class="title">
+								<a href="{% url forum-list result.object.category.slug 1 %}">
+									{{ result.object.category.name }}
+								</a> 
+								-
+								<a href="{{ result.object.get_absolute_url }}">
+									{% highlight result.object.title with query %}
+								</a>
+								&mdash;
+								{{ result.object.user|print_username }}
+							</p>
+							<p class="excerpt">
+								{% highlight result.object.text with query %}					
+							</p>
+						{% endif %}
+						{% if result.model_name == "comment" %}
+							<!-- 검색 결과가 코멘트 -->
+							<span class="datetime">{{ result.object.submit_date|print_datetime }}</span>
+							<p class="title">
+								<a href="{{ result.object.get_absolute_url }}">
+									{{ result.object.content_object }}
+								</a>
+								&mdash;
+								{{ result.object.user|print_username }}
+							</p>
+							<p class="excerpt">
+								{% highlight result.object.comment with query %}					
+							</p>
+						{% endif %}
+						{% if result.model_name == "page" %}
+							<!-- 검색 결과가 위키 페이지-->
+							<span class="datetime">{{ result.object.modified_on|print_datetime }}</span>
+							<p class="title">
+								위키
+								- 
+								<a href="{{ result.object.get_absolute_url }}">
+									{% highlight result.object.title with query %}
+								</a>
+							</p>
+							<p class="excerpt">
+								{% highlight result.object.current_revision.text with query %}					
+							</p>
+						{% endif %}
+						{% if result.model_name == "problem" %}
+							<!-- 검색 결과가 위키 페이지-->
+							<span class="datetime">{{ result.object.updated_on|print_datetime }}</span>
+							<p class="title">
+								온라인 저지
+								- 
+								<a href="{{ result.object.get_absolute_url }}">
+									{% highlight result.object.slug with query %}
+									&mdash;
+									{% highlight result.object.name with query %}
+								</a>
+							</p>
+							<p class="excerpt">
+								{% highlight result.object.description with query %}					
+							</p>
+						{% endif %}
+					</li>
+				{% empty %}
+					<li class="noresult"> 검색 결과가 없습니다.
+					</li>
+				{% endfor %}
+			</ul>
+
+            {% if page.has_previous or page.has_next %}
+                <div class="pagination">
+                    {% if page.has_previous %}<a href="?q={{ query }}&page={{ page.previous_page_number }}">{% endif %}&laquo; 이전 페이지{% if page.has_previous %}</a>{% endif %}
+                    {% if page.has_next %}<a href="?q={{ query }}&page={{ page.next_page_number }}">{% endif %}다음 페이지 &raquo;{% if page.has_next %}</a>{% endif %}
+                </div>
+            {% endif %}
+		</section>
+	{% else %}
+
+	{% endif %}
+{% endblock %}
