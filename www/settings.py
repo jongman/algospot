@@ -200,6 +200,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 AUTHENTICATION_BACKENDS = (
     'base.backends.LegacyBackend',
+    'base.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 

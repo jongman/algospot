@@ -327,6 +327,19 @@ div.pagination .disabled_tnt_pagination {
 
 /* 페이지별 엘레멘트들 ***************************************************/
 
+/* 첫페이지 */
+section.mainpage ul.comments, section.mainpage ul.comments li.comment {
+	border: 0;
+}
+#main_section section.mainpage 
+{
+	margin-bottom: 16px;
+}
+
+#main_section section.mainpage h2
+{
+	margin-bottom: 16px;
+}
 /* 아바타 변경 */
 section.avatar_change img.selected {
 	background-color:#111;

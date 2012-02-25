@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}알고스팟에 오신 것을 환영합니다!{% endblock %}
+{% block page_title %}
+	<a href="{% url forum-list "news" 1 %}">뉴스</a> 
+	-
+	<a href="{% url forum-read news.id %}">{{ news.title }}</a>
+{% endblock %}
+{% block page_contents %}
+	{% load common_tags %}
+	{% load avatar_tags %}
+	<section class="mainpage">
+		<ul class="comments post kor">
+			<li class="comment">
+				<dl>
+					<dt class="comment_user">
+						{% avatar news.user 45 %}<br/>
+						{{ news.user|print_username }}
+					</dt>
+					<dd class="comment_content">
+						{{ news.text|render_text }}
+						<br/>
+						<span class="datetime">{{ news.created_on|print_datetime }}</span>
+						<span class="operations">
+							{% if user.is_authenticated %}
+								{% if user.is_superuser or user == news.user %}
+									<a href="{% url forum-edit news.id %}" class="button-link">edit</a> 
+									<a href="{% url forum-delete news.id %}" class="button-link">delete</a>
+								{% endif %}
+							{% endif %}
+						</span>
+					</dd>
+				</dl>
+			</li>
+		</ul>
+	</section>
+	<header>
+		<h2><a href="{% url newsfeed %}">최근 일어난 일들</a></h2>
+	</header>
+	<section class="mainpage">
+		{% include "newsfeed_block.html" %}
+	</section>
+{% endblock %}

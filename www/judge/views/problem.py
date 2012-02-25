@@ -177,8 +177,9 @@ def list(request, page=1):
 
     order_by = request.GET.get('order_by', 'slug')
     if order_by.endswith('ratio'):
-        problems = problems.extra(select={'ratio':
-                                          'accepted_count / submissions_count'})
+        ratio_def = ('cast("judge_problem"."accepted_count" as float) / '
+                     'greatest(1, "judge_problem"."submissions_count")')
+        problems = problems.extra(select={'ratio': ratio_def})
     if order_by.endswith('user'):
         problems = problems.order_by(order_by + '__username')
     else:

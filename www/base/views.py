@@ -11,9 +11,21 @@ from django.contrib.contenttypes.models import ContentType
 from tagging.models import TaggedItem
 from newsfeed.models import Activity
 from judge.models import Problem, Solver, Submission
+from forum.models import Category, Post
 from base.models import UserProfile
 import pygooglechart as pgc
 from collections import defaultdict
+
+def index(request):
+    news_category = Category.objects.get(slug='news')
+    recent_news = Post.objects.filter(category=news_category).order_by('-modified_on')[0]
+    recent_activity = Activity.objects.order_by("-timestamp")[:10].all()
+    return render(request, "index.html",
+                  {'title': u'알고스팟에 오신 것을 환영합니다!',
+                   'news': recent_news,
+                   'actions': recent_activity,
+                  })
+
 
 def get_submission_chart_url(user):
     by_user = Submission.objects.filter(user=user)

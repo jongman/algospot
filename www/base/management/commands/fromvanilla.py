@@ -9,6 +9,7 @@ from judge.models import Problem, Submission, Attachment
 from djangoutils import get_or_none
 from newsfeed.models import Activity
 from newsfeed import get_activity
+from django.contrib.sites.models import Site
 import MySQLdb
 import MySQLdb.cursors
 import hashlib
@@ -64,7 +65,7 @@ def migrate_user(db):
                 is_staff=(u["Admin"] == "1"),
                 is_superuser=(u["Admin"] == "1"))
         new_user.save()
-        patch("joined-%d" % new_user.id, u["DateInserted"])
+        # patch("joined-%d" % new_user.id, u["DateInserted"])
         created += 1
         if created % 10 == 0:
             print "created %d users so far" % created
@@ -274,6 +275,9 @@ class Command(BaseCommand):
     help = 'Migrate data over from Vanilla\'s CSV dump'
 
     def handle(self, *args, **options):
+        site = Site.objects.get(id=1)
+        site.domain = 'prague.algospot.com'
+        site.save()
         host, user, password, db, upload = args[:5]
         db = MySQLdb.connect(host=host, user=user, passwd=password, db=db,
                 cursorclass=MySQLdb.cursors.DictCursor,use_unicode=True,charset='utf8')
