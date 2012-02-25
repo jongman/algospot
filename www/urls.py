@@ -27,7 +27,7 @@ urlpatterns = patterns(
         name="comment-delete-algospot"),
 
     # until we write the first page..
-    url(r'^/?$', 'www.newsfeed.views.stream'),
+    url(r'^/?$', 'www.base.views.index'),
 
     # comments apps
     url(r'^comments/', include('django.contrib.comments.urls')),

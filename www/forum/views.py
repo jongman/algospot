@@ -60,7 +60,7 @@ def write(request, slug, id):
 
     if request.method == "POST" and form.is_valid():
         post = form.save(commit=False)
-        post.user = request.user
+        if id == None: post.user = request.user
         post.save()
         return redirect(reverse("forum-read", kwargs={"id": post.id}))
     return render(request, "write.html", {"form": form, "action": action,
