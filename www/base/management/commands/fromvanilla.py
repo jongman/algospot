@@ -9,6 +9,7 @@ from judge.models import Problem, Submission, Attachment
 from djangoutils import get_or_none
 from newsfeed.models import Activity
 from newsfeed import get_activity
+import datetime
 from django.contrib.sites.models import Site
 import MySQLdb
 import MySQLdb.cursors
@@ -171,10 +172,9 @@ def migrate_problems(db):
         new_problem.tags = ",".join(tags)
         new_problem.save()
 
-        # delete new problem entry: we don't have timestamp information for
-        # old problems.
-        get_activity(key="new-problem-%d" % new_problem.id).delete()
-        #patch("new-problem-%d" % new_problem.id,
+        # we don't have timestamp information for old problems.
+        patch("new-problem-%d" % new_problem.id, datetime.datetime(2009, 7, 11,
+                                                                   0, 0, 0, 0))
         imported += 1
     print "imported %d problems." % imported
 
@@ -262,7 +262,6 @@ def fix_insertimage(db):
                                      replace,
                                      problem.description)
         problem.save()
-        get_activity(key="new-problem-%d" % problem.id).delete()
 
 def migrate_judge(db, upload):
     migrate_problems(db)
