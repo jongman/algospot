@@ -205,17 +205,20 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         "Reads a file from user's home directory"
         return codecs.open(join(self.home_in_mounted, file), encoding="utf-8").read()
 
-    def create_entrypoint(self, command):
+    def create_entrypoint(self, command, before=[], after=[]):
         entrypoint = join(self.home_in_mounted, "entrypoint.sh")
         #print "ENTRYPOINT", command
-        content = "\n".join(["#!/bin/sh",
-                             "cd `dirname $0`",
-                             "rm $0",
-                             "reset -I 2> /dev/null" if self.am_i_root else "",
-                             command,
-                             "RET=$?",
-                             "pkill -P 1 2> /dev/null" if self.am_i_root else "",
-                             "exit $RET"])
+        content = "\n".join([
+            "#!/bin/sh",
+            "cd `dirname $0`",
+            "rm $0",
+            "reset -I 2> /dev/null" if self.am_i_root else ""] +
+            before +
+            [command] +
+            after + [
+            "RET=$?",
+            "pkill -P 1 2> /dev/null" if self.am_i_root else "",
+            "exit $RET"])
         fp = open(entrypoint, "w")
         fp.write(content)
         fp.close()
@@ -227,7 +230,8 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.create_entrypoint(command)
         return self._run(False)
 
-    def run(self, command, stdin=None, stdout=None, stderr=None, time_limit=None):
+    def run(self, command, stdin=None, stdout=None, stderr=None,
+            time_limit=None, before=[], after=[]):
         # 모니터를 샌드박스 안에 집어넣는다
         self.put_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
                        "monitor.py")
@@ -240,7 +244,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
             cmd += ["-t", str(int(time_limit + 1.1))]
         cmd.append('"%s"' % command)
 
-        self.create_entrypoint(" ".join(cmd))
+        self.create_entrypoint(" ".join(cmd), before, after)
         try:
             result = self._run(True, time_limit)
             if (result["returncode"] != 0 or
