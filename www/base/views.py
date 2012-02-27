@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404
 from django.contrib.comments.views.moderation import perform_delete
 from django.contrib.comments.models import Comment
 from forms import SettingsForm
@@ -76,6 +76,7 @@ def get_category_chart(user):
 
 
 def profile(request, user_id):
+    if not user_id.isdigit(): raise Http404
     user = get_object_or_404(User, id=user_id)
     comment_count = Comment.objects.filter(user=user).count()
     problem_count = Problem.objects.filter(user=user, state=Problem.PUBLISHED).count()
