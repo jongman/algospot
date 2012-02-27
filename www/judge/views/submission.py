@@ -5,6 +5,7 @@ from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
 from ..models import Problem, Submission
+from django.contrib.auth.decorators import login_required
 
 def rejudge(request, id):
     submission = get_object_or_404(Submission, id=id)
@@ -83,6 +84,7 @@ def recent(request, page=1):
                    "pagination": setup_paginator(submissions, page,
                                                  "judge-submission-recent", {}, filters)})
 
+@login_required
 def details(request, id):
     submission = get_object_or_404(Submission, id=id)
     problem = submission.problem
