@@ -125,7 +125,7 @@ def highlight_code_section(text):
 def render_text(text):
     text = highlight_code_section(text)
     text = urlize(text)
-    text = markdown.markdown(text, extensions=["toc"])
+    text = markdown.markdown(text, extensions=["toc", "tables"])
     try:
         from wiki.utils import link_to_pages
         text = link_to_pages(text)
