@@ -19,8 +19,9 @@ def setup(sandbox, source_code):
     #sandbox.run("rm submission.cpp .stdin .stderr")
     return {"status": "ok"}
 
-def run(sandbox, input_file, time_limit):
+def run(sandbox, input_file, time_limit, memory_limit):
     result = sandbox.run("./a.out", stdin=input_file, time_limit=time_limit,
+                         override_memory_limit=memory_limit,
                          stdout=".stdout", stderr=".stderr")
     toks = result.split()
     if toks[0] != "OK":

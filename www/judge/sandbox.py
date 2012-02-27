@@ -234,7 +234,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         return self._run(False)
 
     def run(self, command, stdin=None, stdout=None, stderr=None,
-            time_limit=None, before=[], after=[]):
+            time_limit=None, override_memory_limit=None, before=[], after=[]):
         # 모니터를 샌드박스 안에 집어넣는다
         self.put_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
                        "monitor.py")
@@ -262,9 +262,13 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         if toks[0] == "OK":
             time_used, memory_used = map(float, toks[1:3])
             if time_limit is not None and time_used >= time_limit:
-                return u"TLE (샌드박스 밖에서 확인)"
-            if memory_used >= self.memory_limit:
-                return u"MLE (샌드박스 밖에서 확인)"
+                return (u"TLE (Outside sandbox; time used %d limit %d)" %
+                        (time_used, time_limit))
+            effective_memory_limit = override_memory_limit or self.memory_limit
+            if memory_used >= effective_memory_limit:
+                return (u"MLE (Outside sandbox: memory used %d limit %d)" %
+                        (memory_used, effective_memory_limit))
+
         return result["stdout"]
 
     def _run(self, redirect, time_limit=None):
