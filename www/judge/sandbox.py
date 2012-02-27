@@ -147,6 +147,9 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.root_cow = makedir(join(self.workdir, "root-cow"))
         self.mount("none", self.root_mount, "aufs", "br=%s:/" % self.root_cow)
 
+        # 일부 프로그램들은 /proc 이 없으면 제대로 동작하지 않는다 (Sun JVM 등)
+        self.mount("/proc", join(self.root_mount, "proc"), "none", "bind")
+
         # 빈 디렉토리 user-home 을 만들고, 마운트된 cow 루트 내의 홈디렉토리를
         # 이걸로 덮어씌운다.
         home_path = self.user.pw_dir.lstrip("/")
