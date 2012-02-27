@@ -40,6 +40,10 @@ server {
 		alias /home/algospot/www_static;
 		autoindex off;
 	}
+	location /contest {
+		alias /home/algospot/static/contest;
+		autoindex off;
+	}
 	location /media {
 		alias /home/algospot/algospot/www/media;
 		autoindex on;

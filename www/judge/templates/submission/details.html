@@ -41,14 +41,12 @@
 		</ul>
 	</section>
 	{% if submission.user == user or user.is_superuser %}
-		{% if not submission.is_accepted %}
-		<section class="request_rejudge">
-			<h4>재채점 요청</h4>
-			<form method="GET" action="{% url judge-submission-rejudge submission.id %}">
-				<input class="button" type="submit" value="Request Rejudge"/>
-			</form>
-		</section>
-		{% endif %}
+	<section class="request_rejudge">
+		<h4>재채점 요청</h4>
+		<form method="GET" action="{% url judge-submission-rejudge submission.id %}">
+			<input class="button" type="submit" value="Request Rejudge"/>
+		</form>
+	</section>
 	{% endif %}
 	{% if submission.has_messages %}
 	    <section class="submission_message">
