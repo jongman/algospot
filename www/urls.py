@@ -14,6 +14,7 @@ urlpatterns = patterns(
     url(r'^calendar/', 'base.views.calendar', name='calendar'),
     url(r'^feed/posts/', PostFeed(), name='postfeed'),
     url(r'^discussions/feed.rss', PostFeed()),
+    url(r'^zbxe/rss', PostFeed()),
 
     url(r'^search/', include('haystack.urls')),
 
