@@ -44,6 +44,12 @@ server {
 		alias /home/algospot/algospot/www/media;
 		autoindex on;
 	}
+	location /favicon.ico {
+		alias /home/algospot/www_static/images/favicon.ico;
+	}
+	location /robots.txt {
+		alias /home/algospot/www_static/robots.txt;
+	}
 
 	#error_page 404 /404.html;
 
