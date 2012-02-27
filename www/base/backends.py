@@ -3,6 +3,7 @@
 from django.contrib.auth.models import User
 from djangoutils import get_or_none
 import hashlib
+from django.contrib.auth.backends import ModelBackend
 
 BASE64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
@@ -41,7 +42,7 @@ def get_hash(password, stored):
     return stored[:12] + encode64(hash, 16)
 
 MAGIC = r"sha1$deadbeef$"
-class LegacyBackend:
+class LegacyBackend(ModelBackend):
     supports_object_permissions = False
     supports_anonymous_user = False
     supports_inactive_user = False
@@ -52,10 +53,20 @@ class LegacyBackend:
     def authenticate(self, username=None, password=None):
         if not username or not password: return None
         user = get_or_none(User, username=username)
+        if not user:
+            user = get_or_none(User, email=username)
         if not user: return user
         if user.password.startswith(MAGIC):
             stored = user.password[len(MAGIC):]
             if get_hash(password, stored) == stored:
                 user.set_password(password)
                 return user
+        return None
+
+class EmailBackend(ModelBackend):
+    def authenticate(self, username=None, password=None):
+        user = get_or_none(User, email=username)
+        if not user: return user
+        if user.check_password(password):
+            return user
         return None

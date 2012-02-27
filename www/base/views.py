@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, Http404
 from django.contrib.comments.views.moderation import perform_delete
 from django.contrib.comments.models import Comment
 from forms import SettingsForm
@@ -11,9 +11,21 @@ from django.contrib.contenttypes.models import ContentType
 from tagging.models import TaggedItem
 from newsfeed.models import Activity
 from judge.models import Problem, Solver, Submission
+from forum.models import Category, Post
 from base.models import UserProfile
 import pygooglechart as pgc
 from collections import defaultdict
+
+def index(request):
+    news_category = Category.objects.get(slug='news')
+    recent_news = Post.objects.filter(category=news_category).order_by('-modified_on')[0]
+    recent_activity = Activity.objects.order_by("-timestamp")[:10].all()
+    return render(request, "index.html",
+                  {'title': u'알고스팟에 오신 것을 환영합니다!',
+                   'news': recent_news,
+                   'actions': recent_activity,
+                  })
+
 
 def get_submission_chart_url(user):
     by_user = Submission.objects.filter(user=user)
@@ -64,6 +76,7 @@ def get_category_chart(user):
 
 
 def profile(request, user_id):
+    if not user_id.isdigit(): raise Http404
     user = get_object_or_404(User, id=user_id)
     comment_count = Comment.objects.filter(user=user).count()
     problem_count = Problem.objects.filter(user=user, state=Problem.PUBLISHED).count()

@@ -20,6 +20,7 @@ from os.path import expanduser, exists, split, join, abspath, dirname
 def makedir(path):
     path = expanduser(path)
     if not exists(path):
+        print 'RUN:', 'mkdir %s' % path
         os.makedirs(path)
     return path
 
@@ -32,7 +33,7 @@ def execute(command, redirect=True, time_limit=None, kill_command=[]):
     kwargs = {"close_fds": True}
     if redirect:
         kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
-    #print "RUN:", command
+    print "RUN:", ' '.join(command)
     popen = subprocess.Popen(command, **kwargs)
     if not time_limit:
         wait = popen.wait()
@@ -136,6 +137,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
         # LXC 용 cgroup 생성
         self.cgroup = makedir(join(self.workdir, "cgroup"))
+        #self.cgroup = '/sys/fs/cgroup'
         self.mount("cgroup", self.cgroup, "cgroup")
 
         # 루트 디렉토리를 copy-on-write 로 마운트한다.
@@ -144,6 +146,9 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.root_mount = makedir(join(self.workdir, "root-mount"))
         self.root_cow = makedir(join(self.workdir, "root-cow"))
         self.mount("none", self.root_mount, "aufs", "br=%s:/" % self.root_cow)
+
+        # 일부 프로그램들은 /proc 이 없으면 제대로 동작하지 않는다 (Sun JVM 등)
+        self.mount("/proc", join(self.root_mount, "proc"), "none", "bind")
 
         # 빈 디렉토리 user-home 을 만들고, 마운트된 cow 루트 내의 홈디렉토리를
         # 이걸로 덮어씌운다.
@@ -178,7 +183,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         for destination in list(reversed(self.mounts)):
             self._umount(destination)
 
-        if os.path.exists(self.root): shutil.rmtree(self.root)
+        #if os.path.exists(self.root): shutil.rmtree(self.root)
 
     def get_file_path(self, in_home):
         return join(self.home_in_mounted, in_home)
@@ -203,17 +208,20 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         "Reads a file from user's home directory"
         return codecs.open(join(self.home_in_mounted, file), encoding="utf-8").read()
 
-    def create_entrypoint(self, command):
+    def create_entrypoint(self, command, before=[], after=[]):
         entrypoint = join(self.home_in_mounted, "entrypoint.sh")
         #print "ENTRYPOINT", command
-        content = "\n".join(["#!/bin/sh",
-                             "cd `dirname $0`",
-                             "rm $0",
-                             "reset -I 2> /dev/null" if self.am_i_root else "",
-                             command,
-                             "RET=$?",
-                             "pkill -P 1 2> /dev/null" if self.am_i_root else "",
-                             "exit $RET"])
+        content = "\n".join([
+            "#!/bin/sh",
+            "cd `dirname $0`",
+            "rm $0",
+            "reset -I 2> /dev/null" if self.am_i_root else ""] +
+            before +
+            [command] +
+            after + [
+            "RET=$?",
+            "pkill -P 1 2> /dev/null" if self.am_i_root else "",
+            "exit $RET"])
         fp = open(entrypoint, "w")
         fp.write(content)
         fp.close()
@@ -225,7 +233,8 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.create_entrypoint(command)
         return self._run(False)
 
-    def run(self, command, stdin=None, stdout=None, stderr=None, time_limit=None):
+    def run(self, command, stdin=None, stdout=None, stderr=None,
+            time_limit=None, override_memory_limit=None, before=[], after=[]):
         # 모니터를 샌드박스 안에 집어넣는다
         self.put_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
                        "monitor.py")
@@ -238,7 +247,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
             cmd += ["-t", str(int(time_limit + 1.1))]
         cmd.append('"%s"' % command)
 
-        self.create_entrypoint(" ".join(cmd))
+        self.create_entrypoint(" ".join(cmd), before, after)
         try:
             result = self._run(True, time_limit)
             if (result["returncode"] != 0 or
@@ -253,9 +262,13 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         if toks[0] == "OK":
             time_used, memory_used = map(float, toks[1:3])
             if time_limit is not None and time_used >= time_limit:
-                return u"TLE (샌드박스 밖에서 확인)"
-            if memory_used >= self.memory_limit:
-                return u"MLE (샌드박스 밖에서 확인)"
+                return (u"TLE (Outside sandbox; time used %d limit %d)" %
+                        (time_used, time_limit))
+            effective_memory_limit = override_memory_limit or self.memory_limit
+            if memory_used >= effective_memory_limit:
+                return (u"MLE (Outside sandbox: memory used %d limit %d)" %
+                        (memory_used, effective_memory_limit))
+
         return result["stdout"]
 
     def _run(self, redirect, time_limit=None):
@@ -306,6 +319,7 @@ def main():
         """
     finally:
         sandbox.teardown()
+        pass
 
 if __name__ == "__main__":
     main()

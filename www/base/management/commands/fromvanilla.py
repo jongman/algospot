@@ -9,7 +9,10 @@ from judge.models import Problem, Submission, Attachment
 from djangoutils import get_or_none
 from newsfeed.models import Activity
 from newsfeed import get_activity
+import datetime
+from django.contrib.sites.models import Site
 import MySQLdb
+import MySQLdb.cursors
 import hashlib
 import shutil
 import os
@@ -60,9 +63,10 @@ def migrate_user(db):
                 is_active=True,
                 last_login=u["DateLastActive"] or u["DateInserted"],
                 password=pw,
+                is_staff=(u["Admin"] == "1"),
                 is_superuser=(u["Admin"] == "1"))
         new_user.save()
-        patch("joined-%d" % new_user.id, u["DateInserted"])
+        # patch("joined-%d" % new_user.id, u["DateInserted"])
         created += 1
         if created % 10 == 0:
             print "created %d users so far" % created
@@ -168,10 +172,9 @@ def migrate_problems(db):
         new_problem.tags = ",".join(tags)
         new_problem.save()
 
-        # delete new problem entry: we don't have timestamp information for
-        # old problems.
-        get_activity(key="new-problem-%d" % new_problem.id).delete()
-        #patch("new-problem-%d" % new_problem.id,
+        # we don't have timestamp information for old problems.
+        patch("new-problem-%d" % new_problem.id, datetime.datetime(2009, 7, 11,
+                                                                   0, 0, 0, 0))
         imported += 1
     print "imported %d problems." % imported
 
@@ -217,7 +220,7 @@ def migrate_submissions(db):
         if imported % 100 == 0:
             print "Migrated %d of %d submissions. (%d submissions/sec)" % (imported,
                                                                            len(submissions),
-                                                                           len(submissions)
+                                                                           imported
                                                                            /
                                                                            (time.time()-start)
                                                                           )
@@ -259,7 +262,6 @@ def fix_insertimage(db):
                                      replace,
                                      problem.description)
         problem.save()
-        get_activity(key="new-problem-%d" % problem.id).delete()
 
 def migrate_judge(db, upload):
     migrate_problems(db)
@@ -272,9 +274,12 @@ class Command(BaseCommand):
     help = 'Migrate data over from Vanilla\'s CSV dump'
 
     def handle(self, *args, **options):
+        site = Site.objects.get(id=1)
+        site.domain = 'prague.algospot.com'
+        site.save()
         host, user, password, db, upload = args[:5]
         db = MySQLdb.connect(host=host, user=user, passwd=password, db=db,
-                cursorclass=MySQLdb.cursors.DictCursor)
+                cursorclass=MySQLdb.cursors.DictCursor,use_unicode=True,charset='utf8')
         app = "all" if len(args) == 5 else args[5]
         if app in ["all", "user"]:
             migrate_user(db)

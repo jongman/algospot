@@ -200,6 +200,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 AUTHENTICATION_BACKENDS = (
     'base.backends.LegacyBackend',
+    'base.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -207,7 +208,8 @@ AUTHENTICATION_BACKENDS = (
 JUDGE_SETTINGS = {
     "WORKDIR": j("judge/work"),
     "USER": "runner",
-    "FILESYSTEMSIZE": 20 * 1024
+    "FILESYSTEMSIZE": 64 * 1024,
+    "MINMEMORYSIZE": 128 * 1024,
 }
 
 # PAGINATION SETTINGS
@@ -223,10 +225,6 @@ djcelery.setup_loader()
 
 CELERY_IMPORTS = ("judge.tasks",)
 CELERYD_CONCURRENCY = 1
-
-# setup ghetto celery queue settings
-BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
-INSTALLED_APPS += ("djkombu",)
 
 # haystack
 HAYSTACK_SITECONF = 'search_sites'

@@ -31,17 +31,17 @@ def user_added(sender, **kwargs):
         user = kwargs["instance"]
         profile = UserProfile(user=user)
         profile.save()
-        publish("joined-%d" % user.id ,
-                "other",
-                "joined",
-                actor=user,
-                verb=u"가입했습니다.")
+        # publish("joined-%d" % user.id ,
+        #         "other",
+        #         "joined",
+        #         actor=user,
+        #         verb=u"가입했습니다.")
 
 @receiver(pre_delete, sender=User)
 def deleting_user(sender, **kwargs):
     user = kwargs["instance"]
     user.get_profile().delete()
-    depublish("joined-%d" % user.id)
+    # depublish("joined-%d" % user.id)
 
 def comment_handler(sender, **kwargs):
     instance, created = kwargs["instance"], kwargs["created"]

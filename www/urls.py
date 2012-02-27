@@ -13,6 +13,8 @@ urlpatterns = patterns(
     url(r'^judge/', include('judge.urls')),
     url(r'^calendar/', 'base.views.calendar', name='calendar'),
     url(r'^feed/posts/', PostFeed(), name='postfeed'),
+    url(r'^discussions/feed.rss', PostFeed()),
+    url(r'^zbxe/rss', PostFeed()),
 
     url(r'^search/', include('haystack.urls')),
 
@@ -27,7 +29,7 @@ urlpatterns = patterns(
         name="comment-delete-algospot"),
 
     # until we write the first page..
-    url(r'^/?$', 'www.newsfeed.views.stream'),
+    url(r'^/?$', 'www.base.views.index'),
 
     # comments apps
     url(r'^comments/', include('django.contrib.comments.urls')),
