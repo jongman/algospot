@@ -104,7 +104,11 @@ def judge_submission(submission):
 
         logger.info("Initiating sandbox..")
         # 샌드박스 생성
-        sandbox_env = sandbox.get_sandbox(problem.memory_limit)
+        # 컴파일할 때 메모리가 더 필요할 수도 있으니, 샌드박스에 메모리는
+        # 문제 제한보다 더 많이 준다. MINMEMORYSIZE 만큼은 항상 주도록 한다.
+        sandbox_memory = max(settings.JUDGE_SETTINGS['MINMEMORYSIZE'],
+                             problem.memory_limit)
+        sandbox_env = sandbox.get_sandbox(sandbox_memory)
 
         logger.info("Compiling..")
         # 컴파일
@@ -129,7 +133,8 @@ def judge_submission(submission):
             inp = os.path.basename(io["in"])
             sandbox_env.put_file(io["in"], inp)
             result = language_module.run(sandbox_env, inp,
-                                         problem.time_limit / 1000.)
+                                         problem.time_limit / 1000.,
+                                         problem.memory_limit)
 
             # RTE 혹은 MLE?
             if result["status"] != "ok":
