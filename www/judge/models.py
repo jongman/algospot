@@ -284,6 +284,12 @@ def saved_problem(sender, **kwargs):
 
 def saved_submission(sender, **kwargs):
     submission = kwargs["instance"]
+    created = kwargs["created"]
+    if created:
+        problem = submission.problem
+        problem.submissions_count = Submission.objects.filter(problem=problem,
+                                                              is_public=True).count()
+        problem.save()
     if submission.state in [Submission.RECEIVED,
                             Submission.REJUDGE_REQUESTED]:
         import tasks
@@ -292,7 +298,15 @@ def saved_submission(sender, **kwargs):
     if submission.state in Submission.JUDGED:
         if not submission.is_public: return
         profile = submission.user.get_profile()
-        submissions = Submission.objects.filter(user=submission.user)
+        submissions = Submission.objects.filter(user=submission.user,
+                                                is_public=True)
+
+        problem = submission.problem
+        problem.accepted_count = Submission.objects.filter(problem=problem,
+                                                           is_public=True,
+                                                           state=Submission.ACCEPTED).count()
+        problem.save()
+
         profile.submissions = submissions.count()
         profile.accepted = submissions.filter(state=Submission.ACCEPTED).count()
         profile.save()
