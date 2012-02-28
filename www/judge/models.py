@@ -139,6 +139,7 @@ class Submission(models.Model):
 
     @staticmethod
     def get_verdict_distribution_graph(queryset):
+        queryset = queryset.filter(is_public=True)
         take = (Submission.ACCEPTED, Submission.WRONG_ANSWER,
                 Submission.TIME_LIMIT_EXCEEDED)
         # AC, WA, TLE 이외의 것들을 하나의 카테고리로 모음
@@ -199,7 +200,7 @@ class Solver(models.Model):
         max_fails = max(dist.keys()) if dist else 0
         steps = max(1, max_fails / 20)
         chart = pgc.StackedVerticalBarChart(400, 120)
-        chart.add_data([dist.get(i, 0) for i in xrange(max_fails + 1)])
+        chart.add_data([dist.get(i, 0) for i in xrange(max_fails + 2) ])
         chart.set_colours(['C02942'])
         chart.set_axis_labels(pgc.Axis.BOTTOM,
                               [str(i) if i % steps == 0 else ''
