@@ -30,7 +30,10 @@ if USE_PROFILING:
     settings.PROFILE_LOG_BASE = settings.j("profiled_logs")
 
 settings.STATIC_ROOT = '/home/algospot/www_static/'
-settings.DEBUG = True
+settings.DEBUG = False
 settings.BROKER_URL = "redis://localhost:6379/0"
 settings.BROKER_TRANSPORT = 'redis'
-settings.MEDIA_URL = "http://new.algospot.com/media/"
+settings.MEDIA_URL = "http://algospot.com/media/"
+settings.HAYSTACK_WHOOSH_PATH = '/home/algospot/algospot/www/whoosh_index'
+settings.EMAIL_PORT = 25
+settings.DEFAULT_FROM_EMAIL = 'algospot@algospot.com'
