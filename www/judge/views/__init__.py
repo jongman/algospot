@@ -3,10 +3,12 @@ from django.shortcuts import render
 from django.db.models import Count
 from djangoutils import setup_paginator
 from base.models import UserProfile
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 import problem, submission
 
 def index(request):
-    pass
+    return redirect(reverse('judge-problem-list'))
 
 def ranking(request, page=1):
     profiles = UserProfile.objects.filter(submissions__gt=0)
