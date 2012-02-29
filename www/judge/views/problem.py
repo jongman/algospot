@@ -237,6 +237,7 @@ def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
     return render(request, "problem/read.html", {"problem": problem})
 
+@login_required
 def submit(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
     # superusers and problem authors can opt in for nonpublic submissions.
