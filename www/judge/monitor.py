@@ -61,7 +61,7 @@ def main():
                    "access)")
         elif sgn == signal.SIGKILL:
             print ("RTE (SIGKILL: program was forcefully killed, probably "
-                   "memory limit exceeded)")
+                   "memory/time limit exceeded)")
         else:
             name = str(sgn)
             for entry in dir(signal):
