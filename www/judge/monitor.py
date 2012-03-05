@@ -23,6 +23,37 @@ def parse_memory(mem):
             return int(mem[:-len(suf)]) * suffixes[suf]
     return int(mem)
 
+def get_resources_used():
+    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+    return (usage.ru_utime + usage.ru_stime, usage.ru_maxrss)
+
+def handle_sigkill(args):
+    time_used, _ = get_resources_used()
+    if time_used >= args.time:
+        print 'TLE (At monitor: time used %.4lf limit %d' % (time_used, args.time)
+    else:
+        print ("RTE (SIGKILL: program was forcefully killed, probably "
+               "memory limit exceeded)")
+
+def handle_signal(sgn, args):
+    if sgn == signal.SIGABRT:
+        print "RTE (SIGABRT: program aborted, probably assertion fail)"
+    elif sgn == signal.SIGFPE:
+        print "RTE (SIGFPE: floating point error, probably divide by zero)"
+    elif sgn == signal.SIGSEGV:
+        print ("RTE (SIGSEGV: segmentation fault, probably incorrect memory "
+               "access)")
+    elif sgn == signal.SIGKILL:
+        handle_sigkill(args)
+    else:
+        name = str(sgn)
+        for entry in dir(signal):
+            if entry.startswith("SIG"):
+                if getattr(signal, entry) == sgn:
+                    name = entry
+                    break
+        print "RTE (Unknown signal %s)" % name
+
 def main():
     args = get_parser().parse_args()
     kwargs = {}
@@ -31,7 +62,7 @@ def main():
     if args.output: kwargs["stdout"] = open(args.output, "w")
 
     if args.time:
-        resource.setrlimit(resource.RLIMIT_CPU, (args.time, args.time))
+        resource.setrlimit(resource.RLIMIT_CPU, (args.time + 1, args.time + 1))
 
     if args.memory:
         parsed = parse_memory(args.memory)
@@ -51,28 +82,9 @@ def main():
         print "RTE (nonzero return code)"
         return
     if returncode < 0:
-        sgn = -returncode
-        if sgn == signal.SIGABRT:
-            print "RTE (SIGABRT: program aborted, probably assertion fail)"
-        elif sgn == signal.SIGFPE:
-            print "RTE (SIGFPE: floating point error, probably divide by zero)"
-        elif sgn == signal.SIGSEGV:
-            print ("RTE (SIGSEGV: segmentation fault, probably incorrect memory "
-                   "access)")
-        elif sgn == signal.SIGKILL:
-            print ("RTE (SIGKILL: program was forcefully killed, probably "
-                   "memory/time limit exceeded)")
-        else:
-            name = str(sgn)
-            for entry in dir(signal):
-                if entry.startswith("SIG"):
-                    if getattr(signal, entry) == sgn:
-                        name = entry
-                        break
-            print "RTE (Unknown signal %s)" % name
+        handle_signal(-returncode, args)
         return
-    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
-    print "OK %.4lf %d" % (usage.ru_utime + usage.ru_stime, usage.ru_maxrss)
+    print "OK %.4lf %d" % get_resources_used()
 
 if __name__ == "__main__":
     main()

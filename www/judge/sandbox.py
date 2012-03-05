@@ -253,8 +253,9 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
             if (result["returncode"] != 0 or
                     result["stderr"].strip() or
                     not result["stdout"].strip() or
-                    result["stdout"].split()[0] not in ["RTE", "MLE", "OK"]):
-                raise Exception("Unexpected monitor result:\n" + str(result))
+                    result["stdout"].split()[0] not in ["RTE", "MLE", "OK", "TLE"]):
+                raise Exception("Unexpected monitor result:\n" + str(result) + "\n" +
+				result["stdout"].split()[0])
         except TimeOutException:
             return "TLE"
         #print "RESULT", result
