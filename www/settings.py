@@ -61,7 +61,7 @@ MEDIA_ROOT = j("media")
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 #MEDIA_URL = '/media/'
 # set for development: reset for prod
-MEDIA_URL = "http://127.0.0.1:8000/media/"
+MEDIA_URL = "http://0.0.0.0:8000/media/"
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -209,7 +209,7 @@ JUDGE_SETTINGS = {
     "WORKDIR": j("judge/work"),
     "USER": "runner",
     "FILESYSTEMSIZE": 64 * 1024,
-    "MINMEMORYSIZE": 128 * 1024,
+    "MINMEMORYSIZE": 256 * 1024,
 }
 
 # PAGINATION SETTINGS
