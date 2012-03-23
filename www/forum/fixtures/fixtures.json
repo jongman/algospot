@@ -18,6 +18,11 @@
 		"model": "forum.Category",
 		"pk": 4,
 		"fields": { "name": "과거 게시판", "slug": "old" }
+	},
+	{
+		"model": "forum.Post",
+		"pk": 1,
+		"fields": { "title": "환영합니다", "user": 1, "text": "알고스팟 개발을 시작하신 것을 환영합니다!", "category": 1}
 	}
 ]
 
