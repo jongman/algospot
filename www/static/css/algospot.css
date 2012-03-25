@@ -5,8 +5,8 @@
 /* 링크 밑줄 is so 1990 */
 a { text-decoration: none; }
 
-/* 폰트 리셋: 버튼들 빼곤 전부 나눔고딕으로 치환한다 */
-body, textarea, input, select { font-family: NanumGothic,나눔고딕; }
+/* 폰트 리셋: 버튼들 빼곤 전부 나눔고딕으로 치환한다. 웹 글꼴 호스팅도 고민해 보자. */
+body, textarea, input, select { font-family: NanumGothic,나눔고딕,sans-serif; }
 .button-link { font-family: 'PT Sans', Arial; }
 
 /* 사용자 핸들은 굵은 글씨로 */
@@ -597,6 +597,42 @@ ul.search .highlighted {
 	font-weight: bold;
 	background-color: #ffff66;
 }
+
+/* blockquote 스타일링 */
+blockquote {
+	margin: 0.5em 0 0.75em 2em;
+	border-left: #999 0.2em solid;
+	padding: 0.25em 0.5em 0.75em 0.5em;
+	display: block;
+}
+
+blockquote {
+	background-color: #eee;
+}
+
+blockquote > blockquote {
+	background-color: #ddd;
+}
+
+blockquote > blockquote > blockquote {
+	background-color: #eee;
+}
+
+blockquote > blockquote > blockquote > blockquote {
+	background-color: #ddd;
+}
+
+blockquote::before {
+	content: '“';
+	margin-left: -1.25em;
+	color: #999;
+	height: 0;
+	font-size: 200%;
+	line-height: 1;
+	font-style: italic;
+	display: block;
+}
+
 /* 검색 결과 */
 
 /* 할일들:
