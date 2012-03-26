@@ -11,10 +11,7 @@ def rejudge(request, id):
     submission = get_object_or_404(Submission, id=id)
     if submission.user != request.user and not request.user.is_superuser:
         return HttpResponseForbidden()
-    submission.message = ""
-    submission.time = None
-    submission.state = Submission.REJUDGE_REQUESTED
-    submission.save()
+    submission.rejudge()
     return redirect(reverse("judge-submission-details", kwargs={"id": id}))
 
 def recent(request, page=1):

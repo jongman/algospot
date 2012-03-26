@@ -57,6 +57,17 @@ def edit(request, id):
         "form": form})
 
 @login_required
+def rejudge(request, id):
+    problem = get_object_or_404(Problem, id=id)
+    if not request.user.is_superuser and problem.user != request.user:
+        raise Http404
+    submissions = Submission.objects.filter(problem=problem, is_public=True)
+    for submission in submissions:
+        submission.rejudge()
+    return redirect(reverse('judge-submission-recent') +
+                    '?problem=' + problem.slug)
+
+@login_required
 def delete_attachment(request, id):
     attachment = get_object_or_404(Attachment, id=id)
     problem = attachment.problem
