@@ -130,6 +130,12 @@ class Submission(models.Model):
     def get_absolute_url(self):
         return reverse("judge-submission-details", kwargs={"id": self.id})
 
+    def rejudge(self):
+        self.message = ""
+        self.time = None
+        self.state = self.REJUDGE_REQUESTED
+        self.save()
+
     @staticmethod
     def get_verdict_distribution(queryset):
         ret = {}
