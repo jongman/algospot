@@ -38,6 +38,8 @@ urlpatterns = patterns(
 
     url(r'^problem/edit/(?P<id>.+)$', views.problem.edit,
         name='judge-problem-edit'),
+    url(r'^problem/rejudge/(?P<id>.+)$', views.problem.rejudge,
+        name='judge-problem-rejudge'),
 
     url(r'^submission/detail/(?P<id>.+)$', views.submission.details,
         name='judge-submission-details'),

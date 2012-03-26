@@ -57,6 +57,21 @@ def edit(request, id):
         "form": form})
 
 @login_required
+def rejudge(request, id):
+    problem = get_object_or_404(Problem, id=id)
+    if not request.user.is_superuser and problem.user != request.user:
+        raise Http404
+    submissions = Submission.objects.filter(problem=problem)
+    # submission rejudge가 view에서 처리되고 있는데, 이걸 다른 곳으로 옮겨서 중복 코드를 제거해야 마땅함.
+    # 제가 어떻게 해야 할 지 모르겠어서..
+    for submission in submissions:
+        submission.message = ""
+        submission.time = None
+        submission.state = Submission.REJUDGE_REQUESTED
+        submission.save()
+    return redirect(reverse('judge-submission-recent') + '?problem=' + problem.slug)
+
+@login_required
 def delete_attachment(request, id):
     attachment = get_object_or_404(Attachment, id=id)
     problem = attachment.problem
