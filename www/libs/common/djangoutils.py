@@ -122,13 +122,29 @@ def highlight_code_section(text):
 
     return code_pattern.sub(proc, text)
 
+link_pattern = re.compile("\[\[(?:([^:\]]*):)?([^\]]+)\]\]")
+def link_to_entities(rendered):
+    def replace(match):
+        namespace = match.group(1) or ''
+        title = match.group(2)
+        if namespace == 'problem':
+            try:
+                from judge.utils import link_to_problem
+                return link_to_problem(title)
+            except:
+                pass
+        elif namespace == '':
+            try:
+                from wiki.utils import link_to_page
+                return link_to_page(title)
+            except:
+                pass
+        return match.group(0)
+    return link_pattern.sub(replace, rendered)
+
 def render_text(text):
     text = highlight_code_section(text)
     text = urlize(text)
     text = markdown.markdown(text, extensions=["toc", "tables"])
-    try:
-        from wiki.utils import link_to_pages
-        text = link_to_pages(text)
-    except:
-        pass
+    text = link_to_entities(text)
     return text
