@@ -5,6 +5,15 @@
 /* 링크 밑줄 is so 1990 */
 a { text-decoration: none; }
 
+a.missing { color: #a68e8a; }
+a.missing:before {
+	color: #fff;
+	background-color: #a68e8a; 
+	content: '!';
+	font-weight: bold;
+	padding: 0 0.2em;
+}
+
 /* 폰트 리셋: 버튼들 빼곤 전부 나눔고딕으로 치환한다. 웹 글꼴 호스팅도 고민해 보자. */
 body, textarea, input, select { font-family: NanumGothic,나눔고딕,sans-serif; }
 .button-link { font-family: 'PT Sans', Arial; }
@@ -640,11 +649,6 @@ blockquote::before {
  *
  */
 
-/*  */
-/* a.missing { */
-/* 	color: #2E43AE; */
-/* } */
-/*  */
 /* .problem_edit input, */
 /* .problem_edit textarea, */
 /* form dd select, */
