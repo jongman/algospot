@@ -122,21 +122,22 @@ def highlight_code_section(text):
 
     return code_pattern.sub(proc, text)
 
-link_pattern = re.compile("\[\[(?:([^:\]]*):)?([^\]]+)\]\]")
+link_pattern = re.compile("\[\[(?:([^|\]]+)\|)?(?:([^:\]]+):)?([^\]]+)\]\]")
 def link_to_entities(rendered):
     def replace(match):
-        namespace = match.group(1) or ''
-        title = match.group(2)
+        display = match.group(1)
+        namespace = match.group(2) or ''
+        title = match.group(3)
         if namespace == 'problem':
             try:
                 from judge.utils import link_to_problem
-                return link_to_problem(title)
+                return link_to_problem(title, display)
             except:
                 pass
         elif namespace == '':
             try:
                 from wiki.utils import link_to_page
-                return link_to_page(title)
+                return link_to_page(title, display)
             except:
                 pass
         return match.group(0)
