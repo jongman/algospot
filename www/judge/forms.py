@@ -19,6 +19,13 @@ class ProblemEditForm(forms.ModelForm):
         }
     def __init__(self, *args, **kwargs):
         super(ProblemEditForm, self).__init__(*args, **kwargs)
+
+        # model field들에 속성을 거는 건 구린가요? 음..
+        monospace_fields = ('description', 'input', 'output', 'sample_input', 'sample_output', 'note')
+        for field_name in monospace_fields:
+            # 일단 다른 클래스가 없어서 이렇게 하긴 했는데, 영 좋지는 않아서..
+            self.fields[field_name].widget.attrs['class'] = 'monospace'
+
         if "instance" in kwargs:
             instance = kwargs["instance"]
             self.initial["tags"] = ",".join([tag.name for tag in instance.tags])
@@ -62,7 +69,7 @@ class SubmitForm(forms.Form):
     language = forms.ChoiceField([(key, "%s: %s" % (val.LANGUAGE, val.VERSION))
                                   for key, val in languages.modules.items()],
                                  label=u"사용언어")
-    source = forms.CharField(widget=forms.Textarea(attrs={"class": "large",
+    source = forms.CharField(widget=forms.Textarea(attrs={"class": "large monospace",
                                                           "rows": "12"}),
                              label=u"소스코드")
 
