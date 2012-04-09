@@ -66,7 +66,7 @@ class Activity(models.Model):
         def wrap_in_link(object):
             if not object: return ""
             if isinstance(object, Comment):
-                if isinstance(self.target, Problem):
+                if isinstance(self.target, Problem) or "<spoiler>" in object.comment :
                     unicode_rep = u"[스포일러 방지를 위해 보이지 않습니다]"
                 else:
                     unicode_rep = object.comment
