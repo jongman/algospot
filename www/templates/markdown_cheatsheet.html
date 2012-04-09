@@ -30,13 +30,13 @@
 					</tr>
 					<tr>
 						<td>위키 링크하기</td>
-						<td>[[알고스팟 온라인 저지]]</td>
-						<td><a href="{% url wiki-detail "알고스팟_온라인_저지"%}">알고스팟 온라인 저지</a></td>
+						<td>[[알고스팟 온라인 저지]]<br>[[AOJ|알고스팟 온라인 저지]]</td>
+						<td><a href="{% url wiki-detail "알고스팟_온라인_저지"%}">알고스팟 온라인 저지</a><br><a href="{% url wiki-detail "알고스팟_온라인_저지"%}">AOJ</a></td>
 					</tr>
 					<tr>
 						<td>문제 링크하기</td>
-						<td>[[problem:HELLOWORLD]]</td>
-						<td><a href="{% url judge-problem-read "HELLOWORLD"%}">HELLOWORLD</a></td>
+						<td>[[problem:HELLOWORLD]]<br>[[연습 문제|problem:HELLOWORLD]]</td>
+						<td><a href="{% url judge-problem-read "HELLOWORLD"%}">HELLOWORLD</a><br><a href="{% url judge-problem-read "HELLOWORLD"%}">연습 문제</a></td>
 					</tr>
 					<tr>
 						<td>강조하기</td>
@@ -51,7 +51,8 @@
 							<br/>
 							1. 쌀<br/>
 							2. 콩<br/>
-							3. 보리<br/></td>
+							3. 보리<br/>
+						</td>
 						<td>
 							<ul>
 								<li>엘</li>
@@ -82,15 +83,36 @@
 							&lt;/code&gt;
 						</td>
 						<td>
-							<table class="highlighttable"><tr><td class="code"><div class="highlight"><pre><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello, %s!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span> 
-</pre></div> 
-						</td></tr></table> 
-					</td>
-				</tr>
-				<tr>
-					<td>그림 링크하기</td>
-					<td>![내가 고자라니]({{ STATIC_URL }}images/gozarani.jpg)</td>
-					<td><img src="{{ STATIC_URL}}images/gozarani.jpg" alt="내가 고자라니"/></td>
+							<table class="highlighttable"><tr><td class="code"><div class="highlight"><pre><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello, %s!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span></pre></div></td></tr></table> 
+						</td>
+					</tr>
+					<tr>
+						<td>그림 링크하기</td>
+						<td>![내가 고자라니]({{ STATIC_URL }}images/gozarani.jpg)</td>
+						<td><img src="{{ STATIC_URL}}images/gozarani.jpg" alt="내가 고자라니"/></td>
+					</tr>
+					<tr>
+						<td>스포일러 감추기</td>
+						<td>
+							&lt;spoiler&gt;<br/>
+							***모든 문제를 풀 수 있는 파인만 알고리즘***<br/>
+							<br/>
+							* 문제를 쓴다.<br/>
+							* 졸라 열심히 생각한다.<br/>
+							* 답을 쓴다.<br/>
+							&lt;/spoiler&gt;
+						</td>
+						<td>
+							<div class="spoiler">
+								<p><strong><em>모든 문제를 풀 수 있는 파인만 알고리즘</em></strong></p>
+								<ul>
+								<li>문제를 쓴다.</li>
+								<li>졸라 열심히 생각한다.</li>
+								<li>답을 쓴다.</li>
+								</ul>
+							</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</section>

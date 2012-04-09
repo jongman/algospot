@@ -122,29 +122,39 @@ def highlight_code_section(text):
 
     return code_pattern.sub(proc, text)
 
-link_pattern = re.compile("\[\[(?:([^:\]]*):)?([^\]]+)\]\]")
+link_pattern = re.compile("\[\[(?:([^|\]]+)\|)?(?:([^:\]]+):)?([^\]]+)\]\]")
 def link_to_entities(rendered):
     def replace(match):
-        namespace = match.group(1) or ''
-        title = match.group(2)
+        display = match.group(1)
+        namespace = match.group(2) or ''
+        title = match.group(3)
         if namespace == 'problem':
             try:
                 from judge.utils import link_to_problem
-                return link_to_problem(title)
+                return link_to_problem(title, display)
             except:
                 pass
         elif namespace == '':
             try:
                 from wiki.utils import link_to_page
-                return link_to_page(title)
+                return link_to_page(title, display)
             except:
                 pass
         return match.group(0)
     return link_pattern.sub(replace, rendered)
 
+def substitute_spoiler_tags(text):
+    return text.replace('<spoiler>', '<div class="spoiler" markdown="1">').replace('</spoiler>', '</div>')
+
 def render_text(text):
+    # 특정 인라인 HTML 안에서는 MD 변환이 잘 진행되도록
+    # python-markdown에 잘 문서화되지 않은 기능 사용 - https://github.com/waylan/Python-Markdown/issues/52 참조
+    md = markdown.Markdown(extensions=["toc", "tables"])
+    md.preprocessors['html_block'].markdown_in_raw = True
+
+    text = substitute_spoiler_tags(text)
     text = highlight_code_section(text)
     text = urlize(text)
-    text = markdown.markdown(text, extensions=["toc", "tables"])
+    text = md.convert(text)
     text = link_to_entities(text)
     return text

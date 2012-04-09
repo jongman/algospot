@@ -380,6 +380,17 @@ this.value.length);
 
 };
 
+/* spoilers */
+$(function() {
+	$('.spoiler').wrap('<p />');
+	$('<span href="#" class="button-link show-spoiler">show spoiler</span>')
+	    .insertBefore($('.spoiler'))
+	    .click(function() {
+	    	$(this).next().show();
+	    	$(this).detach();
+        });
+});
+
 /* fnReloadAjax implementation */
 
 $.fn.dataTableExt.oApi.fnReloadAjax = function ( oSettings, sNewSource, fnCallback, bStandingRedraw )
