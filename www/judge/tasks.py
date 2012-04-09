@@ -62,6 +62,17 @@ def judge_submission(submission):
             else:
                 logger.info("We already have %s", basename)
 
+    def sanitize_data():
+        for filename in glob.glob(os.path.join(data_dir, "*")):
+            if filename.endswith(".in") or filename.endswith(".out"):
+                # line endings: DOS -> UNIX
+                file = open(filename, 'r+b')
+                body = file.read().replace('\r\n', '\n')
+                file.seek(0)
+                file.write(body)
+                file.truncate()
+                file.close()
+
     def get_ioset():
         io = {}
         for file in glob.glob(os.path.join(data_dir, "*")):
@@ -100,6 +111,7 @@ def judge_submission(submission):
         data_dir = os.path.join(settings.JUDGE_SETTINGS["WORKDIR"],
                                 "data/%d-%s" % (problem.id, problem.slug))
         download_data(submission.problem)
+        sanitize_data()
         ioset = get_ioset()
 
         logger.info("Initiating sandbox..")
