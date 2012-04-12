@@ -155,6 +155,6 @@ def render_text(text):
     text = substitute_spoiler_tags(text)
     text = highlight_code_section(text)
     text = urlize(text)
-    text = md.convert(text)
     text = link_to_entities(text)
+    text = md.convert(text)
     return text
