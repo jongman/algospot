@@ -4,3 +4,6 @@ venv
 designs
 www/profile_logs
 *swp
+www/media
+www/judge/work
+www/local_settings.py
