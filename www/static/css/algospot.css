@@ -17,7 +17,21 @@ a.missing:before {
 /* 폰트 리셋: 버튼들 빼곤 전부 나눔고딕으로 치환한다. 웹 글꼴 호스팅도 고민해 보자. */
 body, textarea, input, select { font-family: NanumGothic,나눔고딕,sans-serif; }
 /* 그냥 monospace로 걸어서는 대부분의 웹 브라우저가 영문 글꼴을 지정하고 한글 글꼴은 놔두는 바람에 바뀌지 않는다 */
-textarea.monospace { font-family: NanumGothicCoding,나눔고딕코딩,굴림체,monospace; }
+.monospace,
+.problem-edit textarea[name='description'],
+.problem-edit textarea[name='input'],
+.problem-edit textarea[name='output'],
+.problem-edit textarea[name='sample_input'],
+.problem-edit textarea[name='sample_output'],
+.problem-edit textarea[name='note'],
+.wiki-edit textarea[name='text'],
+.wiki-edit textarea[name='text'],
+.forum-edit textarea[name='text'],
+.comment_form textarea[name='comment']
+{
+	font-family: NanumGothicCoding,나눔고딕코딩,굴림체,monospace;
+}
+
 .button-link { font-family: 'PT Sans', Arial; }
 
 /* 사용자 핸들은 굵은 글씨로 */
@@ -458,10 +472,10 @@ table.forum_list span.very_heated_discussions,
 table.forum_list span.wow { color: #666; font-weight: bold; }
 
 /* 포럼 글쓰기 */
-section.forum_edit textarea, section.forum_edit input {
+section.forum-edit textarea, section.forum-edit input {
     width: 80%;
 }
-section.forum_edit textarea#id_text {
+section.forum-edit textarea#id_text {
     height: 400px;
 }
 
@@ -521,13 +535,13 @@ table.submission_list tbody .submission_state a { text-decoration: underline; }
 }
 
 /* 문제 편집 */
-section.problem_edit textarea, section.problem_edit input {
+section.problem-edit textarea, section.problem-edit input {
     width: 80%;
 }
-section.problem_edit input[type="checkbox"] {
+section.problem-edit input[type="checkbox"] {
     width: 50px;
 }
-section..problem_edit textarea#id_description {
+section..problem-edit textarea#id_description {
     height: 400px;
 }
 fieldset.attachments .dataTables_wrapper { min-height: 0px; }
@@ -659,8 +673,8 @@ blockquote::before {
  *
  */
 
-/* .problem_edit input, */
-/* .problem_edit textarea, */
+/* .problem-edit input, */
+/* .problem-edit textarea, */
 /* form dd select, */
 /* .comment_form textarea, */
 /* .kor, */
@@ -1061,10 +1075,10 @@ blockquote::before {
 /* .submissionCANT_BE_JUDGED { font-weight: bold; color: rgb(64, 255, 64); text-decoration: underline; } */
 /* .submissionREJUDGE_REQUESTED{ color: silver; } */
 /*  */
-/* .problem_edit textarea, .forum_edit textarea, .forum_edit input, .problem_edit input { */
+/* .problem-edit textarea, .forum-edit textarea, .forum-edit input, .problem-edit input { */
 /*     width: 80%; */
 /* } */
-/* .problem_edit textarea#id_description, .forum_edit textarea { */
+/* .problem-edit textarea#id_description, .forum-edit textarea { */
 /*     height: 400px; */
 /* } */
 /*  */

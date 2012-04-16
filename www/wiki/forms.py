@@ -3,7 +3,7 @@ from django import forms
 from models import PageRevision
 
 class EditForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea(attrs={"class": "large monospace",
+    text = forms.CharField(widget=forms.Textarea(attrs={"class": "large",
                                                         "rows": "20"}))
     summary = forms.CharField(max_length=100,
                               widget=forms.TextInput(attrs={"class": "large"}),
