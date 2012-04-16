@@ -11,12 +11,12 @@
 {% endblock %}
 
 {% block page_contents %}
-	<section class="request_rejudge">
+	<section class="request-rejudge">
 		<form method="GET" action="{% url judge-problem-rejudge problem.id %}">
 			<input class="button" type="submit" value="Rejudge All Submissions" />
 		</form>
 	</section>
-	<section class="problem_edit">
+	<section class="problem-edit">
 		<form action="" method="post">
 			{% csrf_token %}
 			<fieldset>
