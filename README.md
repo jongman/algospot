@@ -45,7 +45,15 @@
 
 	$ pip install -r requirements.txt
 
-1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 서버를 켜기 전에 디비 테이블들을 만든다.
+1. 단, 마크업을 위해 사용하는 misaka 패키지는 커스터마이징한 것을 사용하고 있으므로 따로 설치해 주어야 한다.
+
+	$ git submodule init  
+	$ git submodule update  
+	$ cd libs/misaka  
+	$ ./init.sh  
+	$ cd ../..  
+
+1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 서버를 켜기 전에 디비 테이블들을 만든다. 
 
 	$ cd www  
 	$ ./manage.py syncdb --noinput --migrate
