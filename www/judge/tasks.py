@@ -37,13 +37,14 @@ def judge_submission(submission):
         logger.info("downloading %s ..", attachment.file.url)
         copy(urllib.urlopen(attachment.file.url), open(destination, "wb"))
 
-    def unzip(archive, data_dir):
+    def unzip_and_sanitize(archive, data_dir):
         logger.info("unzipping %s ..", archive)
         file = zipfile.ZipFile(archive, "r")
         for name in file.namelist():
             dest = os.path.join(data_dir, os.path.basename(name))
             logger.info("generating %s ..", dest)
             copy(file.open(name), open(dest, "wb"))
+            sanitize_data(dest)
 
     def download_data(problem):
         attachments = Attachment.objects.filter(problem=problem)
@@ -58,9 +59,20 @@ def judge_submission(submission):
             if not os.path.exists(destination):
                 download(entry, destination)
                 if ext == "zip":
-                    unzip(destination, data_dir)
+                    unzip_and_sanitize(destination, data_dir)
+                else:
+                    sanitize_data(destination)
             else:
                 logger.info("We already have %s", basename)
+
+    def sanitize_data(filename):
+        # line endings: DOS -> UNIX
+        file = open(filename, 'r+b')
+        body = file.read().replace('\r\n', '\n')
+        file.seek(0)
+        file.write(body)
+        file.truncate()
+        file.close()
 
     def get_ioset():
         io = {}
