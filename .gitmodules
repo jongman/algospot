@@ -1,0 +1,3 @@
+[submodule "libs/misaka"]
+	path = libs/misaka
+	url = git://github.com/beingryu/misaka.git

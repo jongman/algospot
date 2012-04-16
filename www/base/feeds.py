@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.syndication.views import Feed
 from forum.models import Post
-from djangoutils import render_text
+from rendertext import render_text
 
 class PostFeed(Feed):
     title = 'algospot.com posts'
