@@ -16,7 +16,7 @@ def cmp_float(output, expected):
         return False
     return math.fabs(exp-out) <= THRESHOLD*max(math.fabs(out), 1)
 
-def judge(input_path, output_path, expected_path):
+def judge(data_dir, input_path, output_path, expected_path):
     o, e = tokenize(open(output_path).read()), tokenize(open(expected_path).read())
     if len(o) != len(e): return False
     for i in xrange(len(o)):
