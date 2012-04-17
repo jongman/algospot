@@ -31,4 +31,4 @@ settings.STATIC_ROOT = '/home/jongman/vcs/git/algospot/static/'
 settings.BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 settings.INSTALLED_APPS += ("djkombu",)
 
-settings.MEDIA_URL = 'http://prague.algospot.com/media/'
+settings.MEDIA_URL = 'http://127.0.0.1:8000/media/'

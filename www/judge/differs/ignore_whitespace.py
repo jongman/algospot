@@ -5,6 +5,6 @@ def tokenize(text):
         text = " ".join(text)
     return [x.strip() for x in text.split()]
 
-def judge(input_path, output_path, expected_path):
+def judge(data_dir, input_path, output_path, expected_path):
     return (tokenize(open(output_path).read()) ==
             tokenize(open(expected_path).read()))

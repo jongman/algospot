@@ -53,7 +53,7 @@ def judge_submission(submission):
         for entry in attachments:
             basename = os.path.basename(entry.file.name)
             ext = basename.split(".")[-1].lower()
-            if ext not in ["in", "out", "zip"]: continue
+            if basename != 'judge.py' and ext not in ["in", "out", "zip"]: continue
             destination = os.path.join(data_dir, basename)
             # TODO: check MD5 and make sure we don't have to download again
             if not os.path.exists(destination):
@@ -170,7 +170,7 @@ def judge_submission(submission):
 
             # differ 에 보내자
             output = sandbox_env.get_file_path(result["output"])
-            if not differ_module.judge(io["in"], output, io["out"]):
+            if not differ_module.judge(data_dir, io["in"], output, io["out"]):
                 submission.time = int(total_time * 1000)
                 submission.memory = max_memory
                 submission.state = Submission.WRONG_ANSWER
