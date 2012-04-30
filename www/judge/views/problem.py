@@ -246,6 +246,10 @@ def stat(request, slug, page=1):
 
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
+    if (problem.state != Problem.PUBLISHED and
+        not request.user.is_superuser and
+        problem.user != request.user):
+        raise Http404
     return render(request, "problem/read.html", {"problem": problem})
 
 @login_required
