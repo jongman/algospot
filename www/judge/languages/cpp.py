@@ -11,7 +11,7 @@ ADDITIONAL_FILES = []
 
 def setup(sandbox, source_code):
     sandbox.write_file(source_code, "submission.cpp")
-    compiled = sandbox.run("g++ -O3 submission.cpp", stdout=".stdout",
+    compiled = sandbox.run("g++ -O3 submission.cpp --std=c++0x", stdout=".stdout",
                            stderr=".stderr", time_limit=10)
     if compiled.split()[0] != "OK":
         return {"status": "error",
