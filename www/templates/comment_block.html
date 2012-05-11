@@ -18,6 +18,7 @@
 			<ul id="comment_list" class="comments background-color" {% if hide_comments %}style="display: none;"{% endif %}>
 				{% for comment in comment_list %}
 				<li class="comment">
+					<a name="c{{ comment.id }}" id="c{{ comment.id }}"></a>
 					<dl>
 						<dt class="comment_user">
 							{% avatar comment.user 45 %}<br/>
@@ -28,7 +29,6 @@
 							<br/>
 							<span class="datetime">{{ comment.submit_date|print_datetime }}</span>
 							<span class="operations">
-								<a name="c{{ comment.id }}"></a>
 								<a href="#c{{ comment.id }}" class="button-link gray">link</a>
 								{% if user.is_authenticated %}
 								{% if user.is_superuser or user == comment.user %}
