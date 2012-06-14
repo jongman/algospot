@@ -52,7 +52,7 @@ class CustomRenderer(misaka.HtmlRenderer):
     def block_code(self, text, lang):
         text = text.replace('\t', '  ')
         try:
-            lexer = get_lexer_by_name(lang, stripall=True)
+            lexer = get_lexer_by_name(lang, stripall=False)
         except:
             if lang:
                 return u'\n<pre><code># 지정된 언어 %s를 찾을 수 없습니다.<br>%s</code></pre>\n' % \
