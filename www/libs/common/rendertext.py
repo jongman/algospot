@@ -37,11 +37,11 @@ class CustomRenderer(misaka.HtmlRenderer):
     def preprocess(self, doc):
         while True:
             self.spoiler_open_key = '{{%s}}' % random_id(16)
-            if doc.find(self.spoiler_open_key) == -1:
-                pass
+            if doc.find(self.spoiler_open_key) != -1:
+                continue
             self.spoiler_close_key = '{{%s}}' % random_id(16)
-            if doc.find(self.spoiler_close_key) == -1:
-                pass
+            if self.spoiler_open_key == self.spoiler_close_key or doc.find(self.spoiler_close_key) != -1:
+                continue
             break
         doc = self.substitute_spoiler_tags(doc)
         doc = self.link_to_entities(doc)

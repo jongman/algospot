@@ -238,6 +238,71 @@ div.pagination .disabled_tnt_pagination {
 	cursor:default;
 }
 
+/* 편집기 관련 스타일링 */
+.editor {
+	position: relative !important;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.editor-config {
+	margin-top: 4px;
+	font-size: 80%;
+}
+
+.editor-config button {
+	margin-right: 1em;
+
+	padding: 2px 7px;
+	height: 20px;
+	font-weight: normal;
+}
+
+.editor-config select {
+	padding: 4px 3px 2px;
+}
+
+.fullscreen-editor {
+	display: none;
+	padding: 0 0 40px 0;
+	background-color: #e6e6e6;
+	overflow: visible;
+	z-index: 999;
+}
+
+.preview-heading {
+	display: none;
+}
+
+.fullscreen-editor .preview, .fullscreen-editor #markdown-cheatsheet-cloned {
+	position: absolute;
+	left: 50%;
+	top: 0;
+}
+
+.preview, #markdown-cheatsheet-cloned {
+	overflow-y: scroll;
+	background-color: white;
+	padding: 0 1em;
+}
+
+.preview .spoiler {
+	display: block;
+}
+
+.fullscreen-editor form {
+	margin: 5px 0;
+	text-align: right;
+}
+
+.fullscreen-editor form button {
+	margin-right: 1em;
+}
+
+.fullscreen-editor .preview-heading {
+	display: block;
+}
+
 /* 문법 강조 */
 .highlight {
 	background-color: #eee;
@@ -664,6 +729,9 @@ blockquote::before {
 
 .spoiler {
 	display: none;
+	background: #ffeaeb;
+	border: 3px double #cf9a9b;
+	padding: 1em;
 }
 
 /* 검색 결과 */
