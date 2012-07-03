@@ -37,7 +37,7 @@
 
 		/** aceize code textarea **/
 		$(function() {
-			var editor = aceize('id_source', { $fullscreen_div_container: $('#id_source').closest('section'), submit_handler: true });
+			var editor = aceize('id_source', { fullscreen: true, submit_handler: true });
 			if (!editor)
 				return;
 
