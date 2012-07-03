@@ -245,6 +245,10 @@ div.pagination .disabled_tnt_pagination {
 	border-style: solid;
 }
 
+.editor textarea {
+	width: auto;
+}
+
 .editor-config {
 	margin-top: 4px;
 	font-size: 80%;
