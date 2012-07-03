@@ -21,5 +21,54 @@
 			<a href="{% url judge-problem-read problem.slug %}">돌아가기</a>
 		</form>
 	</section>
+
+	<script language="javascript">
+
+		/** remember last language with cookie **/
+		$(function() {
+			var last_language = $.cookie('last_submitted_language');
+			if (last_language)
+				$('#id_language').val(last_language);
+
+			$('#id_language').closest('form').submit(function() {
+				$.cookie('last_submitted_language', $('#id_language').val(), { path: '/', expires: 365 });
+			});
+		});
+
+		/** aceize code textarea **/
+		$(function() {
+			var editor = aceize('id_source', { $fullscreen_div_container: $('#id_source').closest('section'), submit_handler: true });
+			if (!editor)
+				return;
+
+			var mapping_to_ace = {
+				java: 'java',
+				scala: 'scala',
+				// no haskell T_T
+				py: 'python',
+				js: 'javascript',
+				rb: 'ruby',
+				cpp: 'c_cpp'
+			};
+	
+			$('#id_language').change(function() {
+				var ace_lang = mapping_to_ace[$(this).val()];
+				if (!ace_lang) ace_lang = 'text';
+
+				var package_name = 'ace/mode/' + ace_lang;
+				var load_script = function() {
+					var mode = require(package_name).Mode;
+					editor.getSession().setMode(new mode());
+				};
+				if (!require(package_name))
+					$.getScript('/static/js/ace/mode-' + ace_lang + '.js', load_script);
+				else
+					load_script();
+			}).change();
+		});
+	</script>
 {% endblock %}
 
+{% block other_blocks %}
+	{% include "markdown_cheatsheet.html" %}
+{% endblock %}

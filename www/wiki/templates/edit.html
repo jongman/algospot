@@ -12,7 +12,7 @@ hello hahaha
 {% block page_contents %} 
 	<section>
 		<div class="wiki-edit">
-			<form action="" method="post">
+			<form action="" method="post" id="submit-form">
 				{% csrf_token %}
 				<fieldset>
 					<legend>편집하기</legend>
@@ -22,6 +22,12 @@ hello hahaha
 			</form>
 		</div>
 	</section>
+
+	<script language="javascript">
+		$(function() {
+			aceize('id_text', { fullscreen: true, preview: true, cheatsheet: 'markdown-cheatsheet', submit_handler: true });
+		});
+	</script>
 {% endblock %}
 
 {% block other_blocks %}

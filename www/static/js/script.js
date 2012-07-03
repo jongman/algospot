@@ -184,6 +184,8 @@ $(function () {
 	$('.tab-switch a').click(
 		function() { 
 			var tab = $(this).attr('href'); // Set variable 'tab' to the value of href of clicked tab
+			if (tab.charAt(0) != '#')
+				return true; // :fix: Page navigation leads to an exception
 			$(this).parent().siblings().find('a').removeClass('current'); // Remove 'current' class from all tabs
 			$(this).addClass('current'); // Add class 'current' to clicked tab
 			$(tab).siblings('.tab').hide(); // Hide all content divs
@@ -347,6 +349,334 @@ function insert_attachment_link(url) {
 		$("textarea[name=description]").insertAtCaret("![" + filename + "](" + url + ")");
 	else
 		$("textarea[name=description]").insertAtCaret("[" + filename + "](" + url + ")");
+}
+
+/** ace editor **/
+var ace_instances = [];
+var ace_theme_list = {
+	chrome: 'Chrome',
+	clouds: 'Clouds',
+	clouds_midnight: 'Clouds Midnight',
+	cobalt: 'Cobalt',
+	crimson_editor: 'Crimson Editor',
+	dawn: 'Dawn',
+	dreamweaver: 'Dreamweaver',
+	eclipse: 'Eclipse',
+	idle_fingers: 'idleFingers',
+	kr_theme: 'krTheme',
+	merbivore: 'Merbivore',
+	merbivore_soft: 'Merbivore Soft',
+	mono_industrial: 'Mono Industrial',
+	monokai: 'Monokai',
+	pastel_on_dark: 'Pastel on dark',
+	solarized_dark: 'Solarized Dark',
+	solarized_light: 'Solarized Light',
+	textmate: 'TextMate',
+	twilight: 'Twilight',
+	tomorrow: 'Tomorrow',
+	tomorrow_night: 'Tomorrow Night',
+	tomorrow_night_blue: 'Tomorrow Night Blue',
+	tomorrow_night_bright: 'Tomorrow Night Bright',
+	tomorrow_night_eighties: 'Tomorrow Night 80s',
+	vibrant_ink: 'Vibrant Ink'
+};
+var ace_theme = new function() {
+	var current_theme;
+	this.get = function() { return current_theme; }
+	this.set = function(new_theme)
+	{
+		if (current_theme == new_theme)
+			return;
+
+		current_theme = new_theme;
+		var package_name = 'ace/theme/' + current_theme;
+		var load_theme = function() {
+			$.each(ace_instances, function(idx, elem) {
+				elem.setTheme(package_name);
+			});
+		};
+		if (!require(package_name))
+			$.getScript('/static/js/ace/theme-' + current_theme + '.js', load_theme);
+		else
+			load_theme();
+
+		$.cookie('editor_theme', current_theme, { path: '/', expires: 365 });
+		$('.editor-theme-select').each(function() {
+			$(this).val(current_theme);
+		});
+	};
+
+	var last_theme = $.cookie('editor_theme');
+	if (!last_theme)
+		last_theme = 'chrome';
+	this.set(last_theme);
+
+	return this;
+};
+
+var delayed_event_handler = function(callback, interval) {
+	var delayed = false;
+	var queued = false;
+
+	var caller = function() {
+		delayed = false;
+		if (!queued)
+			return;
+		queued = false;
+		callback();
+		setTimeout(caller, interval);
+		delayed = true;
+	};
+	var resize_handler = function() {
+		if (!queued)
+		{
+			queued = true;
+			if (!delayed)
+				caller();
+		}
+	};
+
+	return resize_handler;
+};
+
+function aceize(textarea_id, options) {
+	if ($.browser.msie && parseInt($.browser.version, 10) <= 8)
+		return null; // hehehe
+
+	options = options || {};
+	
+	var prev_textarea = $('#' + textarea_id);
+	var div_id = textarea_id + '_aceized';
+	var editor_div = 
+		$('<div id="' + div_id + '" class="editor" />')
+		.height(prev_textarea.height() + 30)
+		.width(prev_textarea.width())
+		.insertAfter(prev_textarea);
+
+	prev_textarea.hide();
+	var editor = ace.edit(div_id);
+	editor.session.setValue(prev_textarea.val()); // editor.setValue() -> different behaviour wtf
+	ace_instances.push(editor);
+
+	var theme_select = $('<select class="editor-theme-select" />');
+	for (var key in ace_theme_list)
+	{
+		if (!ace_theme_list.hasOwnProperty(key)) continue;
+		var option = 
+			$('<option />')
+			.attr('value', key)
+			.text(ace_theme_list[key])
+			.appendTo(theme_select);
+		if (key == ace_theme.get())
+			option.attr('selected', 'selected');
+	}
+	var config_bar = $('<div class="editor-config"></div>')
+		.insertAfter(editor_div);
+	$('<label>테마: </label>')
+		.append(theme_select)
+		.appendTo(config_bar);
+
+	theme_select.change(function() {
+		ace_theme.set($(this).val());
+	}).change();
+
+	editor.session.setUseSoftTabs(true);
+	editor.session.setTabSize(4);
+	editor.renderer.setShowPrintMargin(false);
+	editor.renderer.setShowGutter(!options.hide_gutter);
+	editor.renderer.setShowInvisibles(true);
+
+	var update_fn = function() {
+		prev_textarea.val(editor.getValue());
+	};
+
+	editor_div.bind('keyup blur', update_fn);
+	$(window).bind('beforeunload', update_fn);
+	if (options.submit_handler)
+		prev_textarea.closest('form').bind('submit', update_fn);
+
+	// editor preview
+	if (options.preview)
+	{
+		var preview_div =
+			$('<div class="preview" />')
+			.height(editor_div.height())
+			.width(editor_div.width())
+			.insertAfter(editor_div)
+			.hide();
+		var preview_heading = $('<header class="preview-heading"><h2>미리보기</h2></header>').appendTo(preview_div);
+		var preview_inner_div = $('<div>').appendTo(preview_div);
+
+		var is_preview = false;
+		var preview_callback = function(e) {
+			if (!is_preview)
+			{
+				editor_div.hide();
+				preview_div.show();
+
+				preview_inner_div.html(markdown(editor.getValue()));
+
+				preview_btn.text('편집하기');
+			}
+			else
+			{
+				editor_div.show();
+				preview_div.hide();
+
+				preview_btn.text('미리보기');
+			}
+			is_preview = !is_preview;
+			return e.preventDefault();
+		};
+
+		var preview_btn = $('<button>')
+			.text('미리보기')
+			.prependTo(config_bar)
+			.click(preview_callback);
+	}
+
+	// fullscreen editing
+	if (options.fullscreen)
+	{
+		var fullscreen_div =
+			$('<div id="' + textarea_id + '_fullscreen" class="fullscreen-editor"></div>')
+			.appendTo(prev_textarea.closest('.article-container'));
+		fullscreen_div.overlay({
+			closeOnClick: false,
+			closeOnEsc: false,
+			top: 0,
+			left: 0,
+			speed: 0,
+			closeSpeed: 0
+		});
+
+		var button_bar = $('<form></form>')
+			.append($('<button class="close">전체화면 닫기</button>'))
+			.appendTo(fullscreen_div);
+
+		if (options.cheatsheet)
+		{
+			var cheatsheet_on = false;
+			var cheatsheet_div = 
+				$('#' + options.cheatsheet)
+				.clone()
+				.insertBefore(button_bar)
+				.hide()
+				.attr('id', options.cheatsheet + '-cloned');
+
+			var cheatsheet_btn = $('<button>마크업 문법 도움말</button>')
+				.prependTo(button_bar)
+				.click(function(e) {
+					if (!cheatsheet_on)
+					{
+						cheatsheet_div.show();
+						if (preview_div)
+							preview_div.hide();
+						cheatsheet_btn.text('도움말 닫기');
+					}
+					else
+					{
+						cheatsheet_div.hide();
+						if (preview_div)
+							preview_div.show();
+						cheatsheet_btn.text('마크업 문법 도움말');
+					}
+					$(window).resize();
+					cheatsheet_on = !cheatsheet_on;
+
+					return e.preventDefault();
+				});
+		}
+
+		var fullscreen_callback = function(e) {
+			$('html').css('overflow', 'hidden');
+
+			var fullscreen_btn = $(this);
+			fullscreen_btn.attr('disabled', 'disabled');
+			var original_width = editor_div.width();
+			var original_height = editor_div.height();
+
+			if (options.preview && is_preview)
+				preview_btn.click();
+
+			if (options.preview)
+			{
+				var preview_update_fn = function() {
+					preview_inner_div.html(markdown(editor.getValue()));
+				};
+				preview_div.prependTo(fullscreen_div).show();
+				var update_handler = delayed_event_handler(preview_update_fn, 100);
+				editor_div.bind('keyup change mouseup input textinput click', update_handler);
+				preview_update_fn();
+			}
+			editor_div.prependTo(fullscreen_div);
+
+			var queued = false;
+			var delayed = false;
+			var resize_elements = function() {
+				if (!$.contains(fullscreen_div[0], editor_div[0]))
+					return; // handling delayed jobs
+				fullscreen_div.width($(window).width()).height($(window).height() - (fullscreen_div.innerHeight() - fullscreen_div.height()));
+				var w = fullscreen_div.width();
+				var h = fullscreen_div.height();
+				if (preview_div || cheatsheet_on)
+				{
+					var half_w = (w - (w & 1)) / 2;
+					editor_div.width(half_w).height(h);
+
+					var delta_w = preview_div.outerWidth(true) - preview_div.width();
+					var delta_h = preview_div.outerHeight(true) - preview_div.height();
+					preview_div.width(half_w - delta_w).height(h - delta_h);
+					cheatsheet_div.width(half_w - delta_w).height(h - delta_h);
+				}
+				else
+					editor_div.width(w).height(h);
+				editor.resize();
+			};
+
+			fullscreen_div.data('overlay').load();
+			var resize_handler = delayed_event_handler(resize_elements, 100);
+			$(window).resize(resize_handler).resize();
+
+			var button = fullscreen_div.find('button.close');
+			if (!button.hasClass('handler'))
+			{
+				button.click(function(e) {
+					$(window).unbind('resize', resize_handler);
+					$(fullscreen_div).data('overlay').close();
+					editor_div
+						.insertAfter(prev_textarea)
+						.height(original_height)
+						.width(original_width);
+					if (preview_div)
+					{
+						preview_div
+							.insertAfter(editor_div)
+							.height(original_height)
+							.width(original_width)
+							.hide();
+					}
+					editor.resize();
+					fullscreen_btn.attr('disabled', null);
+					if (options.preview)
+						editor_div.unbind('keyup change mouseup input textinput click', update_handler);
+					$('html').css('overflow', '');
+
+					return e.preventDefault();
+				});
+				button.addClass('handler');
+			}
+
+			return e.preventDefault();
+		};
+
+		$('<button />')
+			.text('전체화면으로 편집')
+			.prependTo(config_bar)
+			.click(fullscreen_callback);
+	}
+
+	return editor;
 }
 
 /* insertAtCaret implementation */

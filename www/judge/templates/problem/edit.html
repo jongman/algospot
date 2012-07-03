@@ -111,6 +111,18 @@
 			$("#id_slug").focus();
 					
 		});
+
+	/** aceize **/
+	$(function() {
+		$.each(['id_description', 'id_input', 'id_output', 'id_note'], function(idx, id) {
+			var tf = $('#' + id);
+			aceize(id, { submit_handler: true, fullscreen: true, preview: true, cheatsheet: 'markdown-cheatsheet' });
+		});
+	});
 	</script>
 	<script language="javascript" src="/static/js/ajaxupload.js"></script>
+{% endblock %}
+
+{% block other_blocks %}
+	{% include "markdown_cheatsheet.html" %}
 {% endblock %}

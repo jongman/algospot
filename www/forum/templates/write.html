@@ -20,6 +20,12 @@
 			<button type="submit">Submit</button> 
 		</form>
 	</section>
+
+	<script language="javascript">
+		$(function() {
+			aceize('id_text', { fullscreen: true, preview: true, cheatsheet: 'markdown-cheatsheet', submit_handler: true });
+		});
+	</script>
 {% endblock %}
 
 {% block other_blocks %}
