@@ -540,7 +540,7 @@ function aceize(textarea_id, options) {
 	{
 		var fullscreen_div =
 			$('<div id="' + textarea_id + '_fullscreen" class="fullscreen-editor"></div>')
-			.appendTo(prev_textarea.closest('.article-container'));
+			.appendTo(prev_textarea.closest('section'));
 		fullscreen_div.overlay({
 			closeOnClick: false,
 			closeOnEsc: false,
