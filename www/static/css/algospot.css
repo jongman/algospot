@@ -246,7 +246,8 @@ div.pagination .disabled_tnt_pagination {
 }
 
 .editor textarea {
-	width: auto;
+	width: 2em !important;
+	padding: 0;
 }
 
 .editor-config {
