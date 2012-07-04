@@ -479,9 +479,20 @@ function aceize(textarea_id, options) {
 	theme_select.change(function() {
 		ace_theme.set($(this).val());
 	}).change();
+	
+	var wrap_btn = 
+		$('<button>줄바꿈 전환</button>')
+		.prependTo(config_bar)
+		.click(function(e) {
+			var cur = editor.session.getUseWrapMode();
+			editor.session.setUseWrapMode(!cur);
+			return e.preventDefault();
+		});
 
 	editor.session.setUseSoftTabs(true);
 	editor.session.setTabSize(4);
+	editor.session.setUseWrapMode(true);
+	editor.session.setWrapLimitRange(null, null);
 	editor.renderer.setShowPrintMargin(false);
 	editor.renderer.setShowGutter(!options.hide_gutter);
 	editor.renderer.setShowInvisibles(true);
@@ -587,6 +598,8 @@ function aceize(textarea_id, options) {
 					return e.preventDefault();
 				});
 		}
+
+		var fullscreen_wrap_btn = wrap_btn.clone(true).prependTo(button_bar);
 
 		var fullscreen_callback = function(e) {
 			$('html').css('overflow', 'hidden');
