@@ -27,7 +27,9 @@ body, textarea, input, select { font-family: NanumGothic,나눔고딕,sans-serif
 .wiki-edit textarea[name='text'],
 .wiki-edit textarea[name='text'],
 .forum-edit textarea[name='text'],
-.comment_form textarea[name='comment']
+.comment_form textarea[name='comment'],
+pre,
+code
 {
 	font-family: NanumGothicCoding,나눔고딕코딩,굴림체,monospace;
 }
@@ -694,8 +696,23 @@ ul.search .highlighted {
 }
 
 /* 위키 */
-.wiki-diff {
+.wiki-diff pre {
 	padding: 0;
+}
+
+.wiki-diff td {
+	text-align: left;
+	padding: 0 !important;
+	background: white;
+}
+
+.wiki-diff .unchanged {
+	background: #eee;
+}
+
+.wiki-diff .line-no {
+	font-weight: bold;
+	background: #ffd;
 }
 
 .wiki-diff ins {
@@ -704,6 +721,15 @@ ul.search .highlighted {
 
 .wiki-diff del {
 	background: #ffe6e6;
+}
+
+.diff-left {
+	width: 50%;
+}
+
+.diff-right {
+	width: 50%;
+	border-left: 1px solid #ccc;
 }
 
 /* blockquote 스타일링 */
