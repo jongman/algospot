@@ -113,20 +113,20 @@ def html_diff(diff):
             if consecutive_unchanged_lines >= 2:
                 changing = False
             if changing:
-                html.append('<tr><td class="unchanged" colspan="2"><pre>%s</pre></td></tr>' % (left if left else ' '))
+                html.append('<tr><td class="unchanged" colspan="2"><pre>%s</pre></td></tr>' % (left + '&para;' if left != None else ' '))
         else:
             consecutive_unchanged_lines = 0
             if not changing:
                 if last_unchanged_line:
                     last_left_line, last_right_line, last_text = last_unchanged_line
                     html.append('<tr><td class="line-no diff-left">Line %d</td><td class="line-no diff-right">Line %d</td></tr>' % (last_left_line, last_right_line))
-                    html.append('<tr><td class="unchanged" colspan="2"><pre>%s</pre></td></tr>' % (last_text if last_text else ' '))
+                    html.append('<tr><td class="unchanged" colspan="2"><pre>%s</pre></td></tr>' % (last_text + '&para;' if last_text != None else ' '))
                 else:
                     html.append('<tr><td class="line-no diff-left">Line %d</td><td class="line-no diff-right">Line %d</td></tr>' % (left_line, right_line))
             changing = True
             html.append('<tr>')
-            html.append('<td class="%s"><pre>%s</pre></td>' % ('diff-left' if left != None else 'empty', left if left else ' '))
-            html.append('<td class="%s"><pre>%s</pre></td>' % ('diff-right' if right != None else 'empty', right if right else ' '))
+            html.append('<td class="diff-left %s"><pre>%s</pre></td>' % ('empty' if left == None else '', left + '&para;' if left != None else ' '))
+            html.append('<td class="diff-right %s"><pre>%s</pre></td>' % ('empty' if right == None else '', right + '&para;' if right != None else ' '))
             html.append('</tr>')
     html.append('</table>')
     return mark_safe("".join(html))

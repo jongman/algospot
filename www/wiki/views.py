@@ -56,7 +56,7 @@ def diff(request, id1=-1, id2=-1):
     title = rev1.revision_for.title
 
     dmp = diff_match_patch()
-    diff = dmp.diff_compute(rev1.text, rev2.text, True, 2)
+    diff = dmp.diff_main(rev1.text, rev2.text)
     return render(request, "diff.html",
                   {"slug": slug,
                    "title": title,
