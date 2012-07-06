@@ -113,14 +113,14 @@ def html_diff(diff):
             if consecutive_unchanged_lines >= 2:
                 changing = False
             if changing:
-                html.append('<tr><td class="unchanged" colspan="2"><pre>%s</pre></td></tr>' % left)
+                html.append('<tr><td class="unchanged" colspan="2"><pre>%s</pre></td></tr>' % (left if left else ' '))
         else:
             consecutive_unchanged_lines = 0
             if not changing:
                 if last_unchanged_line:
                     last_left_line, last_right_line, last_text = last_unchanged_line
                     html.append('<tr><td class="line-no diff-left">Line %d</td><td class="line-no diff-right">Line %d</td></tr>' % (last_left_line, last_right_line))
-                    html.append('<tr><td class="unchanged" colspan="2"><pre>%s</pre></td></tr>' % last_text)
+                    html.append('<tr><td class="unchanged" colspan="2"><pre>%s</pre></td></tr>' % (last_text if last_text else ' '))
                 else:
                     html.append('<tr><td class="line-no diff-left">Line %d</td><td class="line-no diff-right">Line %d</td></tr>' % (left_line, right_line))
             changing = True
