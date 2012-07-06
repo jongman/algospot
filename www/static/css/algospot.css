@@ -693,6 +693,19 @@ ul.search .highlighted {
 	background-color: #ffff66;
 }
 
+/* 위키 */
+.wiki-diff {
+	padding: 0;
+}
+
+.wiki-diff ins {
+	background: #e6ffe6;
+}
+
+.wiki-diff del {
+	background: #ffe6e6;
+}
+
 /* blockquote 스타일링 */
 blockquote {
 	margin: 0.5em 0 0.75em 2em;

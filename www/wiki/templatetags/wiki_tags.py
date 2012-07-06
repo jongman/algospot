@@ -10,12 +10,12 @@ register = template.Library()
 def html_diff(diff):
     html = []
     for (op, data) in diff:
-        text = (data.replace("&", "&amp;").replace("<", "&lt;")\
-                .replace(">", "&gt;").replace("\n", "&para;<br />"),)
+        text = data.replace("&", "&amp;").replace("<", "&lt;")\
+                .replace(">", "&gt;").replace("\n", "&para;<br />")
         if op == diff_match_patch.DIFF_INSERT:
-            html.append("<span class=\"added\">%s</span>" % text)
+            html.append(u"<ins class=\"added\">%s</ins>" % text)
         elif op == diff_match_patch.DIFF_DELETE:
-            html.append("<span class=\"removed\">%s</del>" % text)
+            html.append(u"<del class=\"removed\">%s</del>" % text)
         elif op == diff_match_patch.DIFF_EQUAL:
-            html.append("<span>%s</span>" % text)
+            html.append(u"<span>%s</span>" % text)
     return mark_safe("".join(html))
