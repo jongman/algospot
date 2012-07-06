@@ -8,9 +8,7 @@
 
 {% block page_contents %} 
 	<section>
-		<div class="wiki-text">
-			{{ diff|html_diff }}
-		</div>
+		<pre class="wiki-diff">{{ diff|html_diff }}</pre>
 	</section>
 {% endblock %}
 

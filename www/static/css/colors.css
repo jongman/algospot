@@ -44,7 +44,7 @@ a:hover { color:#036; }
 /*  Background Color  */
 body, body.login, body.error-page, tbody tr:hover, .tickets .ticket-data .ticket-details dl { background-color:#e6e6e6; }
 .widget.add-new-widget, .htmlcalendar tr:nth-child(even) .day, tbody tr:nth-child(even), .tickets .ticket-data:nth-child(2n+1),
-.jq-datepicker .datepick-month-header select, input:disabled, input.disabled, input, textarea, select, input.datepicker { background-color:#fafafa; }
+.jq-datepicker .datepick-month-header select, input:disabled, input.disabled, input, textarea, select, input.datepicker, .editor { background-color:#fafafa; }
 #user-info { background-color:#d9d9d9; }
 .htmlcalendar .calendar-event .event.blue { background-color:#058dc7; }
 .htmlcalendar .calendar-event .event.green { background-color:#77ab13; }
@@ -95,7 +95,7 @@ article footer, .stats-summary li, .logs li, .contacts, .progress-bar { border-c
 .jq-datepicker .datepick-month, .jq-datepicker .datepick-month td, .sidetab-switch li a.current,
 .jq-datepicker .datepick-month th, .jq-datepicker .datepick-month th a { border-color:#fff; }
 .htmlcalendar, .htmlcalendar tbody th, .htmlcalendar tbody td, .toggle-table-switch, .tickets .ticket-data .ticket-details, .tickets .ticket-data .ticket-details dl { border-color:#ccc; }
-fieldset, .jq-datepicker .datepick-month-header select, input, textarea, select, input.datepicker, input:disabled, input.disabled { border-color:#ddd; }
+fieldset, .jq-datepicker .datepick-month-header select, input, textarea, select, input.datepicker, input:disabled, input.disabled, .editor { border-color:#ddd; }
 #user-info, #main-nav ul li span, #main-nav ul li span { border-color:#bfbfbf; }
 input.valid, textarea.valid { border-color:#77ab13; }
 input.invalid, textarea.invalid { border-color:#ae432e; }
@@ -144,7 +144,7 @@ h1, h2, h3, h4, h5, h6 { text-shadow:0 1px 1px #b3b3b3; }
 	-moz-box-shadow:0 0 2px #b3b3b3;
 	box-shadow:0 0 2px #b3b3b3;
 }
-input, textarea, select, input.datepicker, .jq-datepicker .datepick-month-header select {
+input, textarea, select, input.datepicker, .jq-datepicker .datepick-month-header select, .editor {
 	-webkit-box-shadow:inset 0 0 4px #d9d9d9;
 	-moz-box-shadow:inset 0 0 4px #d9d9d9;
 	box-shadow:inset 0 0 4px #d9d9d9;

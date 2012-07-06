@@ -1079,7 +1079,7 @@ fieldset {
 }
 legend {
 	font-size:116%;
-	padding:0 1em;
+	padding:0 0.5em;
 }
 .ie6 legend, .ie7 legend { margin-left:-7px; }
 .ie8 legend, .ie7 legend { margin-bottom:30px; }

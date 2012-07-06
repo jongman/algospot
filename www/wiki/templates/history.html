@@ -12,6 +12,9 @@ hello hahaha
 
 {% block page_contents %} 
 	<section>
+		<p>
+			<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="wiki_diff('{% url wiki-diff-home %}');" class="button-link" class="eng">diff</a>
+		</p>
 		<table class="wiki-history">
 			<thead>
 				<tr>
@@ -47,12 +50,6 @@ hello hahaha
 			</tbody>
 		</table>
 	</section>
-{% endblock %}
-
-{% block page_footer %}
-	<p>
-		<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="wiki_diff('{% url wiki-diff-home %}');" class="button-link" class="eng">diff</a>
-	</p>
 {% endblock %}
 
 {% block wiki_history_class %}default-tab{% endblock %}

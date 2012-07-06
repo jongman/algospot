@@ -2,7 +2,8 @@
 {% load common_tags %}
 {% load comments %}
 
-<form method="POST" action="{% comment_form_target %}">
+
+<form method="POST" action="{% comment_form_target %}" class="comment_form">
 	{% csrf_token %}
 	<dl>
 		<dt class="comment_user">
@@ -20,3 +21,14 @@
 	{{ form.security_hash }}
 	<input type="hidden" name="next" value="{{ request.get_full_path }}"/>
 </form>
+
+<script language="javascript">
+	// 댓글 필드에 자동으로 ID가 붙어 나오는걸 보면 문서 하나에 댓글 하나밖에 나올 수 없는 상황.
+	// 그냥 여기서 aceize
+
+	$(function() {
+		aceize('id_comment', { submit_handler: true, preview: true, hide_gutter: true });
+	});
+</script>
+{% comment %}
+{% endcomment %}
