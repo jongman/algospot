@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
+from diff_match_patch import diff_match_patch
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.core.files.storage import DefaultStorage
 from djangoutils import setup_paginator, get_or_none
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Count
-from base.decorators import authorization_required
-from ..models import Problem, Submission, Attachment, Solver
-from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm, RestrictedProblemEditForm
+from base.decorators import authorization_required, admin_required
+from newsfeed import publish
+from ..models import Problem, Submission, Attachment, Solver, ProblemRevision
+from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm, RestrictedProblemEditForm, ProblemRevisionEditForm
 import json
 import os
 import hashlib
@@ -21,7 +24,13 @@ def new(request):
     new_problem = Problem(user=request.user, name=u"(새 문제)",
                           slug=str(uuid.uuid4()))
     new_problem.save()
+    new_revision = ProblemRevision()
+    new_revision.edit_summary = '문제 생성함.'
+    new_revision.revision_for = new_problem
+    new_revision.user = request.user
+    new_revision.save()
     new_problem.slug = 'NEWPROB' + str(new_problem.id)
+    new_problem.last_revision = new_revision
     new_problem.save()
     return redirect(reverse('judge-problem-edit',
                             kwargs={'id': new_problem.id}))
@@ -46,15 +55,23 @@ def edit(request, id):
     problem = get_object_or_404(Problem, id=id)
     if not request.user.is_superuser and problem.user != request.user:
         raise Http404
+    problem_revision = problem.last_revision
+
     form_class = (ProblemEditForm if request.user.is_superuser else
                   RestrictedProblemEditForm)
     form = form_class(data=request.POST or None, instance=problem)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        return redirect(reverse("judge-problem-read",
-            kwargs={"slug": form.cleaned_data["slug"]}));
+    if request.method == "POST":
+        revision_form = ProblemRevisionEditForm(data=request.POST or None, instance=ProblemRevision())
+        if form.is_valid() and revision_form.is_valid():
+            form.save()
+            new_revision = revision_form.save(problem, request.user, commit=False)
+            if new_revision.different_from(problem_revision):
+                revision_form.save(problem, request.user)
+            return redirect(reverse("judge-problem-read",
+                kwargs={"slug": form.cleaned_data["slug"]}));
+    revision_form = ProblemRevisionEditForm(data=request.POST or None, instance=problem_revision)
     return render(request, "problem/edit.html", {"problem": problem,
-        "form": form})
+        "form": form, "revision_form": revision_form})
 
 @login_required
 def rejudge(request, id):
@@ -73,8 +90,19 @@ def delete_attachment(request, id):
     problem = attachment.problem
     if not request.user.is_superuser and problem.user != request.user:
         raise Http404
+    old_id = attachment.id
+    old_filename = attachment.file.name
     attachment.file.delete(False)
     attachment.delete()
+
+    publish("problem-attachment-delete-%s" % datetime.now().strftime('%s.%f'),
+            "problem",
+            "problem-attachment",
+            actor=request.user,
+            target=problem,
+            timestamp=datetime.now(),
+            admin_only=True,
+            verb=u"문제 {target}에서 첨부파일 %s 을 삭제했습니다." % os.path.basename(old_filename))
     return HttpResponse("[]")
 
 def md5file(file):
@@ -104,6 +132,15 @@ def add_attachment(request, id):
         new_attachment = Attachment(problem=problem,
                                     file=target_path)
         new_attachment.save()
+
+        publish("problem-attachment-%s" % datetime.now().strftime('%s.%f'),
+                "problem",
+                "problem-attachment",
+                actor=request.user,
+                target=problem,
+                timestamp=datetime.now(),
+                admin_only=True,
+                verb=u"문제 {target}에 첨부파일 %s 을 추가했습니다." % file.name)
         return {"success": True}
 
     return HttpResponse(json.dumps(go()))
@@ -250,7 +287,70 @@ def read(request, slug):
         not request.user.is_superuser and
         problem.user != request.user):
         raise Http404
-    return render(request, "problem/read.html", {"problem": problem})
+    return render(request, "problem/read.html", {"problem": problem, "revision": problem.last_revision})
+
+@login_required
+@admin_required
+def history(request, slug):
+    problem = get_object_or_404(Problem, slug=slug)
+    revision_set = ProblemRevision.objects.filter(revision_for=problem).order_by("-id")
+    ids = [rev.id for rev in revision_set[:2]]
+    revisions = revision_set.all()
+    last, second_last = -1, -1
+    if len(ids) >= 2:
+        last, second_last = ids[0], ids[1]
+    return render(request, "problem/history.html",
+                  {"problem": problem,
+                   "revisions": revisions,
+                   "last_rev": last,
+                   "second_last_rev": second_last})
+
+@login_required
+@admin_required
+def old(request, id, slug):
+    problem = get_object_or_404(Problem, slug=slug)
+    revision = get_object_or_404(ProblemRevision, id=id)
+    return render(request, "problem/old.html",
+                  {"problem": problem,
+                   "revision": revision})
+
+@login_required
+@admin_required
+def revert(request, id, slug):
+    # do something..
+    problem = get_object_or_404(Problem, slug=slug)
+    revision = ProblemRevision.objects.get(id=id)
+    old_id = revision.id
+    revision.id = None
+    revision_form = ProblemRevisionEditForm(data=None, instance=revision)
+    revision_form.save(problem, request.user, 
+                       summary=u"리비전 %s로 복구." % old_id)
+    return redirect(reverse("judge-problem-read", kwargs={"slug": problem.slug}))
+
+@login_required
+@admin_required
+def diff(request, id1, id2):
+    rev1 = get_object_or_404(ProblemRevision, id=id1)
+    rev2 = get_object_or_404(ProblemRevision, id=id2)
+    problem = rev1.revision_for
+
+    dmp = diff_match_patch()
+    def differ(text1, text2):
+        return text1 != text2 and dmp.diff_main(text1, text2) or None
+
+    return render(request, "problem/diff.html",
+                  {"problem": problem,
+                   "rev1": rev1,
+                   "rev2": rev2,
+                   "rev1link": reverse("judge-problem-old", kwargs={"id": rev1.id, "slug": problem.slug}),
+                   "rev2link": reverse("judge-problem-old", kwargs={"id": rev2.id, "slug": problem.slug}),
+                   "description": differ(rev1.description, rev2.description),
+                   "input": differ(rev1.input, rev2.input),
+                   "output": differ(rev1.output, rev2.output),
+                   "sample_input": differ(rev1.sample_input, rev2.sample_input),
+                   "sample_output": differ(rev1.sample_output, rev2.sample_output),
+                   "note": differ(rev1.note, rev2.note),
+                   "differ": differ})
 
 @login_required
 def submit(request, slug):

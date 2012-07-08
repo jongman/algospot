@@ -303,7 +303,7 @@ $(function () {
 });
 
 /** algospot customization **/
-function wiki_revert(destination) {
+function history_revert(destination) {
 	if(confirm("정말 덮어씌우시겠어요?")) {
 		window.location.href = destination;
 	}
@@ -317,7 +317,7 @@ function delete_problem(destination) {
 	}
 }
 
-function wiki_diff(diff_path) {
+function history_diff(diff_path) {
 	var diff1 = $('input:radio[name=diff1]:checked').val();
 	var diff2 = $('input:radio[name=diff2]:checked').val();
 	window.location.href = diff_path + "/" + diff1 + "/" + diff2;
@@ -481,7 +481,7 @@ function aceize(textarea_id, options) {
 	}).change();
 	
 	var wrap_btn = 
-		$('<button>줄바꿈 전환</button>')
+		$('<button type="button">줄바꿈 전환</button>')
 		.prependTo(config_bar)
 		.click(function(e) {
 			var cur = editor.session.getUseWrapMode();
@@ -540,7 +540,7 @@ function aceize(textarea_id, options) {
 			return e.preventDefault();
 		};
 
-		var preview_btn = $('<button>')
+		var preview_btn = $('<button type="button">')
 			.text('미리보기')
 			.prependTo(config_bar)
 			.click(preview_callback);
@@ -562,7 +562,7 @@ function aceize(textarea_id, options) {
 		});
 
 		var button_bar = $('<form></form>')
-			.append($('<button class="close">전체화면 닫기</button>'))
+			.append($('<button type="button" class="close">전체화면 닫기</button>'))
 			.appendTo(fullscreen_div);
 
 		if (options.cheatsheet)
@@ -575,7 +575,7 @@ function aceize(textarea_id, options) {
 				.hide()
 				.attr('id', options.cheatsheet + '-cloned');
 
-			var cheatsheet_btn = $('<button>마크업 문법 도움말</button>')
+			var cheatsheet_btn = $('<button type="button">마크업 문법 도움말</button>')
 				.prependTo(button_bar)
 				.click(function(e) {
 					if (!cheatsheet_on)
@@ -683,7 +683,7 @@ function aceize(textarea_id, options) {
 			return e.preventDefault();
 		};
 
-		$('<button />')
+		$('<button type="button"></button>')
 			.text('전체화면으로 편집')
 			.prependTo(config_bar)
 			.click(fullscreen_callback);

@@ -35,6 +35,13 @@
 					</a>
 				</li>
 			{% endif %}
+			{% if user.is_superuser %}
+				<li>
+					<a class="{% block judge_problem_history_class %}{% endblock %}" href="{% url judge-problem-history problem.slug %}" rel="tooltip" title="Problem history">
+						편집 이력
+					</a>
+				</li>
+			{% endif %}
 		</ul>
 	</nav>
 {% endblock %}

@@ -13,7 +13,7 @@ hello hahaha
 {% block page_contents %} 
 	<section>
 		<p>
-			<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="wiki_diff('{% url wiki-diff-home %}');" class="button-link" class="eng">diff</a>
+			<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="history_diff('{% url wiki-diff-home %}');" class="button-link" class="eng">diff</a>
 		</p>
 		<table class="wiki-history">
 			<thead>
@@ -41,7 +41,7 @@ hello hahaha
 							<a class="button-link" href="{% url wiki-old revision.id slug %}" rel="tooltip" original-title="보기">
 								see
 							</a>
-							<a class="button-link" title="복구하기" href="javascript:void();" onclick="wiki_revert('{% url wiki-revert revision.id slug %}');" rel="tooltip" original-title="복구하기">
+							<a class="button-link" title="복구하기" href="javascript:void();" onclick="history_revert('{% url wiki-revert revision.id slug %}');" rel="tooltip" original-title="복구하기">
 								revert
 							</a>
 						</td>

@@ -1,11 +1,25 @@
 {% extends "problem/problem-base.html" %}
 {% load common_tags %}
 
-{% block judge_problem_read_class %}current{% endblock %}
+{% block judge_problem_history_class %}current{% endblock %}
+{% block judge_author_class %}current{% endblock %}
+{% block judge_problem_class %}{% endblock %}
+
+{% block page_title %}
+	History: {{ problem.slug }}@{{ revision.id }}
+{% endblock %}
 
 {% block page_contents %} 
 	{% load judge_tags %}
-	{% include "problem/info_block.html" %}
+	<section class="problem_constraints">
+		<h4>제한</h4>
+		<p class="kor">
+			<ul>
+			    <li>시간 제한: {{ revision.time_limit }}ms</li>
+			    <li>메모리 제한: {{ revision.memory_limit }}kb</li>
+			</ul>
+		</p>
+	</section>
 	<section class="problem_statement">
 		<h4>문제</h4>
 		<p class="kor">
@@ -38,9 +52,4 @@
 			{{ revision.note|render_text }}
 		</p>
 	</section>
-{% endblock %}
-{% block other_blocks %}
-	{% with commentobject=problem hide_comments=1 %}
-		{% include "comment_block.html" %}
-	{% endwith %}
 {% endblock %}

@@ -19,13 +19,15 @@ from collections import defaultdict
 def index(request):
     news_category = Category.objects.get(slug='news')
     recent_news = Post.objects.filter(category=news_category).order_by('-modified_on')[0]
-    recent_activity = Activity.objects.order_by("-timestamp")[:10].all()
+    recent_activity = Activity.objects.order_by("-timestamp")
+    if not request.user.is_superuser:
+        recent_activity = recent_activity.exclude(admin_only=True)
+    recent_activity = recent_activity[:10].all()
     return render(request, "index.html",
                   {'title': u'알고스팟에 오신 것을 환영합니다!',
                    'news': recent_news,
                    'actions': recent_activity,
                   })
-
 
 def get_submission_chart_url(user):
     by_user = Submission.objects.filter(user=user)

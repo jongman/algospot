@@ -1,18 +1,37 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from models import Problem, Submission
+from models import Problem, Submission, ProblemRevision
 from django.contrib.auth.models import User
 import languages
 import differs
 import tagging
+
+class ProblemRevisionEditForm(forms.ModelForm):
+    summary = forms.CharField(max_length=100,
+                              widget=forms.TextInput(attrs={"class": "large"}),
+                              required=False,
+                              label="편집 요약")
+    class Meta:
+        model = ProblemRevision
+        exclude = ('revision_for', 'user', 'edit_summary')
+    def save(self, problem, user, summary=None, commit=True):
+        instance = super(ProblemRevisionEditForm, self).save(commit=False)
+        instance.edit_summary = summary or self.cleaned_data["summary"]
+        instance.revision_for = problem
+        instance.user = user
+        if commit:
+            instance.save()
+            problem.last_revision = instance
+            problem.save()
+        return instance
 
 class ProblemEditForm(forms.ModelForm):
     tags = tagging.forms.TagField(label=u"문제 분류", required=False)
     user = forms.ModelChoiceField(label=u"작성자", queryset=User.objects.order_by("username"))
     class Meta:
         model = Problem
-        exclude = ('submissions_count', 'accepted_count')
+        exclude = ('submissions_count', 'accepted_count', 'last_revision')
         widgets = {
             "judge_module": forms.Select(choices=[(key, key + ": " + val.DESC)
                                                   for key, val in differs.modules.iteritems()])
@@ -36,7 +55,7 @@ class RestrictedProblemEditForm(forms.ModelForm):
     review = forms.BooleanField(label=u'운영진 리뷰 요청', required=False)
     class Meta:
         model = Problem
-        exclude = ('submissions_count', 'accepted_count', 'user', 'state')
+        exclude = ('submissions_count', 'accepted_count', 'user', 'state', 'last_revision')
         widgets = {
             "judge_module": forms.Select(choices=[(key, key + ": " + val.DESC)
                                                   for key, val in

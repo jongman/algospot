@@ -7,7 +7,7 @@
 {% block judge_problem_class %}{% endblock %}
 
 {% block page_title %}
-	문제 편집: {{ problem.name }}
+	문제 편집: {{ problem.slug }}
 {% endblock %}
 
 {% block page_contents %}
@@ -20,8 +20,12 @@
 		<form action="" method="post">
 			{% csrf_token %}
 			<fieldset>
-				<legend>편집하기</legend>
+				<legend>문제 개요</legend>
 				{% include "print_form.html" %}
+			</fieldset>
+			<fieldset>
+				<legend>문제 본문</legend>
+				{% include "print_form.html" with form=revision_form %}
 			</fieldset>
 			<fieldset class="attachments">
 				<legend>첨부파일</legend>
