@@ -119,7 +119,7 @@ def judge_submission(submission):
         # 컴파일할 때 메모리가 더 필요할 수도 있으니, 샌드박스에 메모리는
         # 문제 제한보다 더 많이 준다. MINMEMORYSIZE 만큼은 항상 주도록 한다.
         sandbox_memory = max(settings.JUDGE_SETTINGS['MINMEMORYSIZE'],
-                             problem.memory_limit)
+                             problem.last_revision.memory_limit)
         sandbox_env = sandbox.get_sandbox(sandbox_memory)
 
         logger.info("Compiling..")
@@ -145,8 +145,8 @@ def judge_submission(submission):
             inp = os.path.basename(io["in"])
             sandbox_env.put_file(io["in"], inp)
             result = language_module.run(sandbox_env, inp,
-                                         problem.time_limit / 1000.,
-                                         problem.memory_limit)
+                                         problem.last_revision.time_limit / 1000.,
+                                         problem.last_revision.memory_limit)
 
             # RTE 혹은 MLE?
             if result["status"] != "ok":
@@ -164,7 +164,7 @@ def judge_submission(submission):
             # TODO: 채점 데이터별 시간 제한 지원
             total_time += float(result["time"])
             max_memory = max(max_memory, int(result["memory"]))
-            if total_time > problem.time_limit / 1000.:
+            if total_time > problem.last_revision.time_limit / 1000.:
                 submission.state = Submission.TIME_LIMIT_EXCEEDED
                 return
 
