@@ -8,6 +8,6 @@ class ProblemIndex(SearchIndex):
     def index_queryset(self):
         return Problem.objects.filter(state=Problem.PUBLISHED)
     def get_updated_field(self):
-        return 'updated_on'
+        return None
 
 site.register(Problem, ProblemIndex)
