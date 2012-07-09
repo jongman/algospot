@@ -6,7 +6,8 @@ def system(cmd):
 
 LANGUAGE = "Ruby"
 EXT = "rb"
-VERSION = system(["ruby", "--version"])[0]
+INTERP = "/usr/local/rvm/bin/ruby-1.9.3-p125@aoj"
+VERSION = system([INTERP, "--version"])[0]
 ADDITIONAL_FILES = []
 
 def setup(sandbox, source_code):
@@ -14,7 +15,7 @@ def setup(sandbox, source_code):
     return {"status": "ok"}
 
 def run(sandbox, input_file, time_limit, memory_limit):
-    result = sandbox.run("ruby submission.rb", stdin=input_file, time_limit=time_limit,
+    result = sandbox.run(INTERP + " submission.rb", stdin=input_file, time_limit=time_limit,
                          override_memory_limit=memory_limit,
                          stdout=".stdout", stderr=".stderr")
     toks = result.split()
