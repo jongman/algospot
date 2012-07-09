@@ -9,6 +9,44 @@ from djangoutils import get_or_none
 import pygooglechart as pgc
 import tagging
 
+class ProblemRevision(models.Model):
+    revision_for = models.ForeignKey('Problem')
+    created_on = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, verbose_name=u"편집자")
+    edit_summary = models.TextField(max_length=100, blank=True)
+
+    description = models.TextField(u"설명", blank=True)
+    input = models.TextField(u"입력 설명", blank=True)
+    output = models.TextField(u"출력 설명", blank=True)
+    sample_input = models.TextField(u"예제 입력", blank=True)
+    sample_output = models.TextField(u"예제 출력", blank=True)
+    note = models.TextField(u"노트", blank=True)
+    time_limit = models.PositiveIntegerField(u"시간 제한 (ms)", default=10000)
+    memory_limit = models.PositiveIntegerField(u"메모리 제한 (kb)", default=65536)
+
+    def different_from(self, other):
+        return (self.description != other.description or 
+               self.input != other.input or 
+               self.output != other.output or 
+               self.sample_input != other.sample_input or 
+               self.sample_output != other.sample_output or 
+               self.note != other.note or 
+               self.time_limit != other.time_limit or 
+               self.memory_limit != other.memory_limit)
+
+def problem_revision_edit_handler(sender, **kwargs):
+    instance = kwargs["instance"]
+    publish("problem-edit-%d" % instance.id,
+            "problem",
+            "problem-edit",
+            actor=instance.user,
+            target=instance.revision_for,
+            timestamp=instance.created_on,
+            admin_only=True,
+            verb=u"문제 {target}을 편집했습니다.")
+
+post_save.connect(problem_revision_edit_handler, sender=ProblemRevision, dispatch_uid="problem_edit_event")
+
 class Problem(models.Model):
     DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
     STATE_CHOICES = ((DRAFT, "DRAFT"),
@@ -17,24 +55,17 @@ class Problem(models.Model):
                      (PUBLISHED, "PUBLISHED"))
 
     slug = models.SlugField(u"문제 ID", max_length=100, unique=True)
-    updated_on = models.DateTimeField(auto_now=True)
     state = models.SmallIntegerField(u"문제 상태", default=DRAFT,
                                      choices=STATE_CHOICES,
                                      db_index=True)
     user = models.ForeignKey(User, verbose_name=u"작성자", db_index=True)
     source = models.CharField(u"출처", max_length=100, blank=True, db_index=True)
     name = models.CharField(u"이름", max_length=100, blank=True)
-    description = models.TextField(u"설명", blank=True)
-    input = models.TextField(u"입력 설명", blank=True)
-    output = models.TextField(u"출력 설명", blank=True)
-    sample_input = models.TextField(u"예제 입력", blank=True)
-    sample_output = models.TextField(u"예제 출력", blank=True)
-    note = models.TextField(u"노트", blank=True)
     judge_module = models.CharField(u"채점 모듈", blank=True, max_length=100)
-    time_limit = models.PositiveIntegerField(u"시간 제한 (ms)", default=10000)
-    memory_limit = models.PositiveIntegerField(u"메모리 제한 (kb)", default=65536)
     submissions_count = models.IntegerField(default=0)
     accepted_count = models.IntegerField(default=0)
+
+    last_revision = models.ForeignKey(ProblemRevision, related_name='main', blank=True, null=True)
 
     def __unicode__(self):
         return self.slug

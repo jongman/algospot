@@ -15,6 +15,9 @@
 								<li class="{{ action.type }}">
 									<span class="newsfeed-timestamp">{{ action.timestamp|print_datetime }}</span>
 									<p>
+									    {% if action.admin_only %}
+									        <span class="newsfeed-adminonly">[Admin]</span>
+									    {% endif %}
 										{{ action.render }}
 									</p>
 								</li>

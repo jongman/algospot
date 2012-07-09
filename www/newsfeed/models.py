@@ -21,6 +21,8 @@ class Activity(models.Model):
     # {actor} {target} {action_object} 를 갖는 문자열
     verb = models.CharField(max_length=255)
 
+    admin_only = models.BooleanField(default=False)
+
     target_content_type = models.ForeignKey(ContentType,
                                             related_name='target_content_type',
                                             blank=True,

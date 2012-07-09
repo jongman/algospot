@@ -1,5 +1,6 @@
 {% extends "wiki-base.html" %}
-{% load wiki_tags %}
+{% load common_tags %}
+
 {% block page_title %}
 	Diff: {{ title }} 
 	(<a href="{{rev1link}}">{{rev1}}</a> and
@@ -8,7 +9,7 @@
 
 {% block page_contents %} 
 	<section>
-		<div class="wiki-diff">{{ diff|html_diff }}</pre>
+		<div class="diff">{{ diff|html_diff }}</pre>
 	</section>
 {% endblock %}
 

@@ -655,6 +655,8 @@ ul.newsfeed li .newsfeed-timestamp {
 	font-size:93%;
 }
 
+.newsfeed-adminonly { margin-right: 0.2em; color: #2c8215; font-weight: bold; }
+
 /* 검색 페이지 */
 fieldset.search-query input[type="text"] {
 	width: 80%;
@@ -695,31 +697,31 @@ ul.search .highlighted {
 	background-color: #ffff66;
 }
 
-/* 위키 */
-.wiki-diff pre {
-	padding: 0;
+/* 위키/문제 diff */
+.diff pre {
+	padding: 0 !important;
 }
 
-.wiki-diff td {
+.diff td {
 	text-align: left;
 	padding: 0 !important;
 	background: white;
 }
 
-.wiki-diff .unchanged {
+.diff .unchanged {
 	background: #eee;
 }
 
-.wiki-diff .line-no {
+.diff .line-no {
 	font-weight: bold;
 	background: #ffd;
 }
 
-.wiki-diff ins {
+.diff ins {
 	background: #e6ffe6;
 }
 
-.wiki-diff del {
+.diff del {
 	background: #ffe6e6;
 }
 
