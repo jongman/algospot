@@ -85,7 +85,7 @@
 						{% endif %}
 						{% if result.model_name == "problem" %}
 							<!-- 검색 결과가 위키 페이지-->
-							<span class="datetime">{{ result.object.current_revision.created_on|print_datetime }}</span>
+							<span class="datetime">{{ result.object.last_revision.created_on|print_datetime }}</span>
 							<p class="title">
 								온라인 저지
 								- 
@@ -96,7 +96,7 @@
 								</a>
 							</p>
 							<p class="excerpt">
-								{% highlight result.object.description with query %}					
+								{% highlight result.object.last_revision.description with query %}					
 							</p>
 						{% endif %}
 					</li>
