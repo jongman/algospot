@@ -71,7 +71,7 @@
 			$('#id_source').closest('form').submit(function(e) {
 				lang = $('#id_language').val();
 				code = $('#id_source').val();
-				if (lang == 'cpp' && /fflush\s*\(\s*stdin\s*\)/)
+				if (lang == 'cpp' && /fflush\s*\(\s*stdin\s*\)/.test(code))
 				{
 					alert('fflush(stdin)은 비표준이며 파일을 입력에 리디렉션하는 경우 기대대로 작동하지 않습니다. 자세한 내용은 왼쪽에서 검색해 보세요.');
 					e.preventDefault();
