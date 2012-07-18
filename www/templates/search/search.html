@@ -36,7 +36,6 @@
 			<ul class="search background-color">
 				{% for result in page.object_list %}
 					<li class="{{ result.model_name }}">
-
 						{% if result.model_name == "post" %}
 							<!-- 검색 결과가 게시물 -->
 							<span class="datetime">{{ result.object.created_on|print_datetime }}</span>
@@ -66,7 +65,11 @@
 								{{ result.object.user|print_username }}
 							</p>
 							<p class="excerpt">
-								{% highlight result.object.comment with query %}					
+								{% if result.object.content_type|stringformat("s") == "problem" and result.object.content_object.state != 3 and not user.is_superuser %} {%comment%} what the f... {%endcomment%}
+									공개되지 않은 문제입니다.
+								{% else %}
+									{% highlight result.object.comment with query %}
+								{% endif %}
 							</p>
 						{% endif %}
 						{% if result.model_name == "page" %}
@@ -96,7 +99,7 @@
 								</a>
 							</p>
 							<p class="excerpt">
-								{% highlight result.object.last_revision.description with query %}					
+								{% highlight result.object.last_revision.description with query %}
 							</p>
 						{% endif %}
 					</li>
