@@ -65,7 +65,7 @@
 								{{ result.object.user|print_username }}
 							</p>
 							<p class="excerpt">
-								{% if result.object.content_type|stringformat("s") == "problem" and result.object.content_object.state != 3 and not user.is_superuser %} {%comment%} what the f... {%endcomment%}
+								{% if result.object.content_type|stringformat:"s" == "problem" and result.object.content_object.state != 3 and not user.is_superuser %} {%comment%} what the f... {%endcomment%}
 									공개되지 않은 문제입니다.
 								{% else %}
 									{% highlight result.object.comment with query %}
