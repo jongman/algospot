@@ -13,6 +13,7 @@ from base.decorators import authorization_required, admin_required
 from newsfeed import publish
 from ..models import Problem, Submission, Attachment, Solver, ProblemRevision
 from ..forms import SubmitForm, AdminSubmitForm, ProblemEditForm, RestrictedProblemEditForm, ProblemRevisionEditForm
+from rendertext import render_latex
 import json
 import os
 import hashlib
@@ -288,6 +289,12 @@ def read(request, slug):
         problem.user != request.user):
         raise Http404
     return render(request, "problem/read.html", {"problem": problem, "revision": problem.last_revision})
+
+@login_required
+@admin_required
+def latexify(request, slug):
+    problem = get_object_or_404(Problem, slug=slug)
+    return render(request, "problem/latexify.tex", {"problem": problem, "revision": problem.last_revision})
 
 @login_required
 @admin_required

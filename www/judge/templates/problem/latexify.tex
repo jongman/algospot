@@ -1,0 +1,26 @@
+{% load common_tags %}\begin{problem}{% templatetag openbrace %}{{ problem.name }}{% templatetag closebrace %}{Standard Input}{Standard Output}
+
+{{ revision.description|render_latex|safe }}
+
+\InputFile
+
+{{ revision.input|render_latex|safe }}
+
+\OutputFile
+
+{{ revision.output|render_latex|safe }}
+
+\Example
+
+\begin{example}
+\exmp{
+{{ revision.sample_input|safe }}
+}{
+{{ revision.sample_output|safe }}
+}\end{example}
+
+\Notes
+
+{{ revision.note|render_latex|safe }}
+
+\end{problem}

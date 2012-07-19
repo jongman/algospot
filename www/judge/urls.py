@@ -11,6 +11,8 @@ urlpatterns = patterns(
 
     url(r'^problem/read/(?P<slug>.+)$', views.problem.read,
         name='judge-problem-read'),
+    url(r'^problem/latexify/(?P<slug>.+)$', views.problem.latexify,
+        name='judge-problem-latexify'),
 
     url(r'^problem/mine/$', views.problem.my_problems, name='judge-problem-mine'),
     url(r'^problem/mine/(?P<page>.+)/$', views.problem.my_problems, name='judge-problem-mine'),
