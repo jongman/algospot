@@ -27,9 +27,151 @@ def render_text(text):
 
     return md.render(text)
 
+def render_latex(text):
+    ext = misaka.EXT_NO_INTRA_EMPHASIS \
+        | misaka.EXT_AUTOLINK \
+        | misaka.EXT_FENCED_CODE \
+        | misaka.EXT_TABLES \
+        | misaka.EXT_STRIKETHROUGH \
+        | misaka.EXT_SUPERSCRIPT \
+        | misaka.EXT_SUBSCRIPT \
+        | misaka.EXT_LAX_HTML_BLOCKS
+    md = misaka.Markdown(AlgospotLatexRenderer(), \
+            extensions = ext)
+    
+    return md.render(text)
+
 def random_id(size):
     str = string.ascii_uppercase + string.ascii_lowercase + string.digits
     return ''.join(random.choice(str) for x in range(size))
+
+class AlgospotLatexRenderer(misaka.BaseRenderer):
+    def block_code(self, text, lang):
+        ret = "\\begin{lstlisting}"
+        if lang:
+            ret += "[language=" + lang + "]\n"
+        else:
+        	ret += "\n"
+        if text:
+            ret += text
+        ret += "\\end{lstlisting}\n"
+        return ret
+
+    def block_quote(self, quote):
+        ret = "\\begin{quote}\n"
+        if quote:
+            ret += quote + ""
+        ret += "\\end{quote}\n"
+        return ret
+
+    def block_html(self, html):
+        ret = "\\begin{lstlisting}[language=html]\n"
+        ret += "<!-- HTML Block -->\n"
+        if html:
+            ret += html
+        ret += "\\end{lstlisting}\n"
+        return ret
+
+    def header(self, text, level):
+        grp = ''
+        if level == 1:
+            grp = 'section'
+        elif level == 2:
+            grp = 'subsection'
+        else:
+            grp = 'subsubsection'
+        ret = "\\" + grp + "{"
+        if text:
+            ret += text
+        ret += "}\n"
+        return ret
+
+    def hrule(self):
+        return "\n\n\\hrule\n\n"
+
+    def list(self, contents, is_ordered):
+        env_name = is_ordered and 'enumerate' or 'itemize'
+        ret = "\\begin{" + env_name + "}\n"
+        if contents:
+            ret += contents + "\n"
+        ret += "\\end{" + env_name + "}\n"
+        return ret
+
+    def list_item(self, text, is_ordered):
+        return "\\item " + text or '' + "\n"
+
+    def paragraph(self, text):
+        return text + "\n\n";
+
+    def table(self, header, body):
+        ret = "\\begin{tabular}\n"
+        if header:
+            ret += header + "\n"
+        if body:
+            ret += body + "\n"
+        ret += "\\end{tabular}\n"
+        return ret
+
+    def table_row(self, content):
+        return re.sub(r' & $', '', content or '') + "\\\\"
+
+    def table_cell(self, content, flags):
+        return (content or '') + ' & '
+
+    def autolink(self, link, is_email):
+        return "\\url{" + (link or '') + "}"
+
+    def codespan(self, code):
+        return "\\lstinline|" + (code or '') + "|"
+
+    def double_emphasis(self, text):
+        return "\\textbf{" + (text or '') + "}"
+
+    def emphasis(self, text):
+        return "\\textit{" + (text or '') + "}"
+
+    def image(self, link, title, alt_text):
+        ret = "\colorbox{SkyBlue}{IMAGE HERE}"
+        return ret
+
+    def linebreak(self):
+        return "\n\n"
+
+    def link(self, link, title, content):
+        return "\colorbox{Thistle}{LINK HERE}"
+
+    def raw_html(self, raw_html):
+        return "\colorbox{GreenYellow}{SOME RAW HTML}"
+
+    def triple_emphasis(self, text):
+        return "\\textit{\\textbf{" + (text or '') + "}}"
+
+    def strikethrough(self, text):
+        return "\\sout{" + (text or '') + "}"
+
+    def superscript(self, text):
+        return "$^{" + (text or '').replace("\\{", "").replace("\\}", "") + "}$"
+
+    def subscript(self, text):
+        return "$_{" + (text or '').replace("\\{", "").replace("\\}", "") + "}$"
+
+    def entity(self, text):
+        return text
+
+    def normal_text(self, text):
+        return text.replace('$', "\\$") \
+                   .replace('#', "\\#") \
+                   .replace('%', "\\%") \
+                   .replace('&', "\\&") \
+                   .replace('_', "\\_") \
+                   .replace('{', "\\{") \
+                   .replace('}', "\\}") \
+                   .replace('^', "\\^{}") \
+                   .replace('~', "\\~{}") \
+                   .replace('<=', "$\le$") \
+                   .replace('>=', "$\ge$") \
+                   .replace('<', "$<$") \
+                   .replace('>', "$>$")
 
 class CustomRenderer(misaka.HtmlRenderer):
     LINK_REGEX = re.compile("\[\[(?:([^|\]]+)\|)?(?:([^:\]]+):)?([^\]]+)\]\]")

@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 from django import template
 from django.contrib.comments.templatetags.comments import BaseCommentNode
 from rendertext import render_text as actual_render_text
+from rendertext import render_latex as actual_render_latex
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
@@ -122,6 +123,10 @@ def print_datetime(dt):
 @register.filter
 def render_text(text):
     return mark_safe(actual_render_text(text))
+
+@register.filter
+def render_latex(text):
+    return actual_render_latex(text)
 
 class PercentNode(template.Node):
     def __init__(self, a, b):
