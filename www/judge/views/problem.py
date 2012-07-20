@@ -294,7 +294,9 @@ def read(request, slug):
 @admin_required
 def latexify(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
-    return render(request, "problem/latexify.tex", {"problem": problem, "revision": problem.last_revision})
+    response = render(request, "problem/latexify.tex", {"problem": problem, "revision": problem.last_revision})
+    response['Content-Type'] = 'text/plain'
+    return response
 
 @login_required
 @admin_required
