@@ -1,14 +1,14 @@
 {% load common_tags %}\begin{problem}{% templatetag openbrace %}{{ problem.name }}{% templatetag closebrace %}{Standard Input}{Standard Output}
 
-{{ revision.description|render_latex|safe }}
+{{ revision.description|render_latex }}
 
 \InputFile
 
-{{ revision.input|render_latex|safe }}
+{{ revision.input|render_latex }}
 
 \OutputFile
 
-{{ revision.output|render_latex|safe }}
+{{ revision.output|render_latex }}
 
 \Example
 
@@ -21,6 +21,6 @@
 
 \Notes
 
-{{ revision.note|render_latex|safe }}
+{{ revision.note|render_latex }}
 
 \end{problem}

@@ -126,7 +126,7 @@ def render_text(text):
 
 @register.filter
 def render_latex(text):
-    return actual_render_latex(text)
+    return mark_safe(actual_render_latex(text))
 
 class PercentNode(template.Node):
     def __init__(self, a, b):
