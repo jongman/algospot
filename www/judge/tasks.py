@@ -2,7 +2,9 @@
 from django.conf import settings
 from celery.decorators import task
 from models import Submission, Attachment
+import hashlib
 import urllib
+import shutil
 import os
 import zipfile
 import glob
@@ -48,22 +50,40 @@ def judge_submission(submission):
 
     def download_data(problem):
         attachments = Attachment.objects.filter(problem=problem)
-        if not os.path.exists(data_dir):
-            os.makedirs(data_dir)
+        """
+            There are three cases: created, modified, removed.
+            I am too lazy to handle all these cases optimally,
+            so I'm going to evaluate the hash of all those paths,
+            and compare them to re-download all or do nothing.
+        """
+        entries_to_download = []
         for entry in attachments:
             basename = os.path.basename(entry.file.name)
             ext = basename.split(".")[-1].lower()
             if basename != 'judge.py' and ext not in ["in", "out", "zip"]: continue
+            entries_to_download.append((entry, basename))
+
+        joined_entries = "@".join(map(lambda x: x[0].file.name, entries_to_download))
+        md5 = hashlib.md5(joined_entries).hexdigest()
+        pathhash_name = md5 + '.pathhash'
+        pathhash_path = os.path.join(data_dir, pathhash_name)
+        if os.path.exists(data_dir) and os.path.exists(pathhash_name):
+            return
+
+        if os.path.exists(data_dir):
+            shutil.rmtree(data_dir)
+        os.makedirs(data_dir)
+
+        for pair in entries_to_download:
+            entry, basename = pair
             destination = os.path.join(data_dir, basename)
-            # TODO: check MD5 and make sure we don't have to download again
-            if not os.path.exists(destination):
-                download(entry, destination)
-                if ext == "zip":
-                    unzip_and_sanitize(destination, data_dir)
-                else:
-                    sanitize_data(destination)
+            download(entry, destination)
+            if ext == "zip":
+                unzip_and_sanitize(destination, data_dir)
             else:
-                logger.info("We already have %s", basename)
+                sanitize_data(destination)
+        
+        open(pathhash_path, 'w').close()
 
     def sanitize_data(filename):
         # line endings: DOS -> UNIX
