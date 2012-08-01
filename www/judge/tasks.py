@@ -76,6 +76,7 @@ def judge_submission(submission):
 
         for pair in entries_to_download:
             entry, basename = pair
+            ext = basename.split(".")[-1].lower()
             destination = os.path.join(data_dir, basename)
             download(entry, destination)
             if ext == "zip":
