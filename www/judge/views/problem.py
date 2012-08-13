@@ -79,7 +79,7 @@ def rejudge(request, id):
     problem = get_object_or_404(Problem, id=id)
     if not request.user.is_superuser and problem.user != request.user:
         raise Http404
-    submissions = Submission.objects.filter(problem=problem, is_public=True)
+    submissions = Submission.objects.filter(problem=problem)
     for submission in submissions:
         submission.rejudge()
     return redirect(reverse('judge-submission-recent') +
