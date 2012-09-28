@@ -21,6 +21,9 @@ urlpatterns = patterns(
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/logout', 'django.contrib.auth.views.logout',
         kwargs={'next_page': '/'}),
+    url(r'^accounts/register', 'registration.views.register', 
+        {'backend': 'base.forms.AreYouAHumanBackEnd'},
+        name='registration_register'),
     url(r'^accounts/', include('registration.urls')),
     url(r'^avatar/', include('avatar.urls')),
 

@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 from django import forms
+from django.conf import settings
+from django.utils.safestring import mark_safe
+
+import ayah
+from registration.forms import RegistrationForm
+from registration.backends.default import DefaultBackend
 
 class SettingsForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False),
@@ -25,3 +31,27 @@ class SettingsForm(forms.Form):
         user.save()
         user.get_profile().intro = self.cleaned_data["intro"]
         user.get_profile().save()
+
+class AreYouAHumanWidget(forms.HiddenInput):
+
+    def render(self, name, value, attrs=None):
+        # a hack :-(
+        assert name == 'session_secret'
+        return mark_safe(unicode(ayah.get_publisher_html()))
+
+class AreYouAHumanField(forms.CharField):
+    widget = AreYouAHumanWidget
+    
+    def clean(self, data):
+        if not ayah.score_result(data):
+            raise forms.ValidationError('Please solve the puzzle')
+
+class AreYouAHumanForm(RegistrationForm):
+    session_secret = AreYouAHumanField(label='')
+
+class AreYouAHumanBackEnd(DefaultBackend):
+    def get_form_class(self, request):
+        if settings.USE_AYAH: 
+            ayah.configure(settings.AYAH_PUBLISHER_KEY, settings.AYAH_SCORING_KEY)
+            return AreYouAHumanForm
+        return RegistrationForm

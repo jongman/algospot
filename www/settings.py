@@ -231,6 +231,8 @@ HAYSTACK_SITECONF = 'search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = j('whoosh_index')
 
+USE_AYAH = False
+
 try:
     import local_settings
 except ImportError:
