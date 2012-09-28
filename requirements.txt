@@ -5,6 +5,8 @@ South==0.7.3
 Whoosh==2.0.0
 amqplib==0.6.1
 anyjson==0.3.1
+are-you-a-human==1.0.5
+argparse==1.2.1
 celery==2.2.7
 django-attachments==0.3.1
 django-avatar==1.0.5
@@ -12,12 +14,14 @@ django-celery==2.2.4
 django-debug-toolbar==0.8.5
 django-extensions==0.6
 django-haystack==1.2.6
+django-kombu==0.9.4
 django-picklefield==0.1.9
-django-registration==0.7
+django-registration==0.8
 django-staticfiles==1.0.1
 django-tagging==0.3.1
 ipdb==0.4
 ipython==0.10.2
+kombu==1.5.1
 pygooglechart==0.3.0
 pyparsing==1.5.6
 python-dateutil==1.5
