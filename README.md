@@ -58,8 +58,6 @@
 	$ cd www  
 	$ ./manage.py syncdb --noinput --migrate
 
-1. 위의 명령을 실행할 때 AOJ에 사용되는 언어가 존재하지 않아 오류가 발생하는 경우가 생기는데, 이 경우 해당 언어부분을 지우거나, 설치를 해줘야한다.
-
 1. 슈퍼유저를 만든다.
 
 	$ ./manage.py createsuperuser --username=admin --email=admin@algospot.com
@@ -73,7 +71,7 @@
 
 	$ ./manage.py runserver
 
-1. 웹브라우저에서 [http://127.0.0.1:8000/wiki/read/Main_Page](http://127.0.0.1:8000/wiki/read/Main_Page)를 연다. 아직 메인 페이지가 없어서 위키로 들어가야 한다. -_-
+1. 웹브라우저에서 [http://127.0.0.1:8000](http://127.0.0.1:8000/)를 연다. 
 
 ## 커밋하기
 
