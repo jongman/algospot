@@ -17,7 +17,7 @@ for file in files:
         if language == "__init__": continue
         mod = importlib.import_module(language)
         modules[mod.EXT] = mod
-    except ImportError:
-        import ipdb; ipdb.set_trace()
+    except: 
+        print 'failed to load judge module', file
         continue
 sys.path.remove(languages_dir)
