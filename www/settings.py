@@ -174,7 +174,7 @@ LOGGING = {
 
 # this is a dev setting
 EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
+EMAIL_PORT = 25
 
 # avatar setting
 
@@ -196,6 +196,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     'django.core.context_processors.request',
     "www.forum.processors.add_categories",
+    'base.processors.select_campaign'
 )
 
 AUTHENTICATION_BACKENDS = (
