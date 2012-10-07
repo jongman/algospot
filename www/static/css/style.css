@@ -260,6 +260,11 @@ section[role=navigation] header h1 {
 .sidebar.separator { padding-top:25px; }
 .sidebar .button-link { float:right; }
 
+#campaign {
+	text-align: center;
+	padding-bottom: 25px;
+}
+
 /*  Content Layout :: Widgets  */
 #widgets-container { display:block; }
 .widget {
