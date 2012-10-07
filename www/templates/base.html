@@ -159,6 +159,11 @@
 					</form>
 				</section>
 				<!-- /Search -->
+				{% if campaign %}
+				<section id="campaign">
+					<a href="{{ campaign.link }}"><img src="{{ campaign.image }}"/></a>
+				</section>
+				{% endif %}
 				<!--Sidebar -->
 				<section class="sidebar nested" id="calendar_upcoming">
 					<h2>다가오는 이벤트들</h2>
