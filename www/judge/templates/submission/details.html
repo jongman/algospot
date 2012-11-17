@@ -48,6 +48,14 @@
 		</form>
 	</section>
 	{% endif %}
+	{% if message %}
+	    <section class="submission_message">
+			<h4 class="kor">문제 해결을 축하합니다!</h4>
+			<div class="highlight message">
+				{{ message|render_text }}
+			</div>
+		</section>
+	{% endif %}
 	{% if submission.has_messages %}
 	    <section class="submission_message">
 			<h4 class="kor">에러 메시지</h4>

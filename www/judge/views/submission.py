@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
-from ..models import Problem, Submission
 from django.contrib.auth.decorators import login_required
+from ..models import Problem, Submission
 
 def rejudge(request, id):
     submission = get_object_or_404(Submission, id=id)
@@ -83,6 +84,8 @@ def recent(request, page=1):
 
 @login_required
 def details(request, id):
+    from django.conf import settings 
+
     submission = get_object_or_404(Submission, id=id)
     problem = submission.problem
     if (not problem.was_solved_by(request.user) and
@@ -90,7 +93,16 @@ def details(request, id):
             submission.user != request.user and
             problem.user != request.user):
         return HttpResponseForbidden()
+    message = ''
+    if submission.state == Submission.ACCEPTED:
+        now = datetime.now()
+        for item in settings.SOLVED_CAMPAIGN:
+            if (item['problem'] == problem.slug and 
+                item['begin'] <= now <= item['end']):
+                message = item['message']
+                break
     return render(request, "submission/details.html",
                   {"title": u"답안 보기",
                    "submission": submission,
+                   "message": message,
                    "problem": problem})

@@ -606,6 +606,10 @@ table.submission_list tbody .submission_state a { text-decoration: underline; }
 	width: 16%;
 }
 
+.submission_message .message {
+	padding: 15px;
+}
+
 /* 문제 편집 */
 section.problem-edit textarea, section.problem-edit input {
     width: 80%;
