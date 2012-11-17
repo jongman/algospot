@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
 # Django settings for algospot project.
 
 import os, sys
+from datetime import datetime
 
 PROJECT_DIR = os.path.dirname(__file__)
 j = lambda filename: os.path.join(PROJECT_DIR, filename)
@@ -234,6 +236,16 @@ HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = j('whoosh_index')
 
 USE_AYAH = False
+
+SOLVED_CAMPAIGN = [
+    {'problem': 'HELLOWORLD',
+     'begin': datetime(2012, 1, 1, 0, 0, 0),
+     'end': datetime(2012, 12, 31, 23, 59, 59),
+     'message': u"""*HELLO WORLD 문제를 푸셨군요!*
+
+축하합니다! ^^
+     """.strip()},
+]
 
 try:
     import local_settings
