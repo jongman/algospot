@@ -7,11 +7,12 @@ j = lambda filename: os.path.join(PROJECT_DIR, filename)
 sys.path.append(j("libs/common"))
 sys.path.append(j("libs/external"))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('JongMan Koo', 'jongman@gmail.com'),
+    ('Wonha Ryu', 'wonha.ryu@gmail.com'),
 )
 
 MANAGERS = ADMINS
