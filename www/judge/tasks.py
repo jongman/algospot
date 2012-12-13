@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from celery.decorators import task
+from celery.utils.log import get_task_logger
 from models import Submission, Attachment
 import hashlib
 import urllib
@@ -23,10 +24,11 @@ def print_stack_trace():
 @task()
 def add(x, y):
     return x + y
+    
+logger = get_task_logger(__name__)
 
 @task()
 def judge_submission(submission):
-    logger = judge_submission.get_logger()
 
     def copy(source, dest):
         while True:
