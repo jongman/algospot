@@ -129,7 +129,9 @@ def judge_submission(submission):
         if problem.judge_module not in differs.modules:
             raise Exception("Can't find diff module %s" % problem.judge_module)
         differ_module = differs.modules[problem.judge_module]
-        assert problem.judge_module != 'special_judge' or problem.slug in ['TRAPCARD', 'WORDCHAIN', 'MEETINGROOM']
+        assert (problem.judge_module != 'special_judge' or 
+                problem.slug in ['TRAPCARD', 'WORDCHAIN', 'MEETINGROOM',
+                                 'PACKING'])
 
 
         # 문제 채점 데이터를 다운받고 채점 준비
