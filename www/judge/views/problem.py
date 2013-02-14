@@ -220,6 +220,9 @@ def list(request, page=1):
         elif verdict == 'failed':
             title = user.username + u': 실패한 문제들'
             problems = problems.filter(solver__user=user, solver__solved=False)
+        elif verdict == 'notyet':
+            title = user.username + u': 시도하지 않은 문제들'
+            problems = problems.exclude(solver__user=user)
         else:
             title = user.username + u': 시도한 문제들'
             problems = problems.filter(solver__user=user)
