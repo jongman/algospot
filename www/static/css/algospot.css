@@ -506,11 +506,12 @@ section.online_judge_stat ul.judge_stats {
 	width: 100%;
 }
 section.online_judge_stat ul.judge_stats li.rank { width: 8%; }
-section.online_judge_stat ul.judge_stats li.attempts { width: 18%; }
-section.online_judge_stat ul.judge_stats li.solved { width: 18%; }
-section.online_judge_stat ul.judge_stats li.failed { width: 18%; }
-section.online_judge_stat ul.judge_stats li.submissions { width: 15%; }
-section.online_judge_stat ul.judge_stats li.accepted { width: 20%; }
+section.online_judge_stat ul.judge_stats li.attempts { width: 15%; }
+section.online_judge_stat ul.judge_stats li.solved { width: 15%; }
+section.online_judge_stat ul.judge_stats li.failed { width: 15%; }
+section.online_judge_stat ul.judge_stats li.not-attempted { width: 15%; }
+section.online_judge_stat ul.judge_stats li.submissions { width: 14%; }
+section.online_judge_stat ul.judge_stats li.accepted { width: 15%; }
 section.online_judge_stat ul.judge_stats_charts li.submissions { width: 30%; }
 section.online_judge_stat ul.judge_stats_charts li.category { width: 70%; }
 section.online_judge_stat ul.solved_problems li.content li,
