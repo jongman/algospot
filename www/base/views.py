@@ -98,6 +98,7 @@ def profile(request, user_id):
                    "attempted_problem_count": attempted_problem_count,
                    "all_problem_count": all_problem_count,
                    "failed_problem_count": failed_problem_count,
+                   "not_attempted_problem_count": all_problem_count - attempted_problem_count,
                    "submission_chart_url": submission_chart,
                    "category_chart_url": category_chart,
                    "actions": actions,

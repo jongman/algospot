@@ -31,7 +31,7 @@ urlpatterns = patterns(
     url(r'^comments/delete/(?P<comment_id>.+)/', 'www.base.views.delete_comment',
         name="comment-delete-algospot"),
 
-    # until we write the first page..
+    # first page
     url(r'^/?$', 'www.base.views.index'),
 
     # comments apps
