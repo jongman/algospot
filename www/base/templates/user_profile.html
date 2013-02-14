@@ -45,6 +45,7 @@
 					<li class="attempts">시도한 문제</li>
 					<li class="solved">푼 문제</li>
 					<li class="failed">못 푼 문제</li>
+					<li class="not-attempted">안 푼 문제</li>
 					<li class="submissions">제출 답안 수</li>
 					<li class="accepted">정답 수</li>
 				</ul>
@@ -61,6 +62,9 @@
 					</li>
 					<li class="failed"><a href="{% url judge-problem-list %}?user_tried={{ profile_user.id }}&verdict=failed">{{ failed_problem_count }}/{{ attempted_problem_count }} 
 							({% percentage failed_problem_count attempted_problem_count %}%)</a>
+					</li>
+					<li class="not-attempted"><a href="{% url judge-problem-list %}?user_tried={{ profile_user.id }}&verdict=notyet">{{ not_attempted_problem_count }}/{{ all_problem_count }} 
+							({% percentage not_attempted_problem_count all_problem_count %}%)</a>
 					</li>
 					<li class="submissions"><a href="{% url judge-submission-recent %}?user={{ profile_user.username }}">{{ profile_user.get_profile.submissions }}</a></li>
 					<li class="accepted">{{ profile_user.get_profile.accepted }}
