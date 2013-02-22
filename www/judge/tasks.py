@@ -15,6 +15,9 @@ import StringIO
 import traceback
 import differs
 
+# TODO: get rid of this T_T
+SPECIAL_JUDGE_WHITELISTED = ['TRAPCARD', 'WORDCHAIN', 'MEETINGROOM', 'RESTORE']
+
 def print_stack_trace():
     io = StringIO.StringIO()
     traceback.print_exc(file=io)
@@ -130,8 +133,7 @@ def judge_submission(submission):
             raise Exception("Can't find diff module %s" % problem.judge_module)
         differ_module = differs.modules[problem.judge_module]
         assert (problem.judge_module != 'special_judge' or 
-                problem.slug in ['TRAPCARD', 'WORDCHAIN', 'MEETINGROOM',
-                                 'PACKING'])
+                problem.slug in SPECIAL_JUDGE_WHITELISTED)
 
 
         # 문제 채점 데이터를 다운받고 채점 준비
