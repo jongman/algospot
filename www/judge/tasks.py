@@ -16,7 +16,8 @@ import traceback
 import differs
 
 # TODO: get rid of this T_T
-SPECIAL_JUDGE_WHITELISTED = ['TRAPCARD', 'WORDCHAIN', 'MEETINGROOM', 'RESTORE']
+SPECIAL_JUDGE_WHITELISTED = ['TRAPCARD', 'WORDCHAIN', 'MEETINGROOM', 'RESTORE',
+                             'PACKING']
 
 def print_stack_trace():
     io = StringIO.StringIO()
