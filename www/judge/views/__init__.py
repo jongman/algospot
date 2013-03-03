@@ -13,7 +13,7 @@ def index(request):
 def ranking(request, page=1):
     profiles = UserProfile.objects.filter(submissions__gt=0)
     profiles = profiles.annotate(Count('user__problem'))
-    profiles = profiles.extra(select={'ratio': 'accepted / submissions'})
+    profiles = profiles.extra(select={'ratio': '1.0 * accepted / submissions'})
     order_by = request.GET.get('order_by', 'solved')
     order_by_translate = {'solved': '-solved_problems',
                           'authored': '-user__problem__count',
