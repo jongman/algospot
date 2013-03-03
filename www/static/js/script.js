@@ -489,7 +489,7 @@ function aceize(textarea_id, options) {
 			return e.preventDefault();
 		});
 
-	editor.session.setUseSoftTabs(true);
+	editor.session.setUseSoftTabs(false);
 	editor.session.setTabSize(4);
 	editor.session.setUseWrapMode(true);
 	editor.session.setWrapLimitRange(null, null);
