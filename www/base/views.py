@@ -19,7 +19,7 @@ from collections import defaultdict
 def index(request):
     news_category = Category.objects.get(slug='news')
     recent_news = Post.objects.filter(category=news_category).order_by('-modified_on')[0]
-    recent_activity = Activity.objects.order_by("-timestamp")
+    recent_activity = Activity.objects.exclude(category='solved').order_by("-timestamp")
     if not request.user.is_superuser:
         recent_activity = recent_activity.exclude(admin_only=True)
     recent_activity = recent_activity[:10].all()
