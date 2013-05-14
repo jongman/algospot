@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 @profile("newsfeed_stream")
 def stream(request, page="1"):
-    actions = Activity.objects.order_by("-timestamp")
+    actions = Activity.objects.exclude(category='solved').order_by("-timestamp")
     if not request.user.is_superuser:
         actions = actions.exclude(admin_only=True)
 
