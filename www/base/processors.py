@@ -23,6 +23,13 @@ CAMPAIGNS = [
         'link': 'http://www.nexonin.com/'
     },
     {
+        'name': 'codesprint2013',
+        'start': datetime(2013, 5, 18, 0, 0, 0),
+        'end': datetime(2013, 7, 14, 0, 0, 0),
+        'image': '/static/images/banners/codesprint2013.png',
+        'link': 'http://codesprint.skplanet.com/'
+    },
+    {
         'name': 'jmbook', 
         'start': datetime(2012, 11, 15, 0, 0, 0),
         'end': datetime(2013, 12, 31, 23, 59, 59),
