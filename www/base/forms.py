@@ -2,8 +2,8 @@
 from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
-
-import ayah
+if settings.USE_AYAH:
+    import ayah
 from registration.forms import RegistrationForm
 from registration.backends.default import DefaultBackend
 

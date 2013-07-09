@@ -19,7 +19,7 @@
 
 1. 사이트에 필요한 각종 패키지들을 깔기 위해 easy\_install 을 깔고, easy\_install 로 pip 을 깐다. easy\_install 이랑 pip 은 둘다 파이썬 패키지 매니저인데, pip 이 더 최신이지만 아직 우분투 리포지토리에 안 들어가 있다. easy\_install 은 처음에 pip 까는 용도 빼고는 쓰지 않는다. `libjpeg-dev` 는 아바타 리사이즈 할 때 python imaging library 에서 쓰기 때문에 필요하다.
 
-	$ sudo apt-get install python-setuptools libjpeg-dev  
+	$ sudo apt-get install python-setuptools python-dev libjpeg-dev  
 	$ sudo easy_install pip
 
 1. virtualenv 를 깐다. virtualenv 는 파이썬 패키지를 로컬 디렉토리에 깔 수 있게 해 주는 도구다. 시스템 전역에 깔지 않아도 되기 때문에 두 개 이상의 프로젝트의 dependency 가 충돌하거나 할 일이 없음. virtualenv 가 진리임. ㅇㅇ
@@ -53,9 +53,13 @@
 	$ ./init.sh  
 	$ cd ../..  
 
-1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 서버를 켜기 전에 디비 테이블들을 만든다. 
+1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 로컬 개발을 위해서는 `DEBUG` 모드에서 구동하는 것이 편하다. `local_settings.py.default` 를 복사해 쓰자.
 
-	$ cd www  
+    $ cd www
+    $ cp local_settings.py.default local_settings.py
+
+1. 디비 테이블들을 만든다. 
+
 	$ ./manage.py syncdb --noinput --migrate
 
 1. 슈퍼유저를 만든다.
