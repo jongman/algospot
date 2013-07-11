@@ -1,13 +1,15 @@
-from haystack.indexes import SearchIndex, EdgeNgramField, DateTimeField
-from haystack import site
+from haystack import indexes
 from models import Problem
 
-class ProblemIndex(SearchIndex):
-    text = EdgeNgramField(document=True, use_template=True)
-    date = DateTimeField(model_attr='updated_on')
-    def index_queryset(self):
-        return Problem.objects.filter(state=Problem.PUBLISHED)
+class ProblemIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.EdgeNgramField(document=True, use_template=True)
+    date = indexes.DateTimeField(model_attr='updated_on')
+
+    def get_model(self):
+        return Problem
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.filter(state=Problem.PUBLISHED)
+
     def get_updated_field(self):
         return None
-
-site.register(Problem, ProblemIndex)

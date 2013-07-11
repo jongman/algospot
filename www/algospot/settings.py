@@ -57,7 +57,7 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = j("media")
+MEDIA_ROOT = j("../media")
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -83,7 +83,7 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    j("static"),
+    j("../static"),
 )
 
 # List of finder classes that know how to find static files in
@@ -112,10 +112,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'www.urls'
+ROOT_URLCONF = 'algospot.urls'
 
 TEMPLATE_DIRS = (
-    j("templates"),
+    j("../templates"),
 )
 
 INTERNAL_IPS = ('127.0.0.1',)
@@ -198,7 +198,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages",
     'django.core.context_processors.request',
-    "www.forum.processors.add_categories",
+    "forum.processors.add_categories",
     'base.processors.select_campaign'
 )
 
@@ -210,7 +210,7 @@ AUTHENTICATION_BACKENDS = (
 
 # JUDGE SETTINGS
 JUDGE_SETTINGS = {
-    "WORKDIR": j("judge/work"),
+    "WORKDIR": j("../judge/work"),
     "USER": "runner",
     "FILESYSTEMSIZE": 64 * 1024,
     "MINMEMORYSIZE": 256 * 1024,
@@ -231,9 +231,16 @@ CELERY_IMPORTS = ("judge.tasks",)
 CELERYD_CONCURRENCY = 1
 
 # haystack
-HAYSTACK_SITECONF = 'search_sites'
-HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = j('whoosh_index')
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': j('../whoosh_index'),
+        'STORAGE': 'file',
+        'POST_LIMIT': 128 * 1024 * 1024,
+        'INCLUDE_SPELLING': True,
+        'BATCH_SIZE': 10
+    }
+}
 
 USE_AYAH = False
 

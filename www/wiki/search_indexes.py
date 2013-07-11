@@ -1,14 +1,13 @@
 import datetime
-from haystack.indexes import SearchIndex, EdgeNgramField, DateTimeField
-from haystack import site
+from haystack import indexes
 from models import Page
 
-class PageIndex(SearchIndex):
-    text = EdgeNgramField(document=True, use_template=True)
-    date = DateTimeField(model_attr='modified_on')
-    def get_updated_field(self):
-        return 'modified_on'
-    def index_queryset(self):
-        return Page.objects.filter(modified_on__lte=datetime.datetime.now())
+class PageIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.EdgeNgramField(document=True, use_template=True)
+    date = indexes.DateTimeField(model_attr='modified_on')
 
-site.register(Page, PageIndex)
+    def get_model(self):
+        return Page
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.filter(modified_on__lte=datetime.datetime.now())

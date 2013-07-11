@@ -77,6 +77,11 @@
 
 1. 웹브라우저에서 [http://127.0.0.1:8000](http://127.0.0.1:8000/)를 연다. 
 
+1. 온라인 저지의 경우 채점을 위해 `celery`의 구동을 필요로 한다. 여기서는 브로커로 쓰기 위해 `RabbitMQ` 를 사용해 보자.
+
+    $ sudo apt-get install rabbitmq-server
+    $ ./manage.py celery worker
+
 ## 커밋하기
 
 프로젝트에 새 기능을 추가하거나 버그를 고치려면 다음과 같은 과정을 밟는다.

@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 if settings.USE_AYAH:
     import ayah
 from registration.forms import RegistrationForm
-from registration.backends.default import DefaultBackend
+from registration.views import RegistrationView
 
 class SettingsForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False),
@@ -49,7 +49,7 @@ class AreYouAHumanField(forms.CharField):
 class AreYouAHumanForm(RegistrationForm):
     session_secret = AreYouAHumanField(label='')
 
-class AreYouAHumanBackEnd(DefaultBackend):
+class AreYouAHumanFormView(RegistrationView):
     def get_form_class(self, request):
         if settings.USE_AYAH: 
             ayah.configure(settings.AYAH_PUBLISHER_KEY, settings.AYAH_SCORING_KEY)
