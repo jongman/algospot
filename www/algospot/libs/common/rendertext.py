@@ -18,7 +18,7 @@ def render_text(text):
         | misaka.EXT_STRIKETHROUGH \
         | misaka.EXT_SUPERSCRIPT \
         | misaka.EXT_SUBSCRIPT \
-        | misaka.EXT_LAX_HTML_BLOCKS
+        | misaka.EXT_LAX_SPACING
     render = misaka.HTML_HARD_WRAP \
             | misaka.HTML_TOC
 
@@ -35,7 +35,7 @@ def render_latex(text):
         | misaka.EXT_STRIKETHROUGH \
         | misaka.EXT_SUPERSCRIPT \
         | misaka.EXT_SUBSCRIPT \
-        | misaka.EXT_LAX_HTML_BLOCKS
+        | misaka.EXT_LAX_SPACING
     md = misaka.Markdown(AlgospotLatexRenderer(), \
             extensions = ext)
     
