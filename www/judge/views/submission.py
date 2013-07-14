@@ -4,8 +4,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
-from django.http import HttpResponseForbidden
+from django.http import Http404, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
+from guardian.core import ObjectPermissionChecker
 from ..models import Problem, Submission
 
 def rejudge(request, id):
@@ -16,6 +17,7 @@ def rejudge(request, id):
     return redirect(reverse("judge-submission-details", kwargs={"id": id}))
 
 def recent(request, page=1):
+    checker = ObjectPermissionChecker(request.user)
     submissions = Submission.objects.all().order_by("-id")
 
     filters = {}
@@ -28,21 +30,21 @@ def recent(request, page=1):
     # nonpublic submissions. also, everybody can see their nonpublic
     # submissions.
     only_public = not request.user.is_superuser
+    readable = False
 
     if request.GET.get("problem"):
         slug = request.GET["problem"]
-        problem = get_or_none(Problem, slug=slug)
-        if request.user == problem.user:
-            only_public = False
+        problem = get_object_or_404(Problem, slug=slug)
 
-        if (not problem or
-                (problem.state != Problem.PUBLISHED and
-                 not request.user.is_superuser and
-                 request.user != problem.user)):
-            empty_message = u"해당 문제가 없습니다."
-            submissions = submissions.none()
-        else:
-            submissions = submissions.filter(problem=problem)
+        if request.user == problem.user or checker.has_perm('read_problem', problem):
+            only_public = False
+            readable = True
+
+        if (problem.state != Problem.PUBLISHED and
+             request.user != problem.user and
+             not checker.has_perm('read_problem', problem)):
+            raise Http404
+        submissions = submissions.filter(problem=problem)
 
         title_add.append(slug)
         filters["problem"] = slug
@@ -78,6 +80,7 @@ def recent(request, page=1):
                    "problems": problems,
                    "users": users,
                    "filters": filters,
+                   "readable": readable,
                    "empty_message": empty_message,
                    "pagination": setup_paginator(submissions, page,
                                                  "judge-submission-recent", {}, filters)})
@@ -86,12 +89,13 @@ def recent(request, page=1):
 def details(request, id):
     from django.conf import settings 
 
+    checker = ObjectPermissionChecker(request.user)
     submission = get_object_or_404(Submission, id=id)
     problem = submission.problem
     if (not problem.was_solved_by(request.user) and
-            not request.user.is_superuser and
             submission.user != request.user and
-            problem.user != request.user):
+            problem.user != request.user and
+            not checker.has_perm('read_problem', problem)):
         return HttpResponseForbidden()
     message = ''
     if submission.state == Submission.ACCEPTED:

@@ -80,6 +80,12 @@ class Problem(models.Model):
     def get_absolute_url(self):
         return reverse("judge-problem-read", kwargs={"slug": self.slug})
 
+    class Meta:
+        permissions = (
+            ('read_problem', 'Can read problem even if it is not published yet'),
+            ('edit_problem', 'Can edit problem even if the user is not the author'),
+        )
+
 tagging.register(Problem)
 
 class Attachment(models.Model):
