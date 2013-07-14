@@ -137,6 +137,7 @@ INSTALLED_APPS = (
     'djcelery',
     'tagging',
     'haystack',
+    'guardian',
     #'actstream',
 
     'base',
@@ -206,7 +207,12 @@ AUTHENTICATION_BACKENDS = (
     'base.backends.LegacyBackend',
     'base.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
 )
+
+# GUARDIAN SETTINGS
+ANONYMOUS_USER_ID = -1
+GUARDIAN_RAISE_403 = True
 
 # JUDGE SETTINGS
 JUDGE_SETTINGS = {

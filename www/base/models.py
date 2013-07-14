@@ -3,7 +3,7 @@
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.comments.models import Comment
 from newsfeed import publish, depublish
 
@@ -26,9 +26,12 @@ class UserProfile(models.Model):
 
 @receiver(post_save, sender=User)
 def user_added(sender, **kwargs):
-    """ automatically create profile classes when a user is created."""
     if kwargs["created"]:
         user = kwargs["instance"]
+        """ add the user to group 'everyone'. """
+        Group.objects.get(name='everyone').user_set.add(user)
+
+        """ automatically create profile classes when a user is created."""
         profile = UserProfile(user=user)
         profile.save()
         # publish("joined-%d" % user.id ,

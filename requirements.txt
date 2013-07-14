@@ -16,6 +16,7 @@ django-avatar==1.0.5
 django-celery==3.0.17
 django-debug-toolbar==0.9.4
 django-extensions==1.1.1
+django-guardian==1.1.1
 django-haystack==2.0.0
 django-kombu==0.9.4
 django-picklefield==0.3.0

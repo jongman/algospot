@@ -7,11 +7,16 @@ from django.http import HttpResponseForbidden
 from djangoutils import setup_paginator
 from models import Category, Post
 from forms import WriteForm
+from utils import get_posts_for_user, get_categories_for_user
 from django.contrib.comments.models import Comment
 from django.contrib.auth.models import User
+from guardian.core import ObjectPermissionChecker
 
 def list(request, slug, page=1):
+    checker = ObjectPermissionChecker(request.user)
     category = get_object_or_404(Category, slug=slug)
+    if not checker.has_perm('read_post', category):
+        return HttpResponseForbidden("Restricted category")
     posts = Post.objects.filter(category=category).order_by("-id")
     return render(request, "list.html",
                   {"write_at": category.slug,
@@ -21,17 +26,17 @@ def list(request, slug, page=1):
                                                  {"slug": category.slug})})
 
 def all(request, page=1):
-    category = get_object_or_404(Category, slug='free')
-    posts = Post.objects.order_by("-id")
+    posts = get_posts_for_user(request.user, 'forum.read_post')
+    write_category = get_object_or_404(Category, slug='free')
     return render(request, "list.html",
                   {"show_category": True,
-                   'write_at': category.slug,
+                   'write_at': write_category.slug,
                    "title": u"모든 글 보기",
                    "pagination": setup_paginator(posts, page, "forum-all", {})})
 
 def by_user(request, id, page=1):
     user = get_object_or_404(User, id=id)
-    posts = Post.objects.filter(user=user).order_by("-id")
+    posts = get_posts_for_user(request.user, 'forum.read_post').filter(user=user).order_by("-id")
     return render(request, "by_user.html",
                   {"filter_user": user,
                    "pagination": setup_paginator(posts, page, "forum-byuser", {"id": user.id})})
@@ -39,11 +44,15 @@ def by_user(request, id, page=1):
 def read(request, id):
     post = get_object_or_404(Post, id=id)
     category = post.category
+    checker = ObjectPermissionChecker(request.user)
+    if not checker.has_perm('read_post', category):
+        return HttpResponseForbidden("Restricted post")
     return render(request, "read.html", {"post": post, "category": category})
 
 @login_required
 def write(request, slug, id):
     initial_data = {}
+    categories = get_categories_for_user(request.user, 'forum.write_post')
     action = u"글 쓰기"
     if slug != None:
         category = get_object_or_404(Category, slug=slug)
@@ -52,11 +61,13 @@ def write(request, slug, id):
         action = u"글 편집하기"
         post = get_object_or_404(Post, id=id)
         if not request.user.is_superuser and request.user != post.user:
-            return HttpResponseForbidden("operation is forbidden.")
+            return HttpResponseForbidden("Operation is forbidden.")
         category = post.category
-        form = WriteForm(data=request.POST or None, instance=post)
+        form = WriteForm(categories, data=request.POST or None, instance=post)
     else:
-        form = WriteForm(data=request.POST or None, initial=initial_data)
+        form = WriteForm(categories, data=request.POST or None, initial=initial_data)
+    if not categories.filter(id=category.id).exists():
+        return HttpResponseForbidden("Operation is forbidden.")
 
     if request.method == "POST" and form.is_valid():
         post = form.save(commit=False)
@@ -64,7 +75,7 @@ def write(request, slug, id):
         post.save()
         return redirect(reverse("forum-read", kwargs={"id": post.id}))
     return render(request, "write.html", {"form": form, "action": action,
-                                          "category": category})
+                                          "category": category, "categories": categories})
 
 def delete(request, id):
     post = get_object_or_404(Post, id=id)

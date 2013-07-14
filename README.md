@@ -60,8 +60,9 @@
 
 	$ ./manage.py syncdb --noinput --migrate
 
-1. 슈퍼유저를 만든다.
+1. `everyone` 그룹과 슈퍼유저를 만든다.
 
+	$ ./manage.py loaddata base/fixtures/fixtures.json  
 	$ ./manage.py createsuperuser --username=admin --email=admin@algospot.com
 
 1. 디비에 초기 데이터를 집어넣는다.
