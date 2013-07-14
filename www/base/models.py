@@ -8,7 +8,7 @@ from django.contrib.comments.models import Comment
 from newsfeed import publish, depublish
 
 # 이만큼은 문제를 풀어야 위키 변경 등의 일을 할 수 있다.
-USER_AUTHORIZATION_LIMIT = 0
+USER_AUTHORIZATION_LIMIT = 5
 
 class UserProfile(models.Model):
     """Stores additional information about users."""
