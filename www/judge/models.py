@@ -82,8 +82,8 @@ class Problem(models.Model):
 
     class Meta:
         permissions = (
-            ('read_problem', 'Can read problem even if it is not published yet'),
-            ('edit_problem', 'Can edit problem even if the user is not the author'),
+            ('read_problem', 'Can read problem always'),
+            ('edit_problem', 'Can edit problem always'),
         )
 
 tagging.register(Problem)
