@@ -1,14 +1,16 @@
 import datetime
-from haystack.indexes import SearchIndex, EdgeNgramField, DateTimeField
-from haystack import site
+from haystack import indexes
 from django.contrib.comments.models import Comment
 
-class CommentIndex(SearchIndex):
-    text = EdgeNgramField(document=True, model_attr='comment')
-    date = DateTimeField(model_attr='submit_date')
-    def index_queryset(self):
-        return Comment.objects.filter(submit_date__lte=datetime.datetime.now())
+class CommentIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.EdgeNgramField(document=True, model_attr='comment')
+    date = indexes.DateTimeField(model_attr='submit_date')
+
+    def get_model(self):
+        return Comment
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.filter(submit_date__lte=datetime.datetime.now())
+
     def get_updated_field(self):
         return 'submit_date'
-
-site.register(Comment, CommentIndex)

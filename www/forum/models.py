@@ -2,7 +2,8 @@
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save, pre_delete
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from guardian.shortcuts import get_perms
 from newsfeed import publish, depublish, depublish_where
 
 class Category(models.Model):
@@ -15,6 +16,12 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse('forum-list', args=[self.slug, 1])
+
+    class Meta:
+        permissions = (
+            ('read_post', 'Can read post'),
+            ('write_post', 'Can write post'),
+        )
 
 class Post(models.Model):
     """Stores a forum post."""
@@ -37,6 +44,10 @@ def post_handler(sender, **kwargs):
     profile = instance.user.get_profile()
     profile.posts += 1
     profile.save()
+
+    everyone = Group.objects.get(name='everyone')
+    if not 'read_post' in get_perms(everyone, instance.category): return
+
     publish("forum-post-%d" % instance.id,
             "posts",
             "posted",

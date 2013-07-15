@@ -43,7 +43,7 @@
 						<td class="user">{{ sub.user|print_username }}</td>
 						<td class="language">
 							{% get_has_solved sub.problem by user as solved %}
-							{% if user == sub.user or user.is_superuser or solved or user == sub.problem.user %}
+							{% if user == sub.user or readable or solved or user == sub.problem.user %}
 								<a href="{% url judge-submission-details sub.id %}">
 								{% endif %}					
 								{{ sub.language }}

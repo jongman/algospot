@@ -9,6 +9,8 @@ from djangoutils import setup_paginator, get_or_none
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Count
+from guardian.core import ObjectPermissionChecker
+from guardian.shortcuts import get_objects_for_user
 from base.decorators import authorization_required, admin_required
 from newsfeed import publish
 from ..models import Problem, Submission, Attachment, Solver, ProblemRevision
@@ -54,7 +56,8 @@ def delete(request, id):
 @login_required
 def edit(request, id):
     problem = get_object_or_404(Problem, id=id)
-    if not request.user.is_superuser and problem.user != request.user:
+    checker = ObjectPermissionChecker(request.user)
+    if not checker.has_perm('edit_problem', problem) and problem.user != request.user:
         raise Http404
     problem_revision = problem.last_revision
 
@@ -72,12 +75,13 @@ def edit(request, id):
                 kwargs={"slug": form.cleaned_data["slug"]}));
     revision_form = ProblemRevisionEditForm(data=request.POST or None, instance=problem_revision)
     return render(request, "problem/edit.html", {"problem": problem,
-        "form": form, "revision_form": revision_form})
+        "form": form, "revision_form": revision_form, "editable": checker.has_perm("edit_problem", problem)})
 
 @login_required
 def rejudge(request, id):
     problem = get_object_or_404(Problem, id=id)
-    if not request.user.is_superuser and problem.user != request.user:
+    checker = ObjectPermissionChecker(request.user)
+    if not checker.has_perm('edit_problem', problem) and problem.user != request.user:
         raise Http404
     submissions = Submission.objects.filter(problem=problem)
     for submission in submissions:
@@ -89,7 +93,8 @@ def rejudge(request, id):
 def delete_attachment(request, id):
     attachment = get_object_or_404(Attachment, id=id)
     problem = attachment.problem
-    if not request.user.is_superuser and problem.user != request.user:
+    checker = ObjectPermissionChecker(request.user)
+    if not checker.has_perm('edit_problem', problem) and problem.user != request.user:
         raise Http404
     old_id = attachment.id
     old_filename = attachment.file.name
@@ -119,7 +124,8 @@ def add_attachment(request, id):
         if not problem:
             return {"success": False,
                     "error": u"존재하지 않는 문제입니다."}
-        if not request.user.is_superuser and problem.user != request.user:
+        checker = ObjectPermissionChecker(request.user)
+        if not checker.has_perm('edit_problem', problem) and problem.user != request.user:
             return {"success": False,
                     "error": u"권한이 없습니다."}
         if request.method != "POST":
@@ -150,7 +156,8 @@ def add_attachment(request, id):
 @login_required
 def list_attachments(request, id):
     problem = get_object_or_404(Problem, id=id)
-    if not request.user.is_superuser and problem.user != request.user:
+    checker = ObjectPermissionChecker(request.user)
+    if not checker.has_perm('edit_problem', problem) and problem.user != request.user:
         raise Http404
     data = [[attachment.id,
              os.path.basename(attachment.file.name),
@@ -166,12 +173,10 @@ def list_attachments(request, id):
 @login_required
 @authorization_required
 def my_problems(request, page=1):
-    problems = Problem.objects.exclude(state=Problem.PUBLISHED)
-    if not request.user.is_superuser:
-        title = u'내가 낸 문제들'
-        problems = problems.filter(user=request.user)
-    else:
-        title = u'준비 중인 문제들'
+    readable_problems = get_objects_for_user(request.user, 'read_problem', Problem)
+    my_problems = Problem.objects.filter(user=request.user)
+    problems = (readable_problems | my_problems).exclude(state=Problem.PUBLISHED)
+    title = u'준비 중인 문제들'
 
     order_by = request.GET.get("order_by", 'slug')
     problems = problems.annotate(Count('solver'))
@@ -262,6 +267,11 @@ def list(request, page=1):
 
 def stat(request, slug, page=1):
     problem = get_object_or_404(Problem, slug=slug)
+    checker = ObjectPermissionChecker(request.user)
+    if (problem.state != Problem.PUBLISHED and
+        not checker.has_perm('read_problem', problem) and
+        problem.user != request.user):
+        raise Http404
     submissions = Submission.objects.filter(problem=problem)
     verdict_chart = Submission.get_verdict_distribution_graph(submissions)
     incorrect_tries_chart = Solver.get_incorrect_tries_chart(problem)
@@ -280,6 +290,7 @@ def stat(request, slug, page=1):
     return render(request, "problem/stat.html",
                   {'title': title,
                    'problem': problem,
+                   'editable': checker.has_perm('edit_problem', problem),
                    'verdict_chart': verdict_chart,
                    'incorrects_chart': incorrect_tries_chart,
                    'pagination': pagination,
@@ -287,24 +298,31 @@ def stat(request, slug, page=1):
 
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
+    checker = ObjectPermissionChecker(request.user)
     if (problem.state != Problem.PUBLISHED and
-        not request.user.is_superuser and
+        not checker.has_perm('read_problem', problem) and
         problem.user != request.user):
         raise Http404
-    return render(request, "problem/read.html", {"problem": problem, "revision": problem.last_revision})
+    return render(request, "problem/read.html", {"problem": problem, "revision": problem.last_revision, "editable": checker.has_perm('edit_problem', problem)})
 
 @login_required
-@admin_required
 def latexify(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
+    checker = ObjectPermissionChecker(request.user)
+    if (not checker.has_perm('read_problem', problem) and
+        problem.user != request.user):
+        raise Http404
     response = render(request, "problem/latexify.tex", {"problem": problem, "revision": problem.last_revision})
     response['Content-Type'] = 'text/plain'
     return response
 
 @login_required
-@admin_required
 def history(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
+    checker = ObjectPermissionChecker(request.user)
+    if (not checker.has_perm('read_problem', problem) and
+        problem.user != request.user):
+        raise Http404
     revision_set = ProblemRevision.objects.filter(revision_for=problem).order_by("-id")
     ids = [rev.id for rev in revision_set[:2]]
     revisions = revision_set.all()
@@ -313,24 +331,31 @@ def history(request, slug):
         last, second_last = ids[0], ids[1]
     return render(request, "problem/history.html",
                   {"problem": problem,
+                   "editable": checker.has_perm('edit_problem', problem),
                    "revisions": revisions,
                    "last_rev": last,
                    "second_last_rev": second_last})
 
 @login_required
-@admin_required
 def old(request, id, slug):
     problem = get_object_or_404(Problem, slug=slug)
+    checker = ObjectPermissionChecker(request.user)
+    if (not checker.has_perm('read_problem', problem) and
+        problem.user != request.user):
+        raise Http404
     revision = get_object_or_404(ProblemRevision, id=id)
     return render(request, "problem/old.html",
                   {"problem": problem,
+                   "editable": checker.has_perm('edit_problem', problem),
                    "revision": revision})
 
 @login_required
-@admin_required
 def revert(request, id, slug):
-    # do something..
     problem = get_object_or_404(Problem, slug=slug)
+    checker = ObjectPermissionChecker(request.user)
+    if (not checker.has_perm('edit_problem', problem) and
+        problem.user != request.user):
+        raise Http404
     revision = ProblemRevision.objects.get(id=id)
     old_id = revision.id
     revision.id = None
@@ -340,11 +365,14 @@ def revert(request, id, slug):
     return redirect(reverse("judge-problem-read", kwargs={"slug": problem.slug}))
 
 @login_required
-@admin_required
 def diff(request, id1, id2):
     rev1 = get_object_or_404(ProblemRevision, id=id1)
     rev2 = get_object_or_404(ProblemRevision, id=id2)
     problem = rev1.revision_for
+    checker = ObjectPermissionChecker(request.user)
+    if (not checker.has_perm('read_problem', problem) and
+        problem.user != request.user):
+        raise Http404
 
     dmp = diff_match_patch()
     def differ(text1, text2):
@@ -352,6 +380,7 @@ def diff(request, id1, id2):
 
     return render(request, "problem/diff.html",
                   {"problem": problem,
+                   "editable": checker.has_perm('edit_problem', problem),
                    "rev1": rev1,
                    "rev2": rev2,
                    "rev1link": reverse("judge-problem-old", kwargs={"id": rev1.id, "slug": problem.slug}),
@@ -367,9 +396,10 @@ def diff(request, id1, id2):
 @login_required
 def submit(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
-    # superusers and problem authors can opt in for nonpublic submissions.
+    checker = ObjectPermissionChecker(request.user)
+    # read_problem permission owners and problem authors can opt in for nonpublic submissions.
     # nobody can submit public submissions to problems that are not published.
-    if ((request.user == problem.user or request.user.is_superuser) and
+    if ((request.user == problem.user or checker.has_perm('read_problem', problem)) and
         problem.state == Problem.PUBLISHED):
         form = AdminSubmitForm(data=request.POST or None)
     else:
@@ -379,5 +409,5 @@ def submit(request, slug):
         form.save(request.user, problem)
         return redirect(reverse("judge-submission-recent"))
 
-    return render(request, "problem/submit.html", {"form": form,
+    return render(request, "problem/submit.html", {"form": form, "editable": checker.has_perm("edit_problem", problem),
         "problem": problem})

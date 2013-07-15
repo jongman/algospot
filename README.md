@@ -47,11 +47,9 @@
 
 1. 단, 마크업을 위해 사용하는 misaka 패키지는 커스터마이징한 것을 사용하고 있으므로 따로 설치해 주어야 한다.
 
-	$ git submodule init  
-	$ git submodule update  
+	$ git submodule update --init --recursive
 	$ cd libs/misaka  
-	$ ./init.sh  
-	$ cd ../..  
+	$ python setup.py install
 
 1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 로컬 개발을 위해서는 `DEBUG` 모드에서 구동하는 것이 편하다. `local_settings.py.default` 를 복사해 쓰자.
 
@@ -62,8 +60,9 @@
 
 	$ ./manage.py syncdb --noinput --migrate
 
-1. 슈퍼유저를 만든다.
+1. `everyone` 그룹과 슈퍼유저를 만든다.
 
+	$ ./manage.py loaddata base/fixtures/fixtures.json  
 	$ ./manage.py createsuperuser --username=admin --email=admin@algospot.com
 
 1. 디비에 초기 데이터를 집어넣는다.
@@ -76,6 +75,11 @@
 	$ ./manage.py runserver
 
 1. 웹브라우저에서 [http://127.0.0.1:8000](http://127.0.0.1:8000/)를 연다. 
+
+1. 온라인 저지의 경우 채점을 위해 `celery`의 구동을 필요로 한다. 여기서는 브로커로 쓰기 위해 `RabbitMQ` 를 사용해 보자.
+
+    $ sudo apt-get install rabbitmq-server
+    $ ./manage.py celery worker
 
 ## 커밋하기
 

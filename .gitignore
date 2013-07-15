@@ -6,4 +6,5 @@ www/profile_logs
 *swp
 www/media
 www/judge/work
-www/local_settings.py
+www/algospot/local_settings.py
+www/whoosh_index
