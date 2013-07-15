@@ -26,7 +26,7 @@ def list(request, slug, page=1):
                                                  {"slug": category.slug})})
 
 def all(request, page=1):
-    posts = get_posts_for_user(request.user, 'forum.read_post')
+    posts = get_posts_for_user(request.user, 'forum.read_post').order_by("-id")
     write_category = get_object_or_404(Category, slug='free')
     return render(request, "list.html",
                   {"show_category": True,
