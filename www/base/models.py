@@ -4,7 +4,9 @@ from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
+from guardian.shortcuts import get_perms
 from newsfeed import publish, depublish
 
 # 이만큼은 문제를 풀어야 위키 변경 등의 일을 할 수 있다.
@@ -50,6 +52,12 @@ def comment_handler(sender, **kwargs):
     instance, created = kwargs["instance"], kwargs["created"]
     profile = instance.user.get_profile()
     target = instance.content_object
+
+    ctype = ContentType.objects.get_for_model(target)
+    if ctype.name == 'post':
+        everyone = Group.objects.get(name='everyone')
+        if not 'read_post' in get_perms(everyone, target.category): return
+
     if created:
         publish("comment-%d" % instance.id,
                 "posts",
