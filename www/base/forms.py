@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 if settings.USE_AYAH:
     import ayah
 from registration.forms import RegistrationForm
-from registration.views import RegistrationView
+from registration.backends.default.views import RegistrationView
 
 class SettingsForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False),
