@@ -65,9 +65,9 @@ def write(request, slug, id):
         category = post.category
         form = WriteForm(categories, data=request.POST or None, instance=post)
     else:
+        if not categories.filter(id=category.id).exists():
+            return HttpResponseForbidden("Operation is forbidden.")
         form = WriteForm(categories, data=request.POST or None, initial=initial_data)
-    if not categories.filter(id=category.id).exists():
-        return HttpResponseForbidden("Operation is forbidden.")
 
     if request.method == "POST" and form.is_valid():
         post = form.save(commit=False)
