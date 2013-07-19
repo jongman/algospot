@@ -19,7 +19,7 @@ def list(request, slug, page=1):
         return HttpResponseForbidden("Restricted category")
     posts = Post.objects.filter(category=category).order_by("-id")
     return render(request, "list.html",
-                  {"write_at": category.slug,
+                  {"write_at": category.slug if checker.has_perm('write_post', category) else None,
                    "title": category.name,
                    "category": category,
                    "pagination": setup_paginator(posts, page, "forum-list",
@@ -63,6 +63,7 @@ def write(request, slug, id):
         if not request.user.is_superuser and request.user != post.user:
             return HttpResponseForbidden("Operation is forbidden.")
         category = post.category
+        categories = categories | Category.objects.filter(id=category.id) # nah
         form = WriteForm(categories, data=request.POST or None, instance=post)
     else:
         if not categories.filter(id=category.id).exists():
