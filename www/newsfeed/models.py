@@ -21,7 +21,7 @@ class Activity(models.Model):
     # {actor} {target} {action_object} 를 갖는 문자열
     verb = models.CharField(max_length=255)
 
-    admin_only = models.BooleanField(default=False)
+    admin_only = models.BooleanField(default=False) # 더 이상 사용되지 않고 권한 기반으로 변경됨
 
     target_content_type = models.ForeignKey(ContentType,
                                             related_name='target_content_type',
@@ -39,6 +39,11 @@ class Activity(models.Model):
     action_object = generic.GenericForeignKey('action_object_content_type',
                                               'action_object_object_id')
     timestamp = models.DateTimeField(db_index=True)
+
+    class Meta:
+        permissions = (
+            ('read_activity', 'Can read this activity'),
+        )
 
     @staticmethod
     def translate(kwargs):
@@ -63,17 +68,16 @@ class Activity(models.Model):
     def delete_all(**kwargs):
         return Activity.objects.filter(**Activity.translate(kwargs)).delete()
 
-    def render(self):
+    def render(self, spoiler_replacement=None):
         from judge.models import Problem
-        def wrap_in_link(object):
+        def wrap_in_link(object, spoiler_replacement):
             if not object: return ""
-            if isinstance(object, Comment):
-                if isinstance(self.target, Problem) or "<spoiler>" in object.comment :
-                    unicode_rep = u"[스포일러 방지를 위해 보이지 않습니다]"
-                else:
-                    unicode_rep = object.comment
-                    if len(unicode_rep) > 50:
-                        unicode_rep = unicode_rep[:47] + ".."
+            if spoiler_replacement:
+                unicode_rep = spoiler_replacement
+            elif isinstance(object, Comment):
+                unicode_rep = object.comment
+                if len(unicode_rep) > 50:
+                    unicode_rep = unicode_rep[:47] + ".."
             else:
                 unicode_rep = unicode(object)
             if object.get_absolute_url:
@@ -81,6 +85,6 @@ class Activity(models.Model):
                     unicode_rep,
                     '</a>'])
             return unicode_rep
-        return mark_safe(self.verb.format(actor=wrap_in_link(self.actor),
-                                          action_object=wrap_in_link(self.action_object),
-                                          target=wrap_in_link(self.target)))
+        return mark_safe(self.verb.format(actor=wrap_in_link(self.actor, None),
+                                          action_object=wrap_in_link(self.action_object, spoiler_replacement),
+                                          target=wrap_in_link(self.target, None)))

@@ -83,7 +83,9 @@
 {% block page_tabs %}
 	<nav>
 		<ul class="tab-switch">
-			<li><a class="{% block forum_write_class %}{% endblock %}" href="{% url forum-write write_at %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
+		    {% if write_at %}
+                <li><a class="{% block forum_write_class %}{% endblock %}" href="{% url forum-write write_at %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
+			{% endif %}
 		</ul>
 	</nav>
 {% endblock %}

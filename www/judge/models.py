@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save
 from django.db.models import Count
+from guardian.shortcuts import get_users_with_perms, get_groups_with_perms, assign_perm
 from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
 import pygooglechart as pgc
@@ -36,13 +37,21 @@ class ProblemRevision(models.Model):
 
 def problem_revision_edit_handler(sender, **kwargs):
     instance = kwargs["instance"]
+
+    # 해당 오브젝트에 대해 아무 퍼미션이나 있으면 처리됨. 문제의 경우 PUBLISHED 일 때는 이 권한을 사용하지 않아서 안전하다
+    visible_users = get_users_with_perms(instance.revision_for, with_group_users=False)
+    visible_groups = get_groups_with_perms(instance.revision_for)
+    print visible_users
+    print visible_groups
+
     publish("problem-edit-%d" % instance.id,
             "problem",
             "problem-edit",
             actor=instance.user,
             target=instance.revision_for,
             timestamp=instance.created_on,
-            admin_only=True,
+            visible_users=visible_users,
+            visible_groups=visible_groups,
             verb=u"문제 {target}을 편집했습니다.")
 
 post_save.connect(problem_revision_edit_handler, sender=ProblemRevision, dispatch_uid="problem_edit_event")
@@ -325,6 +334,7 @@ def saved_problem(sender, **kwargs):
             activity = get_activity(key=id)
             activity.actor = instance.user
             activity.save()
+    assign_perm('judge.edit_problem', instance.user, instance) # make life easier..
 
 def saved_submission(sender, **kwargs):
     submission = kwargs["instance"]
