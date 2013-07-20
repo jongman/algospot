@@ -10,7 +10,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.db.models import Count
 from guardian.core import ObjectPermissionChecker
-from guardian.shortcuts import get_objects_for_user
+from guardian.shortcuts import get_objects_for_user, get_users_with_perms, get_groups_with_perms
 from base.decorators import authorization_required, admin_required
 from newsfeed import publish
 from ..models import Problem, Submission, Attachment, Solver, ProblemRevision
@@ -101,13 +101,18 @@ def delete_attachment(request, id):
     attachment.file.delete(False)
     attachment.delete()
 
+    # 해당 오브젝트에 대해 아무 퍼미션이나 있으면 처리됨. 문제의 경우 PUBLISHED 일 때는 이 권한을 사용하지 않아서 안전하다
+    visible_users = get_users_with_perms(problem, with_group_users=False)
+    visible_groups = get_groups_with_perms(problem)
+
     publish("problem-attachment-delete-%s" % datetime.now().strftime('%s.%f'),
             "problem",
             "problem-attachment",
             actor=request.user,
             target=problem,
             timestamp=datetime.now(),
-            admin_only=True,
+            visible_users=visible_users,
+            visible_groups=visible_groups,
             verb=u"문제 {target}에서 첨부파일 %s 을 삭제했습니다." % os.path.basename(old_filename))
     return HttpResponse("[]")
 
@@ -140,13 +145,18 @@ def add_attachment(request, id):
                                     file=target_path)
         new_attachment.save()
 
+        # 해당 오브젝트에 대해 아무 퍼미션이나 있으면 처리됨. 문제의 경우 PUBLISHED 일 때는 이 권한을 사용하지 않아서 안전하다
+        visible_users = get_users_with_perms(problem, with_group_users=False)
+        visible_groups = get_groups_with_perms(problem)
+
         publish("problem-attachment-%s" % datetime.now().strftime('%s.%f'),
                 "problem",
                 "problem-attachment",
                 actor=request.user,
                 target=problem,
                 timestamp=datetime.now(),
-                admin_only=True,
+                visible_users=visible_users,
+                visible_groups=visible_groups,
                 verb=u"문제 {target}에 첨부파일 %s 을 추가했습니다." % file.name)
         return {"success": True}
 

@@ -6,7 +6,8 @@ from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
-from guardian.shortcuts import get_perms
+from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms
+from judge.models import Problem
 from newsfeed import publish, depublish
 
 # 이만큼은 문제를 풀어야 위키 변경 등의 일을 할 수 있다.
@@ -54,9 +55,19 @@ def comment_handler(sender, **kwargs):
     target = instance.content_object
 
     ctype = ContentType.objects.get_for_model(target)
+    visible_users = None
+    visible_groups = None
     if ctype.name == 'post':
-        everyone = Group.objects.get(name='everyone')
-        if not 'read_post' in get_perms(everyone, target.category): return
+        print 'post'
+        print target.category
+        visible_users = get_users_with_perms(target.category, with_group_users=False)
+        visible_groups = get_groups_with_perms(target.category)
+    if ctype.name == 'problem' and target.state != Problem.PUBLISHED:
+        visible_users = get_users_with_perms(target, with_group_users=False)
+        visible_groups = get_groups_with_perms(target)
+
+    print visible_users
+    print visible_groups
 
     if created:
         publish("comment-%d" % instance.id,
@@ -66,6 +77,8 @@ def comment_handler(sender, **kwargs):
                 action_object=instance,
                 target=target,
                 timestamp=instance.submit_date,
+                visible_users=visible_users,
+                visible_groups=visible_groups,
                 verb=u"{target}에 새 댓글을 달았습니다: "
                 u"{action_object}")
         profile.posts += 1

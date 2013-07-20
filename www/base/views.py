@@ -10,6 +10,7 @@ from django.conf import settings as django_settings
 from django.contrib.contenttypes.models import ContentType
 from tagging.models import TaggedItem
 from newsfeed.models import Activity
+from newsfeed.utils import get_activities_for_user
 from judge.models import Problem, Solver, Submission
 from forum.models import Category, Post
 from base.models import UserProfile
@@ -19,9 +20,7 @@ from collections import defaultdict
 def index(request):
     news_category = Category.objects.get(slug='news')
     recent_news = Post.objects.filter(category=news_category).order_by('-modified_on')[0]
-    recent_activity = Activity.objects.exclude(category='solved').order_by("-timestamp")
-    if not request.user.is_superuser:
-        recent_activity = recent_activity.exclude(admin_only=True)
+    recent_activity = get_activities_for_user(request.user).exclude(category='solved').order_by("-timestamp")
     recent_activity = recent_activity[:10].all()
     return render(request, "index.html",
                   {'title': u'알고스팟에 오신 것을 환영합니다!',

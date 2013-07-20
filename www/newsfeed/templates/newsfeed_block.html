@@ -2,12 +2,12 @@
 {% load common_tags %}
 {% load	newsfeed_tags %}
 	<ul class="comments background-color">
-		{% for user, actions in actions|aggregate_by_user %}
+		{% for author, actions in actions|aggregate_by_user %}
 			<li class="comment">
 				<dl>
 					<dt class="comment_user">
-						{% avatar user 45 %}<br/>
-						{{ user|print_username }}
+						{% avatar author 45 %}<br/>
+						{{ author|print_username }}
 					</dt>
 					<dd class="comment_content">
 						<ul class="newsfeed kor">
@@ -15,10 +15,7 @@
 								<li class="{{ action.type }}">
 									<span class="newsfeed-timestamp">{{ action.timestamp|print_datetime }}</span>
 									<p>
-									    {% if action.admin_only %}
-									        <span class="newsfeed-adminonly">[Admin]</span>
-									    {% endif %}
-										{{ action.render }}
+										{% render_activity activity=action user=user %}
 									</p>
 								</li>
 							{% endfor %}

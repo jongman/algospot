@@ -3,7 +3,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth.models import User, Group
-from guardian.shortcuts import get_perms
+from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms
 from newsfeed import publish, depublish, depublish_where
 
 class Category(models.Model):
@@ -45,8 +45,9 @@ def post_handler(sender, **kwargs):
     profile.posts += 1
     profile.save()
 
-    everyone = Group.objects.get(name='everyone')
-    if not 'read_post' in get_perms(everyone, instance.category): return
+    # 해당 오브젝트에 대해 아무 퍼미션이나 있으면 처리됨
+    visible_users = get_users_with_perms(instance.category, with_group_users=False)
+    visible_groups = get_groups_with_perms(instance.category)
 
     publish("forum-post-%d" % instance.id,
             "posts",
@@ -55,6 +56,8 @@ def post_handler(sender, **kwargs):
             target=instance.category,
             action_object=instance,
             timestamp=instance.created_on,
+            visible_users=visible_users,
+            visible_groups=visible_groups,
             verb=u"{target}에 글 {action_object}를 "
             u"썼습니다.")
 
