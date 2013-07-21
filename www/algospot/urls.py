@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
 from base.feeds import PostFeed
+from base.forms import AreYouAHumanFormView
 from registration.views import RegistrationView
 
 admin.autodiscover()
@@ -46,7 +47,7 @@ if settings.DEBUG:
 if settings.USE_AYAH:
     urlpatterns += patterns(
         '',
-        url(r'^accounts/register/?$', base.forms.AreYouAHumanFormView.as_view()),
+        url(r'^accounts/register/?$', AreYouAHumanFormView.as_view()),
     )
 
 urlpatterns += patterns(
