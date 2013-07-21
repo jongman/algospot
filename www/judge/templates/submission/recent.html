@@ -1,5 +1,6 @@
 {% extends "judge-base.html" %}
 {% load common_tags %}
+{% load guardian_tags %}
 {% block title %} 
 	{{ title }}
 {% endblock %}
@@ -43,7 +44,8 @@
 						<td class="user">{{ sub.user|print_username }}</td>
 						<td class="language">
 							{% get_has_solved sub.problem by user as solved %}
-							{% if user == sub.user or readable or solved or user == sub.problem.user %}
+							{% get_obj_perms user for sub.problem as "perm" %}
+							{% if user == sub.user or perm or solved or user == sub.problem.user %}
 								<a href="{% url judge-submission-details sub.id %}">
 								{% endif %}					
 								{{ sub.language }}

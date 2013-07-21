@@ -30,7 +30,6 @@ def recent(request, page=1):
     # nonpublic submissions. also, everybody can see their nonpublic
     # submissions.
     only_public = not request.user.is_superuser
-    readable = False
 
     if request.GET.get("problem"):
         slug = request.GET["problem"]
@@ -38,7 +37,6 @@ def recent(request, page=1):
 
         if request.user == problem.user or checker.has_perm('read_problem', problem):
             only_public = False
-            readable = True
 
         if (problem.state != Problem.PUBLISHED and
              request.user != problem.user and
@@ -80,7 +78,6 @@ def recent(request, page=1):
                    "problems": problems,
                    "users": users,
                    "filters": filters,
-                   "readable": readable,
                    "empty_message": empty_message,
                    "pagination": setup_paginator(submissions, page,
                                                  "judge-submission-recent", {}, filters)})
