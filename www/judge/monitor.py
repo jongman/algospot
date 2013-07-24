@@ -80,6 +80,18 @@ def main():
         return
     if returncode > 0:
         print "RTE (nonzero return code)"
+        if args.error:
+            with open(args.error) as f:
+                f.seek(0, 2)
+                size = f.tell()
+                f.seek(0, 0)
+                if size <= 4096:
+                    print f.read()
+                else:
+                    print f.read(2048)
+                    print '...'
+                    f.seek(-2048, 2)
+                    print f.read()
         return
     if returncode < 0:
         handle_signal(-returncode, args)
