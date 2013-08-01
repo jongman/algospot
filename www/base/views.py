@@ -86,7 +86,7 @@ def profile(request, user_id):
     submission_chart = get_submission_chart_url(user)
     failed_problem_count = Solver.objects.filter(user=user, solved=False).count()
     category_chart = get_category_chart(user)
-    actions = get_activities_for_user(request.user).filter(actor=user).order_by("-timestamp")
+    actions = get_activities_for_user(request.user).filter(actor=user).order_by("-timestamp")[:20]
     rank = UserProfile.objects.filter(solved_problems__gt=
                                       user.get_profile().solved_problems).count()
     return render(request, "user_profile.html",
