@@ -6,6 +6,7 @@ Whoosh==2.4.1
 amqp==1.2.0
 amqplib==1.0.2
 anyjson==0.3.3
+are-you-a-human==1.0.5
 argparse==1.2.1
 billiard==2.7.3.31
 celery==3.0.21
