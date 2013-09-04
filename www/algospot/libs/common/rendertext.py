@@ -183,7 +183,8 @@ class AlgospotLatexRenderer(misaka.BaseRenderer):
                    .replace('<=', "$\le$") \
                    .replace('>=', "$\ge$") \
                    .replace('<', "$<$") \
-                   .replace('>', "$>$")
+                   .replace('>', "$>$") \
+                   .replace('. ', ".\n") # adding some line breaks
 
 class CustomRenderer(misaka.HtmlRenderer):
     LINK_REGEX = re.compile("\[\[(?:([^|\]]+)\|)?(?:([^:\]]+):)?([^\]]+)\]\]")
