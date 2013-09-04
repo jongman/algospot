@@ -323,7 +323,7 @@ def latexify(request, slug):
         problem.user != request.user):
         raise Http404
     response = render(request, "problem/latexify.tex", {"problem": problem, "revision": problem.last_revision})
-    response['Content-Type'] = 'text/plain'
+    response['Content-Type'] = 'text/plain; charset=UTF-8'
     return response
 
 @login_required
