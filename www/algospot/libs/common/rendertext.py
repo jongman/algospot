@@ -74,8 +74,8 @@ class AlgospotLatexRenderer(misaka.BaseRenderer):
         return ret
 
     def block_html(self, html):
-        ret = "\\begin{lstlisting}[language=html]\n"
-        ret += "<!-- HTML Block -->\n"
+        ret = "\\begin{lstlisting}\n"
+        ret += "HTML Block here\n"
         if html:
             ret += html
         ret += "\\end{lstlisting}\n"
@@ -113,12 +113,12 @@ class AlgospotLatexRenderer(misaka.BaseRenderer):
         return text + "\n\n";
 
     def table(self, header, body):
-        ret = "\\begin{tabular}\n"
+        ret = "\\begin{center}\n\\begin{tabular}\n"
         if header:
             ret += header + "\n"
         if body:
             ret += body + "\n"
-        ret += "\\end{tabular}\n"
+        ret += "\\end{tabular}\n\\end{center}\n"
         return ret
 
     def table_row(self, content):
@@ -180,10 +180,6 @@ class AlgospotLatexRenderer(misaka.BaseRenderer):
                    .replace('}', "\\}") \
                    .replace('^', "\\^{}") \
                    .replace('~', "\\~{}") \
-                   .replace('<=', "$\le$") \
-                   .replace('>=', "$\ge$") \
-                   .replace('<', "$<$") \
-                   .replace('>', "$>$") \
                    .replace('. ', ".\n") # adding some line breaks
 
 class CustomRenderer(misaka.HtmlRenderer):

@@ -29,20 +29,26 @@
 			        return;
 				var cat = $(this);
 				var val = cat.val();
+				var update_value = function(id, slug) {
+					if (val != id)
+					    return;
+                    $.ajax({
+                        url: '/static/forum-templates/' + slug + '.txt',
+                        type: 'GET',
+                        dataType: 'text',
+                        success: function(data) {
+                            if (cat.val() != id)
+                                return;
+                            editor.getSession().setValue(data);
+                            var btn = $('#id_text ~ .editor-config > .edit-preview');
+                            btn.click();
+                            if (btn.hasClass('edit'))
+                                btn.click();
+                        }
+                    });
+				};
 				{% for row in categories %}
-					if (val == {{row.id}})
-					{
-						$.ajax({
-							url: '/static/forum-templates/{{row.slug}}.txt',
-							type: 'GET',
-							dataType: 'text',
-							success: function(data) {
-								if (cat.val() != {{row.id}})
-									return;
-								editor.session.setValue(data);
-							}
-						});
-					}
+				    update_value({{row.id}}, '{{row.slug}}');
 				{% endfor %}
 			}).change();
 		});

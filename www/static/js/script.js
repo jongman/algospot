@@ -520,6 +520,7 @@ function aceize(textarea_id, options) {
 				preview_inner_div.html(markdown(editor.getValue()));
 				MathJax.Hub.Queue(["Typeset", MathJax.Hub, preview_inner_div[0]]);
 
+				preview_btn.removeClass('edit');
 				preview_btn.text('편집하기');
 			}
 			else
@@ -527,13 +528,17 @@ function aceize(textarea_id, options) {
 				editor_div.show();
 				preview_div.hide();
 
+				preview_btn.addClass('edit');
 				preview_btn.text('미리보기');
+
+				editor.resize();
+				editor.renderer.updateFull();
 			}
 			is_preview = !is_preview;
 			return e.preventDefault();
 		};
 
-		var preview_btn = $('<button type="button">')
+		var preview_btn = $('<button type="button" class="edit-preview edit">')
 			.text('미리보기')
 			.prependTo(config_bar)
 			.click(preview_callback);

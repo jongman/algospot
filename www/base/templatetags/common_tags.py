@@ -128,6 +128,18 @@ def render_text(text):
 def render_latex(text):
     return mark_safe(actual_render_latex(text))
 
+@register.filter
+def safe_latex(text):
+    return mark_safe(text.replace('$', "\\$") \
+               .replace('#', "\\#") \
+               .replace('%', "\\%") \
+               .replace('&', "\\&") \
+               .replace('_', "\\_") \
+               .replace('{', "\\{") \
+               .replace('}', "\\}") \
+               .replace('^', "\\^{}") \
+               .replace('~', "\\~{}"))
+
 class PercentNode(template.Node):
     def __init__(self, a, b):
         self.a = template.Variable(a)
