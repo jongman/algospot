@@ -18,7 +18,8 @@ def render_text(text):
         | misaka.EXT_STRIKETHROUGH \
         | misaka.EXT_SUPERSCRIPT \
         | misaka.EXT_SUBSCRIPT \
-        | misaka.EXT_LAX_SPACING
+        | misaka.EXT_LAX_SPACING \
+        | misaka.EXT_MATHJAX_SUPPORT
     render = misaka.HTML_HARD_WRAP \
             | misaka.HTML_TOC
 
@@ -35,7 +36,8 @@ def render_latex(text):
         | misaka.EXT_STRIKETHROUGH \
         | misaka.EXT_SUPERSCRIPT \
         | misaka.EXT_SUBSCRIPT \
-        | misaka.EXT_LAX_SPACING
+        | misaka.EXT_LAX_SPACING \
+        | misaka.EXT_MATHJAX_SUPPORT
     md = misaka.Markdown(AlgospotLatexRenderer(), \
             extensions = ext)
     
@@ -46,6 +48,13 @@ def random_id(size):
     return ''.join(random.choice(str) for x in range(size))
 
 class AlgospotLatexRenderer(misaka.BaseRenderer):
+    def block_math(self, math):
+        ret = "\\[\n"
+        if text:
+            ret += math
+        ret += "\\]\n"
+        return ret
+
     def block_code(self, text, lang):
         ret = "\\begin{lstlisting}"
         if lang:
@@ -123,6 +132,9 @@ class AlgospotLatexRenderer(misaka.BaseRenderer):
 
     def codespan(self, code):
         return "\\lstinline|" + (code or '') + "|"
+
+    def mathspan(self, math):
+        return "$" + (math or '') + "$"
 
     def double_emphasis(self, text):
         return "\\textbf{" + (text or '') + "}"

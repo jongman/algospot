@@ -44,10 +44,10 @@
 .nv { color: #906030 } /* Name.Variable */
 .ow { color: #000000; font-weight: bold } /* Operator.Word */
 .w { color: #bbbbbb } /* Text.Whitespace */
-.mf { color: #6000E0; font-weight: bold } /* Literal.Number.Float */
-.mh { color: #005080; font-weight: bold } /* Literal.Number.Hex */
-.mi { color: #0000D0; font-weight: bold } /* Literal.Number.Integer */
-.mo { color: #4000E0; font-weight: bold } /* Literal.Number.Oct */
+.hll .mf { color: #6000E0; font-weight: bold } /* Literal.Number.Float */
+.hll .mh { color: #005080; font-weight: bold } /* Literal.Number.Hex */
+.hll .mi { color: #0000D0; font-weight: bold } /* Literal.Number.Integer */
+.hll .mo { color: #4000E0; font-weight: bold } /* Literal.Number.Oct */
 .sb { background-color: #fff0f0 } /* Literal.String.Backtick */
 .sc { color: #0040D0 } /* Literal.String.Char */
 .sd { color: #D04020 } /* Literal.String.Doc */

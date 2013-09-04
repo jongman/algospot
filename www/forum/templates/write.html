@@ -23,7 +23,28 @@
 
 	<script language="javascript">
 		$(function() {
-			aceize('id_text', { fullscreen: true, preview: true, cheatsheet: 'markdown-cheatsheet', submit_handler: true });
+			var editor = aceize('id_text', { fullscreen: true, preview: true, cheatsheet: 'markdown-cheatsheet', submit_handler: true });
+			$('#id_category').change(function() {
+			    if (editor.getValue() != '')
+			        return;
+				var cat = $(this);
+				var val = cat.val();
+				{% for row in categories %}
+					if (val == {{row.id}})
+					{
+						$.ajax({
+							url: '/static/forum-templates/{{row.slug}}.txt',
+							type: 'GET',
+							dataType: 'text',
+							success: function(data) {
+								if (cat.val() != {{row.id}})
+									return;
+								editor.session.setValue(data);
+							}
+						});
+					}
+				{% endfor %}
+			}).change();
 		});
 	</script>
 {% endblock %}
