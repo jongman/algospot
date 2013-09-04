@@ -611,7 +611,12 @@ function aceize(textarea_id, options) {
           MathJax.Hub.Queue(["Typeset", MathJax.Hub, preview_inner_div[0]]);
         };
         var math_handler = delayed_event_handler(mathjax_update_fn, 1000);
+        var last_value = '';
 				var preview_update_fn = function() {
+				  var editor_value = editor.getValue();
+				  if (last_value == editor_value)
+				    return;
+				  last_value = editor_value;
 					preview_inner_div.html(markdown(editor.getValue()));
 					math_handler();
 				};
