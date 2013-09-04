@@ -22,7 +22,8 @@
 	{
 		"model": "forum.Post",
 		"pk": 1,
-		"fields": { "title": "환영합니다", "user": 1, "text": "알고스팟 개발을 시작하신 것을 환영합니다!", "category": 1}
+		"fields": { "title": "환영합니다", "user": 0, "text": "알고스팟 개발을 시작하신 것을 환영합니다!", "category": 1,
+					"created_on" : "2011-07-16 23:39:20", "modified_on" : "2013-09-04 22:08:00" }
 	}
 ]
 
