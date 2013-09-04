@@ -23,6 +23,13 @@ CAMPAIGNS = [
         'link': 'http://www.nexonin.com/'
     },
     {
+        'name': 'nexon_global_internship_2013late', 
+        'start': datetime(2013, 9, 3, 10, 0, 0),
+        'end': datetime(2013, 9, 24, 16, 59, 59),
+        'image': '/static/images/banners/nexon-gi-2013-late.jpg',
+        'link': 'https://career.nexon.com/',
+    },
+    {
         'name': 'codesprint2013',
         'start': datetime(2013, 6, 18, 0, 0, 0),
         'end': datetime(2013, 7, 19, 0, 0, 0),
