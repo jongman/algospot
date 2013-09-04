@@ -415,28 +415,17 @@ var ace_theme = new function() {
 };
 
 var delayed_event_handler = function(callback, interval) {
-	var delayed = false;
-	var queued = false;
-
-	var caller = function() {
-		delayed = false;
-		if (!queued)
-			return;
-		queued = false;
-		callback();
-		setTimeout(caller, interval);
-		delayed = true;
-	};
-	var resize_handler = function() {
-		if (!queued)
-		{
-			queued = true;
-			if (!delayed)
-				caller();
-		}
-	};
-
-	return resize_handler;
+  var id = 0;
+  var handler = function(call_id) {
+    if (id != call_id)
+      return;
+    callback();
+  };
+  var caller = function() {
+    var local_id = (id += 1);
+    setTimeout(function() { handler(local_id) }, interval);
+  };
+	return caller;
 };
 
 function aceize(textarea_id, options) {
@@ -529,6 +518,7 @@ function aceize(textarea_id, options) {
 				preview_div.show();
 
 				preview_inner_div.html(markdown(editor.getValue()));
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, preview_inner_div[0]]);
 
 				preview_btn.text('편집하기');
 			}
@@ -617,8 +607,13 @@ function aceize(textarea_id, options) {
 
 			if (options.preview)
 			{
+			  var mathjax_update_fn = function() { 
+          MathJax.Hub.Queue(["Typeset", MathJax.Hub, preview_inner_div[0]]);
+        };
+        var math_handler = delayed_event_handler(mathjax_update_fn, 1000);
 				var preview_update_fn = function() {
 					preview_inner_div.html(markdown(editor.getValue()));
+					math_handler();
 				};
 				preview_div.prependTo(fullscreen_div).show();
 				var update_handler = delayed_event_handler(preview_update_fn, 100);

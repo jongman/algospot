@@ -51,6 +51,11 @@ a.username { font-weight: bold; }
 	margin-bottom: 8px;
 }
 
+/* 수식 렌더링 */
+.mathjax-preview {
+    background-color: #ddd;
+}
+
 /* 글로벌 엘레멘트들 ***************************************************/
 
 .template { display: none; }
