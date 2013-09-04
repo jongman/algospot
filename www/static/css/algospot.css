@@ -154,7 +154,8 @@ ul.comments li.comment dt.comment_user {
 	text-align: center;
 }
 ul.comments li.comment dd.comment_content {
-	display: table-cell;
+	display: block;
+	margin-left: 90px;
 }
 ul.comments li.comment dd.comment_content p {
 	color: #444
