@@ -73,7 +73,12 @@
 						<div>
 							<em class="kor">로그인하세요.</em>
 							<ul>
-								<li><a class="button-link" href="{% url auth_login %}" title="로그인" rel="tooltip">sign in</a></li>
+								{% url auth_login as auth_login_url %}
+								{% if request.path == auth_login_url %}
+								<li><a class="button-link" href="{{ request.get_full_path }}" title="로그인" rel="tooltip">sign in</a></li>
+								{% else %}
+								<li><a class="button-link" href="{{ auth_login_url }}?next={{ request.get_full_path|urlencode }}" title="로그인" rel="tooltip">sign in</a></li>
+								{% endif %}
 								<li><a class="button-link" href="{% url registration_register %}" title="회원 가입" rel="tooltip">sign up</a></li>
 							</ul>
 						</div>
