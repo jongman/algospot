@@ -37,6 +37,13 @@ CAMPAIGNS = [
         'link': 'http://codesprint.skplanet.com/'
     },
     {
+        'name': 'nexon_global_internship_2013late_2', 
+        'start': datetime(2013, 12, 2, 9, 0, 0),
+        'end': datetime(2013, 12, 23, 16, 59, 59),
+        'image': '/static/images/banners/intern_algospot_186_287.jpg',
+        'link': 'https://www.nexonin.com/',
+    },
+    {
         'name': 'jmbook', 
         'start': datetime(2012, 11, 15, 0, 0, 0),
         'end': datetime(2013, 12, 31, 23, 59, 59),
