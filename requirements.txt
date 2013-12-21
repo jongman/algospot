@@ -1,4 +1,7 @@
+Cython==0.15.1
 Django==1.4
+Markdown==2.1.1
+MySQL-python==1.2.3
 PIL==1.1.7
 Pygments==1.6
 South==0.8.1
@@ -6,6 +9,7 @@ Whoosh==2.4.1
 amqp==1.2.0
 amqplib==1.0.2
 anyjson==0.3.3
+are-you-a-human==1.0.5
 argparse==1.2.1
 billiard==2.7.3.31
 celery==3.0.21
@@ -23,9 +27,12 @@ django-picklefield==0.3.0
 django-registration==1.0
 django-staticfiles==1.2.1
 django-tagging==0.3.1
+gunicorn==0.13.4
 ipdb==0.7
 ipython==0.13.2
 kombu==2.5.12
+misaka==1.0.3
+psycopg2==2.4.4
 pygooglechart==0.3.0
 pyparsing==1.5.7
 python-dateutil==2.1
