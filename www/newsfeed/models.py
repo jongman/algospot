@@ -4,6 +4,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
+from django.utils.html import strip_tags
 from django.contrib.comments.models import Comment
 import datetime
 
@@ -75,7 +76,7 @@ class Activity(models.Model):
             if spoiler_replacement:
                 unicode_rep = spoiler_replacement
             elif isinstance(object, Comment):
-                unicode_rep = object.comment
+                unicode_rep = strip_tags(object.comment)
                 if len(unicode_rep) > 50:
                     unicode_rep = unicode_rep[:47] + ".."
             else:
