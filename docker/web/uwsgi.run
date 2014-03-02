@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+export DJANGO_SETTINGS_MODULE=algospot.settings
+exec uwsgi --chdir=/www --processes=2 '--module=django.core.handlers.wsgi:WSGIHandler()' --socket=/tmp/django.sock --log-syslog
