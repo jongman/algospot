@@ -101,7 +101,9 @@
 
   ```
   $ python -m smtpd -n -c DebuggingServer localhost:1025
+  ```
 
+  ```
   // local_settings.py  
   settings.EMAIL_HOST = 'localhost' 
   settings.EMAIL_PORT = 1025
