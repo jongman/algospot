@@ -38,9 +38,9 @@
     - ipdb==0.7
     - ipython==0.13.2
     - redis==2.7.6
+    - pygooglechart==0.4.0
     - uwsgi
-  - name: install pygooglechart (needs extra options in pip)
-    pip: name=pygooglechart==0.3.0 extra_args='--allow-external pygooglechart --allow-unverified pygooglechart'
+  # - name: install pygooglechart (needs extra options in pip)
   - name: add nginx stable
     apt_repository: repo='ppa:nginx/stable'
   - name: install nginx
