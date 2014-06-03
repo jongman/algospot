@@ -1,0 +1,48 @@
+# vim: set expandtab:ts=2:sw=2
+---
+- hosts: all
+  remote_user: vagrant
+  sudo: yes
+  tasks:
+  - name: install apt packages
+    apt: name={{item}} state=present
+    with_items:
+    - python-setuptools
+    - python-dev
+    - build-essential
+    - git-core
+    - libjpeg-dev
+  - name: install pip
+    easy_install: name=pip
+  - name: install python dependencies
+    pip: name={{item}}
+    with_items:
+    - Django==1.4
+    - Pygments==1.6
+    - South==0.8.1
+    - Whoosh==2.4.1
+    - celery==3.0.21
+    - celery-with-redis==3.0
+    - django-appconf==0.6
+    - django-attachments==0.3.1
+    - django-avatar==1.0.5
+    - django-celery==3.0.17
+    - django-debug-toolbar==0.9.4
+    - django-extensions==1.1.1
+    - django-guardian==1.1.1
+    - django-haystack==2.0.0
+    - django-picklefield==0.3.0
+    - django-registration==1.0
+    - django-staticfiles==1.2.1
+    - django-tagging==0.3.1
+    - ipdb==0.7
+    - ipython==0.13.2
+    - redis==2.7.6
+    - uwsgi
+  - name: install pygooglechart (needs extra options in pip)
+    pip: name=pygooglechart==0.3.0 extra_args='--allow-external pygooglechart --allow-unverified pygooglechart'
+  - name: add nginx stable
+    apt_repository: repo='ppa:nginx/stable'
+  - name: install nginx
+    apt: name=nginx
+
