@@ -12,6 +12,10 @@
     - build-essential
     - git-core
     - libjpeg-dev
+    - rabbitmq-server
+    - redis-server
+    - postgresql
+    - postgresql-contrib
   - name: install pip
     easy_install: name=pip
   - name: install python dependencies
@@ -40,8 +44,12 @@
     - redis==2.7.6
     - pygooglechart==0.4.0
     - uwsgi
+    - Pillow
   - name: add nginx stable
     apt_repository: repo='ppa:nginx/stable'
   - name: install nginx
     apt: name=nginx
+  - name: install modified misaka
+    sudo: yes
+    shell: cd /vagrant/libs/misaka; python setup.py install
 
