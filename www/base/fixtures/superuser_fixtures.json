@@ -1,0 +1,22 @@
+[
+    {
+        "fields": {
+            "date_joined": "2014-06-05T18:17:37.399",
+            "email": "admin@algospot.com",
+            "first_name": "",
+            "groups": [
+                1
+            ],
+            "is_active": true,
+            "is_staff": true,
+            "is_superuser": true,
+            "last_login": "2014-06-05T18:17:37.399",
+            "last_name": "",
+            "password": "pbkdf2_sha256$12000$LTK7Co2KJbVG$DhwfW8zmKD4laksGQNvx3HU7ruTbjhBsbgkOLkXbS0o=",
+            "user_permissions": [],
+            "username": "admin"
+        },
+        "model": "auth.user",
+        "pk": 1
+    }
+]

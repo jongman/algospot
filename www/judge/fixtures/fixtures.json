@@ -8,16 +8,27 @@
 			"user": 1,
 			"source": "연습문제",
 			"name": "Hello World Problem",
+			"judge_module": "ignore_whitespace",
+			"submissions_count": 0,
+			"accepted_count": 0,
+			"last_revision": 1
+		}
+	},
+	{
+		"model": "judge.ProblemRevision",
+		"pk": 1,
+		"fields": {
+			"revision_for": 1,
+            "created_on": "2014-06-05T18:17:37.399",
+			"user": 1,
+			"edit_summary": "initial data",
 			"description": "Print 'Hello World', that's all.",
 			"input": "This problem has no input.",
 			"output": "On a single line, print 'Hello World', excluding quotes.",
 			"sample_input": "No sample input.",
 			"sample_output": "Hello World",
-			"judge_module": "ignore_whitespace",
 			"time_limit": 1000,
-			"memory_limit": 65536,
-			"submissions_count": 0,
-			"accepted_count": 0
+			"memory_limit": 65536
 		}
 	}
 ]

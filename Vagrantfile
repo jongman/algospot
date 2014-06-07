@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # ansible provision
   config.vm.provision "ansible" do |ansible|
-	ansible.playbook = "ansible/test.playbook"
+	ansible.playbook = "ansible/dev.playbook"
   end
 
   # Disable automatic box update checking. If you disable this, then

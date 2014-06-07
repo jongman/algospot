@@ -1,0 +1,10 @@
+[
+    {
+        "fields": {
+            "name": "everyone",
+            "permissions": []
+        },
+        "model": "auth.group",
+        "pk": 1
+    }
+]
