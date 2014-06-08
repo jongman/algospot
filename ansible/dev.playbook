@@ -114,4 +114,13 @@
   - name: update grub config
     shell: update-grub
     sudo: yes
-
+  - name: copy celery runner
+    copy: src=../configs/celeryd_initd dest=/etc/init.d/celeryd
+    sudo: yes
+  - name: copy celery config
+    copy: src=../configs/celeryd_config dest=/etc/default/celeryd
+  - name: make celery directory
+    file: path=/var/run/celery state=directory
+  - name: install celeryd service
+    shell: update-rc.d celeryd defaults 99 01
+    sudo: yes

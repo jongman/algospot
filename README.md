@@ -26,7 +26,7 @@ Vagrant 위에서의 개발환경은 아직 준비중이며, 완벽하지 않다
 
 1. 가상 머신에 접속해 개발 서버를 띄운다.
 
-	$ vagrant ssh
+	$ vagrant ssh 
 	$ cd /vagrant/www; ./manage.py runserver 0.0.0.0:8000
 
 1. 웹브라우저에서 http://localhost:8000/ 을 연다. 새 사용자를 만들거나 (아직 확인은 안해봄) admin/admin으로 로그인할 수 있다.
