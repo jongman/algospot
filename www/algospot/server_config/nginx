@@ -7,6 +7,7 @@ server {
 
 server {
 	listen   80;
+	listen	 443 ssl; 
 	server_name algospot.com ;
 
 	client_max_body_size 16m;
