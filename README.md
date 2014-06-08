@@ -29,7 +29,7 @@ Vagrant 위에서의 개발환경은 아직 준비중이며, 완벽하지 않다
 	$ vagrant ssh
 	$ cd /vagrant/www; ./manage.py runserver 0.0.0.0:8000
 
-1. 웹브라우저에서 http://localhost:8000/ 을 연다.
+1. 웹브라우저에서 http://localhost:8000/ 을 연다. 새 사용자를 만들거나 (아직 확인은 안해봄) admin/admin으로 로그인할 수 있다.
 
 ## 커밋하기
 
@@ -58,3 +58,5 @@ Vagrant 위에서의 개발환경은 아직 준비중이며, 완벽하지 않다
         settings.EMAIL_PORT = 1025
         ```
 
+* "The SSH connection was unexpectedly closed by the remote end."
+  Vagrant up 명령어에서 위와 같은 명령어가 나온다면 놀라지 말고 `vagrant reload`를 해주면 된다.
