@@ -53,6 +53,9 @@
     - uwsgi
     - Pillow
     - psycopg2
+  - name: install linux-image-extra (needed for aufs)
+    shell: apt-get install linux-image-extra-`uname -r`
+    sudo: yes
   - name: add nginx stable
     sudo: yes
     apt_repository: repo='ppa:nginx/stable'
