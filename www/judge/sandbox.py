@@ -150,6 +150,9 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         # 일부 프로그램들은 /proc 이 없으면 제대로 동작하지 않는다 (Sun JVM 등)
         self.mount("/proc", join(self.root_mount, "proc"), "none", "bind")
 
+        # lxc-execute가 필요로 함
+        makedir(join(self.root_mount, 'run', 'shm'))
+
         # 빈 디렉토리 user-home 을 만들고, 마운트된 cow 루트 내의 홈디렉토리를
         # 이걸로 덮어씌운다.
         home_path = self.user.pw_dir.lstrip("/")
@@ -210,7 +213,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
     def create_entrypoint(self, command, before=[], after=[]):
         entrypoint = join(self.home_in_mounted, "entrypoint.sh")
-        #print "ENTRYPOINT", command
+        print "ENTRYPOINT", command
         content = "\n".join([
             "#!/bin/sh",
             "cd `dirname $0`",
@@ -254,11 +257,13 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
                     result["stderr"].strip() or
                     not result["stdout"].strip() or
                     result["stdout"].split()[0] not in ["RTE", "MLE", "OK", "TLE"]):
+                error = '(empty stdout)' or result['stdout']
                 raise Exception("Unexpected monitor result:\n" + str(result) + "\n" +
-				result["stdout"].split()[0])
+                                'cmdline: %s' % (' '.join(cmd)) + '\n' +
+                                error)
         except TimeOutException:
             return "TLE"
-        #print "RESULT", result
+        print "RESULT", result
         toks = result["stdout"].split()
         if toks[0] == "OK":
             time_used, memory_used = map(float, toks[1:3])
@@ -277,12 +282,13 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         signal.signal(signal.SIGINT, signal.SIG_IGN)
         current_path = abspath(dirname(__file__))
         if self.am_i_root:
-            return execute(["lxc-start",
+            return execute(["lxc-execute",
                             "-n", self.name,
                             "-f", self.config,
                             "-o", join(current_path, "lxc.log"),
                             "-l", "INFO",
-                            "su", self.user.pw_name, "-c", "sh", join(self.user.pw_dir, "entrypoint.sh")],
+                            "--",
+                            "su", self.user.pw_name, join(self.user.pw_dir, "entrypoint.sh")],
                            redirect=redirect,
                            time_limit=time_limit,
                            kill_command=["lxc-stop",
@@ -301,23 +307,26 @@ def main():
                 print x[key]
 
     try:
+        """
         sandbox = Sandbox("runner", home_type="bind")
+        sandbox.put_file('monitor.py', 'monitor.py', 0o700)
         sandbox.run_interactive("bash")
         """
-        sandbox.mount_home("cow")
-        sandbox.run_interactive("bash")
-        sandbox.mount_home("cow")
-        sandbox.run_interactive("bash")
+        # sandbox.mount_home("cow")
+        # sandbox.run_interactive("bash")
+        # sandbox.mount_home("cow")
+        # sandbox.run_interactive("bash")
         sandbox = Sandbox("runner", memory_limit=65536, home_type="bind")
         import sys
         for file in sys.argv[1:]:
             sandbox.put_file(file, os.path.basename(file))
-        sandbox.put_file("dp.cpp", "dp.cpp", 0o700)
-        sandbox.put_file("inp", "inp")
-        print sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
-                                 stderr=".compile.stderr")
-        print sandbox.run("./dp", "inp", ".stdout", ".stderr")
-        """
+        print sandbox.run("ls -al", stdout=".stdout", stderr=".stderr")
+        # sandbox.run_interactive("bash")
+        # sandbox.put_file("dp.cpp", "dp.cpp", 0o700)
+        # sandbox.put_file("inp", "inp")
+        # print sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
+        #                          stderr=".compile.stderr")
+        # print sandbox.run("./dp", "inp", ".stdout", ".stderr")
     finally:
         sandbox.teardown()
         pass
