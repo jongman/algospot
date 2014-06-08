@@ -30,6 +30,13 @@ CAMPAIGNS = [
         'link': 'https://career.nexon.com/',
     },
     {
+        'name': 'codesprint2014',
+        'start': datetime(2014, 5, 7, 10, 0, 0),
+        'end': datetime(2014, 5, 31, 23, 59, 59),
+        'image': '/static/images/banners/codesprint2014.png',
+        'link': 'http://codesprint.skplanet.com/'
+    },
+    {
         'name': 'codesprint2013',
         'start': datetime(2013, 6, 18, 0, 0, 0),
         'end': datetime(2013, 7, 19, 0, 0, 0),
@@ -42,6 +49,13 @@ CAMPAIGNS = [
         'end': datetime(2013, 12, 23, 16, 59, 59),
         'image': '/static/images/banners/intern_algospot_186_287.jpg',
         'link': 'https://www.nexonin.com/',
+    },
+    {
+        'name': 'nos2014', 
+        'start': datetime(2014, 6, 2, 0, 0, 0),
+        'end': datetime(2014, 6, 20, 23, 59, 59),
+        'image': '/static/images/banners/nos.jpg',
+        'link': 'https://www.nexonin.com/jsp/nos/info.detail.jsp',
     },
     {
         'name': 'jmbook', 
