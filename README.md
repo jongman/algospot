@@ -1,13 +1,14 @@
 
 # 알고스팟 개발 시작하기
 
+알고스팟은 수많은 패키지들과 서버들이 합쳐져 돌아가고 있다. 따라서 이들을 각각 개인 서버에 셋업해 개발하는 것보다는, 가상머신을 이용하고 가상머신을 쉽게 셋업해 줄 수 있는 도구를 이용하기로 하자. 알고스팟의 공식 개발 환경은 [vagrant](http://vagrantup.com)를 이용한다. vagrant는 VirtualBox, VMWare 등의 가상화 도구를 사용하기 커맨드 라인에서 사용하기 쉽게 포장해 둔 것이다.
+
+Vagrant 위에서의 개발환경은 아직 준비중이며, 완벽하지 않다. (온라인 채점 서버는 아직 동작하지 않는다.)
+
 ## 필요한 도구들
 
-* Python: 파이썬 2.6 이상을 사용한다. 안 써본 사람은 [파이썬 문서화](http://docs.python.org/) 페이지에서 튜토리얼 정도는 읽고 시작하자.
-* Django: 장고는 파이썬에서 가장 유명한 웹 프레임워크. 안 써본 사람은 [장고 문서화](https://docs.djangoproject.com/en/1.3/) 페이지에서 튜토리얼 정도는 읽고 시작하자.
-* [virtualenv](http://pypi.python.org/pypi/virtualenv), [virtualenvwrapper](http://www.doughellmann.com/projects/virtualenvwrapper/): 프로젝트 별로 파이썬 패키지를 관리할 수 있게 해주는 툴들. 밑에서 설명할꺼임.
-* [pip](http://pypi.python.org/pypi/pip): 파이썬 패키지 인스톨러. 밑에서 설명할꺼임.
-* [git](http://git-scm.com/): 버전 컨트롤. [이 책](http://progit.org/book/)의 첫 두 챕터를 읽으면 아쉬운 대로 쓰기 시작할 수 있다.
+* [Vagrant](http://vagrantup.com): 사용중인 운영체제 용을 다운받는다.
+* [VirtualBox](https://www.virtualbox.org/): 가상 머신을 돌리기 위한 소프트웨어. VMWare, 리눅스의 경우 LXC를 이용해도 되지만 아직 확인해 보지 못했다.
 
 ## 체크아웃에서 개발 서버 돌리기까지
 
@@ -17,69 +18,16 @@
 	$ git clone git://github.com/jongman/algospot.git  
 	$ cd algospot
 
-1. 사이트에 필요한 각종 패키지들을 깔기 위해 easy\_install 을 깔고, easy\_install 로 pip 을 깐다. easy\_install 이랑 pip 은 둘다 파이썬 패키지 매니저인데, pip 이 더 최신이지만 아직 우분투 리포지토리에 안 들어가 있다. easy\_install 은 처음에 pip 까는 용도 빼고는 쓰지 않는다. `libjpeg-dev` 는 아바타 리사이즈 할 때 python imaging library 에서 쓰기 때문에 필요하다.
+1. 가상 머신을 띄운다. 이 명령어는 가상 머신 이미지를 다운받고, 필요한 패키지를 깔고, 데이터베이스와 기타 서버들을 셋업해 준다. 
 
-	$ sudo apt-get install python-setuptools python-dev libjpeg-dev  
-	$ sudo easy_install pip
+	$ vagrant up
 
-1. virtualenv 를 깐다. virtualenv 는 파이썬 패키지를 로컬 디렉토리에 깔 수 있게 해 주는 도구다. 시스템 전역에 깔지 않아도 되기 때문에 두 개 이상의 프로젝트의 dependency 가 충돌하거나 할 일이 없음. virtualenv 가 진리임. ㅇㅇ
+1. 가상 머신에 접속해 개발 서버를 띄운다.
 
-	$ sudo pip install virtualenv virtualenvwrapper
+	$ vagrant ssh
+	$ cd /vagrant/www; ./manage.py runserver 0.0.0.0:8000
 
-1. `.bashrc` 에 virtualenvwrapper 설정을 넣고 셋업을 적용한다.
-
-	$ echo export WORKON_HOME=~/.virtualenvs >> ~/.bashrc  
-	$ echo source /usr/local/bin/virtualenvwrapper.sh >> ~/.bashrc  
-	$ mkdir -p ~/.virtualenvs  
-	$ source ~/.bashrc        
-
-1. virtualenv 환경을 만들고 activate 한다.
-
-	$ mkvirtualenv algospot-django --no-site-packages
-
-1. 환경을 만들면 자동으로 활성화되며, 그러면 프롬프트 앞에 환경 이름인 `(algospot-django)` 이 붙는다. 다른 쉘에서는 다음 커맨드를 치면 해당 virtualenv 를 사용할 수 있다.
-
-	$ workon algospot-django
-
-1. virtualenv 내에서 까는 모든 패키지는 `~/.virtualenvs/algospot-django` 디렉토리 내에 깔리게 되며, sudo 권한 없이도 깔 수 있다. algospot 사이트에 필요한 각종 파이썬 패키지는 requirements.txt 에 들어있다. pip 을 이용해 requirements 에 들어 있는 패키지들을 깐다. 이렇게 하면 django 랑 기타 장고 앱들을 다 깔아 준다.
-
-	$ pip install -r requirements.txt
-
-1. 단, 마크업을 위해 사용하는 misaka 패키지는 커스터마이징한 것을 사용하고 있으므로 따로 설치해 주어야 한다.
-
-	$ git submodule update --init --recursive  
-	$ cd libs/misaka  
-	$ python setup.py install
-
-1. 일단 필요한건 다 깔았다 우왕ㅋ굳ㅋ 로컬 개발을 위해서는 `DEBUG` 모드에서 구동하는 것이 편하다. `local_settings.py.example` 을 복사해 쓰자.
-
-	$ cd www/algospot  
-	$ cp local_settings.py.example local_settings.py
-
-1. 디비 테이블들을 만든다.(개발 DB로 sqlite를 사용할 경우 $ sudo apt-get install sqlite3 libsqlite3-dev)
-
-	$ ./manage.py syncdb --noinput --migrate
-
-1. `everyone` 그룹과 슈퍼유저를 만든다.
-
-	$ ./manage.py loaddata base/fixtures/fixtures.json  
-	$ ./manage.py createsuperuser --username=admin --email=admin@algospot.com
-
-1. 디비에 초기 데이터를 집어넣는다.
-
-	$ ./manage.py loaddata wiki/fixtures/fixtures.json  
-	$ ./manage.py loaddata forum/fixtures/fixtures.json
-
-1. 이제 멋있게 개발 서버를 켠다.
-
-	$ ./manage.py runserver
-
-1. 웹브라우저에서 [http://127.0.0.1:8000](http://127.0.0.1:8000/)를 연다. 
-
-1. 온라인 저지의 경우 채점을 위해 `celery`의 구동을 필요로 한다. 여기서는 브로커로 쓰기 위해 `RabbitMQ` 를 사용해 보자.
-
-    $ sudo apt-get install rabbitmq-server  
-    $ ./manage.py celery worker
+1. 웹브라우저에서 http://localhost:8000/ 을 연다.
 
 ## 커밋하기
 
