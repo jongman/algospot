@@ -1,11 +1,13 @@
 # vim: set expandtab:ts=2:sw=2
 ---
 - hosts: all
+  vars:
+    django_dir: /vagrant/www
   remote_user: vagrant
-  sudo: yes
   tasks:
   - name: install apt packages
     apt: name={{item}} state=present
+    sudo: yes
     with_items:
     - python-setuptools
     - python-dev
@@ -14,11 +16,16 @@
     - libjpeg-dev
     - rabbitmq-server
     - redis-server
-    - postgresql
-    - postgresql-contrib
+    - postgresql-9.3
+    - postgresql-contrib-9.3
+    - postgresql-server-dev-9.3
+    - lxc
+    - aufs-tools
   - name: install pip
+    sudo: yes
     easy_install: name=pip
   - name: install python dependencies
+    sudo: yes
     pip: name={{item}}
     with_items:
     - Django==1.4
@@ -45,11 +52,63 @@
     - pygooglechart==0.4.0
     - uwsgi
     - Pillow
+    - psycopg2
   - name: add nginx stable
+    sudo: yes
     apt_repository: repo='ppa:nginx/stable'
   - name: install nginx
+    sudo: yes
     apt: name=nginx
   - name: install modified misaka
     sudo: yes
     shell: cd /vagrant/libs/misaka; python setup.py install
+  - name: create postgres user
+    postgresql_user: name=vagrant role_attr_flags=SUPERUSER
+    sudo_user: postgres
+    sudo: yes
+  - name: create postgres user root
+    postgresql_user: name=root role_attr_flags=SUPERUSER
+    sudo_user: postgres
+    sudo: yes
+  - name: create algospot database
+    postgresql_db: name=algospot 
+    sudo: yes
+    sudo_user: postgres
+  - name: add permission for root (used for celeryd)
+    postgresql_privs: database=algospot privs=ALL type=database role=root
+    sudo: yes
+    sudo_user: postgres
+  - name: django syncdb 
+    django_manage: command=syncdb app_path={{django_dir}}
+  - name: load base data (must come before migrate!)
+    django_manage: command=loaddata app_path={{django_dir}} fixtures=base/fixtures/group_fixtures.json
+  - name: migrate base first 
+    shell: ./manage.py migrate base chdir=/vagrant/www
+  - name: django migrate 
+    django_manage: command=migrate app_path={{django_dir}}
+  - name: load superuser
+    django_manage: command=loaddata app_path={{django_dir}} fixtures=base/fixtures/superuser_fixtures.json
+  - name: load all remaining fixutres
+    django_manage: command=loaddata app_path={{django_dir}} fixtures={{item}}
+    with_items: 
+      - base/fixtures/guardian_fixtures.json 
+      - forum/fixtures/fixtures.json 
+      - judge/fixtures/fixtures.json 
+      - wiki/fixtures/fixtures.json
+  - name: include everyone in "everyone" group
+    shell: ./manage.py include_everyone chdir=/vagrant/www
+  - name: patch psql table for guardian  
+    shell: psql algospot < base/queries/patch_psql_table.sql chdir=/vagrant/www
+  - name: copy psql configurations (so root can access database, needed for celeryd)
+    copy: src={{item}} dest=/etc/postgresql/9.3/main/ backup=yes
+    sudo: yes
+    with_items: 
+      - ../configs/pg_hba.conf
+      - ../configs/pg_ident.conf
+  - name: copy grub config (required for LXC)
+    copy: src=../configs/grub dest=/etc/default backup=yes
+    sudo: yes
+  - name: update grub config
+    shell: update-grub
+    sudo: yes
 
