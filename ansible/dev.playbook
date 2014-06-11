@@ -143,6 +143,9 @@
   - name: install celeryd service
     shell: update-rc.d celeryd defaults 99 01
     sudo: yes
+  - name: create runner account for sandboxing
+    user: name=runner 
+	sudo: yes
   - name: copy nginx conf
     copy: src=../configs/nginx dest=/etc/nginx/sites-available/default backup=yes
     sudo: yes
