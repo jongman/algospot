@@ -15,10 +15,11 @@ Vagrant 위에서의 개발환경은 아직 준비중이며, 완벽하지 않다
 ## 체크아웃에서 개발 서버 돌리기까지
 
 
-1. 먼저 git repository 를 클론한다.
+1. 먼저 git repository 를 클론하고, 외부 의존 리포지토리를 가져온다.
 
 	$ git clone git://github.com/jongman/algospot.git  
-	$ cd algospot
+	$ cd algospot  
+	$ git submodule update --init --recursive
 
 1. 가상 머신을 띄운다. 이 명령어는 가상 머신 이미지를 다운받고, 필요한 패키지를 깔고, 데이터베이스와 기타 서버들을 셋업해 준다. 
 

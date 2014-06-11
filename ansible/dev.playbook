@@ -54,7 +54,7 @@
     - Pillow
     - psycopg2
   - name: install linux-image-extra (needed for aufs)
-    shell: apt-get install linux-image-extra-`uname -r`
+    shell: apt-get install -y linux-image-extra-`uname -r`
     sudo: yes
   - name: add nginx stable
     sudo: yes
@@ -98,6 +98,13 @@
       - forum/fixtures/fixtures.json 
       - judge/fixtures/fixtures.json 
       - wiki/fixtures/fixtures.json
+  - name: collectstatic
+    django_manage: command=collectstatic
+  - name: make judge file directory
+    file: path={{item}} state=directory
+    with_items:
+      - /vagrant/www/media/judge-attachments/997880217dc5432e5425aca9fab8c317
+      - /vagrant/www/media/judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e
   - name: copy judging data for example problem
     copy: src=../dev_data/plus.in dest=/vagrant/www/media/judge-attachments/997880217dc5432e5425aca9fab8c317/plus.in
   - name: copy judging data for example problem (output)
@@ -123,6 +130,7 @@
     sudo: yes
   - name: copy celery config
     copy: src=../configs/celeryd_config dest=/etc/default/celeryd
+    sudo: yes
   - name: make celery directory
     file: path=/var/run/celery state=directory
     sudo: yes
@@ -143,6 +151,7 @@
     sudo: yes
   - name: make /var/www
     file: path=/var/www state=directory 
+    sudo: yes
   - name: make /var/www open for www-data
     shell: chmod go+rwx /var/www
     sudo: yes
