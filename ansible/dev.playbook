@@ -99,7 +99,7 @@
       - judge/fixtures/fixtures.json 
       - wiki/fixtures/fixtures.json
   - name: collectstatic
-    django_manage: command=collectstatic
+    django_manage: command=collectstatic app_path={{django_dir}}
   - name: make judge file directory
     file: path={{item}} state=directory
     with_items:
