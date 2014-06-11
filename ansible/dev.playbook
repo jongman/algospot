@@ -98,6 +98,10 @@
       - forum/fixtures/fixtures.json 
       - judge/fixtures/fixtures.json 
       - wiki/fixtures/fixtures.json
+  - name: copy judging data for example problem
+    copy: src=../dev_data/plus.in dest=/vagrant/www/media/judge-attachments/997880217dc5432e5425aca9fab8c317/plus.in
+  - name: copy judging data for example problem (output)
+    copy: src=../dev_data/plus.out dest=/vagrant/www/media/judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e/plus.out
   - name: include everyone in "everyone" group
     shell: ./manage.py include_everyone chdir=/vagrant/www
   - name: patch psql table for guardian  

@@ -1,10 +1,10 @@
 [
-	{
-		"model": "judge.Problem",
+{
+	"model": "judge.Problem",
 		"pk": 1,
 		"fields": {
 			"slug": "PLUS",
-			"state": 0,
+			"state": 3,
 			"user": 1,
 			"source": "연습문제",
 			"name": "A + B",
@@ -13,24 +13,40 @@
 			"accepted_count": 0,
 			"last_revision": 1
 		}
-	},
-	{
-		"model": "judge.ProblemRevision",
-		"pk": 1,
-		"fields": {
-			"revision_for": 1,
-			"created_on": "2014-06-05T18:17:37.399",
-			"user": 1,
-			"edit_summary": "initial data",
-			"description": "Given two integers A, B, calculate A+B.",
-			"input": "In the first line of input, the number of test cases is given.\n\nEach test case consists of a single line with two integers, with absolute values less than or equal to 1000.",
-			"output": "For each test cases, print the sum of two integers.",
-			"sample_input": "3\n0 0\n1 7\n6 -10",
-			"sample_output": "0\n8\n4",
-			"time_limit": 1000,
-			"memory_limit": 65536
-		}
+},
+{
+	"model": "judge.ProblemRevision",
+	"pk": 1,
+	"fields": {
+		"revision_for": 1,
+		"created_on": "2014-06-05T18:17:37.399",
+		"user": 1,
+		"edit_summary": "initial data",
+		"description": "Given two integers A, B, calculate A+B.",
+		"input": "In the first line of input, the number of test cases is given.\n\nEach test case consists of a single line with two integers, with absolute values less than or equal to 1000.",
+		"output": "For each test cases, print the sum of two integers.",
+		"sample_input": "3\n0 0\n1 7\n6 -10",
+		"sample_output": "0\n8\n4",
+		"time_limit": 1000,
+		"memory_limit": 65536
 	}
-]
+},
+{
+	"fields": {
+		"file": "judge-attachments/997880217dc5432e5425aca9fab8c317/plus.in",
+		"problem": 1
+	},
+	"model": "judge.attachment",
+	"pk": 1
+},
+{
+	"fields": {
+		"file": "judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e/plus.out",
+		"problem": 1
+	},
+	"model": "judge.attachment",
+	"pk": 2
+},
+	]
 
 
