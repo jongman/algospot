@@ -127,12 +127,18 @@
     sudo: yes
   - name: copy celery runner
     copy: src=../configs/celeryd_initd dest=/etc/init.d/celeryd
+  - name: change permission for celery runner
+    shell: chmod go+rwx /etc/init.d/celeryd
+	sudo: yes
     sudo: yes
   - name: copy celery config
     copy: src=../configs/celeryd_config dest=/etc/default/celeryd
     sudo: yes
-  - name: make celery directory
-    file: path=/var/run/celery state=directory
+  - name: make celery directories
+    file: path={{item}} state=directory
+	with_items:
+	  - /var/run/celery 
+	  - /var/log/celery
     sudo: yes
   - name: install celeryd service
     shell: update-rc.d celeryd defaults 99 01
