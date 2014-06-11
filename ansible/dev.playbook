@@ -121,6 +121,24 @@
     copy: src=../configs/celeryd_config dest=/etc/default/celeryd
   - name: make celery directory
     file: path=/var/run/celery state=directory
+    sudo: yes
   - name: install celeryd service
     shell: update-rc.d celeryd defaults 99 01
+    sudo: yes
+  - name: copy nginx conf
+    copy: src=../configs/nginx dest=/etc/nginx/sites-available/default backup=yes
+    sudo: yes
+  - name: make uwsgi conf dir
+    file: path=/etc/uwsgi/apps-enabled state=directory
+    sudo: yes
+  - name: copy uwsgi conf
+    copy: src=../configs/uwsgi.ini dest=/etc/uwsgi/apps-enabled backup=yes
+    sudo: yes
+  - name: copy uwsgi upstart conf
+    copy: src=../configs/uwsgi.conf dest=/etc/init/ backup=yes
+    sudo: yes
+  - name: make /var/www
+    file: path=/var/www state=directory 
+  - name: make /var/www open for www-data
+    shell: chmod go+rwx /var/www
     sudo: yes

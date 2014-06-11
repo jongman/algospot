@@ -1,105 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-### Vagrant reboot plugin copy and pasted from https://github.com/exratione/vagrant-provision-reboot/blob/master/vagrant-provision-reboot-plugin.rb ###
-
-# Monkey-patch the VirtualBox provider to be able to remap synced folders after
-# reboot. This is the tricky part.
-#
-# This involves pulling out some code fragments from the existing SyncedFolders
-# class - which is unpleasant, but there are no usefully exposed methods such
-# that we can run only what we need to.
-module VagrantPlugins
-  module ProviderVirtualBox
-    module Action
-
-      class RemountSyncedFolders < SyncedFolders
-
-        def initialize(app, env)
-          super(app, env)
-        end
-
-        def call(env)
-          @env = env
-          @app.call(env)
-
-          # Copied out of /lib/vagrant/action/builtin/synced_folders.rb in
-          # Vagrant 1.4.3, and surprisingly still working in 1.6.1.
-          #
-          # This is going to be fragile with respect to future changes, but
-          # that's just the way the cookie crumbles.
-          #
-          # We can't just run the whole SyncedFolders.call() method because
-          # it undertakes a lot more setup and will error out if invoked twice
-          # during "vagrant up" or "vagrant provision".
-          folders = synced_folders(env[:machine])
-          folders.each do |impl_name, fs|
-            plugins[impl_name.to_sym][0].new.enable(env[:machine], fs, impl_opts(impl_name, env))
-          end
-        end
-      end
-
-      def self.action_remount_synced_folders
-        Vagrant::Action::Builder.new.tap do |b|
-          b.use RemountSyncedFolders
-        end
-      end
-
-    end
-  end
-end
-
-# Define the plugin.
-class RebootPlugin < Vagrant.plugin('2')
-  name 'Reboot Plugin'
-
-  # This plugin provides a provisioner called unix_reboot.
-  provisioner 'unix_reboot' do
-
-    # Create a provisioner.
-    class RebootProvisioner < Vagrant.plugin('2', :provisioner)
-      # Initialization, define internal state. Nothing needed.
-      def initialize(machine, config)
-        super(machine, config)
-      end
-
-      # Configuration changes to be done. Nothing needed here either.
-      def configure(root_config)
-        super(root_config)
-      end
-
-      # Run the provisioning.
-      def provision
-        command = 'shutdown -r now'
-        @machine.ui.info("Issuing command: #{command}")
-        @machine.communicate.sudo(command) do |type, data|
-          if type == :stderr
-            @machine.ui.error(data);
-          end
-        end
-
-        begin
-          sleep 5
-        end until @machine.communicate.ready?
-
-        # Now the machine is up again, perform the necessary tasks.
-        @machine.ui.info("Launching remount_synced_folders action...")
-        @machine.action('remount_synced_folders')
-      end
-
-      # Nothing needs to be done on cleanup.
-      def cleanup
-        super
-      end
-    end
-    RebootProvisioner
-
-  end
-
-end
-
-### NORMAL Vagrantfile BEGINS ###
-
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
@@ -115,9 +16,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
 	ansible.playbook = "ansible/dev.playbook"
   end
-
-  # reboot after provision
-  config.vm.provision :unix_reboot
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
