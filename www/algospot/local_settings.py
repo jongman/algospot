@@ -5,6 +5,8 @@ import settings
 settings.DEBUG = True
 settings.STATIC_ROOT = '/vagrant/www_static'
 
+settings.USER_AUTHORIZATION_LIMIT = 0
+
 # Use a local mysql database
 settings.DATABASES = {
     'default': {

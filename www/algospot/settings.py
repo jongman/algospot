@@ -257,6 +257,9 @@ ABSOLUTE_URL_OVERRIDES = {
 
 SOLVED_CAMPAIGN = []
 
+# 이만큼은 문제를 풀어야 위키 변경 등의 일을 할 수 있다.
+USER_AUTHORIZATION_LIMIT = 5
+
 try:
     import local_settings
 except ImportError:
