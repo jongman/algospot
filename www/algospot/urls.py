@@ -50,7 +50,13 @@ if settings.USE_AYAH:
         url(r'^accounts/register/?$', AreYouAHumanFormView.as_view()),
     )
 
-urlpatterns += patterns(
-    '',
-    url(r'^accounts/', include('registration.backends.default.urls')),
-)
+if settings.VERIFY_NEW_USER_EMAIL:
+    urlpatterns += patterns(
+        '',
+        url(r'^accounts/', include('registration.backends.default.urls')),
+    )
+else:
+    urlpatterns += patterns(
+        '',
+        url(r'^accounts/', include('registration.backends.simple.urls')),
+    )
