@@ -249,16 +249,13 @@ HAYSTACK_CONNECTIONS = {
 }
 
 USE_AYAH = False
+VERIFY_NEW_USER_EMAIL = False
 
-SOLVED_CAMPAIGN = [
-    {'problem': 'HELLOWORLD',
-     'begin': datetime(2012, 1, 1, 0, 0, 0),
-     'end': datetime(2012, 12, 31, 23, 59, 59),
-     'message': u"""*HELLO WORLD 문제를 푸셨군요!*
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: "/user/profile/%d" % u.id,
+}
 
-축하합니다! ^^
-     """.strip()},
-]
+SOLVED_CAMPAIGN = []
 
 try:
     import local_settings
