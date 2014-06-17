@@ -19,3 +19,9 @@ settings.DATABASES = {
 
 # JUDGE SETTINGS
 settings.JUDGE_SETTINGS['MINMEMORYSIZE'] = 64 * 1024
+
+# monkey patch pygooglecharts around some unknown issue.
+# this is a broken mirror; but we should be getting rid of pygooglechart
+# anyways..
+import pygooglechart
+pygooglechart.Chart.BASE_URL = 'http://chart.apis.google.com/chart'
