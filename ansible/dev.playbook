@@ -164,3 +164,6 @@
   - name: make /var/www open for www-data
     shell: chmod go+rwx /var/www
     sudo: yes
+  - name: register cron entry for update_index
+    cron: name="update search index" minute="0,30" job="cd /vagrant/www; ./manage.py update_index" user="www-data" cron_file="update-index-job"
+    sudo: yes
