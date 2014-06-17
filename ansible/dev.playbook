@@ -127,9 +127,9 @@
     sudo: yes
   - name: copy celery runner
     copy: src=../configs/celeryd_initd dest=/etc/init.d/celeryd
+    sudo: yes
   - name: change permission for celery runner
     shell: chmod go+rwx /etc/init.d/celeryd
-    sudo: yes
     sudo: yes
   - name: copy celery config
     copy: src=../configs/celeryd_config dest=/etc/default/celeryd
