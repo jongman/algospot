@@ -116,15 +116,28 @@
       - wiki/fixtures/fixtures.json
   - name: collectstatic
     django_manage: command=collectstatic app_path={{django_dir}}
-  - name: make judge file directory
-    file: path={{item}} state=directory
+  - name: make media directory
+    sudo: yes
+    file: path={{item}} owner=www-data group=www-data state=directory
     with_items:
-      - /vagrant/www/media/judge-attachments/997880217dc5432e5425aca9fab8c317
-      - /vagrant/www/media/judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e
+      - /www-media
+      - /www-media/judge-attachments
+  - name: make vagrant part of www-data group (dev only)
+    sudo: yes
+    user: name=vagrant groups=www-data append=yes
+  - name: make judge file directory
+    file: path={{item}} state=directory owner=www-data group=www-data
+    sudo: yes
+    sudo_user: www-data
+    with_items:
+      - /www-media/judge-attachments/997880217dc5432e5425aca9fab8c317
+      - /www-media/judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e
   - name: copy judging data for example problem
-    copy: src=../dev_data/plus.in dest=/vagrant/www/media/judge-attachments/997880217dc5432e5425aca9fab8c317/plus.in
+    copy: src=../dev_data/plus.in dest=/www-media/judge-attachments/997880217dc5432e5425aca9fab8c317/plus.in owner=www-data
+    sudo: yes
   - name: copy judging data for example problem (output)
-    copy: src=../dev_data/plus.out dest=/vagrant/www/media/judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e/plus.out
+    copy: src=../dev_data/plus.out dest=/www-media/judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e/plus.out owner=www-data
+    sudo: yes
   - name: include everyone in "everyone" group
     shell: ./manage.py include_everyone chdir=/vagrant/www
   - name: patch psql table for guardian  

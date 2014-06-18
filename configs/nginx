@@ -41,7 +41,7 @@ server {
 		autoindex off;
 	}
 	location /media {
-		alias /vagrant/www/media;
+		alias /www-media;
 		autoindex on;
 	}
 	location /favicon.ico {
