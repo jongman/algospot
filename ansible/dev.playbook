@@ -21,6 +21,10 @@
     - postgresql-server-dev-9.3
     - lxc
     - aufs-tools
+    - golang
+    - ghc
+    - nodejs
+    - scala
   - name: install pip
     sudo: yes
     easy_install: name=pip
@@ -56,6 +60,18 @@
   - name: install linux-image-extra (needed for aufs)
     shell: apt-get install -y linux-image-extra-`uname -r`
     sudo: yes
+  - name: oracle java ppa
+    sudo: yes
+    apt_repository: repo='ppa:webupd8team/java'
+  - name: disable interactive installer for oracle java
+    sudo: yes
+    shell: echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+  - name: disable interactive installer for oracle java
+    sudo: yes
+    shell: echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+  - name: install oracle java
+    sudo: yes
+    apt: name=oracle-java8-installer update_cache=yes
   - name: add nginx stable
     sudo: yes
     apt_repository: repo='ppa:nginx/stable'
