@@ -12,8 +12,27 @@ up:
 halt: 
 	vagrant halt
 
-devserver:
+# some django commands
+
+runserver:
 	vagrant ssh -c 'cd /vagrant/www; ./manage.py runserver 0.0.0.0:8000'
+
+shell:
+	vagrant ssh -c 'cd /vagrant/www; ./manage.py shell_plus'
+
+dbshell:
+	vagrant ssh -c 'cd /vagrant/www; ./manage.py dbshell'
+
+# restart daemons
+
+restart-celeryd:
+	vagrant ssh -c 'sudo /etc/init.d/celeryd restart'
+
+restart-uwsgi:
+	vagrant ssh -c 'sudo service uwsgi restart'
+
+restart-nginx:
+	vagrant ssh -c 'sudo /etc/init.d/nginx restart'
 
 .PHONY: up stop halt devserver
 
