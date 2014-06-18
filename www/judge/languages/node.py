@@ -6,7 +6,7 @@ def system(cmd):
 
 LANGUAGE = "Javascript (Node)"
 EXT = "js"
-VERSION = system(["node", "--version"])[0]
+VERSION = system(["nodejs", "--version"])[0]
 ADDITIONAL_FILES = []
 
 def setup(sandbox, source_code):

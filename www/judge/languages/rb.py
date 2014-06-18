@@ -6,7 +6,7 @@ def system(cmd):
 
 LANGUAGE = "Ruby"
 EXT = "rb"
-INTERP = "/usr/local/rvm/bin/ruby-1.9.3-p125@aoj"
+INTERP = "ruby"
 VERSION = system([INTERP, "--version"])[0]
 ADDITIONAL_FILES = []
 
