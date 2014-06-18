@@ -19,6 +19,15 @@ server {
 	server_name localhost;
 
 	location / {
+		# redirect to HTTPS only for [index, accounts/] pages
+		if ($request_uri = /) { set $https_redirect_condition R; }
+		if ($request_uri ~* ^/accounts/) { set $https_redirect_condition R; }
+
+		if ($scheme = http) { set $https_redirect_condition "${https_redirect_condition}H"; }
+		if ($https_redirect_condition = RH) {
+			return 302 https://$server_name$request_uri;
+		}
+
 		# First attempt to serve request as file, then
 		# as directory, then fall back to index.html
 		#try_files $uri $uri/ /index.html;
