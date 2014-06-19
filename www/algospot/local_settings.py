@@ -19,8 +19,9 @@ settings.DATABASES = {
     }
 }
 
-# JUDGE SETTINGS
-settings.JUDGE_SETTINGS['MINMEMORYSIZE'] = 64 * 1024
+# scala 사용하려면 아래 커멘트를 지울 것. VM 용량도 Vagrantfile에서 늘려줘야
+# 한다.
+# settings.JUDGE_SETTINGS['MINMEMORYSIZE'] = 512 * 1024
 
 # monkey patch pygooglecharts around some unknown issue.
 # this is a broken mirror; but we should be getting rid of pygooglechart
