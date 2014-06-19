@@ -12,7 +12,7 @@ ADDITIONAL_FILES = []
 def setup(sandbox, source_code):
     sandbox.write_file(source_code, "Main.scala")
     compiled = sandbox.run("scalac -optimise Main.scala", stdout=".stdout",
-                           stderr=".stderr", time_limit=10)
+                           stderr=".stderr", time_limit=30)
     if compiled.split()[0] != "OK":
         return {"status": "error",
                 "message": ("MONITOR:\n" + compiled + "\n" +
