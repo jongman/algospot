@@ -137,11 +137,19 @@
     with_items:
       - /www-media/judge-attachments/997880217dc5432e5425aca9fab8c317
       - /www-media/judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e
+      - /www-media/judge-attachments/232c7247113c383f420354144212679d
+      - /www-media/judge-attachments/62684055ea23fd739ee1071724794592
   - name: copy judging data for example problem
     copy: src=../dev_data/plus.in dest=/www-media/judge-attachments/997880217dc5432e5425aca9fab8c317/plus.in owner=www-data
     sudo: yes
   - name: copy judging data for example problem (output)
     copy: src=../dev_data/plus.out dest=/www-media/judge-attachments/67dfd95b87cff6ac5af6af76fc18f38e/plus.out owner=www-data
+    sudo: yes
+  - name: copy judging data for example problem
+    copy: src=../dev_data/helloworld.in dest=/www-media/judge-attachments/232c7247113c383f420354144212679d/helloworld.in owner=www-data
+    sudo: yes
+  - name: copy judging data for example problem (output)
+    copy: src=../dev_data/helloworld.out dest=/www-media/judge-attachments/62684055ea23fd739ee1071724794592/helloworld.out owner=www-data
     sudo: yes
   - name: include everyone in "everyone" group
     shell: ./manage.py include_everyone chdir=/vagrant/www
