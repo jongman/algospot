@@ -24,7 +24,6 @@
     - golang
     - ghc
     - nodejs
-    - scala
   - name: install pip
     sudo: yes
     easy_install: name=pip
@@ -72,6 +71,12 @@
   - name: install oracle java
     sudo: yes
     apt: name=oracle-java8-installer update_cache=yes
+  - name: download scala 2.11.1
+    get_url: url=http://downloads.typesafe.com/scala/2.11.1/scala-2.11.1.deb dest=/tmp
+    sudo: yes
+  - name: install scala
+    sudo: yes
+    shell: dpkg --skip-same-version -i /tmp/scala-2.11.1.deb 
   - name: add nginx stable
     sudo: yes
     apt_repository: repo='ppa:nginx/stable'
