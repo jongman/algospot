@@ -6,7 +6,7 @@ def system(cmd):
 
 LANGUAGE = "Scala"
 EXT = "scala"
-VERSION = system(["scala", "-version"])[0].split("\n")[0]
+VERSION = system(["scala", "-version"])[1].split("\n")[0]
 ADDITIONAL_FILES = []
 
 def setup(sandbox, source_code):
