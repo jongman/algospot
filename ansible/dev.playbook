@@ -1,10 +1,10 @@
-# vim: set expandtab:ts=2:sw=2
+# vim: set expandtab ts=2 sw=2 filetype=yaml:
 ---
 - hosts: all
   vars:
     home_dir: /vagrant
     django_dir: /vagrant/www
-	user: vagrant
+    user: vagrant
   remote_user: vagrant
   tasks:
   - name: install apt packages
