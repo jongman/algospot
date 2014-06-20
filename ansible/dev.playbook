@@ -4,6 +4,7 @@
   vars:
     home_dir: /vagrant
     django_dir: /vagrant/www
+	user: vagrant
   remote_user: vagrant
   tasks:
   - name: install apt packages
@@ -88,7 +89,7 @@
     sudo: yes
     shell: cd {{home_dir}}/libs/misaka; python setup.py install
   - name: create postgres user
-    postgresql_user: name={{remote_user}} role_attr_flags=SUPERUSER
+    postgresql_user: name={{user}} role_attr_flags=SUPERUSER
     sudo_user: postgres
     sudo: yes
   - name: create postgres user root
@@ -130,7 +131,7 @@
       - /www-media/judge-attachments
   - name: make user part of www-data group (dev only)
     sudo: yes
-    user: name={{remote_user}} groups=www-data append=yes
+    user: name={{user}} groups=www-data append=yes
   - name: make judge file directory
     file: path={{item}} state=directory owner=www-data group=www-data
     sudo: yes
