@@ -2,7 +2,6 @@
 
 import settings
 
-settings.DEBUG = True
 settings.STATIC_ROOT = '/algospot/www_static'
 
 settings.USER_AUTHORIZATION_LIMIT = 0
