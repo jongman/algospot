@@ -49,9 +49,6 @@
   - uwsgi
   - Pillow
   - psycopg2
-- name: install linux-image-extra (needed for aufs)
-  shell: apt-get install -y linux-image-extra-`uname -r`
-  sudo: yes
 - name: oracle java ppa
   sudo: yes
   apt_repository: repo='ppa:webupd8team/java'

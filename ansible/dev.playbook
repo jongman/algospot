@@ -7,4 +7,7 @@
     user: vagrant
   remote_user: vagrant
   tasks:
+  - name: install linux-image-extra (needed for aufs)
+    shell: apt-get install -y linux-image-extra-`uname -r`
+    sudo: yes
   - include: single_box.yml

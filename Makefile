@@ -1,5 +1,6 @@
 init:
 	git submodule update --init --recursive
+	ln -sf www/algospot/local_settings.py.dev www/algospot/local_settings.py
 	vagrant up
 	vagrant reload
 
