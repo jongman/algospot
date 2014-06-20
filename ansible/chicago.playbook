@@ -1,0 +1,22 @@
+# vim: set expandtab ts=2 sw=2 filetype=yaml:
+---
+- hosts: all
+  vars:
+    home_dir: /algospot
+    django_dir: /algospot/www
+    user: algospot
+    git_branch: chicago
+    config_name: chicago
+  remote_user: algospot
+  tasks:
+  - name: make home
+    sudo: yes
+    file: path={{home_dir}} owner={{user}} group={{user}} state=directory
+  - name: install git
+    sudo: yes
+    apt: name=git-core state=present update_cache=yes
+  - name: git checkout
+    git: repo=https://github.com/jongman/algospot.git dest={{home_dir}} version={{git_branch}}
+  - name: symlink local settings
+    file: src={{home_dir}}/www/algospot/local_settings.py.{{git_branch}} dest={{home_dir}}/www/algospot/local_settings.py state=link
+  - include: single_box.yml

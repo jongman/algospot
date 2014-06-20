@@ -5,9 +5,13 @@
     home_dir: /vagrant
     django_dir: /vagrant/www
     user: vagrant
+    config_name: vagrant
   remote_user: vagrant
   tasks:
-  - name: install linux-image-extra (needed for aufs)
-    shell: apt-get install -y linux-image-extra-`uname -r`
+  - name: copy grub config (required for LXC)
+    copy: src=../configs/{{config_name}}/grub dest=/etc/default backup=yes
+    sudo: yes
+  - name: update grub config
+    shell: update-grub
     sudo: yes
   - include: single_box.yml

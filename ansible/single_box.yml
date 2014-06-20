@@ -17,6 +17,7 @@
   - golang
   - ghc
   - nodejs
+  - ruby
 - name: install pip
   sudo: yes
   easy_install: name=pip
@@ -149,22 +150,16 @@
   copy: src={{item}} dest=/etc/postgresql/9.3/main/ backup=yes
   sudo: yes
   with_items: 
-    - ../configs/pg_hba.conf
-    - ../configs/pg_ident.conf
-- name: copy grub config (required for LXC)
-  copy: src=../configs/grub dest=/etc/default backup=yes
-  sudo: yes
-- name: update grub config
-  shell: update-grub
-  sudo: yes
+    - ../configs/{{config_name}}/pg_hba.conf
+    - ../configs/{{config_name}}/pg_ident.conf
 - name: copy celery runner
-  copy: src=../configs/celeryd_initd dest=/etc/init.d/celeryd
+  copy: src=../configs/{{config_name}}/celeryd_initd dest=/etc/init.d/celeryd
   sudo: yes
 - name: change permission for celery runner
   shell: chmod go+rwx /etc/init.d/celeryd
   sudo: yes
 - name: copy celery config
-  copy: src=../configs/celeryd_config dest=/etc/default/celeryd
+  copy: src=../configs/{{config_name}}/celeryd_config dest=/etc/default/celeryd
   sudo: yes
 - name: make celery directories
   file: path={{item}} state=directory
@@ -179,22 +174,25 @@
   user: name=runner 
   sudo: yes
 - name: copy nginx conf
-  copy: src=../configs/nginx dest=/etc/nginx/sites-available/default backup=yes
+  copy: src=../configs/{{config_name}}/nginx dest=/etc/nginx/sites-available/default backup=yes
   sudo: yes
 - name: make uwsgi conf dir
   file: path=/etc/uwsgi/apps-enabled state=directory
   sudo: yes
 - name: copy uwsgi conf
-  copy: src=../configs/uwsgi.ini dest=/etc/uwsgi/apps-enabled backup=yes
+  copy: src=../configs/{{config_name}}/uwsgi.ini dest=/etc/uwsgi/apps-enabled backup=yes
   sudo: yes
 - name: copy uwsgi upstart conf
-  copy: src=../configs/uwsgi.conf dest=/etc/init/ backup=yes
+  copy: src=../configs/{{config_name}}/uwsgi.conf dest=/etc/init/ backup=yes
   sudo: yes
 - name: make /var/www
   file: path=/var/www state=directory 
   sudo: yes
 - name: make /var/www open for www-data
   shell: chmod go+rwx /var/www
+  sudo: yes
+- name: install linux-image-extra (needed for aufs)
+  shell: apt-get install -y linux-image-extra-`uname -r`
   sudo: yes
 - name: register cron entry for update_index
   cron: name="update search index" minute="0,30" job="cd {{django_dir}}; ./manage.py update_index" user="www-data" cron_file="update-index-job"
