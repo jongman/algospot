@@ -251,7 +251,6 @@ HAYSTACK_CONNECTIONS = {
 }
 
 USE_AYAH = False
-VERIFY_NEW_USER_EMAIL = False
 
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: "/user/profile/%d" % u.id,
