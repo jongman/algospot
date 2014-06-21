@@ -3,7 +3,7 @@
 한국 프로그래밍 대회 커뮤니티 알고스팟 (algospot.com) 입니다.
 다음 url 을 클릭해 회원 가입시 입력하신 이메일 주소를 확인해 주세요.
 
-http://prague.algospot.com/{% url "registration_activate" activation_key %}
+http://chicago.algospot.com/{% url "registration_activate" activation_key %}
 
 이 링크는 {{ expiration_days }}일간만 유효합니다.
 

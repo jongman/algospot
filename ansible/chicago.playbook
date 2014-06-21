@@ -12,13 +12,22 @@
   - name: make home
     sudo: yes
     file: path={{home_dir}} owner={{user}} group={{user}} state=directory
-  - name: install git
+  - name: prepare postfix install
     sudo: yes
-    apt: name=git-core state=present update_cache=yes
+    shell: echo postfix postfix/mailname string algospot.com | debconf-set-selections
+  - name: prepare postfix install
+    sudo: yes
+    shell: echo postfix postfix/main_mailer_type string 'Internet Site' | debconf-set-selections
+  - name: install apt dependencies
+    sudo: yes
+    apt: name={{item}} state=present update_cache=yes
+    with_items:
+    - git-core
+    - postfix
   - name: git checkout
     git: repo=https://github.com/jongman/algospot.git dest={{home_dir}} version={{git_branch}}
-  - name: symlink local settings
-    file: src={{home_dir}}/www/algospot/local_settings.py.{{git_branch}} dest={{home_dir}}/www/algospot/local_settings.py state=link
+  - name: copy local settings
+    copy: src={{home_dir}}/www/algospot/local_settings.py.{{git_branch}} dest={{home_dir}}/www/algospot/local_settings.py backup=yes
   - include: single_box.yml
   - name: install are you a human?
     sudo: yes
