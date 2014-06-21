@@ -1,27 +1,38 @@
-# Name of nodes to start, here we have a single node
+# Names of nodes to start
+#   most will only start one node:
 CELERYD_NODES="w1"
-# or we could have three nodes:
-#CELERYD_NODES="w1 w2 w3"
+#   but you can also start multiple and configure settings
+#   for each in CELERYD_OPTS (see `celery multi --help` for examples).
+#CELERYD_NODES="worker1 worker2 worker3"
+
+# Absolute or relative path to the 'celery' command:
+CELERY_BIN="/usr/local/bin/celery"
+#CELERY_BIN="/virtualenvs/def/bin/celery"
+
+# App instance to use
+# comment out this line if you don't use an app
+CELERY_APP="algospot"
+# or fully qualified:
+#CELERY_APP="proj.tasks:app"
 
 # Where to chdir at start.
 CELERYD_CHDIR="/algospot/www"
 
-# How to call "manage.py celeryd_multi"
-CELERYD_MULTI="$CELERYD_CHDIR/manage.py celeryd_multi"
-
-# How to call "manage.py celeryctl"
-CELERYCTL="$CELERYD_CHDIR/manage.py celeryctl"
-
-# Extra arguments to celeryd
+# Extra command-line arguments to the worker
 CELERYD_OPTS="--time-limit=300 --concurrency=1"
 
-# %n will be replaced with the nodename.
-CELERYD_LOG_FILE="/var/log/celery/%n.log"
-CELERYD_PID_FILE="/var/run/celery_%n.pid"
+# %N will be replaced with the first part of the nodename.
+CELERYD_LOG_FILE="/var/log/celery/w1.log"
+CELERYD_PID_FILE="/var/run/celery/w1.pid"
 
-# Workers should run as an unprivileged user.
+# run celeryd with root so we can use sandboxing.
 CELERYD_USER="root"
 CELERYD_GROUP="root"
 
-# Name of the projects settings module.
-export DJANGO_SETTINGS_MODULE="algospot.settings"
+# this need to be set in order to run things as root
+export C_FORCE_ROOT=1
+
+# If enabled pid and log directories will be created if missing,
+# and owned by the userid/group configured.
+CELERY_CREATE_DIRS=1
+
