@@ -4,9 +4,6 @@ import settings
 
 settings.STATIC_ROOT = '/algospot/www_static'
 
-settings.USER_AUTHORIZATION_LIMIT = 0
-
-# Use a local mysql database
 settings.DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -18,10 +15,3 @@ settings.DATABASES = {
     }
 }
 
-settings.JUDGE_SETTINGS['MINMEMORYSIZE'] = 512 * 1024
-
-# monkey patch pygooglecharts around some unknown issue.
-# this is a broken mirror; but we should be getting rid of pygooglechart
-# anyways..
-import pygooglechart
-pygooglechart.Chart.BASE_URL = 'http://chart.apis.google.com/chart'
