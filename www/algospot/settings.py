@@ -64,7 +64,7 @@ MEDIA_ROOT = j("/www-media")
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 #MEDIA_URL = '/media/'
 # set for development: reset for prod
-MEDIA_URL = "http://127.0.0.1/media/"
+MEDIA_URL = "/media/"
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -220,6 +220,7 @@ JUDGE_SETTINGS = {
     "USER": "runner",
     "FILESYSTEMSIZE": 64 * 1024,
     "MINMEMORYSIZE": 256 * 1024,
+    "WEBSERVER": 'http://127.0.0.1/'
 }
 
 # PAGINATION SETTINGS

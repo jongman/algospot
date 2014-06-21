@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from celery.decorators import task
+from algospot import celery_app as app
 from celery.utils.log import get_task_logger
 from models import Submission, Attachment
 import hashlib
@@ -24,14 +24,10 @@ def print_stack_trace():
     traceback.print_exc(file=io)
     io.seek(0)
     return io.read()
-
-@task()
-def add(x, y):
-    return x + y
-    
+   
 logger = get_task_logger(__name__)
 
-@task()
+@app.task()
 def judge_submission(submission):
 
     def copy(source, dest):
@@ -42,8 +38,9 @@ def judge_submission(submission):
 
     def download(attachment, destination):
         # TODO: add MD5 verification to downloaded files
-        logger.info("downloading %s ..", attachment.file.url)
-        copy(urllib.urlopen(attachment.file.url), open(destination, "wb"))
+        url = settings.JUDGE_SETTINGS['WEBSERVER'] + attachment.file.url
+        logger.info("downloading %s ..", url)
+        copy(urllib.urlopen(url), open(destination, "wb"))
 
     def unzip_and_sanitize(archive, data_dir):
         logger.info("unzipping %s ..", archive)
