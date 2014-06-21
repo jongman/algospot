@@ -187,7 +187,7 @@ EMAIL_PORT = 25
 AUTO_GENERATE_AVATAR_SIZES = (45, 80, 120)
 AVATAR_STORAGE_DIR = "avatars"
 AVATAR_GRAVATAR_BACKUP = False
-AVATAR_DEFAULT_URL = "/static/images/unknown-user.png"
+AVATAR_DEFAULT_URL = "/images/unknown-user.png"
 
 LOGIN_REDIRECT_URL = "/"
 
