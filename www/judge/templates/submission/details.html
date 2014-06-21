@@ -19,7 +19,7 @@
 			</li>
 			<li class="content">
 				<ul>
-					<li class="problemid"><a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a></li>
+					<li class="problemid"><a href="{% url "judge-problem-read" problem.slug %}">{{ problem.slug }}</a></li>
 					<li class="user">{{ submission.user|print_username }}</li>
 					<li class="submitted_on">{{ submission.submitted_on|print_datetime }}</li>
 					<li class="length">
@@ -43,7 +43,7 @@
 	{% if submission.user == user or user.is_superuser %}
 	<section class="request_rejudge">
 		<h4>재채점 요청</h4>
-		<form method="GET" action="{% url judge-submission-rejudge submission.id %}">
+		<form method="GET" action="{% url "judge-submission-rejudge" submission.id %}">
 			<input class="button" type="submit" value="Request Rejudge"/>
 		</form>
 	</section>

@@ -46,7 +46,7 @@
 							{% get_has_solved sub.problem by user as solved %}
 							{% get_obj_perms user for sub.problem as "perm" %}
 							{% if user == sub.user or perm or solved or user == sub.problem.user %}
-								<a href="{% url judge-submission-details sub.id %}">
+								<a href="{% url "judge-submission-details" sub.id %}">
 								{% endif %}					
 								{{ sub.language }}
 								{% if user == sub.user or user.is_superuser %}
@@ -58,7 +58,7 @@
 							<span class="submission_state submission{{ sub.name_eng }}">
 								{% if sub.has_messages %}
 									{% if user == sub.user or user.is_superuser or solved or user == sub.problem.user %}
-										<a href="{% url judge-submission-details sub.id %}">
+										<a href="{% url "judge-submission-details" sub.id %}">
 									{% endif %}
 								{% endif %}
 								<span>{{ sub.name_kor }}</span>

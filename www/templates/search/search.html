@@ -40,7 +40,7 @@
 							<!-- 검색 결과가 게시물 -->
 							<span class="datetime">{{ result.object.created_on|print_datetime }}</span>
 							<p class="title">
-								<a href="{% url forum-list result.object.category.slug 1 %}">
+								<a href="{% url "forum-list" result.object.category.slug 1 %}">
 									{{ result.object.category.name }}
 								</a> 
 								-

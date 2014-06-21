@@ -53,15 +53,15 @@
 							{{ profile.intro }}
 						</td>
 						<td class="solved_problems">
-							<a href="{% url judge-problem-list %}?user_tried={{ profile.user.id }}&verdict=solved">{{ profile.solved_problems }}</a>
+							<a href="{% url "judge-problem-list" %}?user_tried={{ profile.user.id }}&verdict=solved">{{ profile.solved_problems }}</a>
 						</td>
 						<td class="authored_problems">
-							<a href="{% url judge-problem-list %}?author={{ profile.user.username }}">
+							<a href="{% url "judge-problem-list" %}?author={{ profile.user.username }}">
 								{{ profile.user__problem__count }}
 							</a>
 						</td>
 						<td class="submissions">
-							<a href="{% url judge-submission-recent %}?user={{ profile.user.username }}">
+							<a href="{% url "judge-submission-recent" %}?user={{ profile.user.username }}">
 								{{ profile.submissions }}
 							</a>
 						</td>

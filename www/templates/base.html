@@ -56,7 +56,7 @@
 				<!-- User Info -->
 				<section id="user-info">
 					{% if user.is_authenticated %}
-						<a href="{% url user_profile user.id %}">{% avatar user 45 %}</a>
+						<a href="{% url "user_profile" user.id %}">{% avatar user 45 %}</a>
 						<div>
 							{{ user|print_username }}
 							<em class="kor">
@@ -64,8 +64,8 @@
 								문제 {{ user.get_profile.solved_problems }}개
 							</em>
 							<ul>
-								<li><a class="button-link" href="{% url user_settings user.id %}" title="설정" rel="tooltip">settings</a></li>
-								<li><a class="button-link" href="{% url auth_logout %}" title="로그아웃" rel="tooltip">sign out</a></li>
+								<li><a class="button-link" href="{% url "user_settings" user.id %}" title="설정" rel="tooltip">settings</a></li>
+								<li><a class="button-link" href="{% url "auth_logout" %}" title="로그아웃" rel="tooltip">sign out</a></li>
 							</ul>
 						</div>
 					{% else %}
@@ -73,13 +73,13 @@
 						<div>
 							<em class="kor">로그인하세요.</em>
 							<ul>
-								{% url auth_login as auth_login_url %}
+								{% url "auth_login" as auth_login_url %}
 								{% if request.path == auth_login_url %}
 								<li><a class="button-link" href="{{ request.get_full_path }}" title="로그인" rel="tooltip">sign in</a></li>
 								{% else %}
 								<li><a class="button-link" href="{{ auth_login_url }}?next={{ request.get_full_path|urlencode }}" title="로그인" rel="tooltip">sign in</a></li>
 								{% endif %}
-								<li><a class="button-link" href="{% url registration_register %}" title="회원 가입" rel="tooltip">sign up</a></li>
+								<li><a class="button-link" href="{% url "registration_register" %}" title="회원 가입" rel="tooltip">sign up</a></li>
 							</ul>
 						</div>
 					{% endif %}
@@ -90,50 +90,50 @@
 				<nav id="main-nav" class="kor">
 					<ul>
 						<li class="{% block newsfeed_class %}{% endblock %}">
-							<a href="{% url newsfeed %}" class="no-submenu">
+							<a href="{% url "newsfeed" %}" class="no-submenu">
 								뉴스 피드
 							</a>
 						</li>
 						<li class="{% block forum_class %}{% endblock %}">
-							<a href="{% url forum-all 1 %}">
+							<a href="{% url "forum-all" 1 %}">
 								포럼
 							</a>
 							<ul>
 								{% for cat in forum_categories %}
 									<li class="{% if cat == category %}current{% endif %}">
-										<a href="{% url forum-list cat.slug 1 %}">{{ cat.name }}</a>
+										<a href="{% url "forum-list" cat.slug 1 %}">{{ cat.name }}</a>
 									</li>
 								{% endfor %}
 							</ul>
 						</li>
 						<li class="{% block wiki_class %}{% endblock %}" >
-							<a href="{% url wiki-detail "Main_Page" %}" class="no-submenu">
+							<a href="{% url "wiki-detail" "Main_Page" %}" class="no-submenu">
 								위키
 							</a>
 						</li>
 						<li class="{% block judge_class %}{% endblock %}">
-							<a href="{% url judge-problem-list %}" class="">
+							<a href="{% url "judge-problem-list" %}" class="">
 								온라인 저지
 							</a>
 							<ul>
 								<li class="{% block judge_problem_class %}{% endblock %}">
-									<a href="{% url judge-problem-list %}">
+									<a href="{% url "judge-problem-list" %}">
 										문제 풀기
 									</a>
 								</li>
 								{% if user.get_profile.is_authorized %}
 								<li class="{% block judge_author_class %}{% endblock %}">
-									<a href="{% url judge-problem-mine %}">
+									<a href="{% url "judge-problem-mine" %}">
 										문제 내기
 									</a>
 								</li>
 								{% endif %}
-								<li class="{% block judge_submission_class %}{% endblock %}"><a href="{% url judge-submission-recent %}">
+								<li class="{% block judge_submission_class %}{% endblock %}"><a href="{% url "judge-submission-recent" %}">
 										최근 제출된 답안
 									</a>
 								</li>
 								<li class="{% block judge_ranking_class %}{% endblock %}">
-									<a href="{% url judge-ranking %}">
+									<a href="{% url "judge-ranking" %}">
 										사용자 랭킹
 									</a>
 								</li>
@@ -143,13 +143,13 @@
 								<!--	</a>-->
 								<!--</li>-->
 								<li>
-									<a href="{% url wiki-detail "알고스팟_온라인_저지" %}">
+									<a href="{% url "wiki-detail" "알고스팟_온라인_저지" %}">
 										튜토리얼
 									</a>
 								</li>
 							</ul>
 						</li>
-						<li class="{% block calendar_class %}{% endblock %}"><a href="{% url calendar %}" class="no-submenu">캘린더</a></li>
+						<li class="{% block calendar_class %}{% endblock %}"><a href="{% url "calendar" %}" class="no-submenu">캘린더</a></li>
 						{% if user.is_superuser %}
 							<li><a href="/admin" class="no-submenu">관리자 페이지</a></li>
 						{% endif %}
@@ -159,7 +159,7 @@
 
 				<!-- Search -->
 				<section id="search">
-					<form method="get" action="{% url haystack_search %}">
+					<form method="get" action="{% url "haystack_search" %}">
 						<input name="q" id="search_query" placeholder="검색하기"/>
 					</form>
 				</section>
@@ -188,11 +188,11 @@
 					<!-- <p class="separator">SRM 514 (8/9 8:00 PM)</p> -->
 					<!-- <p class="separator">SRM 515 (8/20 11:00 AM)</p> -->
 					</span>
-					<a class="button-link" href="{% url calendar %}" title="See all events!">see all</a>
+					<a class="button-link" href="{% url "calendar" %}" title="See all events!">see all</a>
 				</section>
 				<section class="sidebar feed">
 
-					<a href="{% url postfeed %}"><img src="/static/images/rss.png"/></a>
+					<a href="{% url "postfeed" %}"><img src="/static/images/rss.png"/></a>
 				</section>
 				<!-- /Sidebar -->
 			</section>

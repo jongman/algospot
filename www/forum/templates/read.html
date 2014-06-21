@@ -28,8 +28,8 @@
 						<span class="operations">
 							{% if user.is_authenticated %}
 								{% if user.is_superuser or user == post.user %}
-									<a href="{% url forum-edit post.id %}" class="button-link">edit</a> 
-									<a href="{% url forum-delete post.id %}" class="button-link">delete</a>
+									<a href="{% url "forum-edit" post.id %}" class="button-link">edit</a> 
+									<a href="{% url "forum-delete" post.id %}" class="button-link">delete</a>
 								{% endif %}
 							{% endif %}
 						</span>

@@ -43,11 +43,11 @@
 						</td>
 						{% if show_category %}
 							<td class="category">
-								<a href="{% url forum-list post.category.slug 1 %}">{{ post.category.name }}</a>
+								<a href="{% url "forum-list" post.category.slug 1 %}">{{ post.category.name }}</a>
 							</td>
 						{% endif %}
 						<td class="title_col">
-							<a href="{% url forum-read post.id %}">{{ post.title }}</a>
+							<a href="{% url "forum-read" post.id %}">{{ post.title }}</a>
 						</td>
 						{% get_comment_count for post as cc %}
 						{% get_last_comment for post as lc %}
@@ -84,7 +84,7 @@
 	<nav>
 		<ul class="tab-switch">
 		    {% if write_at %}
-                <li><a class="{% block forum_write_class %}{% endblock %}" href="{% url forum-write write_at %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
+                <li><a class="{% block forum_write_class %}{% endblock %}" href="{% url "forum-write" write_at %}" rel="tooltip" title="Start a thread">글쓰기</a></li>
 			{% endif %}
 		</ul>
 	</nav>

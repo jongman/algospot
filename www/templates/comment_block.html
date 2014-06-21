@@ -32,7 +32,7 @@
 								<a href="#c{{ comment.id }}" class="button-link gray">link</a>
 								{% if user.is_authenticated %}
 								{% if user.is_superuser or user == comment.user %}
-								<a href="{% url comment-delete-algospot comment.id %}?next={{ request.get_full_path }}" class="button-link gray">delete</a> 
+								<a href="{% url "comment-delete-algospot" comment.id %}?next={{ request.get_full_path }}" class="button-link gray">delete</a> 
 								{% endif %}
 								{% comment %}
 								<a href="javascript:comment_reply_form_toggle({{ comment.id }});" class="button-link gray">reply</a>
@@ -60,7 +60,7 @@
 				{% else %}
 				<li class="comment">
 					<p>
-						댓글을 남기시려면 <a href="{% url auth_login %}">로그인</a>하세요.
+						댓글을 남기시려면 <a href="{% url "auth_login" %}">로그인</a>하세요.
 					</p>
 				</li>
 				{% endif %}

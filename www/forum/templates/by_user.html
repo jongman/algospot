@@ -39,7 +39,7 @@
 							{{ post.id}}
 						</td>
 						<td class="title_col">
-							<a href="{% url forum-read post.id %}">{{ post.title }}</a>
+							<a href="{% url "forum-read" post.id %}">{{ post.title }}</a>
 						</td>
 						{% get_comment_count for post as cc %}
 						{% get_last_comment for post as lc %}

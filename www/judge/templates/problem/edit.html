@@ -12,7 +12,7 @@
 
 {% block page_contents %}
 	<section class="request-rejudge">
-		<form method="GET" action="{% url judge-problem-rejudge problem.id %}">
+		<form method="GET" action="{% url "judge-problem-rejudge" problem.id %}">
 			<input class="button" type="submit" value="Rejudge All Submissions" />
 		</form>
 	</section>
@@ -61,7 +61,7 @@
 				"bSearch": false,
 				//"bServerSide": true,
 				"iDisplayLength": 100,
-				"sAjaxSource": "{% url judge-problem-list-attachments problem.id %}",
+				"sAjaxSource": "{% url "judge-problem-list-attachments" problem.id %}",
 				"aaSorting": [[0, "asc"]],
 				"aoColumns": [
 				null,
@@ -75,7 +75,7 @@
 				{
 					"fnRender": function(obj) {
 						return [
-						'<a href="javascript:confirm_attachment_delete(table, \'{% url judge-problem-delete-attachment "" %}' + obj.aData[0] + '\');" class="button-link">delete</a>',
+						'<a href="javascript:confirm_attachment_delete(table, \'{% url "judge-problem-delete-attachment" "" %}' + obj.aData[0] + '\');" class="button-link">delete</a>',
 						'<a href="javascript:insert_attachment_link(\'' + obj.aData[3] + '\');" class="button-link">insert</a>'
 						].join(' ');
 					}
@@ -84,7 +84,7 @@
 			});
 
 			new AjaxUpload("upload_button", {
-				action: "{% url judge-problem-add-attachment problem.id %}",
+				action: "{% url "judge-problem-add-attachment" problem.id %}",
 				data: {
 					csrfmiddlewaretoken: $("form input[name=csrfmiddlewaretoken]").val()
 				},

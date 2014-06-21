@@ -41,18 +41,18 @@
 							{{ problem.get_state_name }}
 						</td>
 						<td class="id">
-							<a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a>
+							<a href="{% url "judge-problem-read" problem.slug %}">{{ problem.slug }}</a>
 						</td>
 						<td class="name">
-							<a href="{% url judge-problem-read problem.slug %}">{{ problem.name }}</a>
+							<a href="{% url "judge-problem-read" problem.slug %}">{{ problem.name }}</a>
 						</td>
 						<td class="writer">
 							{{ problem.user|print_username }}
 						</td>
 						<td class="action">
-							<a href="{% url judge-problem-edit problem.id %}" class="button-link">edit</a>
+							<a href="{% url "judge-problem-edit" problem.id %}" class="button-link">edit</a>
 							{% if problem.solver__count == 0 %}
-								<a href="javascript:delete_problem('{% url judge-problem-delete problem.id %}');" class="button-link">delete</a>
+								<a href="javascript:delete_problem('{% url "judge-problem-delete" problem.id %}');" class="button-link">delete</a>
 							{% endif %}
 						</td>
 					</tr>
@@ -68,7 +68,7 @@
 	<nav>
 		<ul class="tab-switch">
 			<li>
-				<a href="{% url judge-problem-new %}" rel="tooltip" title="New problem">
+				<a href="{% url "judge-problem-new" %}" rel="tooltip" title="New problem">
 					새 문제 작성하기
 				</a>
 			</li>

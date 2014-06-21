@@ -50,21 +50,21 @@
 							{% endif %}
 						</td>
 						<td class="id">
-							<a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a>
+							<a href="{% url "judge-problem-read" problem.slug %}">{{ problem.slug }}</a>
 						</td>
 						<td class="name">
-							<a href="{% url judge-problem-read problem.slug %}">{{ problem.name }}</a>
+							<a href="{% url "judge-problem-read" problem.slug %}">{{ problem.name }}</a>
 						</td>
 						<td class="writer">
 							{{ problem.user|print_username }}
 						</td>
 						<td class="submissions">
-							<a href="{% url judge-submission-recent %}?problem={{ problem.slug }}">
+							<a href="{% url "judge-submission-recent" %}?problem={{ problem.slug }}">
 								{{ problem.submissions_count }}
 							</a>
 						</td>
 						<td class="accepted">
-							<a href="{% url judge-problem-stat problem %}">
+							<a href="{% url "judge-problem-stat" problem %}">
 								{% percentage problem.accepted_count problem.submissions_count %}%
 							</a>
 						</td>

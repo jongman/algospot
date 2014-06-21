@@ -13,7 +13,7 @@
 {% block page_contents %}
 	<section>
 		<p>
-			<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="history_diff('{% url judge-problem-diff-home %}');" class="button-link" class="eng">diff</a>
+			<span class="kor">선택된 두 리비전을</span> <a href="javascript:void();" onclick="history_diff('{% url "judge-problem-diff-home" %}');" class="button-link" class="eng">diff</a>
 		</p>
 		<table class="problem-history">
 		    <thead>
@@ -38,10 +38,10 @@
 							<input type="radio" name="diff2" value="{{ revision.id }}" {% if last_rev == revision.id %}checked{% endif %}/>
 		                </td>
 						<td>
-							<a class="button-link" href="{% url judge-problem-old revision.id problem.slug %}" rel="tooltip" original-title="보기">
+							<a class="button-link" href="{% url "judge-problem-old" revision.id problem.slug %}" rel="tooltip" original-title="보기">
 								see
 							</a>
-							<a class="button-link" title="복구하기" href="javascript:void();" onclick="history_revert('{% url judge-problem-revert revision.id problem.slug %}');" rel="tooltip" original-title="복구하기">
+							<a class="button-link" title="복구하기" href="javascript:void();" onclick="history_revert('{% url "judge-problem-revert" revision.id problem.slug %}');" rel="tooltip" original-title="복구하기">
 								revert
 							</a>
 						</td>

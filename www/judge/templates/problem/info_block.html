@@ -15,11 +15,11 @@
 		</li>
 		<li class="content">
 			<ul>
-				<li class="problem-id"><a href="{% url judge-problem-read problem.slug %}">{{ problem.slug }}</a></li>
+				<li class="problem-id"><a href="{% url "judge-problem-read" problem.slug %}">{{ problem.slug }}</a></li>
 				<li class="timelimit"><b>{{ problem.last_revision.time_limit }}</b>ms</li>
 				<li class="memorylimit"><b>{{ problem.last_revision.memory_limit }}</b>kb</li>
-				<li class="submissions"><a href="{% url judge-submission-recent %}?problem={{ problem.slug }}"><b>{{ problem.submissions_count }}</b></a></li>
-				<li class="accepted"><a href="{% url judge-problem-stat problem.slug %}"><b>{{ problem.accepted_count }}</b> (<b>{% percentage problem.accepted_count problem.submissions_count %}</b>%)</a></li>
+				<li class="submissions"><a href="{% url "judge-submission-recent" %}?problem={{ problem.slug }}"><b>{{ problem.submissions_count }}</b></a></li>
+				<li class="accepted"><a href="{% url "judge-problem-stat" problem.slug %}"><b>{{ problem.accepted_count }}</b> (<b>{% percentage problem.accepted_count problem.submissions_count %}</b>%)</a></li>
 			</ul>
 		</li>
 		<li class="header">
@@ -32,13 +32,13 @@
 		<li class="content">
 			<ul>
 				<li class="author">{{ problem.user|print_username }}</li>
-				<li class="source"><a href="{% url judge-problem-list %}?source={{ problem.source|urlencode }}">{{ problem.source }}</a></li>
+				<li class="source"><a href="{% url "judge-problem-list" %}?source={{ problem.source|urlencode }}">{{ problem.source }}</a></li>
 				<li class="category">
 					<a href="#" id="show_category">보기</a>
 					{% tags_for_object problem as tags %}
 					<span id="problem_category" style="display: none;">
 						{% for tag in tags %}
-						<a href="{% url judge-problem-list %}?tag={{ tag.name|urlencode }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+						<a href="{% url "judge-problem-list" %}?tag={{ tag.name|urlencode }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
 						{% endfor %}
 					</span>
 				</li>

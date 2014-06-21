@@ -41,7 +41,7 @@
 						</td>
 						<td class="fastest">
 							{% if user == solver.user or user.is_superuser or solved or user == problem.user %}
-								<a href="{% url judge-submission-details solver.fastest_submission.id %}">
+								<a href="{% url "judge-submission-details" solver.fastest_submission.id %}">
 							{% endif %}
 								{{ solver.fastest_submission.time }}ms ({{ solver.fastest_submission.language }})
 							{% if user == solver.user or user.is_superuser or solved or user == problem.user %}
@@ -50,7 +50,7 @@
 						</td>
 						<td class="shortest">
 							{% if user == solver.user or user.is_superuser or solved or user == problem.user %}
-								<a href="{% url judge-submission-details solver.shortest_submission.id %}">
+								<a href="{% url "judge-submission-details" solver.shortest_submission.id %}">
 							{% endif %}
 							{{ solver.shortest_submission.length|print_length }} ({{ solver.shortest_submission.language }})
 							{% if user == solver.user or user.is_superuser or solved %}
