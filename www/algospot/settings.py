@@ -241,7 +241,7 @@ CELERYD_CONCURRENCY = 1
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': j('../whoosh_index'),
+        'PATH': '/whoosh_index',
         'STORAGE': 'file',
         'POST_LIMIT': 128 * 1024 * 1024,
         'INCLUDE_SPELLING': True,

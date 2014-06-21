@@ -111,12 +111,13 @@
     - wiki/fixtures/fixtures.json
 - name: collectstatic
   django_manage: command=collectstatic app_path={{django_dir}}
-- name: make media directory
+- name: make media directory/whoosh index directory
   sudo: yes
   file: path={{item}} owner=www-data group=www-data state=directory
   with_items:
     - /www-media
     - /www-media/judge-attachments
+    - /whoosh_index
 - name: make user part of www-data group (dev only)
   sudo: yes
   user: name={{user}} groups=www-data append=yes
