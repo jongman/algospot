@@ -28,7 +28,7 @@
   - Django==1.6.5
   - Pygments==1.6
   - South==0.8.1
-  - Whoosh==2.4.1
+  - Whoosh==2.6.0
   - celery==3.1.12
   - django-appconf==0.6
   - django-attachments==0.3.1
