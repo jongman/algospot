@@ -20,3 +20,6 @@
   - name: symlink local settings
     file: src={{home_dir}}/www/algospot/local_settings.py.{{git_branch}} dest={{home_dir}}/www/algospot/local_settings.py state=link
   - include: single_box.yml
+  - name: install are you a human?
+    sudo: yes
+    pip: name=are-you-a-human
