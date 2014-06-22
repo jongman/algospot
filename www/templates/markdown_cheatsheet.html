@@ -39,6 +39,11 @@
 						<td><a href="{% url "judge-problem-read" "HELLOWORLD"%}">HELLOWORLD</a><br><a href="{% url "judge-problem-read" "HELLOWORLD"%}">연습 문제</a></td>
 					</tr>
 					<tr>
+						<td>사용자 링크하기</td>
+						<td class="monospace">[[user:JongMan]]<br>[[욱신욱신|user:wookayin]]</td>
+						<td><a href="{% url "user_username" "JongMan"%}">JongMan</a><br><a href="{% url "user_username" "wookayin"%}">욱신욱신</a></td>
+					</tr>
+					<tr>
 						<td>꾸미기</td>
 						<td class="monospace">**굵게** 그리고 *기울여서*<br>~~거짓말하기~~ 윗^{첨자} 아랫_{첨자}</td>
 						<td><strong>굵게</strong> 그리고 <em>기울여서</em><br><del>거짓말하기</del> 윗<sup>첨자</sup> 아랫<sub>첨자</sub></td>
