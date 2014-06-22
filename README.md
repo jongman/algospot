@@ -7,6 +7,7 @@
 
 * [Vagrant](http://vagrantup.com): 사용중인 운영체제 용을 다운받는다.
 * [VirtualBox](https://www.virtualbox.org/): 가상 머신을 돌리기 위한 소프트웨어. VMWare, 리눅스의 경우 LXC를 이용해도 되지만 아직 확인해 보지 못했다.
+* [Ansible](http://docs.ansible.com/intro_installation.html): 가상 머신에 패키지를 깔고 셋업하는 과정을 자동화하는 소프트웨어.
 
 ## 체크아웃에서 개발 서버 돌리기까지
 
