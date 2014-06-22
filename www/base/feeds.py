@@ -13,7 +13,7 @@ class PostFeed(Feed):
     anonymous = User.objects.get(pk=settings.ANONYMOUS_USER_ID)
 
     def items(self):
-        return get_posts_for_user(self.anonymous, 'forum.read_post').order_by('-created_on')[:30]
+        return get_posts_for_user(self.anonymous, 'forum.read_post').order_by('-created_on')[:10]
     def item_title(self, obj):
         return u'[%s] %s' % (obj.category.name, obj.title)
     def item_description(self, obj):
