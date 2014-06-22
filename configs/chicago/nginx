@@ -8,13 +8,10 @@ server {
 	root /usr/share/nginx/www;
 	index index.html index.htm;
 
-#       if ($request_uri = /) { set $https_redirect_condition R; }
-#       if ($request_uri ~* ^/accounts/) { set $https_redirect_condition R; }
-#
-#       if ($scheme = http) { set $https_redirect_condition "${https_redirect_condition}H"; }
-#       if ($https_redirect_condition = RH) {
-#                return 302 https://$server_name$request_uri;
-#       }
+	# Redirect 'all' HTTP requets to HTTPS
+	if ($scheme = http) {
+		return 302 https://$server_name$request_uri;
+	}
 
 	location / {
 		# First attempt to serve request as file, then
@@ -74,3 +71,5 @@ server {
 	#	deny all;
 	#}
 }
+
+# vim: set ft=nginx noexpandtab:
