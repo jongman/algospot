@@ -5,7 +5,7 @@
     home_dir: /vagrant
     django_dir: /vagrant/www
     user: vagrant
-    config_name: vagrant
+    config_name: dev
   remote_user: vagrant
   tasks:
   - name: copy grub config (required for LXC)
