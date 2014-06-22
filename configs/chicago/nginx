@@ -21,13 +21,24 @@ server {
 	#listen   80; ## listen for ipv4; this line is default and implied
 	#listen   [::]:80 default ipv6only=on; ## listen for ipv6
 
+	listen 80;
+	listen 443 ssl;
+
 	root /usr/share/nginx/www;
 	index index.html index.htm;
 
 	# Make site accessible from http://localhost/
-	server_name localhost;
+	server_name algospot.com;
 
 	location / {
+#                if ($request_uri = /) { set $https_redirect_condition R; }
+#                if ($request_uri ~* ^/accounts/) { set $https_redirect_condition R; }
+#
+#                if ($scheme = http) { set $https_redirect_condition "${https_redirect_condition}H"; }
+#                if ($https_redirect_condition = RH) {
+#                       return 302 https://$server_name$request_uri;
+#                }
+
 		# First attempt to serve request as file, then
 		# as directory, then fall back to index.html
 		#try_files $uri $uri/ /index.html;

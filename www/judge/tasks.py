@@ -17,7 +17,7 @@ import differs
 
 # TODO: get rid of this T_T
 SPECIAL_JUDGE_WHITELISTED = ['TRAPCARD', 'WORDCHAIN', 'MEETINGROOM', 'RESTORE',
-                             'PACKING']
+                             'PACKING', 'ALCHEMY']
 
 def print_stack_trace():
     io = StringIO.StringIO()
@@ -132,7 +132,6 @@ def judge_submission(submission):
         differ_module = differs.modules[problem.judge_module]
         assert (problem.judge_module != 'special_judge' or 
                 problem.slug in SPECIAL_JUDGE_WHITELISTED)
-        
 
 
         # 문제 채점 데이터를 다운받고 채점 준비
