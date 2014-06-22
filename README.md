@@ -5,6 +5,8 @@
 
 ## 필요한 도구들
 
+아래 도구들이 Host 에 설치되어 있어야 한다.
+
 * [Vagrant](http://vagrantup.com): 사용중인 운영체제 용을 다운받는다.
 * [VirtualBox](https://www.virtualbox.org/): 가상 머신을 돌리기 위한 소프트웨어. VMWare, 리눅스의 경우 LXC를 이용해도 되지만 아직 확인해 보지 못했다.
 * [Ansible](http://docs.ansible.com/intro_installation.html): 가상 머신에 패키지를 깔고 셋업하는 과정을 자동화하는 소프트웨어.
@@ -13,12 +15,12 @@
 
 1. 먼저 git repository 를 클론하고
 
-	$ git clone git://github.com/jongman/algospot.git  
-	$ cd algospot  
+        $ git clone --recursive https://github.com/jongman/algospot.git
+        $ cd algospot
 
 1. 가상 머신을 띄운다. 이 명령어는 가상 머신 이미지를 다운받고, 필요한 패키지를 깔고, 데이터베이스와 기타 서버들을 셋업해 준다. (테터링 중에는 쓰지말자)
 
-	$ make init
+        $ make init
 
 1. 웹브라우저에서 http://localhost:8080/ 을 연다. 새 사용자를 만들거나 (아직 확인은 안해봄) admin/admin으로 로그인할 수 있다.
 
@@ -26,11 +28,11 @@
 
 1. 코드를 변경한 이후에는 다음 명령어를 내려 웹서버에 코드를 리로드한다.
 
-	$ make restart-uwsgi
+        $ make restart-uwsgi
 
 1. 이것이 귀찮을 경우 다음 명령을 내려 개발 서버를 연다. 개발 서버는 코드가 변경될 시 자동 리로드되므로 개발이 간편해진다.
 
-	$ make runserver
+        $ make runserver
 
 ## 새 언어 바인딩 추가하기
 
@@ -39,21 +41,21 @@
 1. 가상 머신에 컴파일러를 설치하는 과정을 ansible/single_box.yml에 추가한다. 이 파일은 [앤시블](http://docs.ansible.com/) 플레이북으로, 서버를 자동으로 설정할 수 있도록 한다.
 1. 새 언어 바인딩을 추가한 이후, 다음 명령을 내려 웹서버와 채점 대몬을 재시작한다.
 
-	$ make restart-uwsgi && make restart-celeryd
+        $ make restart-uwsgi && make restart-celeryd
 
 ## 문제 해결하기
 
 1. 문제가 생길 경우 다음 명령을 내려 가상 머신에 ssh 로 접속한다.
 
-	$ vagrant ssh
+        $ vagrant ssh
 
 1. 다음 명령을 내리면 장고 모델과 객체들에 접근할 수 있는 쉘에 접근할 수 있다.
 
-	$ make shell
+        $ make shell
 
 1. 다음 명령을 내리면 가상 머신 내의 DB 쉘에 접근할 수 있다.
 
-	$ make dbshell
+        $ make dbshell
 
 ## 커밋하기
 
@@ -71,4 +73,4 @@
 ## Troubles
 
 * "The SSH connection was unexpectedly closed by the remote end."
-  Vagrant up 명령어에서 위와 같은 명령어가 나온다면 놀라지 말고 `vagrant reload`를 해주면 된다.
+	* Vagrant up 명령어에서 위와 같은 명령어가 나온다면 놀라지 말고 `vagrant reload`를 해주면 된다.

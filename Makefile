@@ -1,3 +1,5 @@
+default: up
+
 init:
 	git submodule update --init --recursive
 	ln -sf www/algospot/local_settings.py.dev www/algospot/local_settings.py
@@ -10,7 +12,7 @@ ssh:
 up:
 	vagrant up
 
-halt: 
+halt:
 	vagrant halt
 
 # some django commands
@@ -38,5 +40,4 @@ restart-uwsgi:
 restart-nginx:
 	vagrant ssh -c 'sudo /etc/init.d/nginx restart'
 
-.PHONY: up stop halt devserver
-
+.PHONY: default up stop halt devserver
