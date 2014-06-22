@@ -71,17 +71,5 @@
 
 ## Troubles
 
-* error at /accounts/register/ ([Errno 111] Connection refused)  
-  회원가입 시, 위와 같은 에러가 난다면 개발서버에 회원가입 인증메일 발송을 위한 SMTP 서버가 없기 때문이다. 아래와 같이 로컬에 임시 SMTP 서버를 띄우고, local_setting.py에 SMTP 서버 포트를 지정한다.
-        ```
-        $ python -m smtpd -n -c DebuggingServer localhost:1025
-        ```
-
-        // local_settings.py  
-        ```
-        settings.EMAIL_HOST = 'localhost' 
-        settings.EMAIL_PORT = 1025
-        ```
-
 * "The SSH connection was unexpectedly closed by the remote end."
   Vagrant up 명령어에서 위와 같은 명령어가 나온다면 놀라지 말고 `vagrant reload`를 해주면 된다.
