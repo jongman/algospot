@@ -6,6 +6,8 @@ designs
 
 local_settings.py
 
+.vagrant
+
 www/profile_logs
 www/media
 www/judge/work
@@ -13,3 +15,5 @@ www/whoosh_index
 
 www/judge/tmp
 www/judge/lxc.log
+
+www_static/
