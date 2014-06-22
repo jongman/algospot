@@ -1,9 +1,15 @@
 venv
+*swp
 *.pyc
 *.sqlite3
 designs
+
+local_settings.py
+
 www/profile_logs
-*swp
 www/media
 www/judge/work
 www/whoosh_index
+
+www/judge/tmp
+www/judge/lxc.log
