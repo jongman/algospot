@@ -76,9 +76,17 @@ def get_category_chart(user):
     return chart.get_url() + "&chbh=r,3"
 
 
+def profile_by_username(request, username):
+    user = get_object_or_404(User, username=username)
+    return get_profile(request, user)
+
+
 def profile(request, user_id):
     if not user_id.isdigit(): raise Http404
     user = get_object_or_404(User, id=user_id)
+    return get_profile(request, user)
+
+def get_profile(request, user):
     comment_count = Comment.objects.filter(user=user).count()
     problem_count = Problem.objects.filter(user=user, state=Problem.PUBLISHED).count()
     attempted_problem_count = Solver.objects.filter(user=user).count()

@@ -9,6 +9,7 @@ from pygments.lexers import get_lexer_by_name, guess_lexer
 from pygments.formatters import HtmlFormatter
 from judge.utils import link_to_problem
 from wiki.utils import link_to_page
+from base.utils import link_to_user
 
 def render_text(text):
     ext = misaka.EXT_NO_INTRA_EMPHASIS \
@@ -229,6 +230,8 @@ class CustomRenderer(misaka.HtmlRenderer):
             try:
                 if namespace == 'problem':
                     return link_to_problem(title, display)
+                elif namespace == 'user':
+                    return link_to_user(title, display)
                 elif namespace == '':
                     return link_to_page(title, display)
             except:

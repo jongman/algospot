@@ -2240,6 +2240,8 @@ window.markdown = function(str) {
 			return '<a href="/wiki/read/' + title.replace(/\s+/g, '_') + '">' + escape_as_html(display || title) + '</a>';
 		if (namespace == 'problem')
 			return '<a class="problem" href="/judge/problem/read/' + title + '">' + escape_as_html(display || title) + '</a>';
+		if (namespace == 'user')
+			return '<a class="user" href="/user/username/">' + escape_as_html(display || title) + '</a>';
 		return match;
 	});
 
