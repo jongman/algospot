@@ -4,7 +4,7 @@
 import os, sys
 from datetime import datetime
 
-ALLOWED_HOSTS = ['0.0.0.0', 'chicago.algospot.com', 'algospot.com']
+ALLOWED_HOSTS = ['*']
 
 PROJECT_DIR = os.path.dirname(__file__)
 j = lambda filename: os.path.join(PROJECT_DIR, filename)

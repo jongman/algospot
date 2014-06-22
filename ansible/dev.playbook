@@ -14,4 +14,6 @@
   - name: update grub config
     shell: update-grub
     sudo: yes
+  - name: copy local settings
+    file: src={{home_dir}}/www/algospot/local_settings.py.dev dest={{home_dir}}/www/algospot/local_settings.py state=link
   - include: single_box.yml
