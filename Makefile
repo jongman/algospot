@@ -24,6 +24,9 @@ shell:
 dbshell:
 	vagrant ssh -c 'cd /vagrant/www; ./manage.py dbshell'
 
+collectstatic:
+	vagrant ssh -c 'cd /vagrant/www; ./manage.py collectstatic --noinput'
+
 # restart daemons
 
 restart-celeryd:
