@@ -18,6 +18,7 @@
   - ghc
   - nodejs
   - ruby
+  - luajit
 - name: install pip
   sudo: yes
   easy_install: name=pip
