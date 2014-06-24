@@ -19,6 +19,7 @@
   - nodejs
   - ruby
   - luajit
+  - pypy
 - name: install pip
   sudo: yes
   easy_install: name=pip
