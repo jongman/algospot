@@ -4,3 +4,6 @@
 [submodule "ace-builds"]
 	path = ace-builds
 	url = https://github.com/ajaxorg/ace-builds.git
+[submodule "libs/django-registration"]
+	path = libs/django-registration
+	url = git@github.com:macropin/django-registration.git

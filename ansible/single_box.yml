@@ -40,7 +40,6 @@
   - django-guardian==1.2.0
   - django-haystack==2.1.0
   - django-picklefield==0.3.1
-  - django-registration==1.0
   - django-staticfiles==1.2.1
   - django-tagging==0.3.2
   - ipdb==0.7
@@ -77,6 +76,9 @@
 - name: install modified misaka
   sudo: yes
   shell: cd {{home_dir}}/libs/misaka; python setup.py install
+- name: install django-registration
+  sudo: yes
+  shell: cd {{home_dir}}/libs/django-registration; python setup.py install
 - name: create postgres user
   postgresql_user: name={{user}} role_attr_flags=SUPERUSER
   sudo_user: postgres
