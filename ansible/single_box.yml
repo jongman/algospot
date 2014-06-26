@@ -72,11 +72,18 @@
   sudo: yes
   apt: name=oracle-java8-installer update_cache=yes
 
-- name: "download scala 2.11.1"
-  get_url: url=http://downloads.typesafe.com/scala/2.11.1/scala-2.11.1.deb dest=/tmp
-  sudo: yes
+- name: "checking wheter scala exists ..."
+  command: scalac -version
+  register: scala_version
+  ignore_errors: True
 
-- name: "install scala"
+- name: "download scala 2.11.1"
+  when: scala_version.stderr.find('2.11.1') == -1
+  sudo: yes
+  get_url: url=http://downloads.typesafe.com/scala/2.11.1/scala-2.11.1.deb dest=/tmp
+
+- name: "install scala 2.11.1"
+  when: scala_version.stderr.find('2.11.1') == -1
   sudo: yes
   shell: dpkg --skip-same-version -i /tmp/scala-2.11.1.deb
 
@@ -138,6 +145,7 @@
     - forum/fixtures/fixtures.json
     - judge/fixtures/fixtures.json
     - wiki/fixtures/fixtures.json
+  ignore_errors: True  # there might be a duplicated load
 
 - name: "collectstatic"
   django_manage: command=collectstatic app_path={{django_dir}}
