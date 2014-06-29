@@ -135,11 +135,6 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.workdir = makedir(join(self.root, "workdir"))
         self.mount("none", self.workdir, "tmpfs", "size=%d" % (fs_size << 20))
 
-        # LXC 용 cgroup 생성
-        self.cgroup = makedir(join(self.workdir, "cgroup"))
-        #self.cgroup = '/sys/fs/cgroup'
-        self.mount("cgroup", self.cgroup, "cgroup")
-
         # 루트 디렉토리를 copy-on-write 로 마운트한다.
         # root_mount 위치에 마운트하되, 여기에서 고친 내역은 root_cow
         # 위치에 저장된다.
@@ -148,10 +143,12 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.mount("none", self.root_mount, "aufs", "br=%s:/" % self.root_cow)
 
         # 일부 프로그램들은 /proc 이 없으면 제대로 동작하지 않는다 (Sun JVM 등)
-        self.mount("/proc", join(self.root_mount, "proc"), "none", "bind")
+        self.mount("proc", join(self.root_mount, "proc"), "none", "proc")
 
-        # lxc-execute가 필요로 함
-        makedir(join(self.root_mount, 'run', 'shm'))
+        # /dev/shm
+        os.unlink(join(self.root_mount, "dev", "shm"))
+        makedir(join(self.root_mount, "dev", "shm"))
+        self.mount("none", join(self.root_mount, "dev", "shm"), "tmpfs")
 
         # 빈 디렉토리 user-home 을 만들고, 마운트된 cow 루트 내의 홈디렉토리를
         # 이걸로 덮어씌운다.
@@ -320,7 +317,7 @@ def main():
         import sys
         for file in sys.argv[1:]:
             sandbox.put_file(file, os.path.basename(file))
-        print sandbox.run("ls -al", stdout=".stdout", stderr=".stderr")
+        print sandbox.run("python --version", stdout=".stdout", stderr=".stderr")
         # sandbox.run_interactive("bash")
         # sandbox.put_file("dp.cpp", "dp.cpp", 0o700)
         # sandbox.put_file("inp", "inp")
@@ -329,7 +326,6 @@ def main():
         # print sandbox.run("./dp", "inp", ".stdout", ".stderr")
     finally:
         sandbox.teardown()
-        pass
 
 if __name__ == "__main__":
     main()
