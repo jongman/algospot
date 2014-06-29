@@ -74,6 +74,8 @@ def main():
 
     try:
         process = subprocess.Popen(args.command.split(), **kwargs)
+        # TODO: kill submissions that do not eat cpu time but are slow (like
+        # sleeping)
         returncode = process.wait()
     except Exception as e:
         print "RTE (popen failed, contact admin. exception: %s)" % str(e)
