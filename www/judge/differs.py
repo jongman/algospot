@@ -6,15 +6,24 @@ def tokenize(text):
         text = " ".join(text)
     return [x.strip() for x in text.split()]
 
+REGISTERED = {}
+
+def register(f):
+    REGISTERED[f.__name__] = f
+    return f
+
+@register
 def ignore_trailing_space(input, output, expected, data_dir, sandbox):
     u"줄 끝에 오는 공백 무시"
     return ([line.rstrip() for line in output] ==
             [line.rstrip() for line in expected])
 
+@register
 def ignore_whitespace(input, output, expected, data_dir, sandbox):
-    u"공백 무시"
+    u"모든 공백 무시"
     return tokenize(output.read()) == tokenize(expected.read())
 
+@register
 def relative_float(input, output, expected, data_dir, sandbox):
     u"공백 무시: 실수일 경우 1e-8 이하의 오차 허용"
     def cmp_float(output, expected):
@@ -34,12 +43,14 @@ def relative_float(input, output, expected, data_dir, sandbox):
             return False
     return True
 
+@register
 def strict(input, output, expected, data_dir, sandbox):
     u"엄격하게 (라인 피드 차이 허용)"
     o = [line.rstrip("\r\n") for line in output]
     e = [line.rstrip("\r\n") for line in expected]
     return o == e
 
+@register
 def special_judge(input, output, expected, data_dir, sandbox):
     u"스페셜 저지: 문제에 첨부된 채점 모듈을 이용한 채점 (도움말 참조)"
     print 'special_judge entrypoint'

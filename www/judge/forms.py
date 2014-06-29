@@ -33,8 +33,8 @@ class ProblemEditForm(forms.ModelForm):
         model = Problem
         exclude = ('submissions_count', 'accepted_count', 'last_revision')
         widgets = {
-            "judge_module": forms.Select(choices=[(key, key + ": " + val.DESC)
-                                                  for key, val in differs.modules.iteritems()])
+            "judge_module": forms.Select(choices=[(key, key + ": " + val.__doc__)
+                                                  for key, val in differs.REGISTERED.iteritems()])
         }
     def __init__(self, *args, **kwargs):
         super(ProblemEditForm, self).__init__(*args, **kwargs)
@@ -57,9 +57,9 @@ class RestrictedProblemEditForm(forms.ModelForm):
         model = Problem
         exclude = ('submissions_count', 'accepted_count', 'user', 'state', 'last_revision')
         widgets = {
-            "judge_module": forms.Select(choices=[(key, key + ": " + val.DESC)
+            "judge_module": forms.Select(choices=[(key, key + ": " + val.__doc__)
                                                   for key, val in
-                                                  differs.modules.iteritems()]),
+                                                  differs.REGISTERED.iteritems()]),
         }
     def __init__(self, *args, **kwargs):
         super(RestrictedProblemEditForm, self).__init__(*args, **kwargs)
