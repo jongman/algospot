@@ -15,10 +15,6 @@ import StringIO
 import traceback
 import differs
 
-# TODO: get rid of this T_T
-SPECIAL_JUDGE_WHITELISTED = ['TRAPCARD', 'WORDCHAIN', 'MEETINGROOM', 'RESTORE',
-                             'PACKING', 'ALCHEMY']
-
 def print_stack_trace():
     io = StringIO.StringIO()
     traceback.print_exc(file=io)
