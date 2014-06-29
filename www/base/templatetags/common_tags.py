@@ -14,6 +14,8 @@ import datetime
 import itertools
 import re
 
+PYGMENT_LANGUAGE_NAMES = {'pypy': 'py'}
+
 register = template.Library()
 
 class GetLastCommentNode(BaseCommentNode):
@@ -32,7 +34,7 @@ class SourceCodeNode(template.Node):
     def render(self, context):
         code = self.code.resolve(context)
         lang = self.lang.resolve(context)
-        lexer = get_lexer_by_name(lang)
+        lexer = get_lexer_by_name(PYGMENT_LANGUAGE_NAMES.get(lang, lang))
         formatter = HtmlFormatter(style="colorful")
         return highlight(code, lexer, formatter).replace("\n", "<br/>")
 
