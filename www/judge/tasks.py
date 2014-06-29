@@ -63,7 +63,7 @@ def judge_submission(submission):
         for entry in attachments:
             basename = os.path.basename(entry.file.name)
             ext = basename.split(".")[-1].lower()
-            if basename != 'judge.py' and ext not in ["in", "out", "zip"]: continue
+            if basename != 'checker' and ext not in ["in", "out", "zip"]: continue
             entries_to_download.append((entry, basename))
 
         joined_entries = "@".join(map(lambda x: x[0].file.name, entries_to_download))
@@ -127,12 +127,9 @@ def judge_submission(submission):
         problem = submission.problem
 
         # 결과 differ 모듈 확인
-        if problem.judge_module not in differs.modules:
+        if not hasattr(differs, problem.judge_module):
             raise Exception("Can't find diff module %s" % problem.judge_module)
-        differ_module = differs.modules[problem.judge_module]
-        assert (problem.judge_module != 'special_judge' or 
-                problem.slug in SPECIAL_JUDGE_WHITELISTED)
-
+        differ = getattr(differs, problem.judge_module)
 
         # 문제 채점 데이터를 다운받고 채점 준비
         logger.info("Downloading judge i/o set..")
@@ -197,7 +194,8 @@ def judge_submission(submission):
 
             # differ 에 보내자
             output = sandbox_env.get_file_path(result["output"])
-            if not differ_module.judge(data_dir, io["in"], output, io["out"]):
+            if not differ(open(io["in"]), open(output), open(io["out"]),
+                          data_dir, sandbox_env):
                 submission.time = int(total_time * 1000)
                 submission.memory = max_memory
                 submission.state = Submission.WRONG_ANSWER
@@ -207,18 +205,20 @@ def judge_submission(submission):
         submission.memory = max_memory
         submission.state = Submission.ACCEPTED
 
-    except:
+    except Exception as e1:
         submission.state = Submission.CANT_BE_JUDGED
         try:
+            print e1.message
+            print print_stack_trace()
             submission.message = u"\n".join([
                 u"채점 중 예외가 발생했습니다.",
+                u"익셉션: %s" % e1.message,
                 u"스택 트레이스:",
                 print_stack_trace()])
-        except Exception as e:
-            submission.message = u"오류 인코딩 중 에러: %s" % e.message
+        except Exception as e2:
+            submission.message = u"오류 인코딩 중 에러: %s" % e2.message
     finally:
         submission.save()
-        if sandbox_env:
-            sandbox_env.teardown()
+        if sandbox_env: sandbox_env.teardown()
 
 

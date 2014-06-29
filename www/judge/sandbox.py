@@ -317,8 +317,8 @@ def main():
         import sys
         for file in sys.argv[1:]:
             sandbox.put_file(file, os.path.basename(file))
-        print sandbox.run("python --version", stdout=".stdout", stderr=".stderr")
-        # sandbox.run_interactive("bash")
+        # print sandbox.run("python --version", stdout=".stdout", stderr=".stderr")
+        sandbox.run_interactive("bash")
         # sandbox.put_file("dp.cpp", "dp.cpp", 0o700)
         # sandbox.put_file("inp", "inp")
         # print sandbox.run("g++ -O3 dp.cpp -o dp", stdout=".compile.stdout",
