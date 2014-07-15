@@ -111,6 +111,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'dogslow.WatchdogMiddleware',
 )
 
 ROOT_URLCONF = 'algospot.urls'
@@ -266,6 +267,19 @@ USER_AUTHORIZATION_LIMIT = 5
 # anyways..
 import pygooglechart
 pygooglechart.Chart.BASE_URL = 'http://chart.apis.google.com/chart'
+
+# slow page log settings
+
+# Watchdog is enabled by default, to temporarily disable, set to False:
+DOGSLOW = True
+
+# By default, Watchdog will create log files with the backtraces.
+# You can also set the location of where it stores them:
+DOGSLOW_LOG_TO_FILE = True
+DOGSLOW_OUTPUT = '/var/log/dogslow'
+
+# Log requests taking longer than 25 seconds:
+DOGSLOW_TIMER = 3
 
 try:
     import local_settings

@@ -59,7 +59,7 @@
   - uwsgi
   - Pillow
   - psycopg2
-
+  - dogslow
 - name: "oracle java ppa"
   sudo: yes
   apt_repository: repo='ppa:webupd8team/java'
@@ -161,11 +161,14 @@
     - /www-media
     - /www-media/judge-attachments
     - /whoosh_index
+    - /var/log/dogslow
 
 - name: "make user part of www-data group (dev only)"
   sudo: yes
   user: name={{user}} groups=www-data append=yes
-
+- name: "change permission for dogslow logging dir"
+  shell: chmod go+rwx /var/log/dogslow
+  sudo: yes
 - name: "make judge file directory"
   file: path={{item}} state=directory owner=www-data group=www-data
   sudo: yes
