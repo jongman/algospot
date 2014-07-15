@@ -67,6 +67,11 @@ def diff(request, id1=-1, id2=-1):
                    "rev2link": reverse("wiki-old", kwargs={"id": id2, "slug": slug})})
 
 
+def list(request):
+    order_by = request.GET.get('order_by', 'title')
+    all_pages = Page.objects.all().order_by(order_by)
+    return render(request, 'list.html', {'pages': all_pages})
+
 def detail(request, slug):
     page = get_object_or_404(Page, slug=slug)
     return render(request, "detail.html",

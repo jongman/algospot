@@ -123,6 +123,13 @@
 							<a href="{% url "wiki-detail" "Main_Page" %}" class="no-submenu">
 								위키
 							</a>
+							<ul>
+								<li class="{% block wiki_list_class %}{% endblock %}">
+									<a href="{% url "wiki-list" %}">
+										페이지 목록
+									</a>
+								</li>
+							</ul>
 						</li>
 						<li class="{% block judge_class %}{% endblock %}">
 							<a href="{% url "judge-problem-list" %}" class="">

@@ -4,6 +4,7 @@ import views
 
 urlpatterns = patterns(
     'wiki.views',
+    url(r'^list/$', views.list, name='wiki-list'),
     url(r'^read/(?P<slug>.+)$', views.detail, name='wiki-detail'),
     url(r'^edit/(?P<slug>.+)$', views.edit, name='wiki-edit'),
     url(r'^history/(?P<slug>.+)$', views.history, name='wiki-history'),

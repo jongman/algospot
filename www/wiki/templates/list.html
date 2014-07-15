@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block wiki_class %}current{% endblock %}
+{% load common_tags %}
+{% block title %} 
+	All Pages
+{% endblock %}
+
+{% block page_title %}
+	모든 페이지
+{% endblock %}
+
+{% block wiki_list_class %}
+	current
+{% endblock %}
+
+
+{% block page_contents %} 
+	<section>
+		<table class="wiki-list">
+			<thead>
+				<tr>
+					<th>
+						{% sortable_table_header "페이지" "title" default %}
+					</th>
+					<th>
+						{% sortable_table_header "생성 날짜" "created_on" %}
+					</th>
+					<th>
+						{% sortable_table_header "마지막 편집 날짜" "modified_on" %}
+					</th>
+					<th>
+						마지막 편집자
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for page in pages %}
+					<tr>
+						<td><a href="{% url "wiki-detail" page.slug %}">{{ page.title }}</a></td>
+						<td>{{ page.created_on|print_datetime }}</td>
+						<td>{{ page.modified_on|print_datetime }}</td>
+						<td>{{ page.current_revision.user|print_username }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+{% endblock %}
+
