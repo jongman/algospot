@@ -23,6 +23,9 @@ runserver:
 shell:
 	vagrant ssh -c 'cd /vagrant/www; ./manage.py shell_plus'
 
+celeryd-console:
+	vagrant ssh -c 'cd /vagrant/www; sudo ./manage.py celeryd'
+
 dbshell:
 	vagrant ssh -c 'cd /vagrant/www; ./manage.py dbshell'
 
@@ -33,6 +36,12 @@ collectstatic:
 
 restart-celeryd:
 	vagrant ssh -c 'sudo /etc/init.d/celeryd restart'
+
+stop-celeryd: 
+	vagrant ssh -c 'sudo /etc/init.d/celeryd stop'
+
+start-celeryd: 
+	vagrant ssh -c 'sudo /etc/init.d/celeryd start'
 
 restart-uwsgi:
 	vagrant ssh -c 'sudo service uwsgi restart'
