@@ -84,7 +84,8 @@ section#search {
 	text-align: center;
 	margin-bottom: 16px;
 }
-input#search_query, input#aoj_goto {
+input.search {
+/* input#search_query, input#aoj_goto { */
 	margin: 0 auto;
 	height: 24px;
 	width: 130px;

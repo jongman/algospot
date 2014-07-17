@@ -69,14 +69,9 @@ def recent(request, page=1):
     if only_public:
         submissions = submissions.filter(is_public=True)
 
-    problems = Problem.objects.filter(state=Problem.PUBLISHED).order_by("slug")
-    users = User.objects.order_by("username")
-
     return render(request, "submission/recent.html",
                   {"title": u"답안 목록" + (": " if title_add else "") +
                    ",".join(title_add),
-                   "problems": problems,
-                   "users": users,
                    "filters": filters,
                    "empty_message": empty_message,
                    "pagination": setup_paginator(submissions, page,

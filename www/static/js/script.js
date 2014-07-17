@@ -817,11 +817,19 @@ $(function() {
 		}
 	});
 
-	$("#aoj_goto").focus(function() {
+	$("input.problem_autocomplete").focus(function() {
 		var t = $(this);
 		if(t.loaded) return;
 		$.getJSON('/judge/problem/list_slugs', function(data) {
-			console.log('autocomplete with ' + data);
+			t.autocomplete({source: data, delay: 10});
+			t.loaded = true;
+		});
+	});
+
+	$("input.user_autocomplete").focus(function() {
+		var t = $(this);
+		if(t.loaded) return;
+		$.getJSON('/user/list', function(data) {
 			t.autocomplete({source: data, delay: 10});
 			t.loaded = true;
 		});
