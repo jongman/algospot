@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.http import HttpResponseForbidden, Http404
+from django.http import HttpResponse, HttpResponseForbidden, Http404
 from django.contrib.comments.views.moderation import perform_delete
 from django.contrib.comments.models import Comment
 from forms import SettingsForm
@@ -15,6 +15,7 @@ from judge.models import Problem, Solver, Submission
 from forum.models import Category, Post
 from base.models import UserProfile
 import pygooglechart as pgc
+import json
 from collections import defaultdict
 
 def index(request):
@@ -27,6 +28,13 @@ def index(request):
                    'news': recent_news,
                    'actions': recent_activity,
                   })
+
+
+def list_users(request):
+    users = [user.username 
+             for user in User.objects.filter(is_active=True).order_by("username")]
+    return HttpResponse(json.dumps(users))
+
 
 def get_submission_chart_url(user):
     by_user = Submission.objects.filter(user=user)
