@@ -29,6 +29,7 @@
 		<link rel="stylesheet" href="/static/css/jquery.fileinput.css">
 		<link rel="stylesheet" href="/static/css/jquery.fullcalendar.css">
 		<link rel="stylesheet" href="/static/css/jquery.visualize.css">
+		<link rel="stylesheet" href="/static/css/jquery-ui.css">
 
 		<!-- Google WebFonts -->
 		<link href='//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
@@ -182,6 +183,9 @@
 					<form method="get" action="{% url "haystack_search" %}">
 						<input name="q" id="search_query" placeholder="검색하기"/>
 					</form>
+					<form method="get" action="{% url "judge-problem-goto" %}">
+						<input name="slug" id="aoj_goto" placeholder="AOJ 문제 바로가기"/>
+					</form>
 				</section>
 				<!-- /Search -->
 				{% if campaign %}
@@ -279,6 +283,7 @@
 		<script src="/static/js/jquery/superbly-tagfield.min.js"></script>
 		<script src="/static/js/jquery/jquery.cookie.js"></script>
 		<script src="/static/js/jquery/jquery.tools.overlay.min.js"></script>
+		<script src="/static/js/jquery/jquery-ui.min.js"></script>
 		<script src="/static/js/sundown.js"></script>
 		<script src="/static/js/script.js"></script>
 		<script type="text/x-mathjax-config">

@@ -20,6 +20,9 @@ urlpatterns = patterns(
     url(r'^problem/new/$', views.problem.new, name='judge-problem-new'),
     url(r'^problem/delete/(?P<id>.+)/$', views.problem.delete, name='judge-problem-delete'),
 
+    url(r'^problem/list_slugs/$', views.problem.list_slugs, name='judge-problem-list-slugs'),
+    url(r'^problem/list/goto$', views.problem.goto, name='judge-problem-goto'),
+
     url(r'^problem/list/$', views.problem.list, name='judge-problem-list'),
     url(r'^problem/list/(?P<page>.+)$', views.problem.list, name='judge-problem-list'),
 

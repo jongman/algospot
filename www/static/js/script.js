@@ -300,6 +300,7 @@ $(function () {
 
 	//$(".chzn-select").chosen();
 	
+	
 });
 
 /** algospot customization **/
@@ -814,6 +815,16 @@ $(function() {
 
 			entry.appendTo(container);
 		}
+	});
+
+	$("#aoj_goto").focus(function() {
+		var t = $(this);
+		if(t.loaded) return;
+		$.getJSON('/judge/problem/list_slugs', function(data) {
+			console.log('autocomplete with ' + data);
+			t.autocomplete({source: data, delay: 10});
+			t.loaded = true;
+		});
 	});
 
 });

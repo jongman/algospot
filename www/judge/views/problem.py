@@ -201,6 +201,20 @@ def my_problems(request, page=1):
                    'pagination': setup_paginator(problems, page,
                                                  'judge-problem-mine', {})})
 
+
+def list_slugs(request):
+    problems = Problem.objects.filter(state=Problem.PUBLISHED)
+    slugs = [p.slug for p in problems]
+    return HttpResponse(json.dumps(slugs))
+
+
+def goto(request):
+    slug = request.GET.get('slug', '').upper()
+    if Problem.objects.filter(slug=slug).exists():
+        return redirect(reverse('judge-problem-read', kwargs={'slug': slug}))
+    return render(request, 'problem/goto_fail.html', {'slug': slug})
+
+
 def list(request, page=1):
     use_filter = True
     filters = {}
