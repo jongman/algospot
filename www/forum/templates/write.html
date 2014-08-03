@@ -11,7 +11,20 @@
 {% block forum_write_class %}current{% endblock %}
 {% block page_contents %} 
 	<section class="forum-edit">
-		<form action="" method="post">
+
+		<div id="cpp-code-warning" class="notification error kor">
+			<p>게시물에 C++ 소스 코드를 올릴 때는 아래와 같은 문법을 써서 구문 강조를 해 주세요.</p>
+
+			<p class="monospace">
+				(빈 줄)<br>
+				~~~ c++<br>
+				(C++ 소스 코드)<br>
+				~~~
+				(빈 줄)
+			</p>
+		</div>
+			
+		<form action="" method="post" id="forum-write">
 			{% csrf_token %}
 			<fieldset class="kor">
 				<legend>{{ action }}</legend>

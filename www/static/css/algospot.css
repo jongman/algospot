@@ -560,6 +560,8 @@ section.forum-edit textarea, section.forum-edit input {
 section.forum-edit textarea#id_text {
     height: 400px;
 }
+#cpp-code-warning { display: none; }
+/* #cpp-code-warning p.monospace { background-color: rgb(255, 245, 245); } */
 
 /* 저지 문제 목록 */
 table.problem_list .accepted { width: 10%; }

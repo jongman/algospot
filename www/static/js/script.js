@@ -301,6 +301,17 @@ $(function () {
 	//$(".chzn-select").chosen();
 	
 	
+	// detect raw C++ source code in forum posts
+	$("form#forum-write").on("submit", function() {
+		var val = $("#id_text").val();
+		var include = /^#include/m;
+		var highlight = /^~~~ c\+\+/m;
+		if(include.test(val) && !highlight.test(val)) {
+			$("#cpp-code-warning").fadeIn();
+			return false;
+		}
+		return true;
+	});
 });
 
 /** algospot customization **/
