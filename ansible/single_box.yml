@@ -82,12 +82,12 @@
   ignore_errors: True
 
 - name: "download scala 2.11.1"
-  when: scala_version.stderr.find('2.11.1') == -1
+  when: scala_version|failed or scala_version.stderr.find('2.11.1') == -1
   sudo: yes
   get_url: url=http://downloads.typesafe.com/scala/2.11.1/scala-2.11.1.deb dest=/tmp
 
 - name: "install scala 2.11.1"
-  when: scala_version.stderr.find('2.11.1') == -1
+  when: scala_version|failed or scala_version.stderr.find('2.11.1') == -1
   sudo: yes
   shell: dpkg --skip-same-version -i /tmp/scala-2.11.1.deb
 
