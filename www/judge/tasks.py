@@ -174,8 +174,8 @@ def judge_submission(submission):
                     submission.state = Submission.TIME_LIMIT_EXCEEDED
                 elif result["verdict"] == "MLE":
                     submission.state = Submission.RUNTIME_ERROR
-                    submission.message = '\n'.join(u"메모리 제한 초과",
-                                                   result["message"])
+                    submission.message = '\n'.join([u"메모리 제한 초과",
+                                                    result["message"]])
                 elif result["verdict"] == "RTE":
                     submission.state = Submission.RUNTIME_ERROR
                     submission.message = result["message"]
