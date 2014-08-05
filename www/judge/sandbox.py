@@ -56,15 +56,14 @@ def execute(command, redirect=True, time_limit=None, kill_command=[]):
         ret["stderr"] = popen.stderr.read()
     return ret
 
-def get_sandbox(memory_limit):
-    assert 1024 <= memory_limit <= 1024*1024*2, "memory_limit should be in kilobytes"
+def get_sandbox():
     from django.conf import settings
     SETTINGS = settings.JUDGE_SETTINGS
-    return Sandbox(SETTINGS["USER"], SETTINGS["FILESYSTEMSIZE"], memory_limit)
+    return Sandbox(SETTINGS["USER"], SETTINGS["FILESYSTEMSIZE"])
 
 # TODO: 모든 용량 기준 킬로바이트로 통일
 class Sandbox(object):
-    def __init__(self, user, fs_size=65536, memory_limit=65536, home_type="bind"):
+    def __init__(self, user, fs_size=65536, home_type="bind"):
         self.am_i_root = os.geteuid() == 0
         if not self.am_i_root:
             logging.warning("Sandbox not running as root: all sandboxing "
@@ -75,12 +74,9 @@ class Sandbox(object):
         self.user = pwd.getpwnam(user)
         self.mounts = []
         self.isolate_filesystem(fs_size, home_type)
-        self.generate_config(memory_limit)
 
     def generate_config(self, memory_limit):
-        self.memory_limit = memory_limit
         self.config = join(self.root, "config")
-        # 실제 디바이스에는 10MB 를 더 준다
         f = open(self.config, "w")
         f.write("""
 lxc.utsname = %s
@@ -110,8 +106,10 @@ lxc.network.type = empty
 ## Limit max memory
 lxc.cgroup.memory.limit_in_bytes = %dK
 lxc.cgroup.memory.memsw.limit_in_bytes = %dK
-                """ % (self.name, self.root_mount, memory_limit + 10240,
-                       memory_limit + 10240))
+                """ % (self.name, 
+                       self.root_mount, 
+                       memory_limit,
+                       memory_limit))
         f.close()
 
 
@@ -233,8 +231,15 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.create_entrypoint(command)
         return self._run(False)
 
-    def run(self, command, stdin=None, stdout=None, stderr=None,
-            time_limit=None, override_memory_limit=None, before=[], after=[]):
+    def run(self, command, memory_limit, stdin=None, stdout=None, stderr=None,
+            time_limit=None, before=[], after=[]):
+
+        # 실제로는 10mb 더 준다
+        memory_limit += 10240
+
+        # lxc config 생성
+        self.generate_config(memory_limit)
+
         # 모니터를 샌드박스 안에 집어넣는다
         self.put_file(os.path.join(os.path.dirname(__file__), "monitor.py"),
                        "monitor.py")
@@ -242,7 +247,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         if stdin: cmd += ["-i", stdin]
         if stdout: cmd += ["-o", stdout]
         if stderr: cmd += ["-e", stderr]
-        cmd += ["-m", str(self.memory_limit * 1024)]
+        cmd += ["-m", str(memory_limit * 1024)]
         if time_limit != None:
             cmd += ["-t", str(int(time_limit + 1.1))]
         cmd.append('"%s"' % command)
@@ -267,10 +272,9 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
             if time_limit is not None and time_used >= time_limit:
                 return (u"TLE (Outside sandbox; time used %d limit %d)" %
                         (time_used, time_limit))
-            effective_memory_limit = override_memory_limit or self.memory_limit
-            if memory_used >= effective_memory_limit:
+            if memory_used >= memory_limit:
                 return (u"MLE (Outside sandbox: memory used %d limit %d)" %
-                        (memory_used, effective_memory_limit))
+                        (memory_used, memory_limit))
 
         return result["stdout"]
 
@@ -313,7 +317,7 @@ def main():
         # sandbox.run_interactive("bash")
         # sandbox.mount_home("cow")
         # sandbox.run_interactive("bash")
-        sandbox = Sandbox("runner", memory_limit=65536, home_type="bind")
+        sandbox = Sandbox("runner", home_type="bind")
         import sys
         for file in sys.argv[1:]:
             sandbox.put_file(file, os.path.basename(file))

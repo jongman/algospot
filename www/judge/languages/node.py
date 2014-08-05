@@ -15,7 +15,7 @@ def setup(sandbox, source_code):
 
 def run(sandbox, input_file, time_limit, memory_limit):
     result = sandbox.run("nodejs submission.js", stdin=input_file, time_limit=time_limit,
-                         override_memory_limit=memory_limit,
+                         memory_limit=memory_limit,
                          stdout=".stdout", stderr=".stderr")
     toks = result.split()
     if toks[0] != "OK":

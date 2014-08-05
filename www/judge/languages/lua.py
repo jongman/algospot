@@ -1,9 +1,11 @@
 import subprocess
+from django.conf import settings
 
 def system(cmd):
     return subprocess.Popen(cmd, stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE).communicate()
 
+COMPILE_MEMORY_LIMIT = settings.JUDGE_SETTINGS['MINMEMORYSIZE']
 LANGUAGE = "LuaJIT"
 EXT = "lua"
 VERSION = system(["luajit", "-v"])[0].split("\n")[0]
@@ -12,7 +14,8 @@ ADDITIONAL_FILES = []
 def setup(sandbox, source_code):
     sandbox.write_file(source_code, "submission.lua")
     compiled = sandbox.run("luajit -b submission.lua submission.raw", stdout=".stdout",
-                           stderr=".stderr", time_limit=10)
+                           stderr=".stderr", time_limit=10,
+                           memory_limit=COMPILE_MEMORY_LIMIT)
     if compiled.split()[0] != "OK":
         return {"status": "error",
                 "message": sandbox.read_file(".stderr")}
@@ -20,7 +23,7 @@ def setup(sandbox, source_code):
 
 def run(sandbox, input_file, time_limit, memory_limit):
     result = sandbox.run("luajit submission.raw", stdin=input_file, time_limit=time_limit,
-                         override_memory_limit=memory_limit,
+                         memory_limit=memory_limit,
                          stdout=".stdout", stderr=".stderr")
     toks = result.split()
     if toks[0] != "OK":
