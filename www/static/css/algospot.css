@@ -60,6 +60,7 @@ a.username { font-weight: bold; }
 
 .template { display: none; }
 img.chart { border: 0; background-color: transparent; }
+img.icon { border: 0; }
 
 /* RSS 피드 */
 section.feed {
