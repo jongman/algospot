@@ -60,6 +60,8 @@
   - Pillow
   - psycopg2
   - dogslow
+  - icalendar
+  - pytz
 - name: "oracle java ppa"
   sudo: yes
   apt_repository: repo='ppa:webupd8team/java'
