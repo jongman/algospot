@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from os import path
 import math
+from django.conf import settings
+
+COMPILE_MEMORY_LIMIT = settings.JUDGE_SETTINGS['MINMEMORYSIZE']
 
 def tokenize(text):
     if isinstance(text, list):
@@ -72,7 +75,9 @@ def special_judge(input, output, expected, data_dir, sandbox):
     sandbox.write_file(e, '_expected')
     sandbox.put_file(checker_path, 'checker', permission=0755)
 
-    res = sandbox.run('./checker _input _output _expected', time_limit=10, stdout='_result')
+    res = sandbox.run('./checker _input _output _expected',
+                      memory_limit=COMPILE_MEMORY_LIMIT,
+                      time_limit=10, stdout='_result')
     if res.split()[0] != 'OK':
         raise Exception('checker implementation failed (%s)' % res.strip()) 
 
