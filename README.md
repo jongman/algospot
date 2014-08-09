@@ -22,7 +22,7 @@
 
         $ make init
 
-1. 웹브라우저에서 http://localhost:8080/ 을 연다. 새 사용자를 만들거나 (아직 확인은 안해봄) admin/admin으로 로그인할 수 있다.
+1. 웹브라우저에서 http://localhost:8080/ 을 연다. 새 사용자를 만들거나 admin/admin으로 로그인할 수 있다.
 
 1. 다음부터는 [ansible](https://github.com/jongman/algospot/blob/master/ansible/single_box.yml) 설정 등에 의해 서버 환경이 변경된 사항이 있다면, 아래 명령어를 통해 패키지 설치/셋업 등을 자동으로 수행할 수 있다.
 
