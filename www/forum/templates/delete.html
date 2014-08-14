@@ -3,6 +3,17 @@
 {% block page_title %}삭제: {{ post.title }}{% endblock %}
 {% block page_contents %}
 	<section>
+		{% if category.slug == "qna" %}
+			<div class="notification kor">
+				<h3>답을 얻은 질문 글을 지우지 마세요!</h3>
+
+				<ul>
+					<li>질문 글을 지우시면 답변한 사람이 허무해져요!</li>
+					<li>글을 남겨 두면 이후에 같은 답을 찾는 사람들에게 유용한 정보가 됩니다.</li>
+				</ul>
+
+			</div>
+		{% endif %}
 		<form action="." method="POST">
 			<fieldset class="kor comment-delete">
 				<legend>이 글을 정말 삭제하시겠습니까?</legend>
