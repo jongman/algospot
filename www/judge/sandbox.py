@@ -144,9 +144,10 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.mount("proc", join(self.root_mount, "proc"), "none", "proc")
 
         # /dev/shm
-        os.unlink(join(self.root_mount, "dev", "shm"))
-        makedir(join(self.root_mount, "dev", "shm"))
-        self.mount("none", join(self.root_mount, "dev", "shm"), "tmpfs")
+        dev_shm = join(self.root_mount, "dev", "shm")
+        if exists(dev_shm): os.unlink(dev_shm)
+        makedir(dev_shm)
+        self.mount("none", dev_shm, "tmpfs")
 
         # 빈 디렉토리 user-home 을 만들고, 마운트된 cow 루트 내의 홈디렉토리를
         # 이걸로 덮어씌운다.
