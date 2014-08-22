@@ -42,7 +42,7 @@ def handle_signal(sgn, args):
         print "RTE (SIGFPE: floating point error, probably divide by zero)"
     elif sgn == signal.SIGSEGV:
         print ("RTE (SIGSEGV: segmentation fault, probably incorrect memory "
-               "access)")
+               "access or stack overflow)")
     elif sgn == signal.SIGKILL:
         handle_sigkill(args)
     else:
