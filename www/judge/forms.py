@@ -11,7 +11,7 @@ class ProblemRevisionEditForm(forms.ModelForm):
     summary = forms.CharField(max_length=100,
                               widget=forms.TextInput(attrs={"class": "large"}),
                               required=False,
-                              label="편집 요약")
+                              label=u"편집 요약")
     class Meta:
         model = ProblemRevision
         exclude = ('revision_for', 'user', 'edit_summary')
