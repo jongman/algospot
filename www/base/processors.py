@@ -64,6 +64,13 @@ CAMPAIGNS = [
         'image': '/static/images/banners/jmbook.png',
         'link': 'http://book.algospot.com/'
     },
+    {
+        'name': 'nexoncareer2014',
+        'start': datetime(2014, 9, 1, 9, 0, 0, 0),
+        'end': datetime(2014, 9, 22, 23, 59, 59),
+        'image': '/static/images/banners/nexon2014.jpg',
+        'link': 'https://career.nexon.com/'
+    }
 ]
 
 def select_campaign(request):
