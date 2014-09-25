@@ -24,7 +24,8 @@ def setup(sandbox, source_code):
     return {"status": "ok"}
 
 def run(sandbox, input_file, time_limit, memory_limit):
-    result = sandbox.run("java Main", stdin=input_file, time_limit=time_limit,
+    result = sandbox.run("java -Xmx%dK -Xms%dK Main" % (memory_limit, memory_limit), 
+                         stdin=input_file, time_limit=time_limit,
                          memory_limit=memory_limit,
                          stdout=".stdout", stderr=".stderr")
     toks = result.split()
