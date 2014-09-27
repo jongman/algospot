@@ -149,6 +149,11 @@
 									</a>
 								</li>
 								{% endif %}
+								<li class="{% block judge_random_class %}{% endblock %}">
+									<a href="{% url "judge-problem-random" %}">
+										랜덤 문제 고르기
+									</a>
+								</li>
 								<li class="{% block judge_submission_class %}{% endblock %}"><a href="{% url "judge-submission-recent" %}">
 										최근 제출된 답안
 									</a>

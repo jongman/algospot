@@ -180,6 +180,24 @@ def list_attachments(request, id):
            "aaData": data}
     return HttpResponse(json.dumps(ret))
 
+def random_problem(request):
+    title = u'랜덤 문제 고르기'
+    problems = Problem.objects.filter(state = Problem.PUBLISHED)
+    if request.user.is_authenticated():
+        if problems.exclude(solver__user=request.user).exists():
+            problems = problems.exclude(solver__user=request.user)
+        else:
+            problems = Problem.objects.filter(solver__user=request.user, solver__solved=False)
+
+    if problems.exists():
+        problem = problems.order_by('?')[0]
+        response = redirect(reverse('judge-problem-read', kwargs={'slug': problem.slug}))
+        response['Location'] += '?random=1'
+        return response
+    else:
+        return render(request, 'problem/done.html',
+                  {'title': title})
+
 @login_required
 @authorization_required
 def my_problems(request, page=1):
@@ -323,11 +341,12 @@ def stat(request, slug, page=1):
 def read(request, slug):
     problem = get_object_or_404(Problem, slug=slug)
     checker = ObjectPermissionChecker(request.user)
+    random = 'random' in request.GET
     if (problem.state != Problem.PUBLISHED and
         not checker.has_perm('read_problem', problem) and
         problem.user != request.user):
         raise Http404
-    return render(request, "problem/read.html", {"problem": problem, "revision": problem.last_revision, "editable": checker.has_perm('edit_problem', problem)})
+    return render(request, "problem/read.html", {"problem": problem, "revision": problem.last_revision, "editable": checker.has_perm('edit_problem', problem), "random": random})
 
 @login_required
 def latexify(request, slug):
