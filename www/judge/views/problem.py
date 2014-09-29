@@ -180,6 +180,25 @@ def list_attachments(request, id):
            "aaData": data}
     return HttpResponse(json.dumps(ret))
 
+def random_problem(request):
+    title = u'랜덤 문제 고르기'
+    problems = Problem.objects.filter(state=Problem.PUBLISHED)
+    if request.user.is_authenticated():
+        # 시도하지 않은 문제가 남아 있는 경우 이 중에서 고른다
+        if problems.exclude(solver__user=request.user).exists():
+            problems = problems.exclude(solver__user=request.user)
+        # 없는 경우 실패한 문제 중에서 고른다
+        else:
+            problems = problems.filter(solver__user=request.user, solver__solved=False)
+
+    if problems.exists():
+        problem = problems.order_by('?')[0]
+        response = redirect(reverse('judge-problem-read', kwargs={'slug': problem.slug}))
+        return response
+    else:
+        return render(request, 'problem/done.html',
+                  {'title': title})
+
 @login_required
 @authorization_required
 def my_problems(request, page=1):

@@ -1,0 +1,25 @@
+{% extends "judge-base.html" %}
+{% load common_tags %}
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+
+{% block page_title %}
+	{{ title }}
+{% endblock %}
+{% block page_tabs %}
+{% endblock %}
+{% block judge_random_class %}current{% endblock %}
+{% block page_contents %}
+	{% load judge_tags %}
+	{% load common_tags %}
+	<section>
+        <h4>축하합니다!</h4>
+        <p class="kor">
+            귀하는 알고스팟의 모든 문제를 풀었습니다.
+		</p>
+
+    </section>
+{% endblock %}
+
