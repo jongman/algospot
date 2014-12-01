@@ -70,6 +70,13 @@ CAMPAIGNS = [
         'end': datetime(2014, 9, 22, 23, 59, 59),
         'image': '/static/images/banners/nexon2014.jpg',
         'link': 'https://career.nexon.com/'
+    },
+    {
+        'name': 'nexonintern2014',
+        'start': datetime(2014, 12, 1, 9, 0, 0, 0),
+        'end': datetime(2014, 12, 22, 17, 0, 0),
+        'image': '/static/images/banners/nexonintern2014winter.jpg',
+        'link': 'https://www.nexonin.com/'
     }
 ]
 
