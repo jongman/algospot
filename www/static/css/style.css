@@ -355,7 +355,7 @@ article .article-container {
 	overflow:hidden;
 }
 article header {
-	height:27px;
+	display: inline-block;
 	border-bottom:3px solid;
 	padding-bottom:8px;
 	margin-bottom:20px;
