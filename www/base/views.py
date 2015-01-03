@@ -176,10 +176,9 @@ def matchup(request, username1, username2):
 
     all_problems = len(solved_user1 | solved_user2)
 
-    rate = [ len(solved_user1_only) * 100 / all_problems,
+    rate = [len(solved_user1_only) * 100 / all_problems,
             len(solved_both) * 100 / all_problems,
-            len(solved_user2_only) * 100 / all_problems,
-            ]
+            len(solved_user2_only) * 100 / all_problems]
 
     matchup_result = u"무승부!"
     if len(solved_user1_only) > len(solved_user2_only):
@@ -191,9 +190,9 @@ def matchup(request, username1, username2):
                   {
                     "user1": user1,
                     "user2": user2,
-                    "solved_user1": solved_user1_only,
-                    "solved_user2": solved_user2_only,
-                    "solved_both": solved_both,
+                    "solved_user1": sorted(solved_user1_only),
+                    "solved_user2": sorted(solved_user2_only),
+                    "solved_both": sorted(solved_both),
                     "matchup_chart_url": get_matchup_chart(username1, username2, rate),
                     "matchup_result": matchup_result
                   })

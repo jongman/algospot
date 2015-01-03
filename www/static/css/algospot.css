@@ -542,15 +542,16 @@ section.matchup {
 }
 
 section.matchup_solved_problem_list {
+	margin-bottom: 12px;
+}
+
+section.matchup_solved_problem_list div.problem_list {
+	padding: 12px;
 	background-color: #f0f0f0;
 	border-top: 1px solid;
 	border-bottom: 1px solid;;
 	border-color: silver;
 	color: #666;
-}
-
-section.matchup_solved_problem_list div.problem_list {
-	padding-bottom: 18px;
 }
 section.matchup ul.matchup_stats {
 	width: 100%;
@@ -560,15 +561,10 @@ section.matchup ul.matchup_stats li.chart { width: 40%; }
 section.matchup ul.matchup_stats li.intro { width: 30%; }
 section.matchup ul.matchup_stats li.result { width: 40%; }
 section.matchup ul.matchup_stats li.intro p.speech {
-	font-size:0.8em;
-	margin:auto;
+	margin: auto;
 	display: block;
 }
 
-
-section.solved_problem_list {
-	padding:18px;
-}
 
 /* 포럼 글 목록 */
 table.forum_list tbody td.title_col {
