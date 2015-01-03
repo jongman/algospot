@@ -8,7 +8,7 @@ a { text-decoration: none; }
 a.missing { color: #a68e8a; }
 a.missing:before {
 	color: #fff;
-	background-color: #a68e8a; 
+	background-color: #a68e8a;
 	content: '!';
 	font-weight: bold;
 	padding: 0 0.2em;
@@ -71,8 +71,8 @@ section.feed img {
 }
 
 /* 로고 밑에 글자 */
-section.navigation header h1 { 
-	font-size: 11px; 
+section.navigation header h1 {
+	font-size: 11px;
 	font-style: normal;
 	margin-left: auto;
 	margin-right: auto;
@@ -347,12 +347,12 @@ div.pagination .disabled_tnt_pagination {
 .superblyTagfieldClearer{
 	clear: both;
 }
-	
+
 .superblyTagfieldDiv ul{
 	margin: 0;
 	padding: 0;
 }
-	
+
 .superblyTagfield{
 	/* if no javascript */
 	outline: none;
@@ -361,7 +361,7 @@ div.pagination .disabled_tnt_pagination {
 	border: solid 1px;
     background-color: #FFFFFF;
 }
-   
+
 .superblyTagInput{
 	border: none;
 	outline: none;
@@ -378,7 +378,7 @@ div.pagination .disabled_tnt_pagination {
 	-moz-box-shadow: none;
 
 }
-	
+
 .superblyTagItems > li{
     font-size:11px;
 	background-image: none;
@@ -416,8 +416,8 @@ div.pagination .disabled_tnt_pagination {
 	left: 0;
 	top: 30px;
 	z-index: 100;
-}   
-   
+}
+
 .superblySuggestItems .superblySuggestItem{
 	background-image: none;
     font-size:11px;
@@ -430,12 +430,12 @@ div.pagination .disabled_tnt_pagination {
 	float: none;
     color: #000000;
 }
-   
+
 .superblySuggestItems .superblySuggestItem:hover {
    	cursor: pointer;
 	background-color: #fff;
 }
-   
+
 .superblySuggestItems .selected{
 	background-color: #e6e6e6
     border: solid 1px #ddd;
@@ -447,7 +447,7 @@ div.pagination .disabled_tnt_pagination {
 section.mainpage ul.comments, section.mainpage ul.comments li.comment {
 	border: 0;
 }
-#main_section section.mainpage 
+#main_section section.mainpage
 {
 	margin-bottom: 16px;
 }
@@ -466,9 +466,9 @@ section.profile div, section.profile img {
 	float: left;
 	margin-right: 36px;
 }
-section.profile dt.profile_picture { 
-	width: 140px; 
-	text-align: center; 
+section.profile dt.profile_picture {
+	width: 140px;
+	text-align: center;
 	float: left;
 	margin-right: 10px;
 }
@@ -491,8 +491,8 @@ section.profile blockquote.speech:before
 	top: 16px;
 	border: 12px solid;
 	/* border-color: red green blue yellow; */
-	border-color: #f4f4f4 #f4f4f4 transparent transparent; 
-	border-color: transparent #f4f4f4 #f4f4f4 transparent; 
+	border-color: #f4f4f4 #f4f4f4 transparent transparent;
+	border-color: transparent #f4f4f4 #f4f4f4 transparent;
 }
 section.profile ul.user_stats {
 	margin-top: 16px;
@@ -500,7 +500,7 @@ section.profile ul.user_stats {
 }
 section.profile ul.user_stats li li {
 	width: 122px;
-} ul.stats li.header li { 
+} ul.stats li.header li {
 	font-weight: normal;
 }
 ul.stats li.content li {
@@ -525,13 +525,44 @@ section.online_judge_stat ul.judge_stats li.accepted { width: 15%; }
 section.online_judge_stat ul.judge_stats_charts li.submissions { width: 30%; }
 section.online_judge_stat ul.judge_stats_charts li.category { width: 70%; }
 section.online_judge_stat ul.solved_problems li.content li,
-section.online_judge_stat ul.failed_problems li.content li { 
-	padding: 18px; 
-	text-align: left; 
+section.online_judge_stat ul.failed_problems li.content li {
+	padding: 18px;
+	text-align: left;
 }
 section.online_judge_stat ul.solved_problems li.content li a,
-section.online_judge_stat ul.failed_problems li.content li a { 
-	margin: 8px; 
+section.online_judge_stat ul.failed_problems li.content li a {
+	margin: 8px;
+}
+
+section.matchup {
+	text-align: center;
+	font-size: 120%;
+	font-weight: bold;
+	color: #666;
+}
+
+section.matchup_solved_problem_list {
+	margin-bottom: 12px;
+}
+
+section.matchup_solved_problem_list div.problem_list {
+	padding: 12px;
+	background-color: #f0f0f0;
+	border-top: 1px solid;
+	border-bottom: 1px solid;;
+	border-color: silver;
+	color: #666;
+}
+section.matchup ul.matchup_stats {
+	width: 100%;
+}
+section.matchup ul.matchup_stats li.user { width: 30%; }
+section.matchup ul.matchup_stats li.chart { width: 40%; }
+section.matchup ul.matchup_stats li.intro { width: 30%; }
+section.matchup ul.matchup_stats li.result { width: 40%; }
+section.matchup ul.matchup_stats li.intro p.speech {
+	margin: auto;
+	display: block;
 }
 
 
@@ -543,15 +574,15 @@ table.forum_list tbody td.title_col {
 table.forum_list .num_col { width: 8%; }
 table.forum_list .category { width: 12%; }
 /* table.forum_list .title_col { width: 50%; } */
-table.forum_list .user_col, 
+table.forum_list .user_col,
 table.forum_list .lastcommenter_col { width: 12%; }
 table.forum_list .comments_col { width: 8%; }
 table.forum_list .updated_col { width: 10%; }
 table.forum_list span.none { color: #999; }
-table.forum_list span.has_comment, 
+table.forum_list span.has_comment,
 table.forum_list span.some_discussions { color: #666; }
-table.forum_list span.heated_discussions, 
-table.forum_list span.very_heated_discussions, 
+table.forum_list span.heated_discussions,
+table.forum_list span.very_heated_discussions,
 table.forum_list span.wow { color: #666; font-weight: bold; }
 
 /* 포럼 글쓰기 */

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load common_tags %}
+{% load avatar_tags %}
+
+{% block title %}{{ user1.username }} vs {{ user2.username }}{% endblock %}
+{% block page_title %} Matchup - {{ user1|print_username }} vs. {{user2|print_username}} {% endblock %}
+{% block page_contents %}
+<section class="matchup">
+      <ul class="tabular matchup_stats">
+        <li class="header">
+          <ul>
+            <li class="user">{{ user1|print_username }}</a></li>
+            <li class="chart">&nbsp;</li>
+            <li class="user">{{ user2|print_username }}</a></li>
+          </ul>
+        </li>
+
+        <li class="content">
+          <ul>
+            <li class="user">{% avatar user1 100 %}</li>
+            <li class="chart"><img src="{{ matchup_chart_url }}"/></li>
+            <li class="user">{% avatar user2 100 %}</li>
+          </ul>
+        </li>
+
+        <li class="footer">
+          <ul>
+            <li class="intro">
+              <p class="speech">
+                {% if user1.get_profile.intro %}
+                  {{ user1.get_profile.intro }}
+                {% else %}
+                  {# (한 마디 소개가 없습니다.) #}
+                {% endif %}
+              </p>
+            </li>
+            <li class="result">{{ matchup_result }}</li>
+            <li class="intro">
+              <p class="speech">
+                {% if user2.get_profile.intro %}
+                  {{ user2.get_profile.intro }}
+                {% else %}
+                  {# (한 마디 소개가 없습니다.) #}
+                {% endif %}
+              </p>
+            </li>
+          </ul>
+        </li>
+      </ul>
+</section>
+
+
+<section class="matchup_solved_problem_list">
+
+  <h3> 두 사용자가 동시에 푼 문제 - {{ solved_both|length }} 문제</h3>
+	{% if solved_both %}
+		<div class="problem_list">
+			{% for sol in solved_both %}
+			<a href="/judge/problem/read/{{sol.slug}}">{{ sol.slug }}</a>
+			{% endfor %}
+		</div>
+	{% endif %}
+
+</section>
+
+<section class="matchup_solved_problem_list">
+  <h3>{{ user1.username }}만 푼 문제 - {{ solved_user1|length }} 문제</h3>
+	{% if solved_user1 %}
+		<div class="problem_list">
+			{% for sol in solved_user1 %}
+				<a href="/judge/problem/read/{{sol.slug}}">{{ sol.slug }}</a>
+			{% endfor %}
+		</div>
+	{% endif %}
+</section>
+
+<section class="matchup_solved_problem_list">
+  <h3>{{ user2.username }}만 푼 문제 - {{ solved_user2|length }} 문제</h3>
+	{% if solved_user2 %}
+		<div class="problem_list">
+			{% for sol in solved_user2 %}
+			<a href="/judge/problem/read/{{sol.slug}}">{{ sol.slug }}</a>
+			{% endfor %}
+		</div>
+	{% endif %}
+</section>
+
+{% endblock %}
