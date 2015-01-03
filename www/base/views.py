@@ -31,7 +31,7 @@ def index(request):
 
 
 def list_users(request):
-    users = [user.username 
+    users = [user.username
              for user in User.objects.filter(is_active=True).order_by("username")]
     return HttpResponse(json.dumps(users))
 
@@ -105,6 +105,9 @@ def get_profile(request, user):
     actions = get_activities_for_user(request.user).filter(actor=user).order_by("-timestamp")[:20]
     rank = UserProfile.objects.filter(solved_problems__gt=
                                       user.get_profile().solved_problems).count()
+
+
+
     return render(request, "user_profile.html",
                   {"profile_user": user,
                    "post_count": user.get_profile().posts - comment_count,
@@ -157,3 +160,52 @@ def delete_comment(request, comment_id):
 
 def calendar(request):
     return render(request, "calendar.html", {'title': u'알고스팟 캘린더'})
+
+
+def matchup(request, username1, username2):
+    user1 = get_object_or_404(User, username=username1)
+    user2 = get_object_or_404(User, username=username2)
+
+    solved_user1 = set([ sol.problem for sol in Solver.objects.filter(user=user1, solved=True) ])
+    solved_user2 = set([ sol.problem for sol in Solver.objects.filter(user=user2, solved=True) ])
+
+    solved_both = solved_user1 & solved_user2
+
+    solved_user1_only = solved_user1 - solved_user2
+    solved_user2_only = solved_user2 - solved_user1
+
+    cntTotal = len( solved_user1 | solved_user2 )
+
+    rate = [ len(solved_user1_only) * 100 / cntTotal,
+            len(solved_both) * 100 / cntTotal,
+            len(solved_user2_only) * 100 / cntTotal,
+            ]
+
+    matchup_result = "무승부!"
+    if len(solved_user1_only) > len(solved_user2_only):
+        matchup_result = user1.username + u"의 승리!"
+    elif len(solved_user1_only) < len(solved_user2_only):
+        matchup_result = user2.username + u"의 승리!"
+
+    return render(request, "matchup.html",
+                  {
+                    "user1": user1,
+                    "user2": user2,
+                    "solved_user1": solved_user1_only,
+                    "solved_user2": solved_user2_only,
+                    "solved_both": solved_both,
+                    "matchup_chart_url": get_matchup_chart( username1,
+                        username2, rate ),
+                    "matchup_result": matchup_result
+                  })
+
+def get_matchup_chart( username1, username2, rate  ):
+    #구글 차트
+    chart = pgc.StackedHorizontalBarChart(320, 100, x_range=(0, 101))
+    chart.set_bar_width(20)
+    chart.set_colours(['e74c3c', 'f1c40f', '3498db'])
+    chart.add_data(rate)
+    chart.set_axis_labels(pgc.Axis.LEFT, [ username2, "무승부", username1])
+    chart.set_axis_labels(pgc.Axis.BOTTOM, range(0,101,20))
+
+    return chart.get_url()
