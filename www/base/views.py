@@ -186,13 +186,14 @@ def matchup(request, username1, username2):
     elif len(solved_user1_only) < len(solved_user2_only):
         matchup_result = user2.username + u"의 승리!"
 
+    get_slug = lambda p: p.slug
     return render(request, "matchup.html",
                   {
                     "user1": user1,
                     "user2": user2,
-                    "solved_user1": sorted(solved_user1_only),
-                    "solved_user2": sorted(solved_user2_only),
-                    "solved_both": sorted(solved_both),
+                    "solved_user1": sorted(solved_user1_only, key=get_slug),
+                    "solved_user2": sorted(solved_user2_only, key=get_slug),
+                    "solved_both": sorted(solved_both, key=get_slug),
                     "matchup_chart_url": get_matchup_chart(username1, username2, rate),
                     "matchup_result": matchup_result
                   })
