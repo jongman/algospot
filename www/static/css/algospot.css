@@ -552,7 +552,12 @@ section.matchup_solved_problem_list div.problem_list {
 	border-bottom: 1px solid;;
 	border-color: silver;
 	color: #666;
+	line-height: 180%;
 }
+section.matchup_solved_problem_list div.problem_list a {
+	padding: 8px;
+}
+
 section.matchup ul.matchup_stats {
 	width: 100%;
 }
