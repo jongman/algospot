@@ -261,6 +261,8 @@ SOLVED_CAMPAIGN = []
 
 # 이만큼은 문제를 풀어야 위키 변경 등의 일을 할 수 있다.
 USER_AUTHORIZATION_LIMIT = 5
+# 가입 후 n일이 지나야 위키 변경 등의 일을 할 수 있다.
+USER_AUTHORIZATION_LIMIT_DAYS = 7
 
 # monkey patch pygooglecharts around some unknown issue.
 # this is a broken mirror; but we should be getting rid of pygooglechart

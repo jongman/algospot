@@ -9,6 +9,7 @@ def authorization_required(func):
         if not user.is_superuser and not user.get_profile().is_authorized():
             return render(request, "not_authorized.html",
                           {"limit": settings.USER_AUTHORIZATION_LIMIT,
+                           "limit_days": settings.USER_AUTHORIZATION_LIMIT_DAYS,
                            "solved": user.get_profile().solved_problems})
         return func(request, *args, **kwargs)
     return decorated

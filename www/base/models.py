@@ -10,6 +10,7 @@ from django.conf import settings
 from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms
 from judge.models import Problem
 from newsfeed import publish, depublish
+from datetime import datetime
 
 class UserProfile(models.Model):
     """Stores additional information about users."""
@@ -23,8 +24,16 @@ class UserProfile(models.Model):
     intro = models.TextField(default="")
 
     def is_authorized(self):
-        return (self.solved_problems >= settings.USER_AUTHORIZATION_LIMIT or
-                self.user.is_superuser)
+        if self.user.is_superuser: 
+            return True
+
+        if self.solved_problems < settings.USER_AUTHORIZATION_LIMIT:
+            return False
+
+        if (datetime.now() - self.date_joined).days < settings.USER_AUTHORIZATION_LIMIT_DAYS:
+            return False
+
+        return True
 
 @receiver(post_save, sender=User)
 def user_added(sender, **kwargs):
