@@ -30,7 +30,7 @@ class UserProfile(models.Model):
         if self.solved_problems < settings.USER_AUTHORIZATION_LIMIT:
             return False
 
-        if (datetime.now() - self.date_joined).days < settings.USER_AUTHORIZATION_LIMIT_DAYS:
+        if (datetime.now() - self.user.date_joined).days < settings.USER_AUTHORIZATION_LIMIT_DAYS:
             return False
 
         return True
