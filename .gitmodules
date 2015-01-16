@@ -7,3 +7,4 @@
 [submodule "libs/django-registration"]
 	path = libs/django-registration
 	url = https://github.com/macropin/django-registration.git
+	ignore = dirty
