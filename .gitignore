@@ -17,3 +17,7 @@ www/judge/tmp
 www/judge/lxc.log
 
 www_static/
+
+*.iml
+.idea/
+atlassian-ide-plugin.xml

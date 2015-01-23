@@ -63,8 +63,8 @@
 
 1. 채점 서버에 문제가 있을 경우 다음 커맨드를 통해 VM의 채점 서버를 중단하고, 채점 서버를 콘솔 모드로 돌리면서 채점 서버의 로그를 볼 수 있다.
 
-		$ make celeryd-stop
-		$ make celeryd
+		$ make stop-celeryd
+		$ make celeryd-console
 
 ## 커밋하기
 

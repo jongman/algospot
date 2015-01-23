@@ -9,6 +9,7 @@ EXT = "py3"
 VERSION = system(["python3", "--version"])[0].split("\n")[0]
 ADDITIONAL_FILES = []
 
+
 def setup(sandbox, source_code):
     sandbox.write_file(source_code, "submission.py")
     return {"status": "ok"}

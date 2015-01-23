@@ -27,6 +27,7 @@
   - ruby
   - luajit
   - pypy
+  - python3
 
 - name: "install pip"
   sudo: yes
