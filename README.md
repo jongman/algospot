@@ -70,11 +70,11 @@
 
 프로젝트에 새 기능을 추가하거나 버그를 고치려면 다음과 같은 과정을 밟는다.
 
-1. [프로젝트 홈페이지](https://github.com/jongman/algospot)의 오른쪽 위 Fork  버튼을 이용해서 프로젝트를 fork 한다. 그러면 algospot 프로젝트의 개인 복사본이 생긴다.
-1. 위 과정을 거쳐 해당 프로젝트를 클론한다.
-1. 로컬에서 적절히 수정한 뒤 개인 복사본 프로젝트로 클론한다.
+1. [프로젝트 홈페이지](https://github.com/jongman/algospot)의 오른쪽 위 Fork 버튼을 이용해서 프로젝트를 fork 한다. 그러면 GitHub에 algospot 프로젝트의 개인 복사본이 생긴다.
+1. 위 과정을 거쳐 해당 프로젝트를 로컬에 클론한다.
+1. 로컬에서 적절히 수정한 뒤 커밋해서 GitHub의 개인 프로젝트로 푸시한다.
 1. 개인 프로젝트 홈페이지에서 Pull Request 를 통해 jongman 에게 Pull Request 를 보낸다.
-1. jongman 이 해당 프로젝트를 가져와 머지한다.
+1. jongman 이 Pull Request를 읽고 해당 프로젝트를 가져와 jongman 의 프로젝트로 머지한다.
 1. -끗-
 
 좀더 자세한 설명은 [github의 매뉴얼 페이지](http://help.github.com/send-pull-requests/)에서 볼 수 있다.
