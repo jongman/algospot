@@ -106,8 +106,8 @@ lxc.network.type = empty
 ## Limit max memory
 lxc.cgroup.memory.limit_in_bytes = %dK
 lxc.cgroup.memory.memsw.limit_in_bytes = %dK
-                """ % (self.name, 
-                       self.root_mount, 
+                """ % (self.name,
+                       self.root_mount,
                        memory_limit,
                        memory_limit))
         f.close()
@@ -230,6 +230,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         "Runs an interactive command in the sandbox"
         # 에.. 이건 왜켜냐
         self.create_entrypoint(command)
+        self.generate_config(74 * 1024)
         return self._run(False)
 
     def run(self, command, memory_limit, stdin=None, stdout=None, stderr=None,
@@ -322,7 +323,7 @@ def main():
         import sys
         for file in sys.argv[1:]:
             sandbox.put_file(file, os.path.basename(file))
-        # print sandbox.run("python --version", stdout=".stdout", stderr=".stderr")
+        #print sandbox.run("python --version", memory_limit=128*1024, stdout=".stdout", stderr=".stderr")
         sandbox.run_interactive("bash")
         # sandbox.put_file("dp.cpp", "dp.cpp", 0o700)
         # sandbox.put_file("inp", "inp")
