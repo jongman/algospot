@@ -38,7 +38,7 @@
   pip: name={{item}}
   with_items:
   - Django==1.6.5
-  - Pygments==1.6
+  - Pygments==2.0.2
   - South==0.8.1
   - Whoosh==2.6.0
   - celery==3.1.12
@@ -63,6 +63,9 @@
   - dogslow
   - icalendar
   - pytz
+
+# Java
+
 - name: "oracle java ppa"
   sudo: yes
   apt_repository: repo='ppa:webupd8team/java'
@@ -79,6 +82,8 @@
   sudo: yes
   apt: name=oracle-java8-installer
 
+# Scala
+
 - name: "checking wheter scala exists ..."
   command: scalac -version
   register: scala_version
@@ -93,6 +98,20 @@
   when: scala_version|failed or scala_version.stderr.find('2.11.1') == -1
   sudo: yes
   shell: dpkg --skip-same-version -i /tmp/scala-2.11.1.deb
+
+# Rust
+
+- name: "checking whether rust exists ..."
+  command: rustc --version
+  register: rustc_version
+  ignore_errors: True
+
+- name: "download and install rust 1.0.0 (64bit binary)"
+  when: rustc_version|failed or rustc_version.stderr.find('rustc 1.0.0') == -1
+  sudo: yes
+  shell: curl -s https://static.rust-lang.org/rustup.sh > /tmp/rustup.sh && chmod +x /tmp/rustup.sh && /tmp/rustup.sh --yes
+
+# -----------------
 
 - name: "add nginx stable"
   sudo: yes
