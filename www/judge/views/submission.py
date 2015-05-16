@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from guardian.core import ObjectPermissionChecker
 from ..models import Problem, Submission
+from ..forms import SubmissionFilterForm
 
 def rejudge(request, id):
     submission = get_object_or_404(Submission, id=id)
@@ -69,17 +70,24 @@ def recent(request, page=1):
     if only_public:
         submissions = submissions.filter(is_public=True)
 
+    if request.GET.get("language"):
+        language = request.GET["language"]
+        submissions = submissions.filter(language=language)
+        filters["language"] = language
+        title_add.append(language)
+
+    filters_form = SubmissionFilterForm(initial=filters)
+
     return render(request, "submission/recent.html",
-                  {"title": u"답안 목록" + (": " if title_add else "") +
-                   ",".join(title_add),
-                   "filters": filters,
+                  {"title": u"답안 목록" + (": " if title_add else "") + ",".join(title_add),
+                   "filter_form" : filters_form,
                    "empty_message": empty_message,
                    "pagination": setup_paginator(submissions, page,
                                                  "judge-submission-recent", {}, filters)})
 
 @login_required
 def details(request, id):
-    from django.conf import settings 
+    from django.conf import settings
 
     checker = ObjectPermissionChecker(request.user)
     submission = get_object_or_404(Submission, id=id)
@@ -93,7 +101,7 @@ def details(request, id):
     if submission.state == Submission.ACCEPTED:
         now = datetime.now()
         for item in settings.SOLVED_CAMPAIGN:
-            if (item['problem'] == problem.slug and 
+            if (item['problem'] == problem.slug and
                 item['begin'] <= now <= item['end']):
                 message = item['message']
                 break
