@@ -92,6 +92,20 @@ CAMPAIGNS = [
         'image': '/static/images/banners/nexon2015.jpg',
         'link': 'https://career.nexon.com/'
     },
+    {
+        'name': 'nos7',
+        'start': datetime(2015, 6, 1, 9, 0, 0, 0),
+        'end': datetime(2015, 6, 19, 23, 59, 59),
+        'image': '/static/images/banners/nos7.jpg',
+        'link': 'https://www.nexonin.com/'
+    },
+    {
+        'name': 'codesprint2015',
+        'start': datetime(2015, 6, 24, 9, 0, 0, 0),
+        'end': datetime(2015, 7, 24, 23, 59, 59),
+        'image': '/static/images/banners/codesprint2015.jpg',
+        'link': 'http://codesprint.skplanet.com/'
+    },
 ]
 
 def select_campaign(request):
