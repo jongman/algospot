@@ -88,24 +88,16 @@
 			<fieldset class="kor submission-filter">
 				<legend>답안 필터</legend>
 				<dl>
+{% for field in filter_form %}
 					<dt>
-						문제
+						<label>{{ field.label }}</label>
 					</dt>
 					<dd>
-						<input type="text" name="problem" class="problem_autocomplete" value="{{ filters.problem }}"/>
+						{{ field }}
 					</dd>
-					<dt>
-						제출자
-					</dt>
-					<dd>
-						<input type="text" name="user" class="user_autocomplete" value="{{ filters.user }}"/>
-					</dd>
-					<dt>
-						적용
-					</dt>
-					<dd>
-						<button type="submit">적용하기</button>
-					</dd>
+{% endfor %}
+					<dt>적용</dt>
+					<dd><button type="submit">적용하기</button></dd>
 				</dl>
 			</fieldset>
 		</form>

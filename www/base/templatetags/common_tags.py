@@ -14,7 +14,10 @@ import datetime
 import itertools
 import re
 
-PYGMENT_LANGUAGE_NAMES = {'pypy': 'py'}
+PYGMENT_LANGUAGE_NAMES = {
+    'pypy': 'py',
+    'rs' : 'rust',
+}
 
 register = template.Library()
 
@@ -163,7 +166,7 @@ def percentage(parser, token):
 def side_by_side_diff(diff):
     """
     Calculates a side-by-side line-based difference view.
-    
+
     Wraps insertions in <ins></ins> and deletions in <del></del>.
     """
     def yield_open_entry(open_entry):
@@ -181,7 +184,7 @@ def side_by_side_diff(diff):
         else:
             for l, r in itertools.izip_longest(ls, rs):
                 yield (True, l, r)
- 
+
     line_split = re.compile(r'(?:\r?\n)')
     open_entry = ([None], [None])
     for change_type, entry in diff:
@@ -209,7 +212,7 @@ def side_by_side_diff(diff):
             elif change_type == -1:
                 ls[-1] = ls[-1] or ''
                 ls[-1] += '<del>%s</del>' % line if line else ''
-                
+
         lines = lines[1:]
 
         if lines:
@@ -217,26 +220,26 @@ def side_by_side_diff(diff):
                 # Push out open entry
                 for entry in yield_open_entry(open_entry):
                     yield entry
-                
+
                 # Directly push out lines until last
                 for line in lines[:-1]:
                     yield (False, line, line)
-                
+
                 # Keep last line open
                 open_entry = ([lines[-1]], [lines[-1]])
             elif change_type == 1:
                 ls, rs = open_entry
-                
+
                 for line in lines:
                     rs.append('<ins>%s</ins>' % line if line else '')
-                
+
                 open_entry = (ls, rs)
             elif change_type == -1:
                 ls, rs = open_entry
-                
+
                 for line in lines:
                     ls.append('<del>%s</del>' % line if line else '')
-                
+
                 open_entry = (ls, rs)
 
     # Push out open entry

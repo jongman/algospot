@@ -7,6 +7,7 @@ import languages
 import differs
 import tagging
 
+
 class ProblemRevisionEditForm(forms.ModelForm):
     summary = forms.CharField(max_length=100,
                               widget=forms.TextInput(attrs={"class": "large"}),
@@ -25,6 +26,7 @@ class ProblemRevisionEditForm(forms.ModelForm):
             problem.last_revision = instance
             problem.save()
         return instance
+
 
 class ProblemEditForm(forms.ModelForm):
     tags = tagging.forms.TagField(label=u"문제 분류", required=False)
@@ -49,6 +51,7 @@ class ProblemEditForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
 
 class RestrictedProblemEditForm(forms.ModelForm):
     tags = tagging.forms.TagField(label=u"문제 분류", required=False)
@@ -76,6 +79,7 @@ class RestrictedProblemEditForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
 
 class SubmitForm(forms.Form):
     language = forms.ChoiceField([(key, "%s: %s" % (val.LANGUAGE, val.VERSION))
@@ -113,3 +117,19 @@ class AdminSubmitForm(SubmitForm):
                                     is_public=("True" == self.cleaned_data["is_public"]),
                                     source=self.cleaned_data["source"])
         new_submission.save()
+
+
+class SubmissionFilterForm(forms.Form):
+    problem = forms.CharField(widget=forms.TextInput(attrs={"class": "problem_autocomplete"}),
+                              required=False,
+                              label=u"문제")
+    user = forms.CharField(widget=forms.TextInput(attrs={"class": "user_autocomplete"}),
+                           required=False,
+                           label=u"제출자")
+    language = forms.ChoiceField([('', "(All)")] +
+                                 [(key, "%s (%s)" % (val.LANGUAGE, key)) for key, val in languages.modules.items()],
+                                 required=False,
+                                 label=u"언어")
+
+    def __init__(self, *args, **kwargs):
+        super(SubmissionFilterForm, self).__init__(*args, **kwargs)
