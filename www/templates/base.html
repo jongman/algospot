@@ -176,6 +176,25 @@
 							</ul>
 						</li>
 						<li class="{% block calendar_class %}{% endblock %}"><a href="{% url "calendar" %}" class="no-submenu">캘린더</a></li>
+						<li>
+							<a href="https://algospot.slack.com/" class="">
+								알고스팟 대화방
+							</a>
+							<ul>
+								<li class="">
+									<a href="http://algospot-slack-invitation.herokuapp.com/">
+										초대장 받기
+									</a>
+								</li>
+							</ul>
+							<ul>
+								<li class="">
+									<a href="https://algospot.com/wiki/read/%EC%95%8C%EA%B3%A0%EC%8A%A4%ED%8C%9F_%EC%B1%84%ED%8C%85">
+										이용 안내
+									</a>
+								</li>
+							</ul>
+						</li>
 						{% if user.is_superuser %}
 							<li><a href="/admin" class="no-submenu">관리자 페이지</a></li>
 						{% endif %}
