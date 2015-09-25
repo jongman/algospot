@@ -101,11 +101,25 @@ CAMPAIGNS = [
     },
     {
         'name': 'codesprint2015',
-        'start': datetime(2015, 6, 24, 9, 0, 0, 0),
+        'start': datetime(2015, 6, 24, 0, 0, 0, 0),
         'end': datetime(2015, 7, 24, 23, 59, 59),
-        'image': '/static/images/banners/codesprint2015.jpg',
+        'image': '/static/images/banners/codesprint2015.png',
         'link': 'http://codesprint.skplanet.com/'
     },
+    {
+        'name': 'nexoncareer2015fall',
+        'start': datetime(2015, 8, 31, 22, 0, 0, 0),
+        'end': datetime(2015, 9, 22, 23, 59, 59, 0),
+        'image': '/static/images/banners/nexon-fall-2015.jpg',
+        'link': 'https://career.nexon.com/'
+    },
+    {
+        'name': 'frograms',
+        'start': datetime(2015, 9, 25, 0, 0, 0),
+        'end': datetime(2016, 9, 26, 0, 0, 0),
+        'image': '/static/images/banners/algospot_frograms.png',
+        'link': 'http://www.frograms.com/joinus/',
+    }
 ]
 
 def select_campaign(request):
