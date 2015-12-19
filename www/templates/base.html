@@ -210,11 +210,11 @@
 					</form>
 				</section>
 				<!-- /Search -->
-				{% if campaign %}
+				{% for campaign in campaigns %}
 				<section id="campaign">
 					<a target="_blank" href="{{ campaign.link }}"><img src="{{ campaign.image }}"/></a>
 				</section>
-				{% endif %}
+				{% endfor %}
 				<!--Sidebar -->
 				<section class="sidebar nested" id="calendar_upcoming">
 					<h2>다가오는 이벤트들</h2>
