@@ -122,7 +122,7 @@ CAMPAIGNS = [
     },
     {
         'name': 'zoyi',
-        'start': datetime(2015, 12, 20, 0, 0, 0),
+        'start': datetime(2015, 12, 19, 0, 0, 0),
         'end': datetime(2016, 2, 22, 0, 0, 0),
         'image': '/static/images/banners/zoyi.jpg',
         'link': 'https://zoyi.co/job/',
