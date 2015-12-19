@@ -123,12 +123,11 @@ CAMPAIGNS = [
 ]
 
 def select_campaign(request):
-    campaign = None
+    campaigns = []
     now = datetime.now()
     for c in CAMPAIGNS:
         if c['start'] <= now <= c['end']:
-            campaign = c
-            break
-    return {'campaign': campaign}
+            campaigns.append(c)
+    return {'campaigns': campaigns}
 
 
