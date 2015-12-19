@@ -119,7 +119,14 @@ CAMPAIGNS = [
         'end': datetime(2016, 9, 26, 0, 0, 0),
         'image': '/static/images/banners/algospot_frograms.png',
         'link': 'http://www.frograms.com/joinus/',
-    }
+    },
+    {
+        'name': 'zoyi',
+        'start': datetime(2015, 12, 20, 0, 0, 0),
+        'end': datetime(2016, 2, 22, 0, 0, 0),
+        'image': '/static/images/banners/zoyi.jpg',
+        'link': 'https://zoyi.co/job/',
+    },
 ]
 
 def select_campaign(request):
