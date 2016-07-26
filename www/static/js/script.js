@@ -450,7 +450,7 @@ var ace_theme = new function() {
   };
 
   var last_theme = $.cookie('editor_theme');
-  if (!last_theme)
+  if (!last_theme || !(last_name in ace_theme_list))
     last_theme = 'default';
   this.set(last_theme);
 
