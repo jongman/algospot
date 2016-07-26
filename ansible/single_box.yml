@@ -23,7 +23,6 @@
   - aufs-tools
   - golang
   - ghc
-  - nodejs
   - ruby
   - luajit
   - pypy
@@ -63,6 +62,7 @@
   - dogslow
   - icalendar
   - pytz
+  - python-apt
 
 # Java
 
