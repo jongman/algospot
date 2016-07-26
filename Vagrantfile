@@ -8,6 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
   config.vm.provision "ansible" do |ansible|
+    ansible.galaxy_role_file = "ansible/roles.txt"
 	ansible.playbook = "ansible/dev.playbook"
 	ansible.verbose = 'v'
   end

@@ -8,6 +8,8 @@
     git_branch: chicago
     config_name: chicago
   remote_user: algospot
+  roles:
+    - nodesource.node
   tasks:
   - name: make home
     sudo: yes

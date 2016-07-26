@@ -42,29 +42,41 @@
 				return;
 
 			var mapping_to_ace = {
-				java: 'java',
-				scala: 'scala',
-                hs: 'haskell',
-                py3: 'python',
-				py: 'python',
-				js: 'javascript',
-				rb: 'ruby',
-				cpp: 'c_cpp'
+				java: ['clike', 'text/x-java'],
+				scala: ['clike', 'text/x-scala'],
+        hs: ['haskell', 'haskell'],
+        py3: ['python', 'python'],
+				py: ['python', 'python'],
+				js: ['javascript', 'javascript'],
+				rb: ['ruby', 'ruby'],
+        cpp: ['clike', 'text/x-c++src'],
+        c: ['clike', 'text/x-csrc'],
+        rust: ['rust', 'rust'],
+        go: ['go', 'go'],
 			};
+      var already_loaded = {};
 	
 			$('#id_language').change(function() {
+        console.log("val " + $(this).val());
 				var ace_lang = mapping_to_ace[$(this).val()];
-				if (!ace_lang) ace_lang = 'text';
+				if (!ace_lang) ace_lang = ['markdown', 'markdown'];
+        console.log(ace_lang);
 
-				var package_name = 'ace/mode/' + ace_lang;
+        var js_name = ace_lang[0];
+        var mode_name = ace_lang[1];
 				var load_script = function() {
-					var mode = require(package_name).Mode;
-					editor.getSession().setMode(new mode());
+          editor.setOption("mode", mode_name);
 				};
-				if (!require(package_name))
-					$.getScript('/static/js/ace/mode-' + ace_lang + '.js', load_script);
-				else
-					load_script();
+        if (!(js_name in already_loaded)) {
+          console.log("trying to load " + '/static/codemirror/mode/' + js_name + '/' + js_name + '.js');
+          $.getScript('/static/codemirror/mode/' + js_name + '/' + js_name + '.js', function() {
+            load_script(); 
+            already_loaded[js_name] = true;
+          });
+        }
+        else {
+          load_script();
+        }
 			}).change();
 		});
 

@@ -136,5 +136,3 @@ def select_campaign(request):
         if c['start'] <= now <= c['end']:
             campaigns.append(c)
     return {'campaigns': campaigns}
-
-
