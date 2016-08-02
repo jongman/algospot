@@ -36,7 +36,7 @@
 
 	<script language="javascript">
 		$(function() {
-			var editor = aceize('id_text', { fullscreen: true, preview: true, cheatsheet: 'markdown-cheatsheet', submit_handler: true });
+			var editor = mirrorize('id_text', { fullscreen: true, preview: true, cheatsheet: 'markdown-cheatsheet', submit_handler: true });
 			$('#id_category').change(function() {
 			    if (editor.getValue() != '')
 			        return;
