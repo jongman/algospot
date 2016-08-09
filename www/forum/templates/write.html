@@ -52,7 +52,7 @@
                         success: function(data) {
                             if (cat.val() != id)
                                 return;
-                            editor.getSession().setValue(data);
+                            editor.getDoc().setValue(data);
                             var btn = $('#id_text ~ .editor-config > .edit-preview');
                             btn.click();
                             if (btn.hasClass('edit'))
