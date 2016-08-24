@@ -21,7 +21,6 @@
   - postgresql-server-dev-9.3
   - lxc
   - aufs-tools
-  - golang
   - ghc
   - ruby
   - luajit
@@ -106,10 +105,27 @@
   register: rustc_version
   ignore_errors: True
 
-- name: "download and install rust 1.0.0 (64bit binary)"
-  when: rustc_version|failed or rustc_version.stderr.find('rustc 1.0.0') == -1
+- name: "download and install rust 1.11.0 (64bit binary)"
+  when: rustc_version|failed or rustc_version.stdout.find('rustc 1.11.0') == -1
   sudo: yes
   shell: curl -s https://static.rust-lang.org/rustup.sh > /tmp/rustup.sh && chmod +x /tmp/rustup.sh && /tmp/rustup.sh --yes
+
+# Go
+
+- name: "checking whether go version ..."
+  command: go version
+  register: go_version
+  ignore_errors: True
+
+- name: "add go stable"
+  when: go_version|failed or go_version.stdout.find('go1.6') == -1
+  sudo: yes
+  apt_repository: repo='ppa:ubuntu-lxc/lxd-stable'
+
+- name:	"install go 1.6 (64bit binary)"
+  when: go_version|failed or go_version.stdout.find('go1.6') == -1
+  sudo: yes
+  apt: name=golang
 
 # -----------------
 
