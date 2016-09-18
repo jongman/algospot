@@ -131,7 +131,7 @@ section[role=navigation] header h1 {
 /*  Navigation Layout :: User Info  */
 #user-info {
 	height:55px;
-	background:url('/static/images/bgs/bg_aside_userinfo.png') no-repeat;
+	/* background:url('/static/images/bgs/bg_aside_userinfo.png') no-repeat; */
 	border-top:1px solid;
 	margin:0 2px 25px 0;
 	padding:18px;

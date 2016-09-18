@@ -11,7 +11,7 @@ a, #main-nav ul li.current a, #main-nav ul li.current li.current a, #main-nav ul
 #main-nav ul li a:hover, #main-nav ul li li a:hover, #main-nav ul li.current li a:hover, .wizard-steps li a:hover, .wizard-steps li a.current,
 .tab-switch li a.current, .sidetab-switch li a.current, .tab-switch li a:hover, .sidetab-switch li a:hover,
 .widget.decrease strong, .jq-datepicker.datepick a, #user-info div > a:hover, .contacts li a.contacts-user:hover, .tickets .ticket-data .ticket-details h4
-{ color:#ff937e; }
+{ color:#faa; }
 #main-nav ul li a, #main-nav ul li.current li a, #main-nav ul li span, .wizard-steps li a,
 .sidebar h2, .jq-datepicker .datepick-month-header select, .jq-datepicker .datepick-month th,
 .jq-datepicker .datepick-month th a, .tab-switch li a, .sidetab-switch li a
@@ -109,8 +109,8 @@ input:focus, textarea:focus { border-color:#a6a6a6; }
 }
 
 /*  Text Shadows  */
-h1, h2, h3, h4, h5, h6 { text-shadow:0 1px 1px #b3b3b3; }
-#main-nav ul li a { text-shadow:0 1px 1px #ccc; }
+h1, h2, h3, h4, h5, h6 { text-shadow:0 1px 1px #555; }
+#main-nav ul li a { text-shadow:0 1px 1px #444; }
 .stats-summary .stats-count { text-shadow:0 1px 1px #a6a6a6; }
 .htmlcalendar .calendar-entry {  text-shadow:0 1px 0 #fff; }
 .error-page strong {
