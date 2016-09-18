@@ -92,7 +92,7 @@ input.search {
 	width: 130px;
 	padding-left: 26px;
 	background: url(/static/images/icons/magnifier.png) no-repeat scroll 6px 6px;
-	background-color: #f3f3f3;
+	background-color: #444;
 }
 section#search form {
 	margin-top: 0px;
@@ -116,7 +116,7 @@ section#search form {
 	font-weight: bold;
 }
 .tabular li.content {
-	background-color: #f0f0f0;
+	background-color: #444;
 	border-top: 1px solid;
 	border-bottom: 1px solid;;
 	border-color: silver;
@@ -133,7 +133,7 @@ section#search form {
 /* 코멘트 목록 */
 ul.comments {
 	border-top: 1px solid;
-	border-color: #D6D6D6;
+	border-color: #444;
 	overflow: hidden;
 	margin: 0;
 	padding: 0;
@@ -146,7 +146,7 @@ ul.comments li.comment {
 	padding: 5px 5px;
 	margin: 0;
 	border-bottom: 1px solid;
-	border-color: #d6d6d6;
+	border-color: #444;
 	min-height: 60px;
 	overflow: hidden;
 	position: relative;
@@ -163,10 +163,10 @@ ul.comments li.comment dd.comment_content {
 	margin-left: 90px;
 }
 ul.comments li.comment dd.comment_content p {
-	color: #444
+	color: #eee;
 }
 ul.comments.background-color .comment:nth-child(odd) {
-	background-color: #F4F4F4;
+	background-color: #555;
 }
 ul.comments .comment .datetime {
 	color: #aaa;
@@ -219,23 +219,23 @@ div.pagination {
 
 div.pagination a:link, .pagination a:visited {
 	padding:7px 9px;
-	border:1px solid #EBEBEB;
+	border:1px solid #5a5a5a;
 	margin-left:10px;
 	text-decoration:none;
-	background-color:#F5F5F5;
+	background-color:#4a4a4a;
 	width:22px;
 	font-weight:normal;
 }
 
 div.pagination a:hover {
-	background-color:#DDEEFF;
-	border:1px solid #BBDDFF;
+	background-color:#666;
+	border:1px solid #666;
 }
 
 div.pagination .active_link {
-	color: #036 !important;
-	border:1px solid #BBDDFF !important;
-	background-color:#DDEEFF !important;
+	color: #eee !important;
+	border:1px solid #666 !important;
+	background-color:#555 !important;
 	cursor:default;
 }
 
@@ -624,7 +624,7 @@ section.problem_sample_input pre,
 section.problem_sample_output pre
 {
 	font-family: monospace;
-	background-color: #f0f0f0;
+	background-color: #555;
 	padding: 12px;
 	border: 1px solid silver;
 }
@@ -1282,3 +1282,4 @@ blockquote::before {
 /* ul.chzn-results li { */
 /* 	background-image: none; */
 /* } */
+

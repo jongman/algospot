@@ -451,7 +451,7 @@ var cm_theme = new function() {
 
   var last_theme = $.cookie('editor_theme');
   if (!last_theme || !(last_theme in cm_theme_list))
-    last_theme = 'default';
+    last_theme = 'lesser-dark';
   this.set(last_theme);
 
   return this;

@@ -25,7 +25,7 @@ mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bol
 del { text-decoration: line-through; }
 abbr[title], dfn[title] { border-bottom: 1px dotted; cursor: help; }
 table { border-collapse: collapse; border-spacing: 0; }
-hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #444; margin: 1em 0; padding: 0; }
 input, select { vertical-align: middle; }
 pre, code, kbd, samp { font-family: monospace, sans-serif; }
 
@@ -42,7 +42,7 @@ pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; padding: 1
 
 .ie7 img { -ms-interpolation-mode: bicubic; }
 a:link { -webkit-tap-highlight-color: #FF5E99; }
-body, select, input, textarea { color:#666; }
+body, select, input, textarea { color:#bbb; }
 
 /*  General Settings  */
 body {
@@ -61,7 +61,7 @@ body section[role=navigation] {
 	left:0;
 }
 body section[role=main] {
-	background-color:#fff;
+	background-color:#222;
 	min-width:669px;
 	height:100%;
 	margin-left:241px;
@@ -84,7 +84,7 @@ a.outside {
 
 /*  Fixed Layout  */
 body.fixed {
-	background-color:#e6e6e6;
+	background-color:#222;
 	background-image:none;
 }
 .fixed .fixed-wraper {
@@ -95,7 +95,7 @@ body.fixed {
 }
 .fixed .fixed-wraper section[role=main] {
 	min-width:0;
-	background-image:url('/static/images/bgs/bg_fixed.png');
+	/* background-image:url('/static/images/bgs/bg_fixed.png'); */
 	background-repeat:repeat-y;
 	background-position:right;
 	padding-right:32px;
@@ -115,9 +115,9 @@ section[role=navigation] header {
 	padding-left:25px;
 }
 section[role=navigation] header a {
-	background:url('/static/images/logo.png') no-repeat;
-	width:196px;
-	height:31px;
+	background:url('/static/images/ribbon.png') no-repeat;
+	width:128px;
+	height:197px;
 	text-indent:-9999em;
 	display:block;
 }
@@ -185,8 +185,7 @@ section[role=navigation] header h1 {
 	-webkit-transition:color 400ms ease;
 	-moz-transition:color 400ms ease;
 	transition:color 400ms ease;
-	background-position:25px 8px;
-	background-repeat:no-repeat;
+	background:none;
 	height:21px;
 	font-size: 110%;
 }
