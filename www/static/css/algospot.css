@@ -166,7 +166,7 @@ ul.comments li.comment dd.comment_content p {
 	color: #eee;
 }
 ul.comments.background-color .comment:nth-child(odd) {
-	background-color: #555;
+	background-color: #2a2a2a;
 }
 ul.comments .comment .datetime {
 	color: #aaa;
