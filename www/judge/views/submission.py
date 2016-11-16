@@ -50,9 +50,15 @@ def recent(request, page=1):
 
     if "state" in request.GET:
         state = request.GET["state"]
-        submissions = submissions.filter(state=state)
-        filters["state"] = state
-        title_add.append(Submission.STATES_KOR[int(state)])
+        if not state in [None, '']:
+            submissions = submissions.filter(state=state)
+            filters["state"] = state
+            title_add.append(Submission.STATES_KOR[int(state)])
+
+    if request.GET.get("order_by"):
+        order_by = request.GET.get("order_by")
+        if order_by.endswith('id') or order_by.endswith('length') or order_by.endswith('time'):
+            submissions = submissions.order_by(order_by)
 
     if request.GET.get("user"):
         username = request.GET["user"]
