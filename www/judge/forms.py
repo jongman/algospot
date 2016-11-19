@@ -130,6 +130,10 @@ class SubmissionFilterForm(forms.Form):
                                  [(key, "%s (%s)" % (val.LANGUAGE, key)) for key, val in languages.modules.items()],
                                  required=False,
                                  label=u"언어")
+    state = forms.ChoiceField([('', "All")] +
+                                [(key, "%s" % val) for key, val in Submission.STATES_KOR.items()],
+                                required=False,
+                                label="채점결과")
 
     def __init__(self, *args, **kwargs):
         super(SubmissionFilterForm, self).__init__(*args, **kwargs)

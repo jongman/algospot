@@ -21,3 +21,4 @@ www_static/
 *.iml
 .idea/
 atlassian-ide-plugin.xml
+ansible/roles/
