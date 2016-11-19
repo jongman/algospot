@@ -20,13 +20,19 @@
 		<table class="submission_list">
 			<thead>
 				<tr>
-					<th class="id">#</th>
+					<th class="id">
+                        {% sortable_table_header "#" "id" %}
+                    </th>
 					<th class="problem">문제</th>
 					<th class="user">제출자</th>
 					<th class="language">언어</th>
-					<th class="length">길이</th>
+					<th class="length">
+                        {% sortable_table_header "길이" "length" %}
+                    </th>
 					<th class="state">결과</th>
-					<th class="stats">수행시간</th>
+					<th class="stats">
+                        {% sortable_table_header "수행시간" "time" %}
+                    </th>
 					<th class="submitted_on">제출시간</th>
 				</tr>
 			</thead>
