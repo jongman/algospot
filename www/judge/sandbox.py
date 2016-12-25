@@ -83,9 +83,11 @@ lxc.utsname = %s
 lxc.tty = 4
 lxc.pts = 1024
 lxc.rootfs = %s
+lxc.mount.entry = proc proc proc nodev,noexec,nosuid 0 0
+#lxc.mount.auto = proc:mixed
 
 ## /dev filtering
-lxc.cgroup.devices.deny = a
+#lxc.cgroup.devices.deny = a
 # /dev/null and zero
 lxc.cgroup.devices.allow = c 1:3 rwm
 lxc.cgroup.devices.allow = c 1:5 rwm
@@ -118,7 +120,8 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         cmd = ["mount", "-t", fstype, source, destination]
         if options:
             cmd += ["-o", options]
-        execute(cmd)
+        ret = execute(cmd)
+        assert ret['returncode'] == 0, ret
         self.mounts.append(destination)
 
     def isolate_filesystem(self, fs_size, home_type):
@@ -141,7 +144,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
         self.mount("none", self.root_mount, "aufs", "br=%s:/" % self.root_cow)
 
         # 일부 프로그램들은 /proc 이 없으면 제대로 동작하지 않는다 (Sun JVM 등)
-        self.mount("proc", join(self.root_mount, "proc"), "none", "proc")
+        #self.mount("proc", join(self.root_mount, "proc"), "proc", "proc")
 
         # /dev/shm
         dev_shm = join(self.root_mount, "dev", "shm")
