@@ -8,7 +8,7 @@
     config_name: dev
   remote_user: vagrant
   roles:
-    - { role: nodesource.node, sudo: yes }
+    - { role: nodesource.node, sudo: yes, validate_certs: False }
   tasks:
   - name: copy grub config (required for LXC)
     copy: src=../configs/{{config_name}}/grub dest=/etc/default backup=yes

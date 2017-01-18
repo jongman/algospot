@@ -83,3 +83,5 @@
 
 * "The SSH connection was unexpectedly closed by the remote end."
 	* Vagrant up 명령어에서 위와 같은 명령어가 나온다면 놀라지 말고 `vagrant reload`를 해주면 된다.
+* "[ERROR]: failed to download the file: Failed to validate the SSL certificate for github.com:433. Make sure your managed systems have a valid CA certificate"
+	* ansible/dev.playbook 에 { role: nodesource.node, sudo: yes } 를 { role : nodesource.node, sudo: yes, validate_certs: False } 로 수정하여 ssl 인증 관련 부분을 건너 뛴다.
