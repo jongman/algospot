@@ -118,6 +118,7 @@ def get_profile(request, user):
                    "failed_problem_count": failed_problem_count,
                    "not_attempted_problem_count": all_problem_count - attempted_problem_count,
                    "submission_chart_url": submission_chart,
+                   "submission_accepted_constant": Submission.ACCEPTED,
                    "category_chart_url": category_chart,
                    "actions": actions,
                    "oj_rank": rank+1,
