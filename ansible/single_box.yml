@@ -99,6 +99,20 @@
   sudo: yes
   shell: dpkg --skip-same-version -i /tmp/scala-2.11.1.deb
 
+# .NET Core SDK
+
+- name: "add apt repository for .net core"
+  sudo: yes
+  apt_repository: repo='deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main' filename='dotnetdev'
+
+- name: "add apt key for .net core "
+  sudo: yes
+  apt_key: keyserver=apt-mo.trafficmanager.net id=417A0893
+
+- name: "install .net core"
+  sudo: yes
+  apt: name=dotnet-dev-1.0.0-preview2-003121 update_cache=yes # update 해야 key 가 반영됨
+
 # Rust
 
 - name: "checking whether rust exists ..."
@@ -288,3 +302,11 @@
 - name: "register cron entry for update_index"
   cron: name="update search index" minute="0,30" job="cd {{django_dir}}; ./manage.py update_index" user="www-data" cron_file="update-index-job"
   sudo: yes
+
+# runner user 를 위해 .NET Core 필수 패키지를 미리 다운로드 한다.
+# 이 단계가 없으면 서밋마다 패키지를 다운로드해서 매우 느리게 된다. c#.py 파일 참고.
+# 현재까지는 임시로 프로젝트를 생성하는 우회 방법밖에 없다. (1.0.0-preview2-sdk)
+# 개선되면 반영하기 - https://github.com/dotnet/cli/issues/3692
+- name: "download .net core packages to prevent slow judge"
+  sudo: yes
+  shell: export NUGET_PACKAGES=/var/runner-nuget-packages && mkdir -p $NUGET_PACKAGES && cd `mktemp -d` && dotnet new && chown -R runner:runner $NUGET_PACKAGES
