@@ -63,8 +63,8 @@
 							({% percentage failed_problem_count attempted_problem_count %}%)</a>
 					</li>
 					<li class="submissions"><a href="{% url "judge-submission-recent" %}?user={{ profile_user.username }}">{{ profile_user.get_profile.submissions }}</a></li>
-					<li class="accepted">{{ profile_user.get_profile.accepted }}
-						({% percentage profile_user.get_profile.accepted profile_user.get_profile.submissions %}%)
+					<li class="accepted"><a href="{%  url "judge-submission-recent" %}?user={{ profile_user.username }}&state={{ submission_accepted_constant }}"> {{ profile_user.get_profile.accepted }}
+						({% percentage profile_user.get_profile.accepted profile_user.get_profile.submissions %}%)</a>
 					</li>
 				</ul>
 			</li>
