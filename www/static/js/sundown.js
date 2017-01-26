@@ -2241,7 +2241,7 @@ window.markdown = function(str) {
 		if (namespace == 'problem')
 			return '<a class="problem" href="/judge/problem/read/' + title + '">' + escape_as_html(display || title) + '</a>';
 		if (namespace == 'user')
-			return '<a class="user" href="/user/username/">' + escape_as_html(display || title) + '</a>';
+			return '<a class="user" href="/user/username/' + title + '">' + escape_as_html(display || title) + '</a>';
 		return match;
 	});
 
