@@ -19,7 +19,7 @@
 				<legend>이 글을 정말 삭제하시겠습니까?</legend>
 				{% csrf_token %}
 				<p>
-					<input type="submit" name="submit" value="Delete" class="eng button" /> 혹은 <a href="{% url "forum-read" post.id %}">Cancel</a>
+					<input type="submit" name="submit" value="Delete" class="eng button" /> 혹은 <a href="{% url "forum-read" post.id %}" class="eng button">Cancel</a>
 				</p>
 			</fieldset>
 		</form>
