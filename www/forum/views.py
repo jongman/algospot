@@ -47,7 +47,13 @@ def read(request, id):
     checker = ObjectPermissionChecker(request.user)
     if not checker.has_perm('read_post', category):
         return HttpResponseForbidden("Restricted post")
-    return render(request, "read.html", {"post": post, "category": category})
+
+    comment_query =  Comment.objects.filter(object_pk=post.id,
+                content_type=ContentType.objects.get_for_model(Post),
+                is_removed=False)
+
+    candelete = request.user.is_superuser or comment_query.count() <= 0
+    return render(request, "read.html", {"post": post, "category": category, "candelete" : candelete})
 
 @login_required
 def write(request, slug, id):
@@ -83,13 +89,20 @@ def delete(request, id):
     if not request.user.is_superuser and request.user != post.user:
         return HttpResponseForbidden("operation is forbidden.")
     category = post.category
-    # Delete on POST
+    comment_query =  Comment.objects.filter(object_pk=post.id,
+                content_type=ContentType.objects.get_for_model(Post),
+                is_removed=False)
+
+    # Delete on POST if user is a superuser and the number of comments is more than 0
     if request.method == 'POST':
         # delete all comments
-        Comment.objects.filter(object_pk=post.id,
-                content_type=ContentType.objects.get_for_model(Post)).delete()
-        post.delete()
-        return redirect(reverse("forum-list",
-                                kwargs={"slug": category.slug, "page": 1}))
+        if request.user.is_superuser or comment_query.count() <= 0:
+            comment_query.delete()
+            post.delete()
+            return redirect(reverse("forum-list",
+                                    kwargs={"slug": category.slug, "page": 1}))
+        else:
+            return HttpResponseForbidden("operation is forbidden.")
+
     return render(request, "delete.html", {"post": post, "category": category})
 

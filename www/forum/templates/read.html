@@ -29,7 +29,11 @@
 							{% if user.is_authenticated %}
 								{% if user.is_superuser or user == post.user %}
 									<a href="{% url "forum-edit" post.id %}" class="button-link">edit</a> 
-									<a href="{% url "forum-delete" post.id %}" class="button-link">delete</a>
+                                    {% if candelete %}
+                                        <a href="{% url "forum-delete" post.id %}" class="button-link">delete</a>
+                                    {% else %}
+                                        <a href="#" class="button-link">delete</a>
+                                    {% endif %} 
 								{% endif %}
 							{% endif %}
 						</span>
