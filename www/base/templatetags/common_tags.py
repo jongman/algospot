@@ -9,6 +9,7 @@ from rendertext import render_text as actual_render_text
 from rendertext import render_latex as actual_render_latex
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
+from pygments.filters import VisibleWhitespaceFilter
 from pygments.formatters import HtmlFormatter
 import datetime
 import itertools
@@ -38,6 +39,7 @@ class SourceCodeNode(template.Node):
         code = self.code.resolve(context)
         lang = self.lang.resolve(context)
         lexer = get_lexer_by_name(PYGMENT_LANGUAGE_NAMES.get(lang, lang))
+        lexer.add_filter(VisibleWhitespaceFilter(tabsize=4))
         formatter = HtmlFormatter(style="colorful")
         return highlight(code, lexer, formatter).replace("\n", "<br/>")
 

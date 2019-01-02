@@ -75,6 +75,9 @@
 			e.stopPropagation();
 			e.preventDefault();
 			$("#comment_list").slideToggle();
+			$('.CodeMirror').each(function(i, el){
+				el.CodeMirror.refresh();
+			});
 			return false;
 		});
 		if(window.location.hash) {
