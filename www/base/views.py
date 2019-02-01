@@ -95,7 +95,7 @@ def profile(request, user_id):
     return get_profile(request, user)
 
 def get_profile(request, user):
-    comment_count = Comment.objects.filter(user=user).count()
+    comment_count = Comment.objects.filter(user=user, is_removed=False).count()
     problem_count = Problem.objects.filter(user=user, state=Problem.PUBLISHED).count()
     attempted_problem_count = Solver.objects.filter(user=user).count()
     all_problem_count = Problem.objects.filter(state=Problem.PUBLISHED).count()
