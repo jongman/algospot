@@ -13,7 +13,7 @@ ADDITIONAL_FILES = []
 
 def setup(sandbox, source_code):
     sandbox.write_file(source_code, "submission.cpp")
-    compiled = sandbox.run("g++ -O3 submission.cpp -pedantic-errors --std=c++0x", stdout=".stdout",
+    compiled = sandbox.run("g++ -O3 submission.cpp -pedantic-errors --std=c++0x -DNDEBUG", stdout=".stdout",
                            stderr=".stderr", time_limit=10,
                            memory_limit=COMPILE_MEMORY_LIMIT)
     if compiled.split()[0] != "OK":
