@@ -20,7 +20,7 @@ def print_stack_trace():
     traceback.print_exc(file=io)
     io.seek(0)
     return io.read()
-   
+
 logger = get_task_logger(__name__)
 
 @app.task()
@@ -82,7 +82,7 @@ def judge_submission(submission):
                 unzip_and_sanitize(destination, data_dir)
             else:
                 sanitize_data(destination)
-        
+
         open(pathhash_path, 'w').close()
 
     def sanitize_data(filename):
@@ -162,6 +162,7 @@ def judge_submission(submission):
             result = language_module.run(sandbox_env, inp,
                                          problem.last_revision.time_limit / 1000.,
                                          problem.last_revision.memory_limit)
+            print("result from language module:", result)
 
             # RTE 혹은 MLE?
             if result["status"] != "ok":

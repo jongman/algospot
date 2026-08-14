@@ -127,6 +127,13 @@ CAMPAIGNS = [
         'image': '/static/images/banners/zoyi.jpg',
         'link': 'https://zoyi.co/job/',
     },
+    {
+        'name': 'frograms2',
+        'start': datetime(2017, 3, 17, 0, 0, 0),
+        'end': datetime(2018, 3, 19, 0, 0, 0),
+        'image': '/static/images/banners/watcha.png',
+        'link': 'http://www.frograms.com/joinus/',
+    },
 ]
 
 def select_campaign(request):

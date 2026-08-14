@@ -21,6 +21,8 @@ import os
 import hashlib
 import uuid
 import urllib
+from django.conf import settings
+
 
 @login_required
 def new(request):
@@ -346,7 +348,13 @@ def read(request, slug):
         not checker.has_perm('read_problem', problem) and
         problem.user != request.user):
         raise Http404
-    return render(request, "problem/read.html", {"problem": problem, "revision": problem.last_revision, "editable": checker.has_perm('edit_problem', problem)})
+    return render(request, "problem/read.html", {
+        "problem": problem,
+        "revision": problem.last_revision,
+        "editable": checker.has_perm('edit_problem', problem),
+        "USER_AUTHORIZATION_LIMIT" : settings.USER_AUTHORIZATION_LIMIT,
+        "USER_AUTHORIZATION_LIMIT_DAYS" : settings.USER_AUTHORIZATION_LIMIT_DAYS
+    })
 
 @login_required
 def latexify(request, slug):
@@ -403,7 +411,7 @@ def revert(request, id, slug):
     old_id = revision.id
     revision.id = None
     revision_form = ProblemRevisionEditForm(data=None, instance=revision)
-    revision_form.save(problem, request.user, 
+    revision_form.save(problem, request.user,
                        summary=u"리비전 %s로 복구." % old_id)
     return redirect(reverse("judge-problem-read", kwargs={"slug": problem.slug}))
 

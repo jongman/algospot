@@ -2,6 +2,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from base.decorators import authorization_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
 from djangoutils import setup_paginator
@@ -11,6 +12,7 @@ from utils import get_posts_for_user, get_categories_for_user
 from django.contrib.comments.models import Comment
 from django.contrib.auth.models import User
 from guardian.core import ObjectPermissionChecker
+from django.conf import settings
 
 def list(request, slug, page=1):
     checker = ObjectPermissionChecker(request.user)
@@ -53,9 +55,13 @@ def read(request, id):
                 is_removed=False)
 
     candelete = request.user.is_superuser or comment_query.count() <= 0
-    return render(request, "read.html", {"post": post, "category": category, "candelete" : candelete})
+    return render(request, "read.html", {"post": post, "category": category, 
+                                         "candelete" : candelete, 
+                                         "USER_AUTHORIZATION_LIMIT" : settings.USER_AUTHORIZATION_LIMIT,
+                                         "USER_AUTHORIZATION_LIMIT_DAYS" : settings.USER_AUTHORIZATION_LIMIT_DAYS })
 
 @login_required
+@authorization_required
 def write(request, slug, id):
     initial_data = {}
     categories = get_categories_for_user(request.user, 'forum.write_post')

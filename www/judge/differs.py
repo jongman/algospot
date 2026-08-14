@@ -25,7 +25,11 @@ def ignore_trailing_space(input, output, expected, data_dir, sandbox):
 @register
 def ignore_whitespace(input, output, expected, data_dir, sandbox):
     u"모든 공백 무시"
-    return tokenize(output.read()) == tokenize(expected.read())
+    output = output.read()
+    expected = expected.read()
+    print 'output', len(output), output[:200]
+    print 'expected', len(expected), expected[:200]
+    return tokenize(output) == tokenize(expected)
 
 @register
 def relative_float(input, output, expected, data_dir, sandbox):
@@ -79,7 +83,7 @@ def special_judge(input, output, expected, data_dir, sandbox):
                       memory_limit=COMPILE_MEMORY_LIMIT,
                       time_limit=10, stdout='_result')
     if res.split()[0] != 'OK':
-        raise Exception('checker implementation failed (%s)' % res.strip()) 
+        raise Exception('checker implementation failed (%s)' % res.strip())
 
     result_path = sandbox.get_file_path('_result')
     if not path.exists(result_path):

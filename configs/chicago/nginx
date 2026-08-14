@@ -1,5 +1,4 @@
 server {
-	listen 80 default_server;
 	listen 443 ssl default_server;
 	server_name algospot.com;
 
@@ -70,6 +69,108 @@ server {
 	#location ~ /\.ht {
 	#	deny all;
 	#}
+
+    ssl_certificate /etc/letsencrypt/live/algospot.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/algospot.com/privkey.pem; # managed by Certbot
 }
 
 # vim: set ft=nginx noexpandtab:
+server {
+	listen 443 ssl ;
+    server_name www.algospot.com; # managed by Certbot
+
+	client_max_body_size 16m;
+
+	root /usr/share/nginx/www;
+	index index.html index.htm;
+
+	# Redirect 'all' HTTP requets to HTTPS
+	if ($scheme = http) {
+		return 302 https://$server_name$request_uri;
+	}
+
+	location / {
+		# First attempt to serve request as file, then
+		# as directory, then fall back to index.html
+		#try_files $uri $uri/ /index.html;
+		include uwsgi_params;
+		uwsgi_pass unix:///tmp/django.sock;
+		#uwsgi_pass 127.0.0.1:3031;
+	}
+
+	location /static {
+		alias /algospot/www_static;
+		autoindex off;
+	}
+	location /media {
+		alias /www-media;
+		autoindex off;
+	}
+	location /favicon.ico {
+		alias /algospot/www_static/images/favicon.ico;
+	}
+	location /robots.txt {
+		alias /algospot/www_static/robots.txt;
+	}
+	location /contest {
+		alias /algospot/www_static/contest;
+		autoindex off;
+	}
+
+	#error_page 404 /404.html;
+
+	# redirect server error pages to the static page /50x.html
+	#
+	#error_page 500 502 503 504 /50x.html;
+	#location = /50x.html {
+	#	root /usr/share/nginx/www;
+	#}
+
+	# proxy the PHP scripts to Apache listening on 127.0.0.1:80
+	#
+	#location ~ \.php$ {
+	#	proxy_pass http://127.0.0.1;
+	#}
+
+	# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+	#
+	#location ~ \.php$ {
+	#	fastcgi_pass 127.0.0.1:9000;
+	#	fastcgi_index index.php;
+	#	include fastcgi_params;
+	#}
+
+	# deny access to .htaccess files, if Apache's document root
+	# concurs with nginx's one
+	#
+	#location ~ /\.ht {
+	#	deny all;
+	#}
+
+    ssl_certificate /etc/letsencrypt/live/algospot.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/algospot.com/privkey.pem; # managed by Certbot
+
+
+}server {
+    if ($host = algospot.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+	listen 80 default_server;
+	server_name algospot.com;
+    return 404; # managed by Certbot
+
+
+}server {
+    if ($host = www.algospot.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+	listen 80 ;
+    server_name www.algospot.com;
+    return 404; # managed by Certbot
+
+
+}

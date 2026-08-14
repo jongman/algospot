@@ -223,7 +223,7 @@ JUDGE_SETTINGS = {
     "USER": "runner",
     "FILESYSTEMSIZE": 64 * 1024,
     "MINMEMORYSIZE": 512 * 1024,
-    "WEBSERVER": 'http://127.0.0.1/'
+    "WEBSERVER": 'https://algospot.com/'
 }
 
 # PAGINATION SETTINGS
