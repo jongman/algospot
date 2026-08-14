@@ -1,6 +1,8 @@
 venv
 *swp
 *.pyc
+migration/.env
+*.pgdump
 *.sqlite3
 designs
 

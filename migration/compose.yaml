@@ -1,0 +1,52 @@
+name: algospot-migration
+
+services:
+  postgres:
+    image: postgres:17.10-bookworm
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-algospot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-55432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$${POSTGRES_USER}" -d postgres
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  restore:
+    image: postgres:17.10-bookworm
+    profiles: [tools]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER:-algospot}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - type: bind
+        source: ${ALGOSPOT_BACKUP_DIR:?set ALGOSPOT_BACKUP_DIR in .env}
+        target: /backup
+        read_only: true
+    entrypoint: [/bin/sh, -ec]
+    command:
+      - |
+        dropdb --if-exists algospot_restore
+        createdb algospot_restore
+        pg_restore \
+          --exit-on-error \
+          --no-owner \
+          --no-acl \
+          --dbname=algospot_restore \
+          /backup/algospot.pgdump
+        psql --dbname=algospot_restore --command='ANALYZE;'
+
+volumes:
+  postgres-data:
+
