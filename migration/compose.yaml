@@ -7,10 +7,10 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: ${POSTGRES_USER:-algospot}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
-    ports:
-      - "127.0.0.1:${POSTGRES_PORT:-55432}:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - restore
     healthcheck:
       test:
         - CMD-SHELL
@@ -29,6 +29,8 @@ services:
       PGHOST: postgres
       PGUSER: ${POSTGRES_USER:-algospot}
       PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    networks:
+      - restore
     volumes:
       - type: bind
         source: ${ALGOSPOT_BACKUP_DIR:?set ALGOSPOT_BACKUP_DIR in .env}
@@ -39,6 +41,7 @@ services:
       - |
         dropdb --if-exists algospot_restore
         createdb algospot_restore
+        psql --dbname=algospot_restore --command='DROP SCHEMA public;'
         pg_restore \
           --exit-on-error \
           --no-owner \
@@ -50,3 +53,6 @@ services:
 volumes:
   postgres-data:
 
+networks:
+  restore:
+    internal: true

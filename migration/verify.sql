@@ -37,3 +37,10 @@ FROM judge_submission submission
 LEFT JOIN judge_problem problem ON problem.id = submission.problem_id
 WHERE problem.id IS NULL;
 
+SELECT count(*) AS invalid_constraints
+FROM pg_constraint
+WHERE NOT convalidated;
+
+SELECT count(*) AS invalid_indexes
+FROM pg_index
+WHERE NOT indisvalid;
