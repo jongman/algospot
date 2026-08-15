@@ -63,12 +63,33 @@ The `bridge-clone` and name-locked `bridge-migrate` tools rehearse fake adoption
 on `algospot_native_migrate`: they add only Django's migration recorder, mark
 ten native migrations applied, and leave all verified core row counts intact.
 The native graph also succeeds against an empty database.
+
+The `django18` Compose profile is the next verified checkpoint. It runs Django
+1.8.19 and replaces the removed built-in comments application with
+`django-contrib-comments` 1.8.0 while retaining the historical `comments`
+application label and content type. Its dependency boundary also pins
+django-guardian 1.3.2, django-haystack 2.4.1, and django-tagging 0.3.6; the
+archived Django 1.6 and 1.7 images keep their original versions. `djcelery` is
+not registered as a Django 1.8 application because its packaged migrations are
+South migrations, but the legacy Celery integration remains importable.
+
+On a fresh clone of the restored database, `django18-migrate --fake-initial`
+adopts 13 existing initial migrations and applies eight framework follow-up
+migrations. The resulting 21 migration records preserve every verified core
+row count, including 17,094 comments and 717,237 submissions. The expected
+schema changes widen the comments email column from 75 to 254 characters and
+add the comments submit-date index. Both Django 1.8 characterization suites
+pass against the migrated scratch database with transactions forced read-only;
+the migration command is idempotent, and the evidence database remains
+unchanged with no migration-recorder table.
+
 4. Upgrade incrementally through supported API boundaries, resolving all
    deprecation warnings before each next step. Port the code to Python 3 before
    crossing to Django 2.
-5. Replace removed or abandoned dependencies: `django.contrib.comments`,
-   South, djcelery, old registration/avatar/tagging packages, pygooglechart,
-   Whoosh integration, and the vendored Python-2 Misaka binding.
+5. Continue replacing removed or abandoned dependencies: South, djcelery, old
+   registration/avatar/tagging packages, pygooglechart, Whoosh integration,
+   and the vendored Python-2 Misaka binding. The built-in comments dependency
+   has been replaced at the Django 1.8 checkpoint.
 6. Split the judge worker from the web deployment and replace the 2014 LXC
    sandbox with an explicitly isolated runner. Do not expose the judge daemon
    during ordinary web-development work.

@@ -14,6 +14,7 @@ INSTALLED_APPS = tuple(
     app for app in INSTALLED_APPS
     if app != 'south'
 )
+SOUTH_MIGRATION_MODULES = {}
 
 
 if os.environ.get('BRIDGE_ALLOW_DATABASE_WRITES') == 'scratch-only':

@@ -1,6 +1,6 @@
 import re
 from django.core.management.base import NoArgsCommand
-from django.contrib.comments.models import Comment
+from algospot.comments_compat import Comment
 from django.db.models.signals import post_save
 from judge.models import Problem
 from wiki.models import PageRevision
@@ -40,4 +40,3 @@ class Command(NoArgsCommand):
         	x.comment = self.pattern.sub(self.replace, x.comment)
         	x.save()
         print u'\nDone!'
-

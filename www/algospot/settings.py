@@ -116,6 +116,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'algospot.urls'
+COMMENTS_URLCONF = 'django.contrib.comments.urls'
 
 TEMPLATE_DIRS = (
     j("../templates"),

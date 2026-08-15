@@ -212,6 +212,83 @@ services:
       <<: *legacy-environment
       DJANGO_SETTINGS_MODULE: algospot.bridge_settings
 
+  django18-web: &django18-web
+    <<: *legacy-web
+    profiles: [django18]
+    image: algospot-bridge-django18:local
+    build:
+      context: ..
+      dockerfile: migration/legacy/Dockerfile
+      args:
+        COMMENTS_VERSION: 1.8.0
+        DJANGO_VERSION: 1.8.19
+        GUARDIAN_VERSION: 1.3.2
+        HAYSTACK_VERSION: 2.4.1
+        TAGGING_VERSION: 0.3.6
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django18_settings
+    ports:
+      - 127.0.0.1:${DJANGO18_HTTP_PORT:-18082}:8000
+    command: [python, /opt/algospot/bridge-runserver.py]
+
+  django18-smoke: &django18-smoke
+    <<: *legacy-smoke
+    profiles: [django18]
+    image: algospot-bridge-django18:local
+    depends_on:
+      django18-web:
+        condition: service_healthy
+    environment:
+      ALGOSPOT_SMOKE_BASE_URL: http://django18-web:8000
+      ALGOSPOT_SMOKE_HOST: legacy-web:8000
+
+  django18-auth-smoke: &django18-auth-smoke
+    <<: *legacy-auth-smoke
+    profiles: [django18]
+    image: algospot-bridge-django18:local
+    depends_on:
+      django18-web:
+        condition: service_healthy
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django18_settings
+
+  django18-scratch-web:
+    <<: *django18-web
+    profiles: [tools]
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django18_settings
+      LEGACY_POSTGRES_DB: algospot_native_migrate
+      LEGACY_POSTGRES_USER: ${POSTGRES_USER:-algospot}
+      LEGACY_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in restore.env}
+    ports:
+      - 127.0.0.1:${DJANGO18_SCRATCH_HTTP_PORT:-18083}:8000
+
+  django18-scratch-smoke:
+    <<: *django18-smoke
+    profiles: [tools]
+    depends_on:
+      django18-scratch-web:
+        condition: service_healthy
+    environment:
+      ALGOSPOT_SMOKE_BASE_URL: http://django18-scratch-web:8000
+      ALGOSPOT_SMOKE_HOST: legacy-web:8000
+
+  django18-scratch-auth-smoke:
+    <<: *django18-auth-smoke
+    profiles: [tools]
+    depends_on:
+      django18-scratch-web:
+        condition: service_healthy
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django18_settings
+      LEGACY_POSTGRES_DB: algospot_native_migrate
+      LEGACY_POSTGRES_USER: ${POSTGRES_USER:-algospot}
+      LEGACY_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in restore.env}
+
   bridge-clone:
     profiles: [tools]
     image: postgres:17.10-bookworm
@@ -276,6 +353,53 @@ services:
     restart: "no"
     entrypoint: [python, manage.py, migrate]
     command: [--fake, --no-initial-data, --noinput]
+
+  django18-migrate:
+    profiles: [tools]
+    image: algospot-bridge-django18:local
+    build:
+      context: ..
+      dockerfile: migration/legacy/Dockerfile
+      args:
+        COMMENTS_VERSION: 1.8.0
+        DJANGO_VERSION: 1.8.19
+        GUARDIAN_VERSION: 1.3.2
+        HAYSTACK_VERSION: 2.4.1
+        TAGGING_VERSION: 0.3.6
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DJANGO_SETTINGS_MODULE: algospot.django18_settings
+      PYTHONPATH: /app/www
+      LEGACY_SECRET_KEY: ${LEGACY_SECRET_KEY:?set LEGACY_SECRET_KEY in legacy.env}
+      LEGACY_POSTGRES_DB: algospot_native_migrate
+      LEGACY_POSTGRES_HOST: postgres
+      LEGACY_POSTGRES_PORT: "5432"
+      LEGACY_POSTGRES_USER: ${POSTGRES_USER:-algospot}
+      LEGACY_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in restore.env}
+      BRIDGE_ALLOW_DATABASE_WRITES: scratch-only
+    volumes:
+      - type: bind
+        source: ${ALGOSPOT_REPO_DIR:?set ALGOSPOT_REPO_DIR in legacy.env}/www
+        target: /app/www
+        read_only: true
+    networks:
+      - restore
+    user: ${LEGACY_UID:?set LEGACY_UID in legacy.env}:${LEGACY_GID:?set LEGACY_GID in legacy.env}
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 32
+    mem_limit: 512m
+    cpus: 1.0
+    restart: "no"
+    entrypoint: [python, manage.py, migrate]
+    command: [--fake-initial, --noinput]
 
 volumes:
   postgres-data:

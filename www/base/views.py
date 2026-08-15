@@ -3,8 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseForbidden, Http404
-from django.contrib.comments.views.moderation import perform_delete
-from django.contrib.comments.models import Comment
+from algospot.comments_compat import Comment, perform_delete
 from forms import SettingsForm
 from django.conf import settings as django_settings
 from django.contrib.contenttypes.models import ContentType

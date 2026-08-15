@@ -75,10 +75,9 @@ docker compose --project-directory migration \
   --profile bridge run --rm bridge-auth-smoke
 ```
 
-South remains installed at this checkpoint so the production migration
-history is untouched. The next checkpoint moves the project migration files
-to Django's native migration framework before crossing the Django 1.8 removal
-boundary for `django.contrib.comments`.
+South remains installed in the archived Django 1.6 runtime. Django 1.7 reads
+the preserved project history through native migration files before crossing
+the Django 1.8 removal boundary for `django.contrib.comments`.
 
 Django 1.7's stock development server tries to create its migration-recorder
 table during startup. The bridge launcher skips that one startup check because
@@ -121,3 +120,66 @@ group before Guardian creates its anonymous user. Private evidence is stored
 as `native-migration-rehearsal.txt` and
 `native-migration-verification.txt` in the snapshot's `restore-lab/`
 directory.
+
+## Django 1.8 checkpoint
+
+The `django18` profile pins Django 1.8.19 and replaces the removed built-in
+comments application with `django-contrib-comments` 1.8.0. A compatibility
+adapter keeps the original `comments` application label, database tables, and
+generic content-type references. The Django 1.8 image alone also advances
+django-guardian to 1.3.2, django-haystack to 2.4.1, and django-tagging to 0.3.6.
+The Django 1.6 and 1.7 images retain the archived package versions.
+
+`djcelery` is omitted from Django 1.8's `INSTALLED_APPS` because its bundled
+`migrations` package contains South migrations that Django 1.8 cannot load.
+The package and existing Celery loader remain present; no worker or broker is
+started in this isolated web profile.
+
+```sh
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile django18 build django18-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile django18 up -d --wait django18-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile django18 run --rm django18-smoke
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile django18 run --rm django18-auth-smoke
+```
+
+To rehearse the native migration adoption, refresh the hard-coded scratch
+database with `bridge-clone`, then run Django 1.8's migration command:
+
+```sh
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm bridge-clone
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm django18-migrate
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools up -d --wait django18-scratch-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm django18-scratch-smoke
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm django18-scratch-auth-smoke
+```
+
+On the 2026-08-14 snapshot, `--fake-initial` adopts 13 existing initial
+migrations and applies eight follow-up migrations. The 21 recorded migrations
+leave all verified core row counts unchanged. The expected schema deltas are a
+comments email-column expansion from 75 to 254 characters and a submit-date
+index. Both scratch behavior suites pass with database transactions forced
+read-only, and a repeat migration reports no work to apply. The original
+`algospot_restore` evidence database remains unchanged and has no
+`django_migrations` table.
+
+The remaining Django 1.8 warnings identify the next boundary: move generic
+relations to their Django 1.9 locations, fix newsfeed's early model import, and
+modernize or retire the legacy Celery integration before advancing again.

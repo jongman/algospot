@@ -1,6 +1,6 @@
 import datetime
 from haystack import indexes
-from django.contrib.comments.models import Comment
+from algospot.comments_compat import Comment
 
 class CommentIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.EdgeNgramField(document=True, model_attr='comment')

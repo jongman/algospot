@@ -4,7 +4,7 @@ from diff_match_patch import diff_match_patch
 from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django import template
-from django.contrib.comments.templatetags.comments import BaseCommentNode
+from algospot.comments_compat import BaseCommentNode
 from rendertext import render_text as actual_render_text
 from rendertext import render_latex as actual_render_latex
 from pygments import highlight

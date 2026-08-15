@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import template
-from django.contrib.comments.models import Comment
+from algospot.comments_compat import Comment
 from guardian.shortcuts import get_perms
 from judge.models import Problem, Solver
 

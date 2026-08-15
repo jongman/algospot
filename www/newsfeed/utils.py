@@ -130,10 +130,14 @@ def get_objects_for_user(user, perms, klass=None, use_groups=True, any_perm=Fals
 
     if use_groups:
         group_model = get_group_obj_perms_model(queryset.model)
+        user_meta = get_user_model()._meta
+        user_model_name = getattr(user_meta, 'model_name', None)
+        if user_model_name is None:
+            user_model_name = user_meta.module_name
         group_filters = {
             'permission__content_type': ctype,
             'permission__codename__in': codenames,
-            'group__%s' % get_user_model()._meta.module_name: user,
+            'group__%s' % user_model_name: user,
         }
         groups_obj_perms_queryset = group_model.objects.filter(**group_filters)
         if group_model.objects.is_generic():

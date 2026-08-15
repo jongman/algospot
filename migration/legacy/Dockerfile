@@ -22,13 +22,26 @@ RUN sed -i \
     && rm -rf /var/lib/apt/lists/*
 
 ARG DJANGO_VERSION=1.6.5
+ARG COMMENTS_VERSION=
+ARG GUARDIAN_VERSION=1.2.0
+ARG HAYSTACK_VERSION=2.1.0
+ARG TAGGING_VERSION=0.3.2
 
 COPY migration/legacy/requirements.txt /tmp/requirements.txt
 RUN python -m pip install --no-cache-dir \
       'pip==20.3.4' 'setuptools==44.1.1' 'wheel==0.37.1' \
     && python -m pip install --no-cache-dir \
-      "Django==${DJANGO_VERSION}" -r /tmp/requirements.txt \
+      "Django==${DJANGO_VERSION}" \
+      "django-guardian==${GUARDIAN_VERSION}" \
+      "django-haystack==${HAYSTACK_VERSION}" \
+      "django-tagging==${TAGGING_VERSION}" \
+      -r /tmp/requirements.txt \
     && python -c 'import celery, django, kombu, psycopg2; print("legacy dependency imports: OK")'
+
+RUN if [ -n "${COMMENTS_VERSION}" ]; then \
+      python -m pip install --no-cache-dir \
+        "django-contrib-comments==${COMMENTS_VERSION}"; \
+    fi
 
 # These are the exact fork commits recorded by the production superproject.
 COPY libs/django-registration /tmp/django-registration

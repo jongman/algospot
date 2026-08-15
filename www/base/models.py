@@ -5,7 +5,7 @@ from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.comments.models import Comment
+from algospot.comments_compat import Comment
 from django.conf import settings
 from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms
 from judge.models import Problem

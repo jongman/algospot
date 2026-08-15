@@ -34,7 +34,7 @@ urlpatterns = patterns(
     url(r'^/?$', 'base.views.index'),
 
     # comments apps
-    url(r'^comments/', include('django.contrib.comments.urls')),
+    url(r'^comments/', include(settings.COMMENTS_URLCONF)),
 )
 
 if settings.DEBUG:

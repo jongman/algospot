@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.html import strip_tags
-from django.contrib.comments.models import Comment
+from algospot.comments_compat import Comment
 import datetime
 
 class Activity(models.Model):

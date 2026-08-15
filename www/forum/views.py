@@ -9,7 +9,7 @@ from djangoutils import setup_paginator
 from models import Category, Post
 from forms import WriteForm
 from utils import get_posts_for_user, get_categories_for_user
-from django.contrib.comments.models import Comment
+from algospot.comments_compat import Comment
 from django.contrib.auth.models import User
 from guardian.core import ObjectPermissionChecker
 from django.conf import settings
@@ -111,4 +111,3 @@ def delete(request, id):
             return HttpResponseForbidden("operation is forbidden.")
 
     return render(request, "delete.html", {"post": post, "category": category})
-
