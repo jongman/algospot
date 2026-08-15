@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404, render, redirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from base.decorators import authorization_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseForbidden
 from djangoutils import setup_paginator
-from models import Category, Post
-from forms import WriteForm
-from utils import get_posts_for_user, get_categories_for_user
+from .models import Category, Post
+from .forms import WriteForm
+from .utils import get_posts_for_user, get_categories_for_user
 from algospot.comments_compat import Comment
 from django.contrib.auth.models import User
 from guardian.core import ObjectPermissionChecker
@@ -33,7 +33,7 @@ def all(request, page=1):
     return render(request, "list.html",
                   {"show_category": True,
                    'write_at': write_category.slug,
-                   "title": u"모든 글 보기",
+                   "title": "모든 글 보기",
                    "pagination": setup_paginator(posts, page, "forum-all", {})})
 
 def by_user(request, id, page=1):
@@ -65,12 +65,12 @@ def read(request, id):
 def write(request, slug, id):
     initial_data = {}
     categories = get_categories_for_user(request.user, 'forum.write_post')
-    action = u"글 쓰기"
+    action = "글 쓰기"
     if slug != None:
         category = get_object_or_404(Category, slug=slug)
         initial_data["category"] = category.id
     if id != None:
-        action = u"글 편집하기"
+        action = "글 편집하기"
         post = get_object_or_404(Post, id=id)
         if not request.user.is_superuser and request.user != post.user:
             return HttpResponseForbidden("Operation is forbidden.")

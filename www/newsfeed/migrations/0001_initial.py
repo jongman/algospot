@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 from django.conf import settings
@@ -25,9 +25,17 @@ class Migration(migrations.Migration):
                 ('target_object_id', models.PositiveIntegerField(null=True, blank=True)),
                 ('action_object_object_id', models.PositiveIntegerField(null=True, blank=True)),
                 ('timestamp', models.DateTimeField(db_index=True)),
-                ('action_object_content_type', models.ForeignKey(related_name='action_object_content_type', blank=True, to='contenttypes.ContentType', null=True)),
-                ('actor', models.ForeignKey(related_name='actor', to=settings.AUTH_USER_MODEL, null=True)),
-                ('target_content_type', models.ForeignKey(related_name='target_content_type', blank=True, to='contenttypes.ContentType', null=True)),
+                ('action_object_content_type', models.ForeignKey(
+                    related_name='action_object_content_type', blank=True,
+                    to='contenttypes.ContentType', null=True,
+                    on_delete=models.SET_NULL)),
+                ('actor', models.ForeignKey(
+                    related_name='actor', to=settings.AUTH_USER_MODEL,
+                    null=True, on_delete=models.SET_NULL)),
+                ('target_content_type', models.ForeignKey(
+                    related_name='target_content_type', blank=True,
+                    to='contenttypes.ContentType', null=True,
+                    on_delete=models.SET_NULL)),
             ],
             options={
                 'permissions': (('read_activity', 'Can read this activity'),),

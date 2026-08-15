@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from diff_match_patch import diff_match_patch
 from django.shortcuts import render, get_object_or_404, redirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, HttpResponse
 from django.core.files.storage import DefaultStorage
@@ -20,13 +20,13 @@ import json
 import os
 import hashlib
 import uuid
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from django.conf import settings
 
 
 @login_required
 def new(request):
-    new_problem = Problem(user=request.user, name=u"(새 문제)",
+    new_problem = Problem(user=request.user, name="(새 문제)",
                           slug=str(uuid.uuid4()))
     new_problem.save()
     new_revision = ProblemRevision()
@@ -115,7 +115,7 @@ def delete_attachment(request, id):
             timestamp=datetime.now(),
             visible_users=visible_users,
             visible_groups=visible_groups,
-            verb=u"문제 {target}에서 첨부파일 %s 을 삭제했습니다." % os.path.basename(old_filename))
+            verb="문제 {target}에서 첨부파일 %s 을 삭제했습니다." % os.path.basename(old_filename))
     return HttpResponse("[]")
 
 def md5file(file):
@@ -130,14 +130,14 @@ def add_attachment(request, id):
         problem = get_or_none(Problem, id=id)
         if not problem:
             return {"success": False,
-                    "error": u"존재하지 않는 문제입니다."}
+                    "error": "존재하지 않는 문제입니다."}
         checker = ObjectPermissionChecker(request.user)
         if not checker.has_perm('edit_problem', problem) and problem.user != request.user:
             return {"success": False,
-                    "error": u"권한이 없습니다."}
+                    "error": "권한이 없습니다."}
         if request.method != "POST":
             return {"success": False,
-                    "error": u"POST 접근하셔야 합니다."}
+                    "error": "POST 접근하셔야 합니다."}
         file = request.FILES["file"]
         md5 = md5file(file)
         target_path = os.path.join("judge-attachments", md5, file.name)
@@ -159,7 +159,7 @@ def add_attachment(request, id):
                 timestamp=datetime.now(),
                 visible_users=visible_users,
                 visible_groups=visible_groups,
-                verb=u"문제 {target}에 첨부파일 %s 을 추가했습니다." % file.name)
+                verb="문제 {target}에 첨부파일 %s 을 추가했습니다." % file.name)
         return {"success": True}
 
     return HttpResponse(json.dumps(go()))
@@ -183,9 +183,9 @@ def list_attachments(request, id):
     return HttpResponse(json.dumps(ret))
 
 def random_problem(request):
-    title = u'랜덤 문제 고르기'
+    title = '랜덤 문제 고르기'
     problems = Problem.objects.filter(state=Problem.PUBLISHED)
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         # 시도하지 않은 문제가 남아 있는 경우 이 중에서 고른다
         if problems.exclude(solver__user=request.user).exists():
             problems = problems.exclude(solver__user=request.user)
@@ -207,7 +207,7 @@ def my_problems(request, page=1):
     readable_problems = get_objects_for_user(request.user, 'read_problem', Problem)
     my_problems = Problem.objects.filter(user=request.user)
     problems = (readable_problems | my_problems).exclude(state=Problem.PUBLISHED)
-    title = u'준비 중인 문제들'
+    title = '준비 중인 문제들'
 
     order_by = request.GET.get("order_by", 'slug')
     problems = problems.annotate(Count('solver'))
@@ -255,9 +255,9 @@ def list(request, page=1):
         problems = problems.filter(user=author)
         title_options.append(author.username)
     if title_options:
-        title = u"문제 목록: " + u", ".join(title_options)
+        title = "문제 목록: " + ", ".join(title_options)
     else:
-        title = u"문제 목록 보기"
+        title = "문제 목록 보기"
 
     if request.GET.get('user_tried'):
         use_filter = False
@@ -265,16 +265,16 @@ def list(request, page=1):
         user = get_object_or_404(User, id=id)
         verdict = request.GET.get('verdict')
         if verdict == 'solved':
-            title = user.username + u': 해결한 문제들'
+            title = user.username + ': 해결한 문제들'
             problems = problems.filter(solver__user=user, solver__solved=True)
         elif verdict == 'failed':
-            title = user.username + u': 실패한 문제들'
+            title = user.username + ': 실패한 문제들'
             problems = problems.filter(solver__user=user, solver__solved=False)
         elif verdict == 'notyet':
-            title = user.username + u': 시도하지 않은 문제들'
+            title = user.username + ': 시도하지 않은 문제들'
             problems = problems.exclude(solver__user=user)
         else:
-            title = user.username + u': 시도한 문제들'
+            title = user.username + ': 시도한 문제들'
             problems = problems.filter(solver__user=user)
 
     order_by = request.GET.get('order_by', 'slug')
@@ -331,7 +331,7 @@ def stat(request, slug, page=1):
         solvers = solvers.order_by(order_by)
     pagination = setup_paginator(solvers, page, 'judge-problem-stat',
                                  {'slug': slug}, request.GET)
-    title = problem.slug + u': 해결한 사람들'
+    title = problem.slug + ': 해결한 사람들'
     return render(request, "problem/stat.html",
                   {'title': title,
                    'problem': problem,
@@ -412,7 +412,7 @@ def revert(request, id, slug):
     revision.id = None
     revision_form = ProblemRevisionEditForm(data=None, instance=revision)
     revision_form.save(problem, request.user,
-                       summary=u"리비전 %s로 복구." % old_id)
+                       summary="리비전 %s로 복구." % old_id)
     return redirect(reverse("judge-problem-read", kwargs={"slug": problem.slug}))
 
 @login_required

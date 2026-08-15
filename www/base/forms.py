@@ -4,24 +4,28 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 if settings.USE_AYAH:
     import ayah
-from registration.forms import RegistrationForm
-from registration.backends.default.views import RegistrationView
+try:
+    from django_registration.forms import RegistrationForm
+    from django_registration.backends.activation.views import RegistrationView
+except ImportError:
+    from registration.forms import RegistrationForm
+    from registration.backends.default.views import RegistrationView
 
 class SettingsForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(render_value=False),
-                                required=False, label=u"비밀번호 변경")
+                                required=False, label="비밀번호 변경")
     password2 = forms.CharField(widget=forms.PasswordInput(render_value=False),
-                                required=False, label=u"비밀번호 (확인)")
+                                required=False, label="비밀번호 (확인)")
 
-    email = forms.EmailField(label=u"이메일", max_length=75)
-    intro = forms.CharField(label=u"자기소개",
+    email = forms.EmailField(label="이메일", max_length=75)
+    intro = forms.CharField(label="자기소개",
                             widget=forms.Textarea(attrs={"class": "large",
                                                          "rows": "5"}), required=False)
 
     def clean(self):
         if 'password1' in self.cleaned_data and 'password2' in self.cleaned_data:
             if self.cleaned_data['password1'] != self.cleaned_data['password2']:
-                raise forms.ValidationError(u"비밀 번호가 일치하지 않습니다.")
+                raise forms.ValidationError("비밀 번호가 일치하지 않습니다.")
         return self.cleaned_data
 
     def save(self, user):
@@ -37,7 +41,7 @@ class AreYouAHumanWidget(forms.HiddenInput):
     def render(self, name, value, attrs=None):
         # a hack :-(
         assert name == 'session_secret'
-        return mark_safe(unicode(ayah.get_publisher_html()))
+        return mark_safe(str(ayah.get_publisher_html()))
 
 class AreYouAHumanField(forms.CharField):
     widget = AreYouAHumanWidget

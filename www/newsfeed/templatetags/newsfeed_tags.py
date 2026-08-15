@@ -27,8 +27,10 @@ def render_activity(*args, **kwargs):
             hide_spoiler = True
         if isinstance(activity.target, Problem):
             hide_spoiler = True
-            if not user.is_anonymous() and Solver.objects.filter(problem=activity.target, solved=True, user=user).exists():
+            if (not user.is_anonymous and
+                    Solver.objects.filter(
+                        problem=activity.target, solved=True, user=user).exists()):
                 hide_spoiler = False
             elif get_perms(user, activity.target): # read and/or edit
                 hide_spoiler = False
-    return activity.render(spoiler_replacement=u"[스포일러 방지를 위해 보이지 않습니다]" if hide_spoiler else None)
+    return activity.render(spoiler_replacement="[스포일러 방지를 위해 보이지 않습니다]" if hide_spoiler else None)

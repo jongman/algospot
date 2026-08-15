@@ -21,7 +21,8 @@ class Activity(models.Model):
     # problem-solved, posted, commented
     type = models.CharField(max_length=64)
     # 액터
-    actor = models.ForeignKey(User, null=True, related_name='actor')
+    actor = models.ForeignKey(
+        User, null=True, related_name='actor', on_delete=models.SET_NULL)
     # {actor} {target} {action_object} 를 갖는 문자열
     verb = models.CharField(max_length=255)
 
@@ -30,7 +31,8 @@ class Activity(models.Model):
     target_content_type = models.ForeignKey(ContentType,
                                             related_name='target_content_type',
                                             blank=True,
-                                            null=True)
+                                            null=True,
+                                            on_delete=models.SET_NULL)
     target_object_id = models.PositiveIntegerField(blank=True,
                                                    null=True)
     target = GenericForeignKey('target_content_type', 'target_object_id')
@@ -38,7 +40,8 @@ class Activity(models.Model):
     action_object_content_type = models.ForeignKey(ContentType,
                                                    related_name='action_object_content_type',
                                                    blank=True,
-                                                   null=True)
+                                                   null=True,
+                                                   on_delete=models.SET_NULL)
     action_object_object_id = models.PositiveIntegerField(blank=True,null=True)
     action_object = GenericForeignKey('action_object_content_type',
                                       'action_object_object_id')
@@ -52,7 +55,7 @@ class Activity(models.Model):
     @staticmethod
     def translate(kwargs):
         args = {}
-        for k, v in kwargs.iteritems():
+        for k, v in kwargs.items():
             if k in ["target", "action_object"]:
                 ct = ContentType.objects.get_for_model(v.__class__)
                 pk = v.id
@@ -83,7 +86,7 @@ class Activity(models.Model):
                 if len(unicode_rep) > 50:
                     unicode_rep = unicode_rep[:47] + ".."
             else:
-                unicode_rep = unicode(object)
+                unicode_rep = str(object)
             if object.get_absolute_url:
                 return "".join(['<a href="%s">' % object.get_absolute_url(),
                     unicode_rep,

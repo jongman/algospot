@@ -14,7 +14,7 @@ from datetime import datetime
 
 class UserProfile(models.Model):
     """Stores additional information about users."""
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     posts = models.IntegerField(null=False, default=0)
 
     submissions = models.IntegerField(null=False, default=0)
@@ -67,16 +67,16 @@ def comment_handler(sender, **kwargs):
     visible_users = None
     visible_groups = None
     if ctype.name == 'post':
-        print 'post'
-        print target.category
+        print('post')
+        print(target.category)
         visible_users = get_users_with_perms(target.category, with_group_users=False)
         visible_groups = get_groups_with_perms(target.category)
     if ctype.name == 'problem' and target.state != Problem.PUBLISHED:
         visible_users = get_users_with_perms(target, with_group_users=False)
         visible_groups = get_groups_with_perms(target)
 
-    print visible_users
-    print visible_groups
+    print(visible_users)
+    print(visible_groups)
 
     if created:
         publish("comment-%d" % instance.id,
@@ -88,8 +88,8 @@ def comment_handler(sender, **kwargs):
                 timestamp=instance.submit_date,
                 visible_users=visible_users,
                 visible_groups=visible_groups,
-                verb=u"{target}에 새 댓글을 달았습니다: "
-                u"{action_object}")
+                verb="{target}에 새 댓글을 달았습니다: "
+                "{action_object}")
         profile.posts += 1
     elif instance.is_removed:
         depublish("comment-%d" % instance.id)

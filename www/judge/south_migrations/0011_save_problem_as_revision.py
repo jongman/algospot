@@ -12,7 +12,7 @@ class Migration(DataMigration):
         	new_revision.revision_for = problem
         	new_revision.created_on = problem.updated_on
         	new_revision.user = problem.user
-        	new_revision.edit_summary = u"Initial edit."
+	        new_revision.edit_summary = "Initial edit."
 
         	new_revision.description = problem.description
         	new_revision.input = problem.input

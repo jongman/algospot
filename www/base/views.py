@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseForbidden, Http404
 from algospot.comments_compat import Comment, perform_delete
-from forms import SettingsForm
+from .forms import SettingsForm
 from django.conf import settings as django_settings
 from django.contrib.contenttypes.models import ContentType
 from tagging.models import TaggedItem
@@ -23,7 +23,7 @@ def index(request):
     recent_activity = get_activities_for_user(request.user).exclude(category='solved').order_by("-timestamp")
     recent_activity = recent_activity[:10].all()
     return render(request, "index.html",
-                  {'title': u'알고스팟에 오신 것을 환영합니다!',
+                  {'title': '알고스팟에 오신 것을 환영합니다!',
                    'news': recent_news,
                    'actions': recent_activity,
                   })
@@ -55,12 +55,15 @@ def get_category_chart(user):
         if problem in solved_problems:
             solved_count[tag] += 1
     # 문제 수가 많은 순서대로 태그들을 정렬한다
-    tags_ordered = sorted([(-value, key) for key, value in problem_count.items()])
+    tags_ordered = sorted(
+        [(-value, key) for key, value in problem_count.items()],
+        key=lambda entry: (entry[0], entry[1].name),
+    )
     # 문제 수가 가장 많은 n개의 태그를 고른다
     tags_display = [t for _, t in tags_ordered[:8]]
     # 나머지를 "나머지" 카테고리로 묶는다
     others_problems = others_solved = 0
-    for tag in problem_count.keys():
+    for tag in list(problem_count.keys()):
         if tag not in tags_display:
             others_problems += problem_count[tag]
             others_solved += solved_count[tag]
@@ -70,7 +73,7 @@ def get_category_chart(user):
     labels = [tag.name.encode('utf-8') for tag in tags_display]
     if others_problems > 0:
         progress.append(others_solved * 100 / others_problems)
-        labels.append(u'기타'.encode('utf-8'))
+        labels.append('기타'.encode('utf-8'))
 
     # 구글 차트
     chart = pgc.StackedVerticalBarChart(400, 120, y_range=(0, 100))
@@ -159,7 +162,7 @@ def delete_comment(request, comment_id):
                        "next": request.GET.get("next", "/")})
 
 def calendar(request):
-    return render(request, "calendar.html", {'title': u'알고스팟 캘린더'})
+    return render(request, "calendar.html", {'title': '알고스팟 캘린더'})
 
 
 def matchup(request, username1, username2):
@@ -180,11 +183,11 @@ def matchup(request, username1, username2):
             len(solved_both) * 100 / all_problems,
             len(solved_user2_only) * 100 / all_problems]
 
-    matchup_result = u"무승부!"
+    matchup_result = "무승부!"
     if len(solved_user1_only) > len(solved_user2_only):
-        matchup_result = user1.username + u"의 승리!"
+        matchup_result = user1.username + "의 승리!"
     elif len(solved_user1_only) < len(solved_user2_only):
-        matchup_result = user2.username + u"의 승리!"
+        matchup_result = user2.username + "의 승리!"
 
     get_slug = lambda p: p.slug
     return render(request, "matchup.html",
@@ -205,6 +208,6 @@ def get_matchup_chart(username1, username2, rate):
     chart.set_colours(['e74c3c', 'f1c40f', '3498db'])
     chart.add_data(rate)
     chart.set_axis_labels(pgc.Axis.LEFT, [ username2, "무승부", username1])
-    chart.set_axis_labels(pgc.Axis.BOTTOM, range(0,101,20))
+    chart.set_axis_labels(pgc.Axis.BOTTOM, list(range(0,101,20)))
 
     return chart.get_url()

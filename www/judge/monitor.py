@@ -30,16 +30,16 @@ def get_resources_used():
 def handle_sigkill(args):
     time_used, _ = get_resources_used()
     if time_used >= args.time:
-        print 'TLE (At monitor: time used %.4lf limit %d' % (time_used, args.time)
+        print('TLE (At monitor: time used %.4lf limit %d' % (time_used, args.time))
     else:
         print ("RTE (SIGKILL: program was forcefully killed, probably "
                "memory limit exceeded)")
 
 def handle_signal(sgn, args):
     if sgn == signal.SIGABRT:
-        print "RTE (SIGABRT: program aborted, probably assertion fail)"
+        print("RTE (SIGABRT: program aborted, probably assertion fail)")
     elif sgn == signal.SIGFPE:
-        print "RTE (SIGFPE: floating point error, probably divide by zero)"
+        print("RTE (SIGFPE: floating point error, probably divide by zero)")
     elif sgn == signal.SIGSEGV:
         print ("RTE (SIGSEGV: segmentation fault, probably incorrect memory "
                "access or stack overflow)")
@@ -52,7 +52,7 @@ def handle_signal(sgn, args):
                 if getattr(signal, entry) == sgn:
                     name = entry
                     break
-        print "RTE (Unknown signal %s)" % name
+        print("RTE (Unknown signal %s)" % name)
 
 def main():
     args = get_parser().parse_args()
@@ -78,15 +78,15 @@ def main():
         # sleeping)
         returncode = process.wait()
     except Exception as e:
-        print "RTE (popen failed, contact admin. exception: %s)" % str(e)
+        print("RTE (popen failed, contact admin. exception: %s)" % str(e))
         return
     if returncode > 0:
-        print "RTE (nonzero return code)"
+        print("RTE (nonzero return code)")
         return
     if returncode < 0:
         handle_signal(-returncode, args)
         return
-    print "OK %.4lf %d" % get_resources_used()
+    print("OK %.4lf %d" % get_resources_used())
 
 if __name__ == "__main__":
     main()

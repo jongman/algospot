@@ -4,8 +4,8 @@ from django.db.models import Count
 from djangoutils import setup_paginator
 from base.models import UserProfile
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
-import problem, submission
+from django.urls import reverse
+from . import problem, submission
 
 def index(request):
     return redirect(reverse('judge-problem-list'))
@@ -21,9 +21,8 @@ def ranking(request, page=1):
     profiles = profiles.order_by(order_by_translate[order_by])
 
     return render(request, "ranking.html",
-                  {"title": u'사용자 랭킹',
+                  {"title": '사용자 랭킹',
                    "pagination": setup_paginator(profiles, page,
                                                  "judge-ranking",
                                                  {}, request.GET)})
-
 

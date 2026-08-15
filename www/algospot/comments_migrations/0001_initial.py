@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Upstream comments schema with the historical ``comments`` app label."""
 
-from __future__ import unicode_literals
+
 
 from django.conf import settings
 from django.db import migrations, models

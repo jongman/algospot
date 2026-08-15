@@ -245,8 +245,12 @@ PAGINATOR_RANGE = 5
 PROFILE_LOG_BASE = None
 
 # CELERY SETTINGS
-import djcelery
-djcelery.setup_loader()
+try:
+    import djcelery
+except ImportError:
+    djcelery = None
+else:
+    djcelery.setup_loader()
 
 CELERY_IMPORTS = ("judge.tasks",)
 CELERYD_CONCURRENCY = 1
@@ -279,8 +283,12 @@ USER_AUTHORIZATION_LIMIT_DAYS = 7
 # monkey patch pygooglecharts around some unknown issue.
 # this is a broken mirror; but we should be getting rid of pygooglechart
 # anyways..
-import pygooglechart
-pygooglechart.Chart.BASE_URL = 'http://chart.apis.google.com/chart'
+try:
+    import pygooglechart
+except ImportError:
+    pygooglechart = None
+else:
+    pygooglechart.Chart.BASE_URL = 'http://chart.apis.google.com/chart'
 
 # slow page log settings
 

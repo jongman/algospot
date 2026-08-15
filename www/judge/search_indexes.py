@@ -1,5 +1,5 @@
 from haystack import indexes
-from models import Problem
+from .models import Problem
 
 class ProblemIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.EdgeNgramField(document=True, use_template=True)

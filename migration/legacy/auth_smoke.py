@@ -57,7 +57,7 @@ def check_response(name, client, path, expected_status, marker=None,
     failures = []
     if response.status_code != expected_status:
         failures.append('status=%s' % response.status_code)
-    if marker and marker not in body:
+    if marker and marker.encode('utf-8') not in body:
         failures.append('missing-marker')
     location = response.get('Location', '')
     if location_marker and location_marker not in location:
@@ -146,6 +146,8 @@ def main():
          '/judge/problem/mine/', 302, None, '/accounts/login/'),
         ('authorized_problem_mine', normal,
          '/judge/problem/mine/', 200, 'problem_list', None),
+        ('authorized_problem_submit', normal,
+         '/judge/problem/submit/BUS', 200, 'value="cpp"', None),
         ('anonymous_problem_edit_login', anonymous,
          '/judge/problem/edit/%s' % PRIVATE_PROBLEM_ID, 302, None,
          '/accounts/login/'),

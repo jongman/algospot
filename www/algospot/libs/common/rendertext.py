@@ -11,40 +11,31 @@ from judge.utils import link_to_problem
 from wiki.utils import link_to_page
 from base.utils import link_to_user
 
+MARKDOWN_EXTENSIONS = (
+    misaka.EXT_NO_INTRA_EMPHASIS
+    | misaka.EXT_AUTOLINK
+    | misaka.EXT_FENCED_CODE
+    | misaka.EXT_TABLES
+    | misaka.EXT_STRIKETHROUGH
+    | misaka.EXT_SUPERSCRIPT
+    | getattr(misaka, 'EXT_MATH', 0)
+    | misaka.EXT_SPACE_HEADERS
+)
+
+
 def render_text(text):
-    ext = misaka.EXT_NO_INTRA_EMPHASIS \
-        | misaka.EXT_AUTOLINK \
-        | misaka.EXT_FENCED_CODE \
-        | misaka.EXT_TABLES \
-        | misaka.EXT_STRIKETHROUGH \
-        | misaka.EXT_SUPERSCRIPT \
-        | misaka.EXT_SUBSCRIPT \
-        | misaka.EXT_LAX_SPACING \
-        | misaka.EXT_MATHJAX_SUPPORT \
-        | misaka.EXT_SPACE_HEADERS
-    render = misaka.HTML_HARD_WRAP \
-            | misaka.HTML_TOC
+    render = misaka.HTML_HARD_WRAP
 
     md = misaka.Markdown(CustomRenderer(render), \
-            extensions = ext)
+            extensions=MARKDOWN_EXTENSIONS)
 
-    return md.render(text)
+    return md(text)
 
 def render_latex(text):
-    ext = misaka.EXT_NO_INTRA_EMPHASIS \
-        | misaka.EXT_AUTOLINK \
-        | misaka.EXT_FENCED_CODE \
-        | misaka.EXT_TABLES \
-        | misaka.EXT_STRIKETHROUGH \
-        | misaka.EXT_SUPERSCRIPT \
-        | misaka.EXT_SUBSCRIPT \
-        | misaka.EXT_LAX_SPACING \
-        | misaka.EXT_MATHJAX_SUPPORT \
-        | misaka.EXT_SPACE_HEADERS
     md = misaka.Markdown(AlgospotLatexRenderer(), \
-            extensions = ext)
+            extensions=MARKDOWN_EXTENSIONS)
     
-    return md.render(text)
+    return md(text)
 
 def random_id(size):
     str = string.ascii_uppercase + string.ascii_lowercase + string.digits
@@ -53,7 +44,7 @@ def random_id(size):
 class AlgospotLatexRenderer(misaka.BaseRenderer):
     def block_math(self, math):
         ret = "\\[\n"
-        if text:
+        if math:
             ret += math
         ret += "\\]\n"
         return ret
@@ -146,17 +137,17 @@ class AlgospotLatexRenderer(misaka.BaseRenderer):
         return "\\textit{" + (text or '') + "}"
 
     def image(self, link, title, alt_text):
-        ret = "\colorbox{SkyBlue}{IMAGE HERE}"
+        ret = r"\colorbox{SkyBlue}{IMAGE HERE}"
         return ret
 
     def linebreak(self):
         return "\n\n"
 
     def link(self, link, title, content):
-        return "\colorbox{Thistle}{LINK HERE}"
+        return r"\colorbox{Thistle}{LINK HERE}"
 
     def raw_html(self, raw_html):
-        return "\colorbox{GreenYellow}{SOME RAW HTML}"
+        return r"\colorbox{GreenYellow}{SOME RAW HTML}"
 
     def triple_emphasis(self, text):
         return "\\textit{\\textbf{" + (text or '') + "}}"
@@ -186,7 +177,7 @@ class AlgospotLatexRenderer(misaka.BaseRenderer):
                    .replace('. ', ".\n") # adding some line breaks
 
 class CustomRenderer(misaka.HtmlRenderer):
-    LINK_REGEX = re.compile("\[\[(?:([^|\]]+)\|)?(?:([^:\]]+):)?([^\]]+)\]\]")
+    LINK_REGEX = re.compile(r"\[\[(?:([^|\]]+)\|)?(?:([^:\]]+):)?([^\]]+)\]\]")
 
     def preprocess(self, doc):
         while True:
@@ -209,10 +200,10 @@ class CustomRenderer(misaka.HtmlRenderer):
             lexer = get_lexer_by_name(lang, stripall=False)
         except:
             if lang:
-                return u'\n<pre><code># 지정된 언어 %s를 찾을 수 없습니다.<br>%s</code></pre>\n' % \
+                return '\n<pre><code># 지정된 언어 %s를 찾을 수 없습니다.<br>%s</code></pre>\n' % \
                     (lang, escape(text.strip()))
             else:
-                return u'\n<pre><code>%s</code></pre>\n' % \
+                return '\n<pre><code>%s</code></pre>\n' % \
                     escape(text.strip())
         formatter = HtmlFormatter(style='colorful')
         return highlight(text, lexer, formatter)

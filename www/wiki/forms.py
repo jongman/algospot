@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from models import PageRevision
+from .models import PageRevision
 
 class EditForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea(attrs={"class": "large",

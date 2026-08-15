@@ -2,21 +2,21 @@
 from django.conf import settings
 from algospot import celery_app as app
 from celery.utils.log import get_task_logger
-from models import Submission, Attachment
+from .models import Submission, Attachment
 import hashlib
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import shutil
 import os
 import zipfile
 import glob
-import sandbox
-import languages
-import StringIO
+from . import sandbox
+from . import languages
+import io
 import traceback
-import differs
+from . import differs
 
 def print_stack_trace():
-    io = StringIO.StringIO()
+    io = io.StringIO()
     traceback.print_exc(file=io)
     io.seek(0)
     return io.read()
@@ -36,7 +36,7 @@ def judge_submission(submission):
         # TODO: add MD5 verification to downloaded files
         url = settings.JUDGE_SETTINGS['WEBSERVER'] + attachment.file.url
         logger.info("downloading %s ..", url)
-        copy(urllib.urlopen(url), open(destination, "wb"))
+        copy(urllib.request.urlopen(url), open(destination, "wb"))
 
     def unzip_and_sanitize(archive, data_dir):
         logger.info("unzipping %s ..", archive)
@@ -62,7 +62,7 @@ def judge_submission(submission):
             if basename != 'checker' and ext not in ["in", "out", "zip"]: continue
             entries_to_download.append((entry, basename))
 
-        joined_entries = "@".join(map(lambda x: x[0].file.name, entries_to_download))
+        joined_entries = "@".join([x[0].file.name for x in entries_to_download])
         md5 = hashlib.md5(joined_entries).hexdigest()
         pathhash_name = md5 + '.pathhash'
         pathhash_path = os.path.join(data_dir, pathhash_name)
@@ -105,7 +105,7 @@ def judge_submission(submission):
                 io[basename][tokens[-1]] = file
         if not io:
             raise Exception("Judge I/O data not found.")
-        for key, value in io.iteritems():
+        for key, value in io.items():
             if len(value) != 2:
                 raise Exception("Non-matching pairs in judge I/O data. See: %s"
                                 % str(io))
@@ -156,13 +156,13 @@ def judge_submission(submission):
         submission.state = Submission.RUNNING
         submission.save()
         total_time, max_memory = 0, 64
-        for io in ioset.itervalues():
+        for io in ioset.values():
             inp = os.path.basename(io["in"])
             sandbox_env.put_file(io["in"], inp)
             result = language_module.run(sandbox_env, inp,
                                          problem.last_revision.time_limit / 1000.,
                                          problem.last_revision.memory_limit)
-            print("result from language module:", result)
+            print(("result from language module:", result))
 
             # RTE 혹은 MLE?
             if result["status"] != "ok":
@@ -170,7 +170,7 @@ def judge_submission(submission):
                     submission.state = Submission.TIME_LIMIT_EXCEEDED
                 elif result["verdict"] == "MLE":
                     submission.state = Submission.RUNTIME_ERROR
-                    submission.message = '\n'.join([u"메모리 제한 초과",
+                    submission.message = '\n'.join(["메모리 제한 초과",
                                                     result["message"]])
                 elif result["verdict"] == "RTE":
                     submission.state = Submission.RUNTIME_ERROR
@@ -201,15 +201,15 @@ def judge_submission(submission):
     except Exception as e1:
         submission.state = Submission.CANT_BE_JUDGED
         try:
-            print e1.message
-            print print_stack_trace()
-            submission.message = u"\n".join([
-                u"채점 중 예외가 발생했습니다.",
-                u"익셉션: %s" % e1.message,
-                u"스택 트레이스:",
+            print(e1.message)
+            print(print_stack_trace())
+            submission.message = "\n".join([
+                "채점 중 예외가 발생했습니다.",
+                "익셉션: %s" % e1.message,
+                "스택 트레이스:",
                 print_stack_trace()])
         except Exception as e2:
-            submission.message = u"오류 인코딩 중 에러: %s" % e2.message
+            submission.message = "오류 인코딩 중 에러: %s" % e2.message
     finally:
         submission.save()
         if sandbox_env: sandbox_env.teardown()

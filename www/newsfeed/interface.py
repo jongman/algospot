@@ -1,4 +1,4 @@
-from models import Activity
+from .models import Activity
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 from guardian.shortcuts import assign_perm, get_users_with_perms

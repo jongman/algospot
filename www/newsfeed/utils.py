@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
+
 
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
@@ -10,13 +10,12 @@ from itertools import groupby
 
 from django.conf import settings
 from guardian.compat import get_user_model
-from guardian.compat import basestring
 from guardian.exceptions import MixedContentTypeError
 from guardian.exceptions import WrongAppError
 from guardian.utils import get_user_obj_perms_model
 from guardian.utils import get_group_obj_perms_model
 import warnings
-from models import Activity
+from .models import Activity
 
 # 성능 문제 해결을 위해 아직 반영되지 않은 패치 내용을 옮겨 옴
 # 기존에는 pk를 리스트로 만들어 ... AND "app_model"."id" IN (6, 7, 35, 36, 41, 43, 45, ... 4175, 4178, 4179, 4184, 4186) ... 식으로 뽑아내는 바람에 성능도 문제가 되고 쿼리 길이 제한에도 걸렸다
@@ -68,7 +67,7 @@ def get_objects_for_user(user, perms, klass=None, use_groups=True, any_perm=Fals
         [<Group some group>]
 
     """
-    if isinstance(perms, basestring):
+    if isinstance(perms, str):
         perms = [perms]
     ctype = None
     app_label = None
@@ -169,5 +168,6 @@ def get_objects_for_user(user, perms, klass=None, use_groups=True, any_perm=Fals
     return objects
 
 def get_activities_for_user(request_user):
-    user = (request_user.is_anonymous() and User.objects.get(pk=settings.ANONYMOUS_USER_ID) or request_user)
+    user = (User.objects.get(pk=settings.ANONYMOUS_USER_ID)
+            if request_user.is_anonymous else request_user)
     return get_objects_for_user(user, 'newsfeed.read_activity', Activity, any_perm=True)

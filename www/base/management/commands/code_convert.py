@@ -11,8 +11,8 @@ class Command(NoArgsCommand):
     def replace(self, match):
         lang = match.group(1).strip('"\'')
         code = match.group(2).replace("\t", "  ")
-        print u'#', 
-        return u'~~~ %s\n%s\n~~~' % (lang, code)
+        print('#', end=' ')
+        return '~~~ %s\n%s\n~~~' % (lang, code)
 
     def handle(self, **options):
         post_save.disconnect(sender=PageRevision, dispatch_uid="wiki_edit_event")
@@ -20,23 +20,23 @@ class Command(NoArgsCommand):
         post_save.disconnect(sender=Problem, dispatch_uid="saved_problem")
         post_save.disconnect(sender=Post, dispatch_uid="forum_post_event")
 
-        print u'Posts...', 
+        print('Posts...', end=' ')
         for x in Post.objects.all():
         	x.text = self.pattern.sub(self.replace, x.text)
         	x.save()
-        print u'\nPageRevisions...', 
+        print('\nPageRevisions...', end=' ')
         for x in PageRevision.objects.all():
         	x.text = self.pattern.sub(self.replace, x.text)
         	x.save()
-        print u'\nProblems...', 
+        print('\nProblems...', end=' ')
         for x in Problem.objects.all():
         	x.description = self.pattern.sub(self.replace, x.description)
         	x.input = self.pattern.sub(self.replace, x.input)
         	x.output = self.pattern.sub(self.replace, x.output)
         	x.note = self.pattern.sub(self.replace, x.note)
         	x.save()
-        print u'\nComments...', 
+        print('\nComments...', end=' ')
         for x in Comment.objects.all():
         	x.comment = self.pattern.sub(self.replace, x.comment)
         	x.save()
-        print u'\nDone!'
+        print('\nDone!')

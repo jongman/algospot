@@ -1,2 +1,2 @@
-import languages
-import differs
+from . import languages
+from . import differs

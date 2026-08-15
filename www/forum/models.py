@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth.models import User, Group
 from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms
@@ -11,7 +11,7 @@ class Category(models.Model):
     name = models.TextField()
     slug = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -25,14 +25,15 @@ class Category(models.Model):
 
 class Post(models.Model):
     """Stores a forum post."""
-    title = models.CharField(u"제목", max_length=100)
+    title = models.CharField("제목", max_length=100)
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(User, null=False)
-    text = models.TextField(u"내용")
-    category = models.ForeignKey(Category, null=False, verbose_name=u"게시판")
+    user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
+    text = models.TextField("내용")
+    category = models.ForeignKey(
+        Category, null=False, verbose_name="게시판", on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self):
@@ -58,8 +59,8 @@ def post_handler(sender, **kwargs):
             timestamp=instance.created_on,
             visible_users=visible_users,
             visible_groups=visible_groups,
-            verb=u"{target}에 글 {action_object}를 "
-            u"썼습니다.")
+            verb="{target}에 글 {action_object}를 "
+            "썼습니다.")
 
 def pre_delete_handler(sender, **kwargs):
     instance = kwargs["instance"]

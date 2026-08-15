@@ -1,7 +1,7 @@
 import datetime
 from haystack import indexes
-from models import Post
-from utils import get_posts_for_user
+from .models import Post
+from .utils import get_posts_for_user
 from django.conf import settings
 from django.contrib.auth.models import User
 

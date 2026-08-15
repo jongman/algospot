@@ -214,5 +214,80 @@ All six Django 1.6, 1.7, 1.8, 1.9, 1.10, and 1.11 profiles pass the same 13
 anonymous HTTP checks plus signed-session authorization and media checks. The
 pinned registration source remains untouched in the worktree; a documented
 build-time patch supplies the small cross-version changes. The next boundary is
-porting the web application and supported dependencies to Python 3 before
-crossing to Django 2.
+the modern Python runtime.
+
+## Python 3.13 and Django 5.2 runtime
+
+The `modern` profile is the local target runtime: Python 3.13.5, Django 5.2.5
+LTS, PostgreSQL 17, psycopg 3, and maintained releases of the comments,
+registration, avatar, Guardian, Haystack, tagging, Pillow, Pygments, iCalendar,
+and Misaka dependencies. The application source has been ported to Python 3
+and current Django APIs. The restored database and the 825 MB upload tree remain
+read-only in the normal profile. Django remains solely on the internal network;
+a credential-free TCP forwarder with masquerading disabled publishes it only at
+`http://127.0.0.1:18090/`. The application container retains the capability,
+network, filesystem, process, memory, and CPU restrictions used by the
+characterization runtimes.
+
+Build, start, and verify the modern read-only site with:
+
+```sh
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile modern build modern-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile modern up -d --wait modern-web modern-loopback
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile modern run --rm modern-smoke
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile modern run --rm modern-auth-smoke
+```
+
+The web container intentionally contains no compilers, sandbox, broker, Celery
+worker, or outbound network route. It displays the preserved set of submission
+languages using static metadata; actual untrusted-code execution remains a
+separate isolated judge-worker migration and must not be enabled in the web
+process. Email is also disabled locally. The archived Whoosh index is retained
+as evidence but is not loaded because it contains Python 2 pickles; local search
+uses Haystack's maintained in-process backend instead.
+
+### Modern schema rehearsal
+
+Modern settings permit writes only when both the explicit
+`MODERN_ALLOW_DATABASE_WRITES=scratch-only` opt-in and the hard-coded
+`algospot_native_migrate` database name are present. The evidence database
+cannot pass that guard. Rehearse the full migration directly from a fresh clone
+of the untouched restore, then reconnect read-only for behavior checks:
+
+```sh
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools stop modern-scratch-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm bridge-clone
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm modern-migrate
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools up -d --wait modern-scratch-web modern-scratch-loopback
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm modern-scratch-smoke
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm modern-scratch-auth-smoke
+```
+
+On the 2026-08-14 snapshot, Django fakes the initial migrations for existing
+tables, applies the maintained dependency and project follow-ups, and reports
+no model changes afterward. The fresh migrated clone passes all 13 anonymous
+checks plus account, authorization, object-permission, language-choice, media,
+and forced-read-only checks. It preserves 180,942 users and all 2,443 database
+media references; 2,430 referenced files are present, while the 13 already
+documented missing legacy files remain missing. The immutable evidence database
+is not given a migration recorder table.

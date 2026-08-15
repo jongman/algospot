@@ -6,7 +6,12 @@ from __future__ import print_function
 import hashlib
 import os
 import sys
-import urllib2
+try:
+    import urllib2
+    HTTPError = urllib2.HTTPError
+except ImportError:
+    from urllib import request as urllib2
+    from urllib.error import HTTPError
 
 
 BASE_URL = os.environ.get('ALGOSPOT_SMOKE_BASE_URL', 'http://legacy-web:8000')
@@ -54,7 +59,7 @@ def fetch(path):
     try:
         response = urllib2.urlopen(request, timeout=60)
         return response.getcode(), response.headers, response.read()
-    except urllib2.HTTPError as error:
+    except HTTPError as error:
         return error.code, error.headers, error.read()
 
 
@@ -72,11 +77,12 @@ def main():
                 problems.append('content-type=%s' % content_type)
             if len(body) < minimum_size:
                 problems.append('bytes=%s' % len(body))
-            if marker not in body:
+            marker_bytes = marker.encode('utf-8')
+            if marker_bytes not in body:
                 problems.append('missing-marker')
             result = 'PASS' if not problems else 'FAIL:' + ','.join(problems)
         except Exception as error:
-            status, content_type, body = 0, '', ''
+            status, content_type, body = 0, '', b''
             result = 'ERROR:%s' % error.__class__.__name__
         if result != 'PASS':
             failures += 1

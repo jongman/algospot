@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 from django.conf import settings
@@ -32,8 +32,11 @@ class Migration(migrations.Migration):
                 ('created_on', models.DateTimeField(auto_now_add=True)),
                 ('modified_on', models.DateTimeField(auto_now=True)),
                 ('text', models.TextField(verbose_name='\ub0b4\uc6a9')),
-                ('category', models.ForeignKey(verbose_name='\uac8c\uc2dc\ud310', to='forum.Category')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('category', models.ForeignKey(
+                    verbose_name='\uac8c\uc2dc\ud310', to='forum.Category',
+                    on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(
+                    to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },

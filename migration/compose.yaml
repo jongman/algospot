@@ -83,8 +83,6 @@ services:
         read_only: true
     networks:
       - restore
-    ports:
-      - 127.0.0.1:${LEGACY_HTTP_PORT:-18080}:8000
     user: ${LEGACY_UID:?set LEGACY_UID in legacy.env}:${LEGACY_GID:?set LEGACY_GID in legacy.env}
     read_only: true
     tmpfs:
@@ -173,6 +171,49 @@ services:
     cpus: 0.5
     restart: "no"
     entrypoint: [python, /opt/algospot/auth_smoke.py]
+
+  legacy-loopback: &loopback-proxy
+    profiles: [legacy]
+    image: python:3.13.5-slim-bookworm@sha256:4c2cf9917bd1cbacc5e9b07320025bdb7cdf2df7b0ceaccb55e9dd7e30987419
+    depends_on:
+      legacy-web:
+        condition: service_healthy
+    environment:
+      FORWARD_HOST: legacy-web
+      FORWARD_PORT: "8000"
+    volumes:
+      - type: bind
+        source: ${ALGOSPOT_REPO_DIR:?set ALGOSPOT_REPO_DIR in legacy.env}/migration/modern/loopback_proxy.py
+        target: /opt/algospot/loopback_proxy.py
+        read_only: true
+    networks:
+      - restore
+      - loopback
+    ports:
+      - 127.0.0.1:${LEGACY_HTTP_PORT:-18080}:8000
+    user: ${LEGACY_UID:?set LEGACY_UID in legacy.env}:${LEGACY_GID:?set LEGACY_GID in legacy.env}
+    read_only: true
+    tmpfs:
+      - /tmp:size=8m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 32
+    mem_limit: 64m
+    cpus: 0.25
+    init: true
+    restart: "no"
+    entrypoint: [python, /opt/algospot/loopback_proxy.py]
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import socket; s=socket.create_connection(('legacy-web',8000),2); s.close()
+      interval: 5s
+      timeout: 3s
+      retries: 24
 
   bridge-web:
     <<: *legacy-web
@@ -382,6 +423,124 @@ services:
       <<: *legacy-environment
       DJANGO_SETTINGS_MODULE: algospot.django111_settings
 
+  modern-web: &modern-web
+    <<: *legacy-web
+    profiles: [modern]
+    image: algospot-modern:local
+    build:
+      context: ..
+      dockerfile: migration/modern/Dockerfile
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.modern_settings
+
+  modern-loopback:
+    <<: *loopback-proxy
+    profiles: [modern]
+    depends_on:
+      modern-web:
+        condition: service_healthy
+    environment:
+      FORWARD_HOST: modern-web
+      FORWARD_PORT: "8000"
+    ports:
+      - 127.0.0.1:${MODERN_HTTP_PORT:-18090}:8000
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import socket; s=socket.create_connection(('modern-web',8000),2); s.close()
+      interval: 5s
+      timeout: 3s
+      retries: 24
+
+  modern-smoke:
+    <<: *legacy-smoke
+    profiles: [modern]
+    image: algospot-modern:local
+    depends_on:
+      modern-web:
+        condition: service_healthy
+    environment:
+      ALGOSPOT_SMOKE_BASE_URL: http://modern-web:8000
+      ALGOSPOT_SMOKE_HOST: legacy-web:8000
+
+  modern-auth-smoke:
+    <<: *legacy-auth-smoke
+    profiles: [modern]
+    image: algospot-modern:local
+    depends_on:
+      modern-web:
+        condition: service_healthy
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.modern_settings
+
+  modern-scratch-web: &modern-scratch-web
+    <<: *modern-web
+    profiles: [tools]
+    environment: &modern-scratch-environment
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.modern_settings
+      LEGACY_POSTGRES_DB: algospot_native_migrate
+      LEGACY_POSTGRES_USER: ${POSTGRES_USER:-algospot}
+      LEGACY_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in restore.env}
+      MODERN_ALLOW_DATABASE_WRITES: scratch-only
+
+  modern-scratch-loopback:
+    <<: *loopback-proxy
+    profiles: [tools]
+    depends_on:
+      modern-scratch-web:
+        condition: service_healthy
+    environment:
+      FORWARD_HOST: modern-scratch-web
+      FORWARD_PORT: "8000"
+    ports:
+      - 127.0.0.1:${MODERN_SCRATCH_HTTP_PORT:-18091}:8000
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import socket; s=socket.create_connection(('modern-scratch-web',8000),2); s.close()
+      interval: 5s
+      timeout: 3s
+      retries: 24
+
+  modern-scratch-smoke:
+    <<: *legacy-smoke
+    profiles: [tools]
+    image: algospot-modern:local
+    depends_on:
+      modern-scratch-web:
+        condition: service_healthy
+    environment:
+      ALGOSPOT_SMOKE_BASE_URL: http://modern-scratch-web:8000
+      ALGOSPOT_SMOKE_HOST: legacy-web:8000
+
+  modern-scratch-auth-smoke:
+    <<: *legacy-auth-smoke
+    profiles: [tools]
+    image: algospot-modern:local
+    depends_on:
+      modern-scratch-web:
+        condition: service_healthy
+    environment:
+      <<: *modern-scratch-environment
+      # The server may write only while rehearsing migrations. Behavioral
+      # verification reconnects to the migrated scratch DB in read-only mode.
+      MODERN_ALLOW_DATABASE_WRITES: ""
+
+  modern-migrate:
+    <<: *modern-scratch-web
+    profiles: [tools]
+    ports: []
+    restart: "no"
+    entrypoint: [python, manage.py, migrate]
+    command: [--fake-initial, --noinput]
+
   django18-scratch-web:
     <<: *django18-web
     profiles: [tools]
@@ -535,3 +694,9 @@ volumes:
 networks:
   restore:
     internal: true
+  loopback:
+    driver: bridge
+    driver_opts:
+      # The proxy can accept DNAT traffic from 127.0.0.1, but packets from
+      # containers on this network are not masqueraded onto the host network.
+      com.docker.network.bridge.enable_ip_masquerade: "false"

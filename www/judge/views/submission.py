@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponseForbidden
@@ -23,7 +23,7 @@ def recent(request, page=1):
 
     filters = {}
 
-    empty_message = u"제출된 답안이 없습니다."
+    empty_message = "제출된 답안이 없습니다."
     title_add = []
 
     # only superuser can see all nonpublic submissions.
@@ -64,7 +64,7 @@ def recent(request, page=1):
         username = request.GET["user"]
         user = get_or_none(User, username=username)
         if not user:
-            empty_message = u"해당 사용자가 없습니다."
+            empty_message = "해당 사용자가 없습니다."
             submissions = submissions.none()
         else:
             submissions = submissions.filter(user=user)
@@ -85,7 +85,7 @@ def recent(request, page=1):
     filters_form = SubmissionFilterForm(initial=filters)
 
     return render(request, "submission/recent.html",
-                  {"title": u"답안 목록" + (": " if title_add else "") + ",".join(title_add),
+                  {"title": "답안 목록" + (": " if title_add else "") + ",".join(title_add),
                    "filter_form" : filters_form,
                    "empty_message": empty_message,
                    "pagination": setup_paginator(submissions, page,
@@ -112,7 +112,7 @@ def details(request, id):
                 message = item['message']
                 break
     return render(request, "submission/details.html",
-                  {"title": u"답안 보기",
+                  {"title": "답안 보기",
                    "submission": submission,
                    "message": message,
                    "problem": problem})

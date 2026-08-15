@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import hotshot
+import cProfile
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import time
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.html import urlize
 
@@ -20,8 +20,8 @@ def get_or_none(model, **kwargs):
 def get_query(params):
     if not params: return ""
     return "?" + "&".join(["%s=%s" % (key,
-                                      urllib.quote(val.encode("utf-8")))
-                           for key, val in params.iteritems()])
+                                      urllib.parse.quote(str(val)))
+                           for key, val in params.items()])
 
 class Pagination(object):
     def __init__(self, paginator, page, link_name, link_kwargs, get_params):
@@ -41,14 +41,14 @@ class Pagination(object):
         lo = max(1, self.page.number - settings.PAGINATOR_RANGE)
         hi = min(num_pages, self.page.number + settings.PAGINATOR_RANGE)
         links = [(page_no, self.link_with_page(page_no), page_no == self.page.number)
-                 for page_no in xrange(lo, hi+1)]
+                 for page_no in range(lo, hi+1)]
         first = ({"link": self.link_with_page(1), "label": 1} if lo != 1 else None)
         last = ({"link": self.link_with_page(num_pages), "label": num_pages}
                 if hi < num_pages else None)
         return render_to_string("pagination.html",
                                 {"links": links, "first": first, "last": last})
 
-    def __unicode__(self):
+    def __str__(self):
         return self.render()
 
 
@@ -71,7 +71,7 @@ except:
 def profile(log_file):
     """Profile some callable.
 
-    This decorator uses the hotshot profiler to profile some callable (like
+    This decorator uses the standard profiler to profile some callable (like
     a view function or method) and dumps the profile data somewhere sensible
     for later processing and examination.
 
@@ -95,13 +95,12 @@ def profile(log_file):
             base = base + "-" + time.strftime("%Y%m%dT%H%M%S", time.gmtime())
             final_log_file = base + ext
 
-            prof = hotshot.Profile(final_log_file)
+            prof = cProfile.Profile()
             try:
                 ret = prof.runcall(f, *args, **kwargs)
             finally:
-                prof.close()
+                prof.dump_stats(final_log_file)
             return ret
 
         return _inner
     return _outer
-

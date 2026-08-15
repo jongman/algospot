@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from diff_match_patch import diff_match_patch
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from base.decorators import authorization_required
 
-from models import Page, PageRevision
-from forms import EditForm
-from utils import unslugify, logger
+from .models import Page, PageRevision
+from .forms import EditForm
+from .utils import unslugify, logger
 from djangoutils import get_or_none
 
 def old(request, id, slug):
@@ -16,7 +16,7 @@ def old(request, id, slug):
     return render(request, "old.html",
                   {"slug": slug,
                    "title": page.title,
-                   "time": unicode(revision.created_on),
+                   "time": str(revision.created_on),
                    "modified": revision.created_on,
                    "text": revision.text})
 
@@ -26,7 +26,7 @@ def revert(request, id, slug):
     page = get_object_or_404(Page, slug=slug)
     revision = PageRevision.objects.get(id=id)
     form = EditForm({"text": revision.text,
-                     "summary": u"리비전 %s(으)로 복구." % id})
+                     "summary": "리비전 %s(으)로 복구." % id})
     assert form.is_valid()
     form.save(page, request.user)
     return redirect(reverse("wiki-detail", kwargs={"slug": page.slug}))

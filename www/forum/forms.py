@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from models import Post, Category
+from .models import Post, Category
 
 class WriteForm(forms.ModelForm):
     class Meta:

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 from django.conf import settings
@@ -53,8 +53,11 @@ class Migration(migrations.Migration):
                 ('note', models.TextField(verbose_name='\ub178\ud2b8', blank=True)),
                 ('time_limit', models.PositiveIntegerField(default=10000, verbose_name='\uc2dc\uac04 \uc81c\ud55c (ms)')),
                 ('memory_limit', models.PositiveIntegerField(default=65536, verbose_name='\uba54\ubaa8\ub9ac \uc81c\ud55c (kb)')),
-                ('revision_for', models.ForeignKey(to='judge.Problem')),
-                ('user', models.ForeignKey(verbose_name='\ud3b8\uc9d1\uc790', to=settings.AUTH_USER_MODEL)),
+                ('revision_for', models.ForeignKey(
+                    to='judge.Problem', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(
+                    verbose_name='\ud3b8\uc9d1\uc790', to=settings.AUTH_USER_MODEL,
+                    on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -85,8 +88,10 @@ class Migration(migrations.Migration):
                 ('message', models.TextField(default=b'', blank=True)),
                 ('time', models.IntegerField(null=True, db_index=True)),
                 ('memory', models.IntegerField(null=True)),
-                ('problem', models.ForeignKey(to='judge.Problem')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('problem', models.ForeignKey(
+                    to='judge.Problem', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(
+                    to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -95,43 +100,54 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='solver',
             name='fastest_submission',
-            field=models.ForeignKey(related_name='+', to='judge.Submission', null=True),
+            field=models.ForeignKey(
+                related_name='+', to='judge.Submission', null=True,
+                on_delete=models.SET_NULL),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='solver',
             name='problem',
-            field=models.ForeignKey(to='judge.Problem'),
+            field=models.ForeignKey(
+                to='judge.Problem', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='solver',
             name='shortest_submission',
-            field=models.ForeignKey(related_name='+', to='judge.Submission', null=True),
+            field=models.ForeignKey(
+                related_name='+', to='judge.Submission', null=True,
+                on_delete=models.SET_NULL),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='solver',
             name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='problem',
             name='last_revision',
-            field=models.ForeignKey(related_name='main', blank=True, to='judge.ProblemRevision', null=True),
+            field=models.ForeignKey(
+                related_name='main', blank=True, to='judge.ProblemRevision',
+                null=True, on_delete=models.SET_NULL),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='problem',
             name='user',
-            field=models.ForeignKey(verbose_name='\uc791\uc131\uc790', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                verbose_name='\uc791\uc131\uc790', to=settings.AUTH_USER_MODEL,
+                on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='attachment',
             name='problem',
-            field=models.ForeignKey(to='judge.Problem'),
+            field=models.ForeignKey(
+                to='judge.Problem', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

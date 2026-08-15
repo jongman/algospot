@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from models import Problem, Submission, ProblemRevision
+from .models import Problem, Submission, ProblemRevision
 from django.contrib.auth.models import User
-import languages
-import differs
+from . import languages
+from . import differs
 from algospot.tagging_compat import TagField
 
 
@@ -12,7 +12,7 @@ class ProblemRevisionEditForm(forms.ModelForm):
     summary = forms.CharField(max_length=100,
                               widget=forms.TextInput(attrs={"class": "large"}),
                               required=False,
-                              label=u"편집 요약")
+                              label="편집 요약")
     class Meta:
         model = ProblemRevision
         exclude = ('revision_for', 'user', 'edit_summary')
@@ -29,14 +29,14 @@ class ProblemRevisionEditForm(forms.ModelForm):
 
 
 class ProblemEditForm(forms.ModelForm):
-    tags = TagField(label=u"문제 분류", required=False)
-    user = forms.ModelChoiceField(label=u"작성자", queryset=User.objects.order_by("username"))
+    tags = TagField(label="문제 분류", required=False)
+    user = forms.ModelChoiceField(label="작성자", queryset=User.objects.order_by("username"))
     class Meta:
         model = Problem
         exclude = ('submissions_count', 'accepted_count', 'last_revision')
         widgets = {
             "judge_module": forms.Select(choices=[(key, key + ": " + val.__doc__)
-                                                  for key, val in differs.REGISTERED.iteritems()])
+                                                  for key, val in differs.REGISTERED.items()])
         }
     def __init__(self, *args, **kwargs):
         super(ProblemEditForm, self).__init__(*args, **kwargs)
@@ -54,15 +54,15 @@ class ProblemEditForm(forms.ModelForm):
 
 
 class RestrictedProblemEditForm(forms.ModelForm):
-    tags = TagField(label=u"문제 분류", required=False)
-    review = forms.BooleanField(label=u'운영진 리뷰 요청', required=False)
+    tags = TagField(label="문제 분류", required=False)
+    review = forms.BooleanField(label='운영진 리뷰 요청', required=False)
     class Meta:
         model = Problem
         exclude = ('submissions_count', 'accepted_count', 'user', 'state', 'last_revision')
         widgets = {
             "judge_module": forms.Select(choices=[(key, key + ": " + val.__doc__)
                                                   for key, val in
-                                                  differs.REGISTERED.iteritems()]),
+                                                  differs.REGISTERED.items()]),
         }
     def __init__(self, *args, **kwargs):
         super(RestrictedProblemEditForm, self).__init__(*args, **kwargs)
@@ -82,12 +82,13 @@ class RestrictedProblemEditForm(forms.ModelForm):
 
 
 class SubmitForm(forms.Form):
-    language = forms.ChoiceField([(key, "%s: %s" % (val.LANGUAGE, val.VERSION))
-                                  for key, val in languages.modules.items()],
-                                 label=u"사용언어")
+    language = forms.ChoiceField(choices=[
+        (key, "%s: %s" % (val.LANGUAGE, val.VERSION))
+        for key, val in list(languages.modules.items())],
+                                 label="사용언어")
     source = forms.CharField(widget=forms.Textarea(attrs={"class": "large monospace",
                                                           "rows": "12"}),
-                             label=u"소스코드")
+                             label="소스코드")
 
     def __init__(self, *args, **kwargs):
         self.public = kwargs.get('public', True)
@@ -106,8 +107,9 @@ class SubmitForm(forms.Form):
         new_submission.save()
 
 class AdminSubmitForm(SubmitForm):
-    is_public = forms.ChoiceField([("True", u"공개"), ("False", u"비공개")],
-                                  label=u"공개여부")
+    is_public = forms.ChoiceField(
+        choices=[("True", "공개"), ("False", "비공개")],
+                                  label="공개여부")
 
     def save(self, user, problem):
         new_submission = Submission(problem=problem,
@@ -122,16 +124,20 @@ class AdminSubmitForm(SubmitForm):
 class SubmissionFilterForm(forms.Form):
     problem = forms.CharField(widget=forms.TextInput(attrs={"class": "problem_autocomplete"}),
                               required=False,
-                              label=u"문제")
+                              label="문제")
     user = forms.CharField(widget=forms.TextInput(attrs={"class": "user_autocomplete"}),
                            required=False,
-                           label=u"제출자")
-    language = forms.ChoiceField([('', "(All)")] +
-                                 [(key, "%s (%s)" % (val.LANGUAGE, key)) for key, val in languages.modules.items()],
+                           label="제출자")
+    language = forms.ChoiceField(
+        choices=[('', "(All)")] +
+                [(key, "%s (%s)" % (val.LANGUAGE, key))
+                 for key, val in list(languages.modules.items())],
                                  required=False,
-                                 label=u"언어")
-    state = forms.ChoiceField([('', "All")] +
-                                [(key, "%s" % val) for key, val in Submission.STATES_KOR.items()],
+                                 label="언어")
+    state = forms.ChoiceField(
+        choices=[('', "All")] +
+                [(key, "%s" % val)
+                 for key, val in list(Submission.STATES_KOR.items())],
                                 required=False,
                                 label="채점결과")
 

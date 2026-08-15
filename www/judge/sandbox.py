@@ -20,7 +20,7 @@ from os.path import expanduser, exists, split, join, abspath, dirname
 def makedir(path):
     path = expanduser(path)
     if not exists(path):
-        print 'RUN:', 'mkdir %s' % path
+        print('RUN:', 'mkdir %s' % path)
         os.makedirs(path)
     return path
 
@@ -33,7 +33,7 @@ def execute(command, redirect=True, time_limit=None, kill_command=[]):
     kwargs = {"close_fds": True}
     if redirect:
         kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
-    print "RUN:", ' '.join(command)
+    print("RUN:", ' '.join(command))
     popen = subprocess.Popen(command, **kwargs)
     if not time_limit:
         wait = popen.wait()
@@ -126,7 +126,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
     def isolate_filesystem(self, fs_size, home_type):
         self.root = tempfile.mkdtemp(dir=makedir("~/.sandbox"))
-        print "sandbox root", self.root
+        print("sandbox root", self.root)
         os.chmod(self.root, 0o755)
 
         self.name = "sandbox-%s" % split(self.root)[1]
@@ -212,7 +212,7 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
     def create_entrypoint(self, command, before=[], after=[]):
         entrypoint = join(self.home_in_mounted, "entrypoint.sh")
-        print "ENTRYPOINT", command
+        print("ENTRYPOINT", command)
         content = "\n".join([
             "#!/bin/sh",
             "cd `dirname $0`",
@@ -270,15 +270,15 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
                                 error)
         except TimeOutException:
             return "TLE"
-        print "RESULT", result
+        print("RESULT", result)
         toks = result["stdout"].split()
         if toks[0] == "OK":
-            time_used, memory_used = map(float, toks[1:3])
+            time_used, memory_used = list(map(float, toks[1:3]))
             if time_limit is not None and time_used >= time_limit:
-                return (u"TLE (Outside sandbox; time used %d limit %d)" %
+                return ("TLE (Outside sandbox; time used %d limit %d)" %
                         (time_used, time_limit))
             if memory_used >= memory_limit:
-                return (u"MLE (Outside sandbox: memory used %d limit %d)" %
+                return ("MLE (Outside sandbox: memory used %d limit %d)" %
                         (memory_used, memory_limit))
 
         return result["stdout"]
@@ -306,11 +306,11 @@ lxc.cgroup.memory.memsw.limit_in_bytes = %dK
 
 def main():
     def print_result(x):
-        print "RETURN CODE: %d" % x["returncode"]
-        for key in x.keys():
+        print("RETURN CODE: %d" % x["returncode"])
+        for key in list(x.keys()):
             if x[key]:
-                print key, "============"
-                print x[key]
+                print(key, "============")
+                print(x[key])
 
     try:
         """

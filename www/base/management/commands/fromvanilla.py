@@ -26,7 +26,7 @@ def patch(key, val):
         act.timestamp = val
         act.save()
     else:
-        print "failed to find", key
+        print("failed to find", key)
 
 accepted = string.letters + string.digits + "._-"
 def escape(ch):
@@ -41,7 +41,7 @@ def fetch_all(db, table, **where):
     where_clause = ""
     if where:
         where_clause = "WHERE " + " AND ".join(["%s=%s" % it for it in
-            where.items()])
+            list(where.items())])
 
     c.execute("SELECT * FROM %s %s;" % (table, where_clause))
     return c.fetchall()
@@ -50,7 +50,7 @@ def migrate_user(db):
     created = 0
     for u in fetch_all(db, "GDN_User"):
         if u["Name"] in username_seen:
-            print "%s is a duplicate" % u["Name"]
+            print("%s is a duplicate" % u["Name"])
             continue
         if u["Deleted"] == "1": continue
         pw = (u["Password"]
@@ -69,12 +69,12 @@ def migrate_user(db):
         # patch("joined-%d" % new_user.id, u["DateInserted"])
         created += 1
         if created % 10 == 0:
-            print "created %d users so far" % created
+            print("created %d users so far" % created)
         username_seen.add(u["Name"])
     u = User.objects.get(username="JongMan")
     u.is_superuser = True
     u.save()
-    print "created %d users." % created
+    print("created %d users." % created)
 
 CATEGORY_MAP = {"freeboard": "free",
         "qna": "qna",
@@ -126,9 +126,9 @@ def migrate_forum(db):
             copied_comments += 1
         copied_posts += 1
         if copied_posts % 10 == 0:
-            print "%d posts. %d comments." % (copied_posts, copied_comments)
+            print("%d posts. %d comments." % (copied_posts, copied_comments))
 
-    print "%d posts. %d comments." % (copied_posts, copied_comments)
+    print("%d posts. %d comments." % (copied_posts, copied_comments))
 
 def migrate_problems(db):
     PROBLEM_MAPPING = {
@@ -153,12 +153,12 @@ def migrate_problems(db):
     imported = 0
     categories = dict([(cat["No"], cat["Name"])
                        for cat in fetch_all(db, "GDN_ProblemCategory")])
-    for k, v in categories.items():
-        print k, v
+    for k, v in list(categories.items()):
+        print(k, v)
     for problem in fetch_all(db, "GDN_Problem", State=3):
         kwargs = {}
         kwargs["user"] = User.objects.get(id=problem["Author"])
-        for k, v in PROBLEM_MAPPING.items():
+        for k, v in list(PROBLEM_MAPPING.items()):
             kwargs[v] = problem[k]
         new_problem = Problem(**kwargs)
         new_problem.save()
@@ -168,7 +168,7 @@ def migrate_problems(db):
                              Problem=problem["No"]):
             if rel["Category"] in categories:
                 tags.append(categories[rel["Category"]])
-        print new_problem.slug, tags
+        print(new_problem.slug, tags)
         new_problem.tags = ",".join(tags)
         new_problem.save()
 
@@ -176,7 +176,7 @@ def migrate_problems(db):
         patch("new-problem-%d" % new_problem.id, datetime.datetime(2009, 7, 11,
                                                                    0, 0, 0, 0))
         imported += 1
-    print "imported %d problems." % imported
+    print("imported %d problems." % imported)
 
 def migrate_submissions(db):
     SUBMISSION_MAPPING = {
@@ -202,7 +202,7 @@ def migrate_submissions(db):
         except:
             continue
         kwargs["user"] = User.objects.get(id=submission["Author"])
-        for k, v in SUBMISSION_MAPPING.items():
+        for k, v in list(SUBMISSION_MAPPING.items()):
             kwargs[v] = submission[k]
         if not kwargs["message"]:
             kwargs["message"] = ""
@@ -218,13 +218,13 @@ def migrate_submissions(db):
 
         imported += 1
         if imported % 100 == 0:
-            print "Migrated %d of %d submissions. (%d submissions/sec)" % (imported,
+            print("Migrated %d of %d submissions. (%d submissions/sec)" % (imported,
                                                                            len(submissions),
                                                                            imported
                                                                            /
                                                                            (time.time()-start)
-                                                                          )
-    print "Migrated %d submissions." % imported
+                                                                          ))
+    print("Migrated %d submissions." % imported)
 
 def md5file(file_path):
     md5 = hashlib.md5()
@@ -254,11 +254,11 @@ def migrate_attachments(db, upload):
 def fix_insertimage(db):
     def replace(mobj):
         attachment = Attachment.objects.get(id=int(mobj.group(1)))
-        print attachment.file.url
-        return "![%s](%s)" % (attachment.file.name.replace("]", "\]"),
+        print(attachment.file.url)
+        return "![%s](%s)" % (attachment.file.name.replace("]", r"\]"),
                               attachment.file.url)
     for problem in Problem.objects.all():
-        problem.description = re.sub('\[InsertImage\|([0-9]+)\]',
+        problem.description = re.sub(r'\[InsertImage\|([0-9]+)\]',
                                      replace,
                                      problem.description)
         problem.save()

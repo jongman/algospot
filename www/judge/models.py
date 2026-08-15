@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models.signals import post_save
 from django.db.models import Count
 from guardian.shortcuts import get_users_with_perms, get_groups_with_perms, assign_perm
@@ -11,19 +11,19 @@ import pygooglechart as pgc
 from algospot.tagging_compat import register
 
 class ProblemRevision(models.Model):
-    revision_for = models.ForeignKey('Problem')
+    revision_for = models.ForeignKey('Problem', on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, verbose_name=u"편집자")
+    user = models.ForeignKey(User, verbose_name="편집자", on_delete=models.CASCADE)
     edit_summary = models.TextField(max_length=100, blank=True)
 
-    description = models.TextField(u"설명", blank=True)
-    input = models.TextField(u"입력 설명", blank=True)
-    output = models.TextField(u"출력 설명", blank=True)
-    sample_input = models.TextField(u"예제 입력", blank=True)
-    sample_output = models.TextField(u"예제 출력", blank=True)
-    note = models.TextField(u"노트", blank=True)
-    time_limit = models.PositiveIntegerField(u"시간 제한 (ms)", default=10000)
-    memory_limit = models.PositiveIntegerField(u"메모리 제한 (kb)", default=65536)
+    description = models.TextField("설명", blank=True)
+    input = models.TextField("입력 설명", blank=True)
+    output = models.TextField("출력 설명", blank=True)
+    sample_input = models.TextField("예제 입력", blank=True)
+    sample_output = models.TextField("예제 출력", blank=True)
+    note = models.TextField("노트", blank=True)
+    time_limit = models.PositiveIntegerField("시간 제한 (ms)", default=10000)
+    memory_limit = models.PositiveIntegerField("메모리 제한 (kb)", default=65536)
 
     def different_from(self, other):
         return (self.description != other.description or 
@@ -41,8 +41,8 @@ def problem_revision_edit_handler(sender, **kwargs):
     # 해당 오브젝트에 대해 아무 퍼미션이나 있으면 처리됨. 문제의 경우 PUBLISHED 일 때는 이 권한을 사용하지 않아서 안전하다
     visible_users = get_users_with_perms(instance.revision_for, with_group_users=False)
     visible_groups = get_groups_with_perms(instance.revision_for)
-    print visible_users
-    print visible_groups
+    print(visible_users)
+    print(visible_groups)
 
     publish("problem-edit-%d" % instance.id,
             "problem",
@@ -52,31 +52,34 @@ def problem_revision_edit_handler(sender, **kwargs):
             timestamp=instance.created_on,
             visible_users=visible_users,
             visible_groups=visible_groups,
-            verb=u"문제 {target}을 편집했습니다.")
+            verb="문제 {target}을 편집했습니다.")
 
 post_save.connect(problem_revision_edit_handler, sender=ProblemRevision, dispatch_uid="problem_edit_event")
 
 class Problem(models.Model):
-    DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = range(4)
+    DRAFT, PENDING_REVIEW, HIDDEN, PUBLISHED = list(range(4))
     STATE_CHOICES = ((DRAFT, "DRAFT"),
                      (PENDING_REVIEW, "PENDING REVIEW"),
                      (HIDDEN, "HIDDEN"),
                      (PUBLISHED, "PUBLISHED"))
 
-    slug = models.SlugField(u"문제 ID", max_length=100, unique=True)
-    state = models.SmallIntegerField(u"문제 상태", default=DRAFT,
+    slug = models.SlugField("문제 ID", max_length=100, unique=True)
+    state = models.SmallIntegerField("문제 상태", default=DRAFT,
                                      choices=STATE_CHOICES,
                                      db_index=True)
-    user = models.ForeignKey(User, verbose_name=u"작성자", db_index=True)
-    source = models.CharField(u"출처", max_length=100, blank=True, db_index=True)
-    name = models.CharField(u"이름", max_length=100, blank=True)
-    judge_module = models.CharField(u"채점 모듈", blank=True, max_length=100)
+    user = models.ForeignKey(
+        User, verbose_name="작성자", db_index=True, on_delete=models.CASCADE)
+    source = models.CharField("출처", max_length=100, blank=True, db_index=True)
+    name = models.CharField("이름", max_length=100, blank=True)
+    judge_module = models.CharField("채점 모듈", blank=True, max_length=100)
     submissions_count = models.IntegerField(default=0)
     accepted_count = models.IntegerField(default=0)
 
-    last_revision = models.ForeignKey(ProblemRevision, related_name='main', blank=True, null=True)
+    last_revision = models.ForeignKey(
+        ProblemRevision, related_name='main', blank=True, null=True,
+        on_delete=models.SET_NULL)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
     def get_state_name(self):
@@ -98,25 +101,25 @@ class Problem(models.Model):
 register(Problem)
 
 class Attachment(models.Model):
-    problem = models.ForeignKey(Problem, db_index=True)
+    problem = models.ForeignKey(Problem, db_index=True, on_delete=models.CASCADE)
     file = models.FileField(max_length=1024, upload_to='will_not_be_used/')
 
 class Submission(models.Model):
     (RECEIVED, COMPILING, RUNNING, JUDGING, COMPILE_ERROR,
     OK, ACCEPTED, WRONG_ANSWER, RUNTIME_ERROR, TIME_LIMIT_EXCEEDED,
-    CANT_BE_JUDGED, REJUDGE_REQUESTED) = range(12)
-    STATES_KOR = dict([(RECEIVED, u"수신"),
-                       (COMPILING, u"컴파일중"),
-                       (RUNNING, u"실행중"),
-                       (JUDGING, u"채점중"),
-                       (COMPILE_ERROR, u"컴파일 실패"),
-                       (OK, u"수행완료"),
-                       (ACCEPTED, u"정답"),
-                       (WRONG_ANSWER, u"오답"),
-                       (RUNTIME_ERROR, u"런타임 오류"),
-                       (TIME_LIMIT_EXCEEDED, u"시간초과"),
-                       (CANT_BE_JUDGED, u"채점실패"),
-                       (REJUDGE_REQUESTED, u"재채점")])
+    CANT_BE_JUDGED, REJUDGE_REQUESTED) = list(range(12))
+    STATES_KOR = dict([(RECEIVED, "수신"),
+                       (COMPILING, "컴파일중"),
+                       (RUNNING, "실행중"),
+                       (JUDGING, "채점중"),
+                       (COMPILE_ERROR, "컴파일 실패"),
+                       (OK, "수행완료"),
+                       (ACCEPTED, "정답"),
+                       (WRONG_ANSWER, "오답"),
+                       (RUNTIME_ERROR, "런타임 오류"),
+                       (TIME_LIMIT_EXCEEDED, "시간초과"),
+                       (CANT_BE_JUDGED, "채점실패"),
+                       (REJUDGE_REQUESTED, "재채점")])
     STATES_ENG = dict([(RECEIVED, "RECEIVED"),
                        (COMPILING, "COMPILING"),
                        (RUNNING, "RUNNING"),
@@ -137,12 +140,12 @@ class Submission(models.Model):
     HAS_MESSAGES = (COMPILE_ERROR, RUNTIME_ERROR)
 
     submitted_on = models.DateTimeField(auto_now_add=True)
-    problem = models.ForeignKey(Problem, db_index=True)
+    problem = models.ForeignKey(Problem, db_index=True, on_delete=models.CASCADE)
     is_public = models.BooleanField(default=True)
-    user = models.ForeignKey(User, db_index=True)
+    user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     language = models.TextField(max_length=100)
     state = models.SmallIntegerField(default=RECEIVED,
-                                     choices=STATES_ENG.items(),
+                                     choices=list(STATES_ENG.items()),
                                      db_index=True)
     length = models.IntegerField(db_index=True)
     source = models.TextField()
@@ -150,7 +153,7 @@ class Submission(models.Model):
     time = models.IntegerField(null=True, db_index=True)
     memory = models.IntegerField(null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s" % (self.problem.slug,
                            self.user.username)
 
@@ -197,7 +200,7 @@ class Submission(models.Model):
         # AC, WA, TLE 이외의 것들을 하나의 카테고리로 모음
         cleaned = {-1: 0}
         for t in take: cleaned[t] = 0
-        for verdict, count in Submission.get_verdict_distribution(queryset).items():
+        for verdict, count in list(Submission.get_verdict_distribution(queryset).items()):
             if verdict in take:
                 cleaned[verdict] = count
             else:
@@ -228,17 +231,17 @@ class Submission(models.Model):
         return ret
 
 class Solver(models.Model):
-    problem = models.ForeignKey(Problem, db_index=True)
-    user = models.ForeignKey(User, db_index=True)
+    problem = models.ForeignKey(Problem, db_index=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, db_index=True, on_delete=models.CASCADE)
     incorrect_tries = models.IntegerField(default=0)
     solved = models.BooleanField(default=False, db_index=True)
-    fastest_submission = models.ForeignKey(Submission, null=True,
-                                           related_name="+")
-    shortest_submission = models.ForeignKey(Submission, null=True,
-                                           related_name="+")
+    fastest_submission = models.ForeignKey(
+        Submission, null=True, related_name="+", on_delete=models.SET_NULL)
+    shortest_submission = models.ForeignKey(
+        Submission, null=True, related_name="+", on_delete=models.SET_NULL)
     when = models.DateTimeField(null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s" % (self.problem.slug,
                            self.user.username)
 
@@ -256,7 +259,7 @@ class Solver(models.Model):
         max_fails = max(dist.keys()) if dist else 0
         steps = max(1, max_fails / 10)
         chart = pgc.StackedVerticalBarChart(400, 120)
-        chart.add_data([dist.get(i, 0) for i in xrange(max_fails + 1) ])
+        chart.add_data([dist.get(i, 0) for i in range(max_fails + 1) ])
         chart.set_colours(['C02942'])
         def get_label(fails):
             if fails == FAIL_DISPLAY_LIMIT:
@@ -264,7 +267,7 @@ class Solver(models.Model):
             if fails % steps == 0:
                 return str(fails)
             return ''
-        chart.set_axis_labels(pgc.Axis.BOTTOM, map(get_label, range(max_fails + 1)))
+        chart.set_axis_labels(pgc.Axis.BOTTOM, list(map(get_label, list(range(max_fails + 1)))))
         chart.fill_solid("bg", "65432100")
         return chart.get_url() + '&chbh=r,3'
 
@@ -317,7 +320,7 @@ class Solver(models.Model):
                         target=problem,
                         actor=user,
                         timestamp=instance.fastest_submission.submitted_on,
-                        verb=u"%d번의 시도만에 문제 {target}를 해결했습니다." %
+                        verb="%d번의 시도만에 문제 {target}를 해결했습니다." %
                         (instance.incorrect_tries + 1))
             else:
                 # 리저지 등 관계로 풀었던 문제를 못푼게 됨.
@@ -336,8 +339,8 @@ def saved_problem(sender, **kwargs):
             publish(id, "newproblem", "judge",
                     actor=instance.user,
                     action_object=instance,
-                    verb=u"온라인 저지에 새 문제 {action_object}를 "
-                         u"공개했습니다.")
+                    verb="온라인 저지에 새 문제 {action_object}를 "
+                         "공개했습니다.")
         else:
             activity = get_activity(key=id)
             activity.actor = instance.user
@@ -354,7 +357,7 @@ def saved_submission(sender, **kwargs):
         problem.save()
     if submission.state in [Submission.RECEIVED,
                             Submission.REJUDGE_REQUESTED]:
-        import tasks
+        from . import tasks
         tasks.judge_submission.delay(submission)
 
     if submission.state in Submission.JUDGED:

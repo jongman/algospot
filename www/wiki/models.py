@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from newsfeed import publish
@@ -9,12 +9,12 @@ class PageRevision(models.Model):
     """Stores a specific revision of the page."""
     text = models.TextField()
     edit_summary = models.TextField(max_length=100, blank=True, null=True)
-    user = models.ForeignKey(User, null=False)
+    user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
-    revision_for = models.ForeignKey('Page')
+    revision_for = models.ForeignKey('Page', on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return self.revision_for.title + " " + unicode(self.created_on)
+    def __str__(self):
+        return self.revision_for.title + " " + str(self.created_on)
 
 class Page(models.Model):
     """Stores a wiki page."""
@@ -22,10 +22,11 @@ class Page(models.Model):
     slug = models.SlugField(unique=True, max_length=100)
     created_on = models.DateTimeField(auto_now_add=True)
     modified_on = models.DateTimeField(auto_now=True)
-    current_revision = models.ForeignKey(PageRevision, related_name='main',
-                                         blank=True, null=True)
+    current_revision = models.ForeignKey(
+        PageRevision, related_name='main', blank=True, null=True,
+        on_delete=models.SET_NULL)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self):
@@ -39,7 +40,7 @@ def edit_handler(sender, **kwargs):
             actor=instance.user,
             target=instance.revision_for,
             timestamp=instance.created_on,
-            verb=u"위키 페이지 {target}을 편집했습니다.")
+            verb="위키 페이지 {target}을 편집했습니다.")
 
 post_save.connect(edit_handler, sender=PageRevision,
         dispatch_uid="wiki_edit_event")

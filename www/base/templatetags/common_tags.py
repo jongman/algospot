@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import division
+
 from diff_match_patch import diff_match_patch
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django import template
 from algospot.comments_compat import BaseCommentNode
@@ -63,7 +63,7 @@ class TableHeaderNode(template.Node):
 
         can_toggle = 'notoggle' not in self.options
         if order_by == current_order:
-            arrow = u"↓"
+            arrow = "↓"
             if not can_toggle:
                 return column_name + arrow
             else:
@@ -71,13 +71,13 @@ class TableHeaderNode(template.Node):
         else:
             new_order = order_by
             if current_order.endswith(order_by):
-                arrow = u"↑"
+                arrow = "↑"
 
         get_params = dict(context['request'].GET)
         get_params['order_by'] = [new_order]
-        get_params = '&'.join('%s=%s' % (k, v[0]) for k, v in get_params.items())
+        get_params = '&'.join('%s=%s' % (k, v[0]) for k, v in list(get_params.items()))
         full_path = context['request'].get_full_path().split('?')[0]
-        return mark_safe(u"""<a href="%s?%s">%s%s</a>""" % (full_path, get_params, column_name, arrow))
+        return mark_safe("""<a href="%s?%s">%s%s</a>""" % (full_path, get_params, column_name, arrow))
 
 @register.tag
 def sortable_table_header(parser, token):
@@ -102,18 +102,18 @@ def print_username(user):
     return mark_safe('<a href="%s" class="username">%s</a>' %
             (profile_link, user.username))
 
-units = [(int(365.2425*24*60*60), u"년"),
-         (30*24*60*60, u"달"),
-         (7*24*60*60, u"주"),
-         (24*60*60, u"일"),
-         (60*60, u"시간"),
-         (60, u"분")]
+units = [(int(365.2425*24*60*60), "년"),
+         (30*24*60*60, "달"),
+         (7*24*60*60, "주"),
+         (24*60*60, "일"),
+         (60*60, "시간"),
+         (60, "분")]
 
 def format_readable(diff):
     for size, name in units:
         if diff >= size:
-            return u"%d%s 전" % (int(diff / size), name)
-    return u"방금 전"
+            return "%d%s 전" % (int(diff / size), name)
+    return "방금 전"
 
 @register.filter
 def print_datetime(dt):
@@ -122,7 +122,7 @@ def print_datetime(dt):
     # python 2.6 compatibility. no total_seconds() :(
     diff = diff.seconds + diff.days * 24 * 3600
     class_name = "hot" if diff < 24*3600 else ""
-    return mark_safe(u'<span class="%s" title="%s">%s</span>' % (class_name,
+    return mark_safe('<span class="%s" title="%s">%s</span>' % (class_name,
         fallback, format_readable(diff) or fallback))
 
 @register.filter
@@ -175,14 +175,14 @@ def side_by_side_diff(diff):
         # Get unchanged parts onto the right line
         if ls[0] == rs[0]:
             yield (False, ls[0], rs[0])
-            for l, r in itertools.izip_longest(ls[1:], rs[1:]):
+            for l, r in itertools.zip_longest(ls[1:], rs[1:]):
                 yield (True, l, r)
         elif ls[-1] == rs[-1]:
-            for l, r in itertools.izip_longest(ls[:-1], rs[:-1]):
+            for l, r in itertools.zip_longest(ls[:-1], rs[:-1]):
                 yield (l != r, l, r)
             yield (False, ls[-1], rs[-1])
         else:
-            for l, r in itertools.izip_longest(ls, rs):
+            for l, r in itertools.zip_longest(ls, rs):
                 yield (True, l, r)
 
     line_split = re.compile(r'(?:\r?\n)')

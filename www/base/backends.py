@@ -36,7 +36,7 @@ def get_hash(password, stored):
     salt = stored[4:12]
     count = 2 ** BASE64.index(stored[3])
     hash = md5(salt + password)
-    for i in xrange(count):
+    for i in range(count):
         hash = md5(hash + password)
     return stored[:12] + encode64(hash, 16)
 

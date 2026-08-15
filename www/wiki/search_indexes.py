@@ -1,6 +1,6 @@
 import datetime
 from haystack import indexes
-from models import Page
+from .models import Page
 
 class PageIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.EdgeNgramField(document=True, use_template=True)

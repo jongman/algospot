@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 from django.conf import settings
@@ -32,8 +32,10 @@ class Migration(migrations.Migration):
                 ('text', models.TextField()),
                 ('edit_summary', models.TextField(max_length=100, null=True, blank=True)),
                 ('created_on', models.DateTimeField(auto_now_add=True)),
-                ('revision_for', models.ForeignKey(to='wiki.Page')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('revision_for', models.ForeignKey(
+                    to='wiki.Page', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(
+                    to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -42,7 +44,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='page',
             name='current_revision',
-            field=models.ForeignKey(related_name='main', blank=True, to='wiki.PageRevision', null=True),
+            field=models.ForeignKey(
+                related_name='main', blank=True, to='wiki.PageRevision',
+                null=True, on_delete=models.SET_NULL),
             preserve_default=True,
         ),
     ]
