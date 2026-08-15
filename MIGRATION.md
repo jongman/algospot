@@ -48,6 +48,14 @@ legacy dangling references, not backup loss.
 3. Move South history to native Django migrations at a compatible Django
    boundary. Preserve table names and verify row counts after every schema
    transition.
+
+The `bridge` Compose profile pins Django 1.7.11 on Python 2 while retaining
+South. It is the first reversible API boundary: both characterization suites
+match the Django 1.6 baseline. The only application compatibility change at
+this boundary replaces the removed `User.get_profile()` helper with the
+equivalent `User.userprofile` one-to-one relation in Python and templates.
+Native migration files can now be prepared on a separate writable copy of the
+restored database.
 4. Upgrade incrementally through supported API boundaries, resolving all
    deprecation warnings before each next step. Port the code to Python 3 before
    crossing to Django 2.

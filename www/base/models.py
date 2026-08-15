@@ -54,12 +54,12 @@ def user_added(sender, **kwargs):
 @receiver(pre_delete, sender=User)
 def deleting_user(sender, **kwargs):
     user = kwargs["instance"]
-    user.get_profile().delete()
+    user.userprofile.delete()
     # depublish("joined-%d" % user.id)
 
 def comment_handler(sender, **kwargs):
     instance, created = kwargs["instance"], kwargs["created"]
-    profile = instance.user.get_profile()
+    profile = instance.user.userprofile
     target = instance.content_object
 
     ctype = ContentType.objects.get_for_model(target)

@@ -50,7 +50,7 @@ services:
           /backup/algospot.pgdump
         psql --dbname=algospot_restore --command='ANALYZE;'
 
-  legacy-web:
+  legacy-web: &legacy-web
     profiles: [legacy]
     image: algospot-legacy:local
     build:
@@ -109,7 +109,7 @@ services:
       timeout: 3s
       retries: 24
 
-  legacy-smoke:
+  legacy-smoke: &legacy-smoke
     profiles: [legacy]
     image: algospot-legacy:local
     depends_on:
@@ -138,7 +138,7 @@ services:
     restart: "no"
     entrypoint: [python, /opt/algospot/smoke.py]
 
-  legacy-auth-smoke:
+  legacy-auth-smoke: &legacy-auth-smoke
     profiles: [legacy]
     image: algospot-legacy:local
     depends_on:
@@ -181,6 +181,38 @@ services:
     cpus: 0.5
     restart: "no"
     entrypoint: [python, /opt/algospot/auth_smoke.py]
+
+  bridge-web:
+    <<: *legacy-web
+    profiles: [bridge]
+    image: algospot-bridge-django17:local
+    build:
+      context: ..
+      dockerfile: migration/legacy/Dockerfile
+      args:
+        DJANGO_VERSION: 1.7.11
+    ports:
+      - 127.0.0.1:${BRIDGE_HTTP_PORT:-18081}:8000
+    command: [python, /opt/algospot/bridge-runserver.py]
+
+  bridge-smoke:
+    <<: *legacy-smoke
+    profiles: [bridge]
+    image: algospot-bridge-django17:local
+    depends_on:
+      bridge-web:
+        condition: service_healthy
+    environment:
+      ALGOSPOT_SMOKE_BASE_URL: http://bridge-web:8000
+      ALGOSPOT_SMOKE_HOST: legacy-web:8000
+
+  bridge-auth-smoke:
+    <<: *legacy-auth-smoke
+    profiles: [bridge]
+    image: algospot-bridge-django17:local
+    depends_on:
+      bridge-web:
+        condition: service_healthy
 
 volumes:
   postgres-data:

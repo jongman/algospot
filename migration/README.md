@@ -48,3 +48,45 @@ plus signed-session permission and media-reference checks. It stores both
 reports beside the runtime credentials and logs in the snapshot's private
 `restore-lab/` directory. The signed sessions contain only database user IDs;
 the checks neither know nor change any production password.
+
+## Django 1.7 bridge
+
+The `bridge` profile is the first modernization checkpoint. It uses the same
+Python 2 dependency set, read-only database role, archived media, and smoke
+tests as the legacy profile, but builds Django 1.7.11. Keeping it separate
+means a bridge regression cannot obscure whether the archived Django 1.6.5
+runtime still works.
+
+Build and run the bridge from the repository root with the same private
+`restore.env` and `legacy.env` files used by the legacy profile:
+
+```sh
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile bridge build bridge-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile bridge up -d --wait bridge-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile bridge run --rm bridge-smoke
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile bridge run --rm bridge-auth-smoke
+```
+
+South remains installed at this checkpoint so the production migration
+history is untouched. The next checkpoint moves the project migration files
+to Django's native migration framework before crossing the Django 1.8 removal
+boundary for `django.contrib.comments`.
+
+Django 1.7's stock development server tries to create its migration-recorder
+table during startup. The bridge launcher skips that one startup check because
+the characterization role is deliberately read-only. It does not change the
+behavior of `manage.py migrate`; schema conversion must use a separate,
+disposable writable database.
+
+The bridge passes the same 13 anonymous HTTP checks and signed-session
+authorization/media suite as Django 1.6. Private run reports are kept in the
+snapshot's `restore-lab/` directory as `characterization-bridge-http.txt` and
+`characterization-bridge-auth-media.txt`.

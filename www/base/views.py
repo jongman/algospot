@@ -104,13 +104,13 @@ def get_profile(request, user):
     category_chart = get_category_chart(user)
     actions = get_activities_for_user(request.user).filter(actor=user).order_by("-timestamp")[:20]
     rank = UserProfile.objects.filter(solved_problems__gt=
-                                      user.get_profile().solved_problems).count()
+                                      user.userprofile.solved_problems).count()
 
 
 
     return render(request, "user_profile.html",
                   {"profile_user": user,
-                   "post_count": user.get_profile().posts - comment_count,
+                   "post_count": user.userprofile.posts - comment_count,
                    "problem_count": problem_count,
                    "comment_count": comment_count,
                    "attempted_problem_count": attempted_problem_count,
@@ -130,7 +130,7 @@ def settings(request, user_id):
     if request.user != user and not request.user.is_superuser:
         return HttpResponseForbidden("Forbidden operation.")
     form = SettingsForm(data=request.POST or None,
-                        initial={"email": user.email, "intro": user.get_profile().intro})
+                        initial={"email": user.email, "intro": user.userprofile.intro})
     if request.method == "POST" and form.is_valid():
         form.save(user)
         return redirect(reverse("user_profile", kwargs={"user_id": user_id}))

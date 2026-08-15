@@ -29,8 +29,8 @@ class SettingsForm(forms.Form):
         pw = self.cleaned_data['password1']
         if len(pw) > 0: user.set_password(pw)
         user.save()
-        user.get_profile().intro = self.cleaned_data["intro"]
-        user.get_profile().save()
+        user.userprofile.intro = self.cleaned_data["intro"]
+        user.userprofile.save()
 
 class AreYouAHumanWidget(forms.HiddenInput):
 

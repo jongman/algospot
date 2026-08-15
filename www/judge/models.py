@@ -304,7 +304,7 @@ class Solver(models.Model):
         instance.save()
         if instance.solved != prev_solved:
             # 유저 프로필에 푼 문제 수 업데이트
-            profile = user.get_profile()
+            profile = user.userprofile
             profile.solved_problems = Solver.objects.filter(user=user,
                                                             solved=True).count()
             profile.save()
@@ -359,7 +359,7 @@ def saved_submission(sender, **kwargs):
 
     if submission.state in Submission.JUDGED:
         if not submission.is_public: return
-        profile = submission.user.get_profile()
+        profile = submission.user.userprofile
         submissions = Submission.objects.filter(user=submission.user,
                                                 is_public=True)
 

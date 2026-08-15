@@ -27,8 +27,8 @@
           <ul>
             <li class="intro">
               <p class="speech">
-                {% if user1.get_profile.intro %}
-                  {{ user1.get_profile.intro }}
+                {% if user1.userprofile.intro %}
+                  {{ user1.userprofile.intro }}
                 {% else %}
                   {# (한 마디 소개가 없습니다.) #}
                 {% endif %}
@@ -37,8 +37,8 @@
             <li class="result">{{ matchup_result }}</li>
             <li class="intro">
               <p class="speech">
-                {% if user2.get_profile.intro %}
-                  {{ user2.get_profile.intro }}
+                {% if user2.userprofile.intro %}
+                  {{ user2.userprofile.intro }}
                 {% else %}
                   {# (한 마디 소개가 없습니다.) #}
                 {% endif %}

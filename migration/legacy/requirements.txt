@@ -3,7 +3,6 @@
 # against the archived base image and its PostgreSQL client libraries. Kombu
 # 3.0.37 and AMQP 1.4.9 are the final Celery-3-compatible patch releases;
 # unlike production's pins, they support Python 2.7.18's uuid module.
-Django==1.6.5
 Pygments==2.0.2
 South==0.8.1
 Whoosh==2.6.0

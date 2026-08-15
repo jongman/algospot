@@ -41,7 +41,7 @@ class Post(models.Model):
 def post_handler(sender, **kwargs):
     instance, created = kwargs["instance"], kwargs["created"]
     if not created: return
-    profile = instance.user.get_profile()
+    profile = instance.user.userprofile
     profile.posts += 1
     profile.save()
 
@@ -63,7 +63,7 @@ def post_handler(sender, **kwargs):
 
 def pre_delete_handler(sender, **kwargs):
     instance = kwargs["instance"]
-    profile = instance.user.get_profile()
+    profile = instance.user.userprofile
     profile.posts -= 1
     profile.save()
     depublish("forum-post-%d" % instance.id)

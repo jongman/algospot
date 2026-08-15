@@ -10,6 +10,11 @@ import sys
 sys.path.insert(0, '/app/www')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'algospot.legacy_settings')
 
+import django
+
+if hasattr(django, 'setup'):
+    django.setup()
+
 from django.conf import settings
 from django.contrib.auth import BACKEND_SESSION_KEY, SESSION_KEY
 from django.contrib.auth.models import User

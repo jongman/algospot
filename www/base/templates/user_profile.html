@@ -8,8 +8,8 @@
 		{% avatar profile_user 120 %}
 		<div>
 			<blockquote class="speech">
-				{% if profile_user.get_profile.intro %}
-					{{ profile_user.get_profile.intro }}
+				{% if profile_user.userprofile.intro %}
+					{{ profile_user.userprofile.intro }}
 				{% else %}
 					(한 마디 소개가 없습니다.)
 				{% endif %}
@@ -56,15 +56,15 @@
 					<li class="attempts">
 						<a href="{% url "judge-problem-list" %}?user_tried={{ profile_user.id }}&verdict=">{{ attempted_problem_count }}</a>/<a href="{% url "judge-problem-list" %}?user_tried={{ profile_user.id }}&verdict=notyet">{{ not_attempted_problem_count }}</a>
 					</li>
-					<li class="solved"><a href="{% url "judge-problem-list" %}?user_tried={{ profile_user.id }}&verdict=solved">{{ profile_user.get_profile.solved_problems }}/{{ attempted_problem_count }}
-							({% percentage profile_user.get_profile.solved_problems attempted_problem_count %}%)</a>
+					<li class="solved"><a href="{% url "judge-problem-list" %}?user_tried={{ profile_user.id }}&verdict=solved">{{ profile_user.userprofile.solved_problems }}/{{ attempted_problem_count }}
+							({% percentage profile_user.userprofile.solved_problems attempted_problem_count %}%)</a>
 					</li>
 					<li class="failed"><a href="{% url "judge-problem-list" %}?user_tried={{ profile_user.id }}&verdict=failed">{{ failed_problem_count }}/{{ attempted_problem_count }}
 							({% percentage failed_problem_count attempted_problem_count %}%)</a>
 					</li>
-					<li class="submissions"><a href="{% url "judge-submission-recent" %}?user={{ profile_user.username }}">{{ profile_user.get_profile.submissions }}</a></li>
-					<li class="accepted"><a href="{%  url "judge-submission-recent" %}?user={{ profile_user.username }}&state={{ submission_accepted_constant }}"> {{ profile_user.get_profile.accepted }}
-						({% percentage profile_user.get_profile.accepted profile_user.get_profile.submissions %}%)</a>
+					<li class="submissions"><a href="{% url "judge-submission-recent" %}?user={{ profile_user.username }}">{{ profile_user.userprofile.submissions }}</a></li>
+					<li class="accepted"><a href="{%  url "judge-submission-recent" %}?user={{ profile_user.username }}&state={{ submission_accepted_constant }}"> {{ profile_user.userprofile.accepted }}
+						({% percentage profile_user.userprofile.accepted profile_user.userprofile.submissions %}%)</a>
 					</li>
 				</ul>
 			</li>

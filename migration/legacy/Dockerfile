@@ -21,10 +21,13 @@ RUN sed -i \
       zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
+ARG DJANGO_VERSION=1.6.5
+
 COPY migration/legacy/requirements.txt /tmp/requirements.txt
 RUN python -m pip install --no-cache-dir \
       'pip==20.3.4' 'setuptools==44.1.1' 'wheel==0.37.1' \
-    && python -m pip install --no-cache-dir -r /tmp/requirements.txt \
+    && python -m pip install --no-cache-dir \
+      "Django==${DJANGO_VERSION}" -r /tmp/requirements.txt \
     && python -c 'import celery, django, kombu, psycopg2; print("legacy dependency imports: OK")'
 
 # These are the exact fork commits recorded by the production superproject.
@@ -35,7 +38,10 @@ RUN python -m pip install --no-cache-dir /tmp/django-registration \
     && rm -rf /tmp/django-registration /tmp/misaka
 
 COPY migration/legacy/entrypoint.sh /usr/local/bin/algospot-legacy-entrypoint
-RUN chmod 0755 /usr/local/bin/algospot-legacy-entrypoint
+COPY migration/bridge/runserver.py /opt/algospot/bridge-runserver.py
+RUN chmod 0755 \
+      /usr/local/bin/algospot-legacy-entrypoint \
+      /opt/algospot/bridge-runserver.py
 
 WORKDIR /app/www
 EXPOSE 8000

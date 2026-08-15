@@ -51,12 +51,12 @@
 				{% endif %}
 				{% endcomment %}
 				{% endfor %}
-				{% if not user.get_profile.is_authorized %}
+				{% if not user.userprofile.is_authorized %}
 				<li class="comment comment_form">
 					<p>
 						정회원 권한이 있어야 커멘트를 다실 수 있습니다. 정회원이 되시려면
                         온라인 저지에서 {{ USER_AUTHORIZATION_LIMIT }}문제 이상을 푸시고, 가입 후 {{ USER_AUTHORIZATION_LIMIT_DAYS }}일 이상이 지나셔야
-                        합니다. 현재 {{ user.get_profile.solved_problems }}문제를 푸셨습니다.
+                        합니다. 현재 {{ user.userprofile.solved_problems }}문제를 푸셨습니다.
 					</p>
 				</li>
 
