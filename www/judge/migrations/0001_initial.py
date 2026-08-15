@@ -1,136 +1,137 @@
-# encoding: utf-8
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'Problem'
-        db.create_table('judge_problem', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(db_index=True, max_length=100, blank=True)),
-            ('updated_on', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('state', self.gf('django.db.models.fields.SmallIntegerField')(default=0)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('source', self.gf('django.db.models.fields.TextField')(max_length=100, blank=True)),
-            ('name', self.gf('django.db.models.fields.TextField')(max_length=100, blank=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('input', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('output', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('sample_input', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('sample_output', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('note', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('judge_module', self.gf('django.db.models.fields.TextField')(max_length=100, blank=True)),
-            ('time_limit', self.gf('django.db.models.fields.PositiveIntegerField')(default=10000)),
-            ('memory_limit', self.gf('django.db.models.fields.PositiveIntegerField')(default=65536)),
-            ('submissions_count', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('accepted_count', self.gf('django.db.models.fields.IntegerField')(default=0)),
-        ))
-        db.send_create_signal('judge', ['Problem'])
-
-        # Adding model 'Submission'
-        db.create_table('judge_submission', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('submitted_on', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('problem', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['judge.Problem'])),
-            ('is_public', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('language', self.gf('django.db.models.fields.TextField')(max_length=100)),
-            ('state', self.gf('django.db.models.fields.SmallIntegerField')(default=0)),
-            ('length', self.gf('django.db.models.fields.IntegerField')()),
-            ('source', self.gf('django.db.models.fields.TextField')()),
-            ('message', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
-            ('time', self.gf('django.db.models.fields.IntegerField')(null=True)),
-            ('memory', self.gf('django.db.models.fields.IntegerField')(null=True)),
-        ))
-        db.send_create_signal('judge', ['Submission'])
+from django.db import models, migrations
+from django.conf import settings
 
 
-    def backwards(self, orm):
-        
-        # Deleting model 'Problem'
-        db.delete_table('judge_problem')
+class Migration(migrations.Migration):
 
-        # Deleting model 'Submission'
-        db.delete_table('judge_submission')
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'judge.problem': {
-            'Meta': {'object_name': 'Problem'},
-            'accepted_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'input': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'judge_module': ('django.db.models.fields.TextField', [], {'max_length': '100', 'blank': 'True'}),
-            'memory_limit': ('django.db.models.fields.PositiveIntegerField', [], {'default': '65536'}),
-            'name': ('django.db.models.fields.TextField', [], {'max_length': '100', 'blank': 'True'}),
-            'note': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'output': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'sample_input': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'sample_output': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'db_index': 'True', 'max_length': '100', 'blank': 'True'}),
-            'source': ('django.db.models.fields.TextField', [], {'max_length': '100', 'blank': 'True'}),
-            'state': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
-            'submissions_count': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'time_limit': ('django.db.models.fields.PositiveIntegerField', [], {'default': '10000'}),
-            'updated_on': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
-        },
-        'judge.submission': {
-            'Meta': {'object_name': 'Submission'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'language': ('django.db.models.fields.TextField', [], {'max_length': '100'}),
-            'length': ('django.db.models.fields.IntegerField', [], {}),
-            'memory': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
-            'message': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-            'problem': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['judge.Problem']"}),
-            'source': ('django.db.models.fields.TextField', [], {}),
-            'state': ('django.db.models.fields.SmallIntegerField', [], {'default': '0'}),
-            'submitted_on': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'time': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
-        }
-    }
-
-    complete_apps = ['judge']
+    operations = [
+        migrations.CreateModel(
+            name='Attachment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('file', models.FileField(max_length=1024, upload_to=b'/will_not_be_used/')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Problem',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('slug', models.SlugField(unique=True, max_length=100, verbose_name='\ubb38\uc81c ID')),
+                ('state', models.SmallIntegerField(default=0, db_index=True, verbose_name='\ubb38\uc81c \uc0c1\ud0dc', choices=[(0, b'DRAFT'), (1, b'PENDING REVIEW'), (2, b'HIDDEN'), (3, b'PUBLISHED')])),
+                ('source', models.CharField(db_index=True, max_length=100, verbose_name='\ucd9c\ucc98', blank=True)),
+                ('name', models.CharField(max_length=100, verbose_name='\uc774\ub984', blank=True)),
+                ('judge_module', models.CharField(max_length=100, verbose_name='\ucc44\uc810 \ubaa8\ub4c8', blank=True)),
+                ('submissions_count', models.IntegerField(default=0)),
+                ('accepted_count', models.IntegerField(default=0)),
+            ],
+            options={
+                'permissions': (('read_problem', 'Can read problem always'), ('edit_problem', 'Can edit problem always')),
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='ProblemRevision',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_on', models.DateTimeField(auto_now_add=True)),
+                ('edit_summary', models.TextField(max_length=100, blank=True)),
+                ('description', models.TextField(verbose_name='\uc124\uba85', blank=True)),
+                ('input', models.TextField(verbose_name='\uc785\ub825 \uc124\uba85', blank=True)),
+                ('output', models.TextField(verbose_name='\ucd9c\ub825 \uc124\uba85', blank=True)),
+                ('sample_input', models.TextField(verbose_name='\uc608\uc81c \uc785\ub825', blank=True)),
+                ('sample_output', models.TextField(verbose_name='\uc608\uc81c \ucd9c\ub825', blank=True)),
+                ('note', models.TextField(verbose_name='\ub178\ud2b8', blank=True)),
+                ('time_limit', models.PositiveIntegerField(default=10000, verbose_name='\uc2dc\uac04 \uc81c\ud55c (ms)')),
+                ('memory_limit', models.PositiveIntegerField(default=65536, verbose_name='\uba54\ubaa8\ub9ac \uc81c\ud55c (kb)')),
+                ('revision_for', models.ForeignKey(to='judge.Problem')),
+                ('user', models.ForeignKey(verbose_name='\ud3b8\uc9d1\uc790', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Solver',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('incorrect_tries', models.IntegerField(default=0)),
+                ('solved', models.BooleanField(default=False, db_index=True)),
+                ('when', models.DateTimeField(null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Submission',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('submitted_on', models.DateTimeField(auto_now_add=True)),
+                ('is_public', models.BooleanField(default=True)),
+                ('language', models.TextField(max_length=100)),
+                ('state', models.SmallIntegerField(default=0, db_index=True, choices=[(0, b'RECEIVED'), (1, b'COMPILING'), (2, b'RUNNING'), (3, b'JUDGING'), (4, b'COMPILE_ERROR'), (5, b'OK'), (6, b'ACCEPTED'), (7, b'WRONG_ANSWER'), (8, b'RUNTIME_ERROR'), (9, b'TIME_LIMIT_EXCEEDED'), (10, b'CANT_BE_JUDGED'), (11, b'REJUDGE_REQUESTED')])),
+                ('length', models.IntegerField(db_index=True)),
+                ('source', models.TextField()),
+                ('message', models.TextField(default=b'', blank=True)),
+                ('time', models.IntegerField(null=True, db_index=True)),
+                ('memory', models.IntegerField(null=True)),
+                ('problem', models.ForeignKey(to='judge.Problem')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='solver',
+            name='fastest_submission',
+            field=models.ForeignKey(related_name='+', to='judge.Submission', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='solver',
+            name='problem',
+            field=models.ForeignKey(to='judge.Problem'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='solver',
+            name='shortest_submission',
+            field=models.ForeignKey(related_name='+', to='judge.Submission', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='solver',
+            name='user',
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='problem',
+            name='last_revision',
+            field=models.ForeignKey(related_name='main', blank=True, to='judge.ProblemRevision', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='problem',
+            name='user',
+            field=models.ForeignKey(verbose_name='\uc791\uc131\uc790', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='attachment',
+            name='problem',
+            field=models.ForeignKey(to='judge.Problem'),
+            preserve_default=True,
+        ),
+    ]

@@ -56,6 +56,13 @@ this boundary replaces the removed `User.get_profile()` helper with the
 equivalent `User.userprofile` one-to-one relation in Python and templates.
 Native migration files can now be prepared on a separate writable copy of the
 restored database.
+
+The South histories have been preserved as `south_migrations`, while five
+project-native initial migrations are loaded only by the Django 1.7 bridge.
+The `bridge-clone` and name-locked `bridge-migrate` tools rehearse fake adoption
+on `algospot_native_migrate`: they add only Django's migration recorder, mark
+ten native migrations applied, and leave all verified core row counts intact.
+The native graph also succeeds against an empty database.
 4. Upgrade incrementally through supported API boundaries, resolving all
    deprecation warnings before each next step. Port the code to Python 3 before
    crossing to Django 2.

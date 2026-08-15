@@ -90,3 +90,34 @@ The bridge passes the same 13 anonymous HTTP checks and signed-session
 authorization/media suite as Django 1.6. Private run reports are kept in the
 snapshot's `restore-lab/` directory as `characterization-bridge-http.txt` and
 `characterization-bridge-auth-media.txt`.
+
+## Native migration rehearsal
+
+The historical South files live in each project app's `south_migrations`
+package and remain visible to Django 1.6 through `SOUTH_MIGRATION_MODULES`.
+Django 1.7 uses `algospot.bridge_settings`, removes South from
+`INSTALLED_APPS`, and loads the generated native `0001_initial` migrations.
+
+Rehearse adoption only on the hard-coded `algospot_native_migrate` scratch
+database. `bridge-clone` replaces that database from `algospot_restore`, and
+`bridge-migrate` records all existing migrations with Django 1.7's `--fake`
+option. The bridge settings refuse the write opt-in if any other database name
+is configured.
+
+```sh
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm bridge-clone
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile tools run --rm bridge-migrate
+```
+
+On the 2026-08-14 snapshot this creates only the four-column
+`django_migrations` bookkeeping table, marks ten migrations applied, and
+preserves the verified core row counts. The same native graph also builds an
+empty database successfully. A clean build bootstraps the required `everyone`
+group before Guardian creates its anonymous user. Private evidence is stored
+as `native-migration-rehearsal.txt` and
+`native-migration-verification.txt` in the snapshot's `restore-lab/`
+directory.

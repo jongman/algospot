@@ -152,6 +152,16 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 )
 
+# Preserve the production South history after native Django migration packages
+# are introduced under each app's conventional ``migrations`` module.
+SOUTH_MIGRATION_MODULES = {
+    'base': 'base.south_migrations',
+    'forum': 'forum.south_migrations',
+    'judge': 'judge.south_migrations',
+    'newsfeed': 'newsfeed.south_migrations',
+    'wiki': 'wiki.south_migrations',
+}
+
 AUTH_PROFILE_MODULE = 'base.UserProfile'
 
 ACCOUNT_ACTIVATION_DAYS = 7

@@ -40,7 +40,8 @@ def user_added(sender, **kwargs):
     if kwargs["created"]:
         user = kwargs["instance"]
         """ add the user to group 'everyone'. """
-        Group.objects.get(name='everyone').user_set.add(user)
+        everyone, _ = Group.objects.get_or_create(name='everyone')
+        everyone.user_set.add(user)
 
         """ automatically create profile classes when a user is created."""
         profile = UserProfile(user=user)
