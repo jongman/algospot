@@ -1,0 +1,9 @@
+**
+!migration/
+!migration/legacy/
+!migration/legacy/**
+!libs/
+!libs/misaka/
+!libs/misaka/**
+!libs/django-registration/
+!libs/django-registration/**

@@ -1,6 +1,6 @@
 [submodule "libs/misaka"]
 	path = libs/misaka
-	url = git://github.com/beingryu/misaka.git
+	url = https://github.com/beingryu/misaka.git
 [submodule "libs/django-registration"]
 	path = libs/django-registration
 	url = https://github.com/macropin/django-registration.git

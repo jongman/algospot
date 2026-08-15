@@ -32,6 +32,12 @@ or service account with the public web application.
 2. Build a disposable Python 2/Django 1.6 compatibility environment and add
    characterization tests for login, profiles, forum/comments, problem views,
    submissions, permissions, media paths, and search behavior.
+
+The compatibility runtime is defined by `migration/legacy/` and the
+`legacy-web` Compose profile. It is intentionally localhost-only and connects
+with a database role whose transactions are forced read-only. Never add a
+Celery worker or judge service to this profile.
+
 3. Move South history to native Django migrations at a compatible Django
    boundary. Preserve table names and verify row counts after every schema
    transition.
@@ -60,4 +66,3 @@ or service account with the public web application.
 - DNS, TLS renewal, email, cron/index updates, queues, logs, and monitoring
   moved or deliberately retired.
 - Rollback procedure tested and a retention date recorded.
-
