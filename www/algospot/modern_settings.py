@@ -12,12 +12,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 USE_TZ = False
 
 database_name = os.environ.get('LEGACY_POSTGRES_DB', 'algospot_restore')
-allow_scratch_writes = (
-    os.environ.get('MODERN_ALLOW_DATABASE_WRITES') == 'scratch-only'
+write_mode = os.environ.get('MODERN_ALLOW_DATABASE_WRITES', '')
+allow_scratch_writes = write_mode == 'scratch-only'
+allow_controller_writes = (
+    write_mode == 'judge-controller'
+    and os.environ.get('DJANGO_SETTINGS_MODULE') == 'algospot.judge_settings'
+    and os.environ.get('ALGOSPOT_JUDGE_CONTROLLER_ENABLED') == '1'
 )
 if allow_scratch_writes and database_name != 'algospot_native_migrate':
     raise RuntimeError(
         'Modern database writes are restricted to algospot_native_migrate')
+if write_mode not in ('', 'scratch-only', 'judge-controller'):
+    raise RuntimeError('Unknown MODERN_ALLOW_DATABASE_WRITES mode')
+if write_mode == 'judge-controller' and not allow_controller_writes:
+    raise RuntimeError(
+        'Judge writes require judge_settings and the controller opt-in')
+allow_database_writes = allow_scratch_writes or allow_controller_writes
 
 DATABASES = {
     'default': {
@@ -29,7 +39,7 @@ DATABASES = {
         'PORT': os.environ.get('LEGACY_POSTGRES_PORT', '5432'),
         'OPTIONS': ({
             'options': '-c default_transaction_read_only=on',
-        } if not allow_scratch_writes else {}),
+        } if not allow_database_writes else {}),
     },
 }
 
@@ -115,6 +125,17 @@ JUDGE_LANGUAGE_METADATA = (
     ('hs', 'Haskell', 'isolated judge worker'),
     ('rs', 'Rust', 'isolated judge worker'),
     ('lua', 'LuaJIT', 'isolated judge worker'),
+)
+
+# These settings are inert in the web process, which has neither the Docker
+# socket nor the controller opt-in.  They are shared so the isolated smoke
+# command can exercise the same executor without a second settings fork.
+JUDGE_CONTAINER_WORK_ROOT = os.environ.get(
+    'ALGOSPOT_JUDGE_WORK_ROOT', '/tmp/algospot-judge-work')
+JUDGE_CONTAINER_RUNTIME = os.environ.get(
+    'ALGOSPOT_JUDGE_RUNTIME', 'runsc')
+JUDGE_REQUIRE_IMAGE_DIGESTS = (
+    os.environ.get('ALGOSPOT_JUDGE_REQUIRE_IMAGE_DIGESTS', '1') == '1'
 )
 
 LOGGING = {

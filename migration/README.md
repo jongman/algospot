@@ -291,3 +291,57 @@ and forced-read-only checks. It preserves 180,942 users and all 2,443 database
 media references; 2,430 referenced files are present, while the 13 already
 documented missing legacy files remain missing. The immutable evidence database
 is not given a migration recorder table.
+
+## Disposable judge controller
+
+Judging is a sibling-container topology, not Docker-in-Docker. The normal web
+container never receives the Docker socket. One trusted `judge-controller`
+service holds the socket and consumes durable, leased `JudgeJob` rows from
+PostgreSQL. A crashed controller leaves a lease that another controller can
+recover. New `RECEIVED` and `REJUDGE_REQUESTED` submissions are queued by ID;
+no Django model is serialized into a broker message.
+
+The controller creates one disposable compile container and a fresh run
+container for every test case. Commands and images come from a server-owned
+allowlist, not submission input. Each container has no network, a read-only
+root filesystem, no capabilities, `no-new-privileges`, an unprivileged UID,
+bounded processes, CPU, memory, files, output, and wall time. Only the compile
+directory is writable during compilation. Run containers receive the compiled
+work directory read-only and exactly one input file; expected output, other
+cases, media, the database, credentials, and the Docker socket are absent.
+Special checkers run in another disposable sandbox that cannot reach the
+submission container.
+
+Real submissions fail closed unless Docker exposes the gVisor `runsc` runtime.
+The `runc` opt-in exists solely for the checked-in controlled smoke program;
+it cannot start the queue consumer. On the configuration host:
+
+```sh
+sudo ./scripts/install-gvisor.sh
+./scripts/run-algospot-judge.sh build
+./scripts/run-algospot-judge.sh migrate
+./scripts/run-algospot-judge.sh smoke
+./scripts/run-algospot-judge.sh queue-report
+```
+
+`queue-report` is dry-run by default. `queue-apply` enqueues only rows still in
+`RECEIVED` or `REJUDGE_REQUESTED`. The snapshot's old `COMPILING`, `RUNNING`,
+and `JUDGING` rows are deliberately excluded; an operator must decide their
+verdict or request a rejudge explicitly.
+
+The local images are a modernization-development toolchain. They preserve all
+language IDs and include pinned base images, but their compiler/interpreter
+versions are not equivalent to the live 2014-era stack. Do not cut production
+traffic over based on the local smoke test. Before production, build and
+characterize per-language legacy-compatible images, push them to a controlled
+registry, set every `JUDGE_*_IMAGE` value to an `@sha256:` reference, set
+`JUDGE_REQUIRE_IMAGE_DIGESTS=1`, run representative accepted/wrong-answer/time
+limit/special-checker submissions through both judges, and review every
+verdict difference.
+
+For an eventual writable production database, the controller uses
+`MODERN_ALLOW_DATABASE_WRITES=judge-controller` together with
+`algospot.judge_settings` and the explicit controller opt-in. The local Compose
+profile remains restricted to the disposable `algospot_native_migrate` clone.
+The controller owns the Docker socket and is therefore host-administrator
+equivalent; a dedicated judge VPS is the preferred production boundary.

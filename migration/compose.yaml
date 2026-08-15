@@ -541,6 +541,108 @@ services:
     entrypoint: [python, manage.py, migrate]
     command: [--fake-initial, --noinput]
 
+  # The public web service above deliberately has no Docker socket.  Only this
+  # trusted controller can ask the host daemon for disposable sibling
+  # containers, and real submissions require the gVisor runsc runtime.
+  judge-controller: &judge-controller
+    profiles: [judge]
+    image: algospot-modern:local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.judge_settings
+      LEGACY_POSTGRES_DB: ${JUDGE_POSTGRES_DB:-algospot_native_migrate}
+      LEGACY_POSTGRES_USER: ${POSTGRES_USER:-algospot}
+      LEGACY_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in restore.env}
+      MODERN_ALLOW_DATABASE_WRITES: ${JUDGE_DATABASE_WRITE_MODE:-scratch-only}
+      ALGOSPOT_JUDGE_CONTROLLER_ENABLED: "1"
+      ALGOSPOT_JUDGE_RUNTIME: ${JUDGE_RUNTIME:-runsc}
+      ALGOSPOT_JUDGE_REQUIRE_IMAGE_DIGESTS: ${JUDGE_REQUIRE_IMAGE_DIGESTS:-0}
+      ALGOSPOT_JUDGE_WORK_ROOT: ${ALGOSPOT_SNAPSHOT_DIR:?set ALGOSPOT_SNAPSHOT_DIR in legacy.env}/restore-lab/judge-work
+      ALGOSPOT_JUDGE_TOOLCHAIN_IMAGE: ${JUDGE_TOOLCHAIN_IMAGE:-algospot-judge-toolchain:local}
+      ALGOSPOT_JUDGE_PYTHON2_IMAGE: ${JUDGE_PYTHON2_IMAGE:-algospot-judge-python2:local}
+      ALGOSPOT_JUDGE_PYPY2_IMAGE: ${JUDGE_PYPY2_IMAGE:-algospot-judge-pypy2:local}
+    volumes:
+      - type: bind
+        source: ${ALGOSPOT_REPO_DIR:?set ALGOSPOT_REPO_DIR in legacy.env}/www
+        target: /app/www
+        read_only: true
+      - type: bind
+        source: ${ALGOSPOT_SNAPSHOT_DIR:?set ALGOSPOT_SNAPSHOT_DIR in legacy.env}/files/www-media
+        target: /www-media
+        read_only: true
+      - type: bind
+        source: ${ALGOSPOT_SNAPSHOT_DIR:?set ALGOSPOT_SNAPSHOT_DIR in legacy.env}/restore-lab/judge-work
+        target: ${ALGOSPOT_SNAPSHOT_DIR:?set ALGOSPOT_SNAPSHOT_DIR in legacy.env}/restore-lab/judge-work
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    networks:
+      - restore
+    user: ${LEGACY_UID:?set LEGACY_UID in legacy.env}:${LEGACY_GID:?set LEGACY_GID in legacy.env}
+    group_add:
+      - ${DOCKER_GID:-999}
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64
+    mem_limit: 512m
+    cpus: 1.0
+    init: true
+    restart: unless-stopped
+    entrypoint: [python, manage.py, run_judge_controller]
+    command: []
+
+  judge-sandbox-smoke:
+    <<: *judge-controller
+    profiles: [judge-smoke]
+    restart: "no"
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.modern_settings
+      ALGOSPOT_JUDGE_RUNTIME: ${JUDGE_SMOKE_RUNTIME:-runc}
+      ALGOSPOT_JUDGE_REQUIRE_IMAGE_DIGESTS: "0"
+      ALGOSPOT_JUDGE_WORK_ROOT: ${ALGOSPOT_SNAPSHOT_DIR:?set ALGOSPOT_SNAPSHOT_DIR in legacy.env}/restore-lab/judge-work
+      ALGOSPOT_JUDGE_TOOLCHAIN_IMAGE: ${JUDGE_TOOLCHAIN_IMAGE:-algospot-judge-toolchain:local}
+    entrypoint:
+      - python
+      - manage.py
+      - judge_sandbox_smoke
+      - --runtime
+      - ${JUDGE_SMOKE_RUNTIME:-runc}
+      - --allow-runc
+    command: []
+
+  judge-toolchain:
+    profiles: [judge-build]
+    image: algospot-judge-toolchain:local
+    build:
+      context: ..
+      dockerfile: migration/judge/toolchain.Dockerfile
+    entrypoint: [/bin/true]
+
+  judge-python2:
+    profiles: [judge-build]
+    image: algospot-judge-python2:local
+    build:
+      context: ..
+      dockerfile: migration/judge/python2.Dockerfile
+    entrypoint: [/bin/true]
+
+  judge-pypy2:
+    profiles: [judge-build]
+    image: algospot-judge-pypy2:local
+    build:
+      context: ..
+      dockerfile: migration/judge/pypy2.Dockerfile
+    entrypoint: [/bin/true]
+
   django18-scratch-web:
     <<: *django18-web
     profiles: [tools]

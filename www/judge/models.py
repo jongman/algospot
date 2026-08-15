@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.db.models.signals import post_save
@@ -222,13 +223,55 @@ class Submission(models.Model):
         pie.fill_solid("bg", "65432100")
         return pie.get_url() + "&chp=4.712"
 
-
     @staticmethod
     def get_stat_for_user(user):
         ret = {}
         for entry in Submission.objects.filter(user=user).values('state').annotate(Count('state')):
             ret[entry['state']] = entry['state__count']
         return ret
+
+
+class JudgeJob(models.Model):
+    PENDING = 'pending'
+    RUNNING = 'running'
+    COMPLETE = 'complete'
+    FAILED = 'failed'
+    STATES = (
+        (PENDING, 'Pending'),
+        (RUNNING, 'Running'),
+        (COMPLETE, 'Complete'),
+        (FAILED, 'Failed'),
+    )
+
+    submission = models.OneToOneField(
+        Submission, related_name='judge_job', on_delete=models.CASCADE)
+    state = models.CharField(
+        max_length=16, choices=STATES, default=PENDING, db_index=True)
+    worker_id = models.CharField(max_length=128, blank=True, default='')
+    lease_expires_at = models.DateTimeField(null=True, blank=True, db_index=True)
+    attempts = models.PositiveIntegerField(default=0)
+    last_error = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return 'submission %s (%s)' % (self.submission_id, self.state)
+
+    def queue(self):
+        self.state = self.PENDING
+        self.worker_id = ''
+        self.lease_expires_at = None
+        self.last_error = ''
+        self.save(update_fields=[
+            'state', 'worker_id', 'lease_expires_at', 'last_error',
+            'updated_at',
+        ])
+
+    def lease_expired(self):
+        return (
+            self.lease_expires_at is not None
+            and self.lease_expires_at <= timezone.now()
+        )
 
 class Solver(models.Model):
     problem = models.ForeignKey(Problem, db_index=True, on_delete=models.CASCADE)
@@ -357,10 +400,24 @@ def saved_submission(sender, **kwargs):
         problem.save()
     if submission.state in [Submission.RECEIVED,
                             Submission.REJUDGE_REQUESTED]:
-        from . import tasks
-        tasks.judge_submission.delay(submission)
+        JudgeJob.objects.update_or_create(
+            submission=submission,
+            defaults={
+                'state': JudgeJob.PENDING,
+                'worker_id': '',
+                'lease_expires_at': None,
+                'last_error': '',
+            },
+        )
 
     if submission.state in Submission.JUDGED:
+        JudgeJob.objects.filter(submission=submission).update(
+            state=JudgeJob.COMPLETE,
+            worker_id='',
+            lease_expires_at=None,
+            last_error='',
+            updated_at=timezone.now(),
+        )
         if not submission.is_public: return
         profile = submission.user.userprofile
         submissions = Submission.objects.filter(user=submission.user,
