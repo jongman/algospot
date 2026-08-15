@@ -44,5 +44,7 @@ locks and other runtime changes disappear with the container.
 
 Useful lifecycle commands are `status`, `logs`, `smoke`, `stop`, and `rebuild`.
 The `smoke` action runs anonymous route checks from inside the isolated network
-and stores a report beside the runtime credentials and logs in the snapshot's
-private `restore-lab/` directory.
+plus signed-session permission and media-reference checks. It stores both
+reports beside the runtime credentials and logs in the snapshot's private
+`restore-lab/` directory. The signed sessions contain only database user IDs;
+the checks neither know nor change any production password.

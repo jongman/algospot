@@ -61,6 +61,7 @@ services:
         condition: service_healthy
     environment:
       DJANGO_SETTINGS_MODULE: algospot.legacy_settings
+      PYTHONPATH: /app/www
       LEGACY_SECRET_KEY: ${LEGACY_SECRET_KEY:?set LEGACY_SECRET_KEY in legacy.env}
       LEGACY_POSTGRES_DB: algospot_restore
       LEGACY_POSTGRES_HOST: postgres
@@ -136,6 +137,50 @@ services:
     cpus: 0.5
     restart: "no"
     entrypoint: [python, /opt/algospot/smoke.py]
+
+  legacy-auth-smoke:
+    profiles: [legacy]
+    image: algospot-legacy:local
+    depends_on:
+      legacy-web:
+        condition: service_healthy
+    environment:
+      DJANGO_SETTINGS_MODULE: algospot.legacy_settings
+      PYTHONPATH: /app/www
+      LEGACY_SECRET_KEY: ${LEGACY_SECRET_KEY:?set LEGACY_SECRET_KEY in legacy.env}
+      LEGACY_POSTGRES_DB: algospot_restore
+      LEGACY_POSTGRES_HOST: postgres
+      LEGACY_POSTGRES_PORT: "5432"
+      LEGACY_POSTGRES_USER: ${LEGACY_POSTGRES_USER:-algospot_legacy_ro}
+      LEGACY_POSTGRES_PASSWORD: ${LEGACY_POSTGRES_PASSWORD:?set LEGACY_POSTGRES_PASSWORD in legacy.env}
+    volumes:
+      - type: bind
+        source: ${ALGOSPOT_REPO_DIR:?set ALGOSPOT_REPO_DIR in legacy.env}/www
+        target: /app/www
+        read_only: true
+      - type: bind
+        source: ${ALGOSPOT_REPO_DIR:?set ALGOSPOT_REPO_DIR in legacy.env}/migration/legacy/auth_smoke.py
+        target: /opt/algospot/auth_smoke.py
+        read_only: true
+      - type: bind
+        source: ${ALGOSPOT_SNAPSHOT_DIR:?set ALGOSPOT_SNAPSHOT_DIR in legacy.env}/files/www-media
+        target: /www-media
+        read_only: true
+    networks:
+      - restore
+    user: ${LEGACY_UID:?set LEGACY_UID in legacy.env}:${LEGACY_GID:?set LEGACY_GID in legacy.env}
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 32
+    mem_limit: 256m
+    cpus: 0.5
+    restart: "no"
+    entrypoint: [python, /opt/algospot/auth_smoke.py]
 
 volumes:
   postgres-data:

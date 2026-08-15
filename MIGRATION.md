@@ -38,6 +38,13 @@ The compatibility runtime is defined by `migration/legacy/` and the
 with a database role whose transactions are forced read-only. Never add a
 Celery worker or judge service to this profile.
 
+The 2026-08-14 baseline passes 13 anonymous HTTP checks plus signed-session
+owner/other/admin permission checks without production passwords. The restored
+media tree contains 6,369 files (825,057,406 bytes). Of 1,253 attachment and
+1,190 avatar database references, one attachment and twelve avatars are
+missing on both the live VPS and the rescue snapshot; treat these as preserved
+legacy dangling references, not backup loss.
+
 3. Move South history to native Django migrations at a compatible Django
    boundary. Preserve table names and verify row counts after every schema
    transition.
