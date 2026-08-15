@@ -180,6 +180,39 @@ read-only, and a repeat migration reports no work to apply. The original
 `algospot_restore` evidence database remains unchanged and has no
 `django_migrations` table.
 
-The remaining Django 1.8 warnings identify the next boundary: move generic
-relations to their Django 1.9 locations, fix newsfeed's early model import, and
-modernize or retire the legacy Celery integration before advancing again.
+## Django 1.9 through 1.11 checkpoints
+
+The `django19`, `django110`, and `django111` profiles continue the Python 2
+compatibility ladder through Django 1.11.29 LTS. They use the same read-only
+database role, restored media, and characterization suites as the earlier
+profiles. The Django 1.9 boundary moves generic relations to
+`django.contrib.contenttypes.fields`, prevents newsfeed from importing models
+during application discovery, and updates AppConf, Haystack, and tagging. The
+Django 1.10 boundary adopts list-based URL configurations and `TEMPLATES`, and
+updates avatar and Guardian. Django 1.11 uses Haystack 2.8.1 and fixes the one
+absolute `FileField.upload_to` value rejected by its system checks.
+
+Build and exercise any checkpoint by substituting its profile and service
+prefix in the Django 1.8 commands above. For example, the final Python 2 gate is:
+
+```sh
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile django111 build django111-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile django111 up -d --wait django111-web
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile django111 run --rm django111-smoke
+docker compose --project-directory migration \
+  --env-file /path/to/restore.env --env-file /path/to/legacy.env \
+  --profile django111 run --rm django111-auth-smoke
+```
+
+All six Django 1.6, 1.7, 1.8, 1.9, 1.10, and 1.11 profiles pass the same 13
+anonymous HTTP checks plus signed-session authorization and media checks. The
+pinned registration source remains untouched in the worktree; a documented
+build-time patch supplies the small cross-version changes. The next boundary is
+porting the web application and supported dependencies to Python 3 before
+crossing to Django 2.

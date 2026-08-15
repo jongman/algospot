@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, url
-import views
+from django.conf.urls import url
+from . import views
 
-urlpatterns = patterns(
-    'judge.views',
+urlpatterns = [
     url(r'^$', views.index,
         name='judge-index'),
     url(r'^ranking/$', views.ranking, name='judge-ranking'),
@@ -67,5 +66,4 @@ urlpatterns = patterns(
     url(r'^submission/rejudge/(?P<id>.+)$', views.submission.rejudge,
         name='judge-submission-rejudge'),
 
-)
-
+]

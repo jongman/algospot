@@ -18,10 +18,13 @@ RUN sed -i \
       libfreetype6-dev \
       libjpeg62-turbo-dev \
       libpq-dev \
+      patch \
       zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 ARG DJANGO_VERSION=1.6.5
+ARG APPCONF_VERSION=0.6
+ARG AVATAR_VERSION=2.0
 ARG COMMENTS_VERSION=
 ARG GUARDIAN_VERSION=1.2.0
 ARG HAYSTACK_VERSION=2.1.0
@@ -32,6 +35,8 @@ RUN python -m pip install --no-cache-dir \
       'pip==20.3.4' 'setuptools==44.1.1' 'wheel==0.37.1' \
     && python -m pip install --no-cache-dir \
       "Django==${DJANGO_VERSION}" \
+      "django-appconf==${APPCONF_VERSION}" \
+      "django-avatar==${AVATAR_VERSION}" \
       "django-guardian==${GUARDIAN_VERSION}" \
       "django-haystack==${HAYSTACK_VERSION}" \
       "django-tagging==${TAGGING_VERSION}" \
@@ -46,9 +51,15 @@ RUN if [ -n "${COMMENTS_VERSION}" ]; then \
 # These are the exact fork commits recorded by the production superproject.
 COPY libs/django-registration /tmp/django-registration
 COPY libs/misaka /tmp/misaka
-RUN python -m pip install --no-cache-dir /tmp/django-registration \
+COPY migration/legacy/django-registration-compat.patch /tmp/django-registration-compat.patch
+RUN cd /tmp/django-registration \
+    && patch -p1 < /tmp/django-registration-compat.patch \
+    && python -m pip install --no-cache-dir /tmp/django-registration \
     && python -m pip install --no-cache-dir /tmp/misaka \
-    && rm -rf /tmp/django-registration /tmp/misaka
+    && rm -rf \
+      /tmp/django-registration \
+      /tmp/django-registration-compat.patch \
+      /tmp/misaka
 
 COPY migration/legacy/entrypoint.sh /usr/local/bin/algospot-legacy-entrypoint
 COPY migration/bridge/runserver.py /opt/algospot/bridge-runserver.py

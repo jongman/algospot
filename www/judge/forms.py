@@ -5,7 +5,7 @@ from models import Problem, Submission, ProblemRevision
 from django.contrib.auth.models import User
 import languages
 import differs
-import tagging
+from algospot.tagging_compat import TagField
 
 
 class ProblemRevisionEditForm(forms.ModelForm):
@@ -29,7 +29,7 @@ class ProblemRevisionEditForm(forms.ModelForm):
 
 
 class ProblemEditForm(forms.ModelForm):
-    tags = tagging.forms.TagField(label=u"문제 분류", required=False)
+    tags = TagField(label=u"문제 분류", required=False)
     user = forms.ModelChoiceField(label=u"작성자", queryset=User.objects.order_by("username"))
     class Meta:
         model = Problem
@@ -54,7 +54,7 @@ class ProblemEditForm(forms.ModelForm):
 
 
 class RestrictedProblemEditForm(forms.ModelForm):
-    tags = tagging.forms.TagField(label=u"문제 분류", required=False)
+    tags = TagField(label=u"문제 분류", required=False)
     review = forms.BooleanField(label=u'운영진 리뷰 요청', required=False)
     class Meta:
         model = Problem

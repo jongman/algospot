@@ -83,6 +83,16 @@ pass against the migrated scratch database with transactions forced read-only;
 the migration command is idempotent, and the evidence database remains
 unchanged with no migration-recorder table.
 
+The same Python 2 compatibility runtime has now been advanced and verified at
+Django 1.9.13, 1.10.8, and 1.11.29. The transition moves generic relations to
+their application-registry-safe API, defers newsfeed model imports until Django
+is ready, adopts list-based URL configurations and the modern template setting,
+and updates the last compatible releases of avatar, Guardian, Haystack, and
+tagging. All four newer checkpoints pass the same anonymous and signed-session
+characterization suites as the Django 1.6 baseline. Compatibility changes to
+the pinned registration submodule are recorded as a build-time patch so this
+checkpoint remains reproducible without relying on an unpublished fork.
+
 4. Upgrade incrementally through supported API boundaries, resolving all
    deprecation warnings before each next step. Port the code to Python 3 before
    crossing to Django 2.

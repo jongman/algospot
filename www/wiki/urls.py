@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import url, patterns
-import views
+from django.conf.urls import url
+from . import views
 
-urlpatterns = patterns(
-    'wiki.views',
+urlpatterns = [
     url(r'^list/$', views.list, name='wiki-list'),
     url(r'^read/(?P<slug>.+)$', views.detail, name='wiki-detail'),
     url(r'^edit/(?P<slug>.+)$', views.edit, name='wiki-edit'),
@@ -15,5 +14,4 @@ urlpatterns = patterns(
     url(r'^diff$', views.diff, name='wiki-diff-home'),
     url(r'^diff/(?P<id1>[0-9]+)/(?P<id2>[0-9]+)$', views.diff,
         name='wiki-diff'),
-)
-
+]

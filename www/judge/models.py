@@ -8,7 +8,7 @@ from guardian.shortcuts import get_users_with_perms, get_groups_with_perms, assi
 from newsfeed import publish, depublish, has_activity, get_activity
 from djangoutils import get_or_none
 import pygooglechart as pgc
-import tagging
+from algospot.tagging_compat import register
 
 class ProblemRevision(models.Model):
     revision_for = models.ForeignKey('Problem')
@@ -95,11 +95,11 @@ class Problem(models.Model):
             ('edit_problem', 'Can edit problem always'),
         )
 
-tagging.register(Problem)
+register(Problem)
 
 class Attachment(models.Model):
     problem = models.ForeignKey(Problem, db_index=True)
-    file = models.FileField(max_length=1024, upload_to='/will_not_be_used/')
+    file = models.FileField(max_length=1024, upload_to='will_not_be_used/')
 
 class Submission(models.Model):
     (RECEIVED, COMPILING, RUNNING, JUDGING, COMPILE_ERROR,

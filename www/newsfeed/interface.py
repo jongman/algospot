@@ -1,6 +1,6 @@
 from models import Activity
 from django.contrib.auth.models import User, Group
-from guardian.conf import settings
+from django.conf import settings
 from guardian.shortcuts import assign_perm, get_users_with_perms
 
 def publish(key, category, type, visible_users=None, visible_groups=None, **kwargs):

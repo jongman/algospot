@@ -17,6 +17,10 @@ if hasattr(django, 'setup'):
 
 from django.conf import settings
 from django.contrib.auth import BACKEND_SESSION_KEY, SESSION_KEY
+try:
+    from django.contrib.auth import HASH_SESSION_KEY
+except ImportError:
+    HASH_SESSION_KEY = None
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.signed_cookies import SessionStore
 from django.db import connection
@@ -34,9 +38,12 @@ PRIVATE_PROBLEM_ID = 648
 
 
 def signed_client(user_id):
+    user = User.objects.get(pk=user_id)
     session = SessionStore()
     session[SESSION_KEY] = user_id
     session[BACKEND_SESSION_KEY] = 'django.contrib.auth.backends.ModelBackend'
+    if HASH_SESSION_KEY is not None:
+        session[HASH_SESSION_KEY] = user.get_session_auth_hash()
     session.save()
     client = Client(HTTP_HOST='legacy-web')
     client.cookies[settings.SESSION_COOKIE_NAME] = session.session_key

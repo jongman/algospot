@@ -1,7 +1,7 @@
 from django.core.management.base import NoArgsCommand
 from django.contrib.auth.models import User, Group
 from newsfeed.models import Activity
-from guardian.conf import settings
+from django.conf import settings
 from guardian.shortcuts import assign_perm
 
 class Command(NoArgsCommand):

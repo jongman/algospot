@@ -8,7 +8,7 @@ from django.shortcuts import _get_queryset
 from django.contrib.auth.models import User
 from itertools import groupby
 
-from guardian.conf import settings
+from django.conf import settings
 from guardian.compat import get_user_model
 from guardian.compat import basestring
 from guardian.exceptions import MixedContentTypeError

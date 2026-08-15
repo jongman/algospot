@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, url
-import views
-urlpatterns = patterns(
-    'newsfeed.views',
+from django.conf.urls import url
+from . import views
+
+
+urlpatterns = [
     url(r'^$', views.stream, name='newsfeed'),
     url(r'^(?P<page>[0-9]+)/$', views.stream, name='newsfeed'),
     url(r'^user/(?P<id>[0-9]+)$', views.by_user, name='newsfeed-byuser'),
@@ -11,5 +12,4 @@ urlpatterns = patterns(
         name='newsfeed-filter'),
     url(r'^filter/(?P<id>[0-9]+)/(?P<type>[a-z]+)/(?P<page>[0-9]+)/$',
         views.filter, name='newsfeed-filter'),
-)
-
+]

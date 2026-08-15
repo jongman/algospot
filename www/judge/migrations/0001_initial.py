@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Attachment',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('file', models.FileField(max_length=1024, upload_to=b'/will_not_be_used/')),
+                ('file', models.FileField(max_length=1024, upload_to=b'will_not_be_used/')),
             ],
             options={
             },

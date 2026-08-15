@@ -254,6 +254,134 @@ services:
       <<: *legacy-environment
       DJANGO_SETTINGS_MODULE: algospot.django18_settings
 
+  django19-web: &django19-web
+    <<: *django18-web
+    profiles: [django19]
+    image: algospot-bridge-django19:local
+    build:
+      context: ..
+      dockerfile: migration/legacy/Dockerfile
+      args:
+        APPCONF_VERSION: 1.0.2
+        COMMENTS_VERSION: 1.8.0
+        DJANGO_VERSION: 1.9.13
+        GUARDIAN_VERSION: 1.3.2
+        HAYSTACK_VERSION: 2.5.1
+        TAGGING_VERSION: 0.4.5
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django19_settings
+    ports:
+      - 127.0.0.1:${DJANGO19_HTTP_PORT:-18084}:8000
+
+  django19-smoke: &django19-smoke
+    <<: *django18-smoke
+    profiles: [django19]
+    image: algospot-bridge-django19:local
+    depends_on:
+      django19-web:
+        condition: service_healthy
+    environment:
+      ALGOSPOT_SMOKE_BASE_URL: http://django19-web:8000
+      ALGOSPOT_SMOKE_HOST: legacy-web:8000
+
+  django19-auth-smoke: &django19-auth-smoke
+    <<: *django18-auth-smoke
+    profiles: [django19]
+    image: algospot-bridge-django19:local
+    depends_on:
+      django19-web:
+        condition: service_healthy
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django19_settings
+
+  django110-web:
+    <<: *django19-web
+    profiles: [django110]
+    image: algospot-bridge-django110:local
+    build:
+      context: ..
+      dockerfile: migration/legacy/Dockerfile
+      args:
+        APPCONF_VERSION: 1.0.2
+        AVATAR_VERSION: 3.1.0
+        COMMENTS_VERSION: 1.8.0
+        DJANGO_VERSION: 1.10.8
+        GUARDIAN_VERSION: 1.4.9
+        HAYSTACK_VERSION: 2.6.1
+        TAGGING_VERSION: 0.4.5
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django110_settings
+    ports:
+      - 127.0.0.1:${DJANGO110_HTTP_PORT:-18085}:8000
+
+  django110-smoke:
+    <<: *django19-smoke
+    profiles: [django110]
+    image: algospot-bridge-django110:local
+    depends_on:
+      django110-web:
+        condition: service_healthy
+    environment:
+      ALGOSPOT_SMOKE_BASE_URL: http://django110-web:8000
+      ALGOSPOT_SMOKE_HOST: legacy-web:8000
+
+  django110-auth-smoke:
+    <<: *django19-auth-smoke
+    profiles: [django110]
+    image: algospot-bridge-django110:local
+    depends_on:
+      django110-web:
+        condition: service_healthy
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django110_settings
+
+  django111-web: &django111-web
+    <<: *django19-web
+    profiles: [django111]
+    image: algospot-bridge-django111:local
+    build:
+      context: ..
+      dockerfile: migration/legacy/Dockerfile
+      args:
+        APPCONF_VERSION: 1.0.2
+        AVATAR_VERSION: 3.1.0
+        COMMENTS_VERSION: 1.8.0
+        DJANGO_VERSION: 1.11.29
+        GUARDIAN_VERSION: 1.4.9
+        HAYSTACK_VERSION: 2.8.1
+        TAGGING_VERSION: 0.4.5
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django111_settings
+    ports:
+      - 127.0.0.1:${DJANGO111_HTTP_PORT:-18086}:8000
+
+  django111-smoke:
+    <<: *django19-smoke
+    profiles: [django111]
+    image: algospot-bridge-django111:local
+    depends_on:
+      django111-web:
+        condition: service_healthy
+    environment:
+      ALGOSPOT_SMOKE_BASE_URL: http://django111-web:8000
+      ALGOSPOT_SMOKE_HOST: legacy-web:8000
+
+  django111-auth-smoke:
+    <<: *django19-auth-smoke
+    profiles: [django111]
+    image: algospot-bridge-django111:local
+    depends_on:
+      django111-web:
+        condition: service_healthy
+    environment:
+      <<: *legacy-environment
+      DJANGO_SETTINGS_MODULE: algospot.django111_settings
+
   django18-scratch-web:
     <<: *django18-web
     profiles: [tools]

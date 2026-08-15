@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from models import Category, Post
 from django.contrib.auth.models import User
-from guardian.conf import settings
+from django.conf import settings
 from guardian.shortcuts import get_objects_for_user
 
 def get_categories_for_user(request_user, perm):
