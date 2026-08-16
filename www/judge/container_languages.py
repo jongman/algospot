@@ -6,10 +6,6 @@ import os
 
 DEFAULT_TOOLCHAIN_IMAGE = os.environ.get(
     'ALGOSPOT_JUDGE_TOOLCHAIN_IMAGE', 'algospot-judge-toolchain:local')
-DEFAULT_PYTHON2_IMAGE = os.environ.get(
-    'ALGOSPOT_JUDGE_PYTHON2_IMAGE', 'algospot-judge-python2:local')
-DEFAULT_PYPY2_IMAGE = os.environ.get(
-    'ALGOSPOT_JUDGE_PYPY2_IMAGE', 'algospot-judge-pypy2:local')
 
 
 @dataclass(frozen=True)
@@ -38,7 +34,7 @@ LANGUAGES = {
         ('/work/submission',),
     ),
     'cpp': LanguageSpec(
-        'cpp', 'C++', DEFAULT_TOOLCHAIN_IMAGE, 'submission.cpp',
+        'cpp', 'C++11', DEFAULT_TOOLCHAIN_IMAGE, 'submission.cpp',
         ('g++', '-O3', '/work/submission.cpp', '-pedantic-errors',
          '--std=c++0x', '-o', '/work/submission'),
         ('/work/submission',),
@@ -64,26 +60,18 @@ LANGUAGES = {
         address_space_limit=False,
     ),
     'js': LanguageSpec(
-        'js', 'JavaScript / Node', DEFAULT_TOOLCHAIN_IMAGE, 'submission.js',
+        'js', 'JavaScript', DEFAULT_TOOLCHAIN_IMAGE, 'submission.js',
         run_command=('node', '/work/submission.js'),
         address_space_limit=False,
     ),
     'lua': LanguageSpec(
-        'lua', 'LuaJIT', DEFAULT_TOOLCHAIN_IMAGE, 'submission.lua',
+        'lua', 'Lua', DEFAULT_TOOLCHAIN_IMAGE, 'submission.lua',
         ('luajit', '-b', '/work/submission.lua', '/work/submission.raw'),
         ('luajit', '/work/submission.raw'),
-    ),
-    'py': LanguageSpec(
-        'py', 'Python 2', DEFAULT_PYTHON2_IMAGE, 'submission.py',
-        run_command=('python', '/work/submission.py'),
     ),
     'py3': LanguageSpec(
         'py3', 'Python 3', DEFAULT_TOOLCHAIN_IMAGE, 'submission.py',
         run_command=('python3', '/work/submission.py'),
-    ),
-    'pypy': LanguageSpec(
-        'pypy', 'Python 2 / PyPy', DEFAULT_PYPY2_IMAGE, 'submission.py',
-        run_command=('pypy', '/work/submission.py'),
     ),
     'rb': LanguageSpec(
         'rb', 'Ruby', DEFAULT_TOOLCHAIN_IMAGE, 'submission.rb',

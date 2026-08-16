@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from djangoutils import setup_paginator, get_or_none
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from guardian.core import ObjectPermissionChecker
 from ..models import Problem, Submission
@@ -14,7 +14,12 @@ def rejudge(request, id):
     submission = get_object_or_404(Submission, id=id)
     if submission.user != request.user and not request.user.is_superuser:
         return HttpResponseForbidden()
-    submission.rejudge()
+    if not submission.rejudge():
+        return HttpResponse(
+            'Submissions from the retired toolchain cannot be rejudged.',
+            status=409,
+            content_type='text/plain; charset=utf-8',
+        )
     return redirect(reverse("judge-submission-details", kwargs={"id": id}))
 
 def recent(request, page=1):

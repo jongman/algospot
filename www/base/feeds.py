@@ -10,10 +10,13 @@ class PostFeed(Feed):
     title = 'algospot.com posts'
     link = '/'
     description = '알고스팟 새 글 목록'
-    anonymous = User.objects.get(pk=settings.ANONYMOUS_USER_ID)
-
     def items(self):
-        return get_posts_for_user(self.anonymous, 'forum.read_post').order_by('-created_on')[:10]
+        # URL configuration and Django system checks import this class before
+        # PostgreSQL is necessarily reachable. Resolve the legacy anonymous
+        # account only while serving the feed.
+        anonymous = User.objects.get(pk=settings.ANONYMOUS_USER_ID)
+        return get_posts_for_user(
+            anonymous, 'forum.read_post').order_by('-created_on')[:10]
     def item_title(self, obj):
         return '[%s] %s' % (obj.category.name, obj.title)
     def item_description(self, obj):

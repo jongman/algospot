@@ -8,6 +8,7 @@ import base64
 import json
 from pathlib import Path
 import re
+import time
 import uuid
 
 import docker
@@ -134,31 +135,50 @@ class DisposableContainerExecutor:
 
         container = None
         try:
-            container = self.client.containers.create(
-                image=image,
-                command=runner_command,
-                name=name,
-                labels=labels,
-                runtime=self.runtime,
-                network_mode='none',
-                read_only=True,
-                user='65532:65532',
-                cap_drop=['ALL'],
-                security_opt=['no-new-privileges:true'],
-                pids_limit=max(16, int(processes) + 8),
-                mem_limit=int(memory_bytes),
-                memswap_limit=int(memory_bytes),
-                nano_cpus=1000000000,
-                tmpfs={
-                    '/tmp': 'rw,noexec,nosuid,nodev,size=64m,mode=1777',
-                },
-                volumes=volumes,
-                working_dir='/work',
-                stdin_open=False,
-                tty=False,
-                detach=True,
-            )
-            container.start()
+            for start_attempt in range(3):
+                container = self.client.containers.create(
+                    image=image,
+                    command=runner_command,
+                    name=name if start_attempt == 0 else '%s-r%s' % (
+                        name, start_attempt),
+                    labels=labels,
+                    runtime=self.runtime,
+                    network_mode='none',
+                    read_only=True,
+                    user='65532:65532',
+                    cap_drop=['ALL'],
+                    security_opt=['no-new-privileges:true'],
+                    pids_limit=max(16, int(processes) + 8),
+                    mem_limit=int(memory_bytes),
+                    memswap_limit=int(memory_bytes),
+                    nano_cpus=1000000000,
+                    tmpfs={
+                        '/tmp': 'rw,noexec,nosuid,nodev,size=64m,mode=1777',
+                    },
+                    volumes=volumes,
+                    working_dir='/work',
+                    stdin_open=False,
+                    tty=False,
+                    detach=True,
+                )
+                try:
+                    container.start()
+                    break
+                except APIError as exc:
+                    explanation = str(getattr(exc, 'explanation', exc))
+                    transient_startup = (
+                        self.runtime == 'runsc'
+                        and 'cannot create sandbox' in explanation
+                        and 'EOF' in explanation
+                    )
+                    try:
+                        container.remove(force=True)
+                    except DockerException:
+                        pass
+                    container = None
+                    if not transient_startup or start_attempt == 2:
+                        raise
+                    time.sleep(0.25 * (start_attempt + 1))
             try:
                 status = container.wait(timeout=float(wall_seconds) + 5.0)
             except (ReadTimeout, APIError, DockerException):

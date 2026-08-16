@@ -15,9 +15,10 @@ from django.db.models import Q
 from django.utils import timezone
 
 from .container_data import compare_output, prepare_problem_data
-from .container_languages import DEFAULT_PYTHON2_IMAGE, get_language
+from .container_languages import get_language
 from .docker_executor import DisposableContainerExecutor
 from .models import JudgeJob, Submission
+from .special_checkers import resolve_checker
 
 
 LEASE_SECONDS = 3600
@@ -53,8 +54,6 @@ class JudgeController:
             job = (JudgeJob.objects.select_for_update(skip_locked=True)
                    .filter(Q(state=JudgeJob.PENDING) |
                            Q(state=JudgeJob.RUNNING, lease_expires_at__lt=now))
-                   .select_related('submission', 'submission__problem',
-                                   'submission__problem__last_revision')
                    .order_by('created_at').first())
             if job is None:
                 return None
@@ -91,8 +90,9 @@ class JudgeController:
         checker_dir = job_root / ('checker-%s' % case.name)
         checker_dir.mkdir(mode=0o777)
         checker_dir.chmod(0o777)
+        checker_port = resolve_checker(prepared.checker_path)
         for source, name in (
-            (prepared.checker_path, 'checker'),
+            (checker_port, 'checker'),
             (case.input_path, 'input'),
             (case.expected_path, 'expected'),
         ):
@@ -101,9 +101,9 @@ class JudgeController:
         (checker_dir / 'output').write_bytes(output)
         (checker_dir / 'output').chmod(0o444)
         result = self.executor.run(
-            image=DEFAULT_PYTHON2_IMAGE,
+            image=settings.JUDGE_CHECKER_IMAGE,
             command=(
-                'python', '/work/checker', '/work/input', '/work/output',
+                'python3', '/work/checker', '/work/input', '/work/output',
                 '/work/expected',
             ),
             work_dir=checker_dir,
@@ -111,7 +111,10 @@ class JudgeController:
             cpu_seconds=10,
             memory_bytes=256 * 1024 * 1024,
             output_bytes=1024 * 1024,
-            processes=16,
+            # runsc's sandbox needs more startup threads than the checker
+            # itself. Keep this aligned with the normal executor default; the
+            # runner still applies the same process-tree RLIMIT_NPROC.
+            processes=64,
             work_read_only=True,
             submission_id=submission.id,
             phase='checker',

@@ -3,6 +3,7 @@
 import os
 
 from algospot.django111_settings import *
+from algospot.toolchain_metadata import JUDGE_LANGUAGE_METADATA
 
 
 DEBUG = True
@@ -19,15 +20,30 @@ allow_controller_writes = (
     and os.environ.get('DJANGO_SETTINGS_MODULE') == 'algospot.judge_settings'
     and os.environ.get('ALGOSPOT_JUDGE_CONTROLLER_ENABLED') == '1'
 )
+allow_production_writes = (
+    write_mode == 'production-web'
+    and database_name == 'algospot'
+    and os.environ.get('DJANGO_SETTINGS_MODULE') ==
+        'algospot.production_settings'
+    and os.environ.get('ALGOSPOT_PRODUCTION') == '1'
+)
 if allow_scratch_writes and database_name != 'algospot_native_migrate':
     raise RuntimeError(
         'Modern database writes are restricted to algospot_native_migrate')
-if write_mode not in ('', 'scratch-only', 'judge-controller'):
+if write_mode not in (
+        '', 'scratch-only', 'judge-controller', 'production-web'):
     raise RuntimeError('Unknown MODERN_ALLOW_DATABASE_WRITES mode')
 if write_mode == 'judge-controller' and not allow_controller_writes:
     raise RuntimeError(
         'Judge writes require judge_settings and the controller opt-in')
-allow_database_writes = allow_scratch_writes or allow_controller_writes
+if write_mode == 'production-web' and not allow_production_writes:
+    raise RuntimeError(
+        'Production writes require production_settings, the algospot '
+        'database, and the production opt-in')
+allow_database_writes = (
+    allow_scratch_writes or allow_controller_writes or
+    allow_production_writes
+)
 
 DATABASES = {
     'default': {
@@ -111,22 +127,6 @@ JUDGE_SETTINGS.update({
     'WEBSERVER': 'http://127.0.0.1:9/',
 })
 
-JUDGE_LANGUAGE_METADATA = (
-    ('cpp', 'C++', 'isolated judge worker'),
-    ('java', 'Java', 'isolated judge worker'),
-    ('c', 'C11', 'isolated judge worker'),
-    ('py3', 'Python 3', 'isolated judge worker'),
-    ('py', 'Python 2 (legacy)', 'isolated judge worker'),
-    ('pypy', 'Python 2 / PyPy (legacy)', 'isolated judge worker'),
-    ('js', 'JavaScript / Node', 'isolated judge worker'),
-    ('go', 'Go', 'isolated judge worker'),
-    ('rb', 'Ruby', 'isolated judge worker'),
-    ('scala', 'Scala', 'isolated judge worker'),
-    ('hs', 'Haskell', 'isolated judge worker'),
-    ('rs', 'Rust', 'isolated judge worker'),
-    ('lua', 'LuaJIT', 'isolated judge worker'),
-)
-
 # These settings are inert in the web process, which has neither the Docker
 # socket nor the controller opt-in.  They are shared so the isolated smoke
 # command can exercise the same executor without a second settings fork.
@@ -137,6 +137,10 @@ JUDGE_CONTAINER_RUNTIME = os.environ.get(
 JUDGE_REQUIRE_IMAGE_DIGESTS = (
     os.environ.get('ALGOSPOT_JUDGE_REQUIRE_IMAGE_DIGESTS', '1') == '1'
 )
+JUDGE_CHECKER_IMAGE = os.environ.get(
+    'ALGOSPOT_JUDGE_CHECKER_IMAGE', 'algospot-judge-checker:local')
+JUDGE_REJUDGE_ENABLED = os.environ.get(
+    'ALGOSPOT_REJUDGE_ENABLED', '0') == '1'
 
 LOGGING = {
     'version': 1,

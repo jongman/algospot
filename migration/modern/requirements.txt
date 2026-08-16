@@ -9,6 +9,7 @@ django-haystack==3.4.0
 django-registration==5.2.1
 django-tagging==0.5.0
 docker==7.1.0
+gunicorn==23.0.0
 icalendar==6.3.1
 misaka==2.1.1
 psycopg[binary]==3.2.9

@@ -4,33 +4,27 @@ from judge.models import JudgeJob, Submission
 
 
 class Command(BaseCommand):
-    help = ('Report or enqueue only RECEIVED/REJUDGE_REQUESTED submissions. '
-            'It never retries stale COMPILING/RUNNING rows automatically.')
-
-    def add_arguments(self, parser):
-        parser.add_argument('--apply', action='store_true')
+    help = ('Audit the new queue without adopting any restored submissions. '
+            'Retired-toolchain rows are never backfilled.')
 
     def handle(self, *args, **options):
         queued_states = (Submission.RECEIVED, Submission.REJUDGE_REQUESTED)
-        candidates = Submission.objects.filter(
-            state__in=queued_states, judge_job__isnull=True).order_by('id')
-        count = candidates.count()
+        queued = JudgeJob.objects.filter(
+            state=JudgeJob.PENDING,
+            submission__state__in=queued_states,
+        ).count()
+        retired_pending = Submission.objects.filter(
+            state__in=queued_states,
+            judge_job__isnull=True,
+        ).count()
         stale = Submission.objects.filter(
             state__in=(Submission.COMPILING, Submission.RUNNING,
                        Submission.JUDGING)).count()
         self.stdout.write(
-            'Eligible pending submissions without a job: %s' % count)
+            'Container-toolchain jobs pending: %s' % queued)
+        self.stdout.write(
+            'Retired-toolchain pending submissions excluded: %s' %
+            retired_pending)
         self.stdout.write(
             'Stale in-progress submissions intentionally excluded: %s' % stale)
-        if not options['apply']:
-            self.stdout.write('Dry run; pass --apply to create pending jobs.')
-            return
-        created = 0
-        for submission_id in candidates.values_list('id', flat=True).iterator():
-            _, was_created = JudgeJob.objects.get_or_create(
-                submission_id=submission_id,
-                defaults={'state': JudgeJob.PENDING},
-            )
-            created += int(was_created)
-        self.stdout.write(self.style.SUCCESS(
-            'Created %s pending judge jobs.' % created))
+        self.stdout.write('Audit only; restored submissions are never backfilled.')

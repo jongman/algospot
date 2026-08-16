@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -181,10 +182,18 @@ class Submission(models.Model):
         return reverse("judge-submission-details", kwargs={"id": self.id})
 
     def rejudge(self):
+        if not self.can_rejudge():
+            return False
         self.message = ""
         self.time = None
         self.state = self.REJUDGE_REQUESTED
         self.save()
+        return True
+
+    def can_rejudge(self):
+        if not getattr(settings, 'JUDGE_REJUDGE_ENABLED', False) or not self.pk:
+            return False
+        return JudgeJob.objects.filter(submission=self).exists()
 
     @staticmethod
     def get_verdict_distribution(queryset):
@@ -398,8 +407,12 @@ def saved_submission(sender, **kwargs):
         problem.submissions_count = Submission.objects.filter(problem=problem,
                                                               is_public=True).count()
         problem.save()
-    if submission.state in [Submission.RECEIVED,
-                            Submission.REJUDGE_REQUESTED]:
+    should_queue = (
+        (created and submission.state == Submission.RECEIVED)
+        or (submission.state == Submission.REJUDGE_REQUESTED
+            and submission.can_rejudge())
+    )
+    if should_queue:
         JudgeJob.objects.update_or_create(
             submission=submission,
             defaults={

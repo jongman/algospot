@@ -298,8 +298,9 @@ Judging is a sibling-container topology, not Docker-in-Docker. The normal web
 container never receives the Docker socket. One trusted `judge-controller`
 service holds the socket and consumes durable, leased `JudgeJob` rows from
 PostgreSQL. A crashed controller leaves a lease that another controller can
-recover. New `RECEIVED` and `REJUDGE_REQUESTED` submissions are queued by ID;
-no Django model is serialized into a broker message.
+recover. New `RECEIVED` submissions and eligible `REJUDGE_REQUESTED`
+submissions are queued by ID; no Django model is serialized into a broker
+message.
 
 The controller creates one disposable compile container and a fresh run
 container for every test case. Commands and images come from a server-owned
@@ -324,20 +325,23 @@ sudo ./scripts/install-gvisor.sh
 ./scripts/run-algospot-judge.sh queue-report
 ```
 
-`queue-report` is dry-run by default. `queue-apply` enqueues only rows still in
-`RECEIVED` or `REJUDGE_REQUESTED`. The snapshot's old `COMPILING`, `RUNNING`,
-and `JUDGING` rows are deliberately excluded; an operator must decide their
-verdict or request a rejudge explicitly.
+`queue-report` is audit-only. It never adopts restored rows. The snapshot's
+pending and old `COMPILING`, `RUNNING`, and `JUDGING` submissions remain
+historical records and cannot be rejudged by the container toolchain.
 
-The local images are a modernization-development toolchain. They preserve all
-language IDs and include pinned base images, but their compiler/interpreter
-versions are not equivalent to the live 2014-era stack. Do not cut production
-traffic over based on the local smoke test. Before production, build and
-characterize per-language legacy-compatible images, push them to a controlled
-registry, set every `JUDGE_*_IMAGE` value to an `@sha256:` reference, set
-`JUDGE_REQUIRE_IMAGE_DIGESTS=1`, run representative accepted/wrong-answer/time
-limit/special-checker submissions through both judges, and review every
-verdict difference.
+The container toolchain is the supported production baseline; reproducing the
+2014 compiler versions is intentionally out of scope. Restored submissions have
+no durable `JudgeJob` and cannot be rejudged or backfilled into the new queue.
+Every new submission receives a durable job when it is created, which also
+marks it as eligible for later rejudging. Python 2 and PyPy 2 are not offered as
+submission languages. The seven archived special-checker attachments are
+SHA-256 allowlisted to audited Python 3 ports; modified or unknown checker
+attachments fail closed. The checker image is Python 3-only.
+Set `ALGOSPOT_REJUDGE_ENABLED=1` on the production web and controller services
+only after the new queue is live; the local migration lab leaves rejudging
+disabled by default.
+Production images should still be pushed to a controlled registry, referenced
+by `@sha256:`, and enforced with `JUDGE_REQUIRE_IMAGE_DIGESTS=1`.
 
 For an eventual writable production database, the controller uses
 `MODERN_ALLOW_DATABASE_WRITES=judge-controller` together with

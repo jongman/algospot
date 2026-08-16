@@ -562,8 +562,7 @@ services:
       ALGOSPOT_JUDGE_REQUIRE_IMAGE_DIGESTS: ${JUDGE_REQUIRE_IMAGE_DIGESTS:-0}
       ALGOSPOT_JUDGE_WORK_ROOT: ${ALGOSPOT_SNAPSHOT_DIR:?set ALGOSPOT_SNAPSHOT_DIR in legacy.env}/restore-lab/judge-work
       ALGOSPOT_JUDGE_TOOLCHAIN_IMAGE: ${JUDGE_TOOLCHAIN_IMAGE:-algospot-judge-toolchain:local}
-      ALGOSPOT_JUDGE_PYTHON2_IMAGE: ${JUDGE_PYTHON2_IMAGE:-algospot-judge-python2:local}
-      ALGOSPOT_JUDGE_PYPY2_IMAGE: ${JUDGE_PYPY2_IMAGE:-algospot-judge-pypy2:local}
+      ALGOSPOT_JUDGE_CHECKER_IMAGE: ${JUDGE_CHECKER_IMAGE:-algospot-judge-checker:local}
     volumes:
       - type: bind
         source: ${ALGOSPOT_REPO_DIR:?set ALGOSPOT_REPO_DIR in legacy.env}/www
@@ -627,20 +626,12 @@ services:
       dockerfile: migration/judge/toolchain.Dockerfile
     entrypoint: [/bin/true]
 
-  judge-python2:
+  judge-checker:
     profiles: [judge-build]
-    image: algospot-judge-python2:local
+    image: algospot-judge-checker:local
     build:
       context: ..
-      dockerfile: migration/judge/python2.Dockerfile
-    entrypoint: [/bin/true]
-
-  judge-pypy2:
-    profiles: [judge-build]
-    image: algospot-judge-pypy2:local
-    build:
-      context: ..
-      dockerfile: migration/judge/pypy2.Dockerfile
+      dockerfile: migration/judge/checker.Dockerfile
     entrypoint: [/bin/true]
 
   django18-scratch-web:

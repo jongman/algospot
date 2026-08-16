@@ -1,0 +1,283 @@
+name: algospot-production
+
+x-app-environment: &app-environment
+  DJANGO_SETTINGS_MODULE: algospot.production_settings
+  PYTHONPATH: /app/www
+  ALGOSPOT_PRODUCTION: "1"
+  ALGOSPOT_SECRET_KEY: ${ALGOSPOT_SECRET_KEY:?set ALGOSPOT_SECRET_KEY}
+  ALGOSPOT_ALLOWED_HOSTS: ${ALGOSPOT_ALLOWED_HOSTS:-algospot.com,www.algospot.com,localhost,127.0.0.1}
+  ALGOSPOT_CSRF_TRUSTED_ORIGINS: ${ALGOSPOT_CSRF_TRUSTED_ORIGINS:-https://algospot.com,https://www.algospot.com}
+  ALGOSPOT_SECURE_SSL_REDIRECT: ${ALGOSPOT_SECURE_SSL_REDIRECT:-1}
+  ALGOSPOT_SESSION_COOKIE_SECURE: ${ALGOSPOT_SESSION_COOKIE_SECURE:-1}
+  ALGOSPOT_CSRF_COOKIE_SECURE: ${ALGOSPOT_CSRF_COOKIE_SECURE:-1}
+  ALGOSPOT_SECURE_HSTS_SECONDS: ${ALGOSPOT_SECURE_HSTS_SECONDS:-0}
+  ALGOSPOT_MEDIA_ROOT: /data/media
+  ALGOSPOT_STATIC_ROOT: /data/static
+  LEGACY_SECRET_KEY: ${ALGOSPOT_SECRET_KEY:?set ALGOSPOT_SECRET_KEY}
+  LEGACY_POSTGRES_DB: algospot
+  LEGACY_POSTGRES_HOST: postgres
+  LEGACY_POSTGRES_PORT: "5432"
+  LEGACY_POSTGRES_USER: ${POSTGRES_USER:-algospot}
+  LEGACY_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+  MODERN_ALLOW_DATABASE_WRITES: production-web
+  ALGOSPOT_REJUDGE_ENABLED: ${ALGOSPOT_REJUDGE_ENABLED:-0}
+
+x-app-volumes: &app-volumes
+  - type: bind
+    source: ${ALGOSPOT_APP_DIR:?set ALGOSPOT_APP_DIR}/www
+    target: /app/www
+    read_only: true
+  - type: bind
+    source: ${ALGOSPOT_MEDIA_DIR:?set ALGOSPOT_MEDIA_DIR}
+    target: /data/media
+  - type: volume
+    source: staticfiles
+    target: /data/static
+
+services:
+  postgres:
+    image: postgres:17.10-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-algospot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - type: bind
+        source: ${ALGOSPOT_POSTGRES_DIR:?set ALGOSPOT_POSTGRES_DIR}
+        target: /var/lib/postgresql/data
+    networks: [backend]
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d postgres']
+      interval: 3s
+      timeout: 5s
+      retries: 40
+    logging:
+      driver: local
+      options: {max-size: 10m, max-file: "3"}
+
+  restore:
+    image: postgres:17.10-bookworm
+    profiles: [tools]
+    restart: "no"
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER:-algospot}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - type: bind
+        source: ${ALGOSPOT_DATABASE_DUMP:?set ALGOSPOT_DATABASE_DUMP}
+        target: /backup/algospot.pgdump
+        read_only: true
+    networks: [backend]
+    entrypoint: [/bin/sh, -ec]
+    command:
+      - |
+        dropdb --if-exists algospot
+        createdb algospot
+        psql --dbname=algospot --command='DROP SCHEMA public;'
+        pg_restore --exit-on-error --no-owner --no-acl \
+          --dbname=algospot /backup/algospot.pgdump
+
+  migrate:
+    image: algospot-modern:production
+    build:
+      context: ../..
+      dockerfile: migration/modern/Dockerfile
+    profiles: [tools]
+    restart: "no"
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment: *app-environment
+    volumes: *app-volumes
+    networks: [backend]
+    user: ${PUID:-1000}:${PGID:-1000}
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    entrypoint: [python, manage.py, migrate]
+    command: [--fake-initial, --noinput]
+
+  web:
+    image: algospot-modern:production
+    build:
+      context: ../..
+      dockerfile: migration/modern/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment: *app-environment
+    volumes: *app-volumes
+    networks: [backend, frontend]
+    user: ${PUID:-1000}:${PGID:-1000}
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: 1536m
+    cpus: 2.0
+    init: true
+    command:
+      - gunicorn
+      - --bind=0.0.0.0:8000
+      - --workers=3
+      - --timeout=60
+      - --max-requests=1000
+      - --max-requests-jitter=100
+      - --access-logfile=-
+      - --error-logfile=-
+      - algospot.wsgi:application
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import urllib.request;
+          r=urllib.request.Request('http://127.0.0.1:8000/',
+          headers={'Host':'algospot.com','X-Forwarded-Proto':'https'});
+          urllib.request.urlopen(r, timeout=5).read()
+      interval: 5s
+      timeout: 6s
+      retries: 30
+    logging:
+      driver: local
+      options: {max-size: 10m, max-file: "3"}
+
+  collectstatic:
+    image: algospot-modern:production
+    profiles: [tools]
+    restart: "no"
+    environment: *app-environment
+    volumes: *app-volumes
+    networks: [backend]
+    # Initialize the named volume as root; the serving proxy mounts it
+    # read-only and the web process never writes collected assets.
+    user: "0:0"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop: [ALL]
+    cap_add: [DAC_OVERRIDE]
+    security_opt: [no-new-privileges:true]
+    entrypoint: [python, manage.py, collectstatic]
+    command: [--noinput]
+
+  proxy:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    depends_on:
+      web: {condition: service_healthy}
+    environment:
+      ALGOSPOT_SITE_ADDRESS: ${ALGOSPOT_SITE_ADDRESS:-http://:80}
+    ports:
+      - ${ALGOSPOT_BIND_ADDRESS:-127.0.0.1}:${ALGOSPOT_HTTP_PORT:-18090}:80
+      - ${ALGOSPOT_BIND_ADDRESS:-127.0.0.1}:${ALGOSPOT_HTTPS_PORT:-18443}:443
+      - ${ALGOSPOT_BIND_ADDRESS:-127.0.0.1}:${ALGOSPOT_HTTPS_PORT:-18443}:443/udp
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - staticfiles:/srv/static:ro
+      - type: bind
+        source: ${ALGOSPOT_MEDIA_DIR:?set ALGOSPOT_MEDIA_DIR}
+        target: /srv/media
+        read_only: true
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [frontend]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+      - /run:size=8m,mode=0755
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE, DAC_READ_SEARCH]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 256m
+    cpus: 0.5
+    healthcheck:
+      test: [CMD, wget, --quiet, --spider, --header=Host:algospot.com, http://127.0.0.1/]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    logging:
+      driver: local
+      options: {max-size: 10m, max-file: "3"}
+
+  judge-controller:
+    image: algospot-modern:production
+    restart: unless-stopped
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment:
+      <<: *app-environment
+      DJANGO_SETTINGS_MODULE: algospot.judge_settings
+      MODERN_ALLOW_DATABASE_WRITES: judge-controller
+      ALGOSPOT_JUDGE_CONTROLLER_ENABLED: "1"
+      ALGOSPOT_JUDGE_RUNTIME: runsc
+      ALGOSPOT_JUDGE_REQUIRE_IMAGE_DIGESTS: ${JUDGE_REQUIRE_IMAGE_DIGESTS:-0}
+      ALGOSPOT_JUDGE_WORK_ROOT: ${ALGOSPOT_JUDGE_WORK_DIR:?set ALGOSPOT_JUDGE_WORK_DIR}
+      ALGOSPOT_JUDGE_TOOLCHAIN_IMAGE: ${JUDGE_TOOLCHAIN_IMAGE:-algospot-judge-toolchain:production}
+      ALGOSPOT_JUDGE_CHECKER_IMAGE: ${JUDGE_CHECKER_IMAGE:-algospot-judge-checker:production}
+    volumes:
+      - type: bind
+        source: ${ALGOSPOT_APP_DIR:?set ALGOSPOT_APP_DIR}/www
+        target: /app/www
+        read_only: true
+      - type: bind
+        source: ${ALGOSPOT_MEDIA_DIR:?set ALGOSPOT_MEDIA_DIR}
+        target: /www-media
+        read_only: true
+      - type: bind
+        source: ${ALGOSPOT_JUDGE_WORK_DIR:?set ALGOSPOT_JUDGE_WORK_DIR}
+        target: ${ALGOSPOT_JUDGE_WORK_DIR:?set ALGOSPOT_JUDGE_WORK_DIR}
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    networks: [backend]
+    user: ${PUID:-1000}:${PGID:-1000}
+    group_add: ["${DOCKER_GID:?set DOCKER_GID}"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 768m
+    cpus: 1.0
+    init: true
+    entrypoint: [python, manage.py, run_judge_controller]
+    command: []
+    logging:
+      driver: local
+      options: {max-size: 10m, max-file: "3"}
+
+  judge-toolchain:
+    image: algospot-judge-toolchain:production
+    profiles: [build]
+    build:
+      context: ../..
+      dockerfile: migration/judge/toolchain.Dockerfile
+    entrypoint: [/bin/true]
+
+  judge-checker:
+    image: algospot-judge-checker:production
+    profiles: [build]
+    build:
+      context: ../..
+      dockerfile: migration/judge/checker.Dockerfile
+    entrypoint: [/bin/true]
+
+volumes:
+  staticfiles:
+  caddy-data:
+  caddy-config:
+
+networks:
+  backend: {internal: true}
+  frontend:

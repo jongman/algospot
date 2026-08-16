@@ -6,12 +6,11 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from judge.container_languages import (
-    DEFAULT_PYPY2_IMAGE,
-    DEFAULT_PYTHON2_IMAGE,
     DEFAULT_TOOLCHAIN_IMAGE,
     get_language,
 )
 from judge.docker_executor import DisposableContainerExecutor
+from algospot.toolchain_metadata import TOOLCHAIN_VERSION_PROBES
 
 
 class Command(BaseCommand):
@@ -66,29 +65,37 @@ class Command(BaseCommand):
             if result['returncode'] != 0 or result['stdout'].strip() != b'algospot:BLOCKED':
                 raise CommandError('Network/read-run smoke failed: %r' % result)
 
-            legacy_source = smoke / 'legacy.py'
-            legacy_source.write_text(
-                "import sys\nprint sys.stdin.read().strip() + ':LEGACY'\n",
-                encoding='ascii')
-            legacy_source.chmod(0o444)
-            for image, interpreter in (
-                    (DEFAULT_PYTHON2_IMAGE, 'python'),
-                    (DEFAULT_PYPY2_IMAGE, 'pypy')):
-                legacy_result = executor.run(
-                    image=image,
-                    command=(interpreter, '/work/legacy.py'),
-                    work_dir=smoke,
-                    input_path=input_path,
-                    wall_seconds=2,
-                    cpu_seconds=1,
-                    memory_bytes=256 * 1024 * 1024,
-                    work_read_only=True,
-                    phase='controlled-legacy-smoke',
-                )
-                if (legacy_result['returncode'] != 0 or
-                        legacy_result['stdout'].strip() != b'algospot:LEGACY'):
-                    raise CommandError(
-                        'Legacy interpreter smoke failed: %r' % legacy_result)
+            version_source = smoke / 'toolchain_versions.py'
+            version_source.write_text(
+                'import subprocess\n'
+                'probes = %r\n'
+                'for extension, command, marker in probes:\n'
+                '    result = subprocess.run(command, stdout=subprocess.PIPE, '
+                'stderr=subprocess.PIPE, text=True)\n'
+                '    output = (result.stdout + result.stderr).replace("\\n", " ")\n'
+                '    print(extension + "=" + output.strip())\n'
+                '    if result.returncode or marker not in output:\n'
+                '        raise SystemExit(1)\n' % (TOOLCHAIN_VERSION_PROBES,),
+                encoding='utf-8')
+            version_source.chmod(0o444)
+            version_result = executor.run(
+                image=DEFAULT_TOOLCHAIN_IMAGE,
+                command=('python3', '/work/toolchain_versions.py'),
+                work_dir=smoke,
+                wall_seconds=30,
+                cpu_seconds=30,
+                memory_bytes=512 * 1024 * 1024,
+                output_bytes=1024 * 1024,
+                processes=64,
+                work_read_only=True,
+                address_space_limit=False,
+                phase='controlled-toolchain-version-smoke',
+            )
+            if version_result['returncode'] != 0:
+                raise CommandError(
+                    'Toolchain version smoke failed: %r' % version_result)
+            self.stdout.write(version_result['stdout'].decode(
+                'utf-8', 'replace').strip())
 
             c_source = smoke / 'smoke.c'
             c_source.write_text(

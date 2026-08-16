@@ -9,13 +9,16 @@ class PostIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.EdgeNgramField(document=True, use_template=True)
     user = indexes.CharField(model_attr='user')
     date = indexes.DateTimeField(model_attr='created_on')
-    anonymous = User.objects.get(pk=settings.ANONYMOUS_USER_ID)
-
     def get_model(self):
         return Post
 
     def index_queryset(self, using=None):
-        return get_posts_for_user(self.anonymous, 'forum.read_post').filter(created_on__lte=datetime.datetime.now())
+        # Haystack discovers index classes during Django startup. Avoid a
+        # database query until an index operation is actually requested.
+        anonymous = User.objects.get(pk=settings.ANONYMOUS_USER_ID)
+        return get_posts_for_user(
+            anonymous, 'forum.read_post').filter(
+                created_on__lte=datetime.datetime.now())
 
     def get_updated_field(self):
         return 'modified_on'

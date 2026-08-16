@@ -81,11 +81,20 @@ def edit(request, id):
 
 @login_required
 def rejudge(request, id):
+    if not getattr(settings, 'JUDGE_REJUDGE_ENABLED', False):
+        return HttpResponse(
+            'Rejudging is not enabled for this runtime.',
+            status=409,
+            content_type='text/plain; charset=utf-8',
+        )
     problem = get_object_or_404(Problem, id=id)
     checker = ObjectPermissionChecker(request.user)
     if not checker.has_perm('edit_problem', problem) and problem.user != request.user:
         raise Http404
-    submissions = Submission.objects.filter(problem=problem)
+    submissions = Submission.objects.filter(
+        problem=problem,
+        judge_job__isnull=False,
+    )
     for submission in submissions:
         submission.rejudge()
     return redirect(reverse('judge-submission-recent') +
