@@ -29,7 +29,7 @@ if [[ "$resend_api_key" != re_* || ${#resend_api_key} -lt 20 ||
 fi
 
 default_sender=noreply@notify.algospot.com
-read -r -p "Verified From address [$default_sender]: " sender_address
+read -r -p "Intended From address [$default_sender]: " sender_address
 sender_address=${sender_address:-$default_sender}
 if [[ ! "$sender_address" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]]; then
   unset resend_api_key
@@ -93,4 +93,4 @@ fi
 
 echo
 echo "Resend SMTP is configured. Secret backup: $backup_file"
-echo "The verified sender domain is still required before sending to users."
+echo "Resend must verify the sender domain before messages can reach users."

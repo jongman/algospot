@@ -48,7 +48,7 @@ ssh -t ubuntu@vps-05290a25.vps.ovh.us \
   /srv/algospot/app/migration/production/configure-resend.sh
 ```
 
-The script prompts invisibly for the production API key, asks for the verified
+The script prompts invisibly for the production API key, asks for the intended
 From address, updates `/srv/algospot/production.env` with mode `0600`, recreates
 only the web service, and verifies an authenticated STARTTLS connection without
 sending a message. Domain verification is still required before Resend will
