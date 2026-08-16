@@ -81,7 +81,12 @@
 							</em>
 							<ul>
 								<li><a class="button-link" href="{% url "user_settings" user.id %}" title="설정" rel="tooltip">settings</a></li>
-								<li><a class="button-link" href="{% url "auth_logout" %}" title="로그아웃" rel="tooltip">sign out</a></li>
+								<li>
+									<form class="logout-form" action="{% url "auth_logout" %}" method="post">
+										{% csrf_token %}
+										<button class="button-link" type="submit" title="로그아웃" rel="tooltip">sign out</button>
+									</form>
+								</li>
 							</ul>
 						</div>
 					{% else %}

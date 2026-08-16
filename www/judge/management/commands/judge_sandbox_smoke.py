@@ -142,6 +142,8 @@ class Command(BaseCommand):
                     'while((n=System.in.read(b))!=-1) System.out.write(b,0,n); }}\n'),
                 'js': 'process.stdin.pipe(process.stdout);\n',
                 'lua': 'io.write(io.read("*a"))\n',
+                'py3': 'import sys\nsys.stdout.write(sys.stdin.read())\n',
+                'pypy': 'import sys\nsys.stdout.write(sys.stdin.read())\n',
                 'rb': 'STDOUT.write(STDIN.read)\n',
                 'rs': (
                     'use std::io::{self, Read, Write}; fn main(){let mut b=Vec::new();'

@@ -73,6 +73,10 @@ LANGUAGES = {
         'py3', 'Python 3', DEFAULT_TOOLCHAIN_IMAGE, 'submission.py',
         run_command=('python3', '/work/submission.py'),
     ),
+    'pypy': LanguageSpec(
+        'pypy', 'PyPy 3', DEFAULT_TOOLCHAIN_IMAGE, 'submission.py',
+        run_command=('pypy3', '/work/submission.py'),
+    ),
     'rb': LanguageSpec(
         'rb', 'Ruby', DEFAULT_TOOLCHAIN_IMAGE, 'submission.rb',
         run_command=('ruby', '/work/submission.rb'),

@@ -27,7 +27,6 @@ urlpatterns = [
     re_path(r'^search/', include('haystack.urls')),
 
     re_path(r'^admin/', admin.site.urls),
-    re_path(r'^accounts/logout', auth_views.LogoutView.as_view(next_page='/')),
     re_path(r'^avatar/', include('avatar.urls')),
 
     # we are overriding default comments app's deletion..
@@ -54,7 +53,6 @@ if 'django_registration' in settings.INSTALLED_APPS:
         re_path(r'^avatar/add/$', avatar_views.add, name='avatar_add'),
         re_path(r'^avatar/delete/$', avatar_views.delete,
                 name='avatar_delete'),
-        re_path(r'^accounts/', include('django.contrib.auth.urls')),
         re_path(
             r'^accounts/login/$', auth_views.LoginView.as_view(),
             name='auth_login'),
@@ -80,6 +78,7 @@ if 'django_registration' in settings.INSTALLED_APPS:
         re_path(
             r'^accounts/register/$', OneStepRegistrationView.as_view(),
             name='registration_register'),
+        re_path(r'^accounts/', include('django.contrib.auth.urls')),
     ]
 
 if settings.DEBUG:
