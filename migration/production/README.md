@@ -53,3 +53,16 @@ From address, updates `/srv/algospot/production.env` with mode `0600`, recreates
 only the web service, and verifies an authenticated STARTTLS connection without
 sending a message. Domain verification is still required before Resend will
 deliver to arbitrary users.
+
+After SMTP and off-site backup verification succeed, prepare everything except
+the external DNS change:
+
+```console
+/srv/algospot/app/migration/production/prepare-cutover.sh
+```
+
+This pins both judge images by repository digest, enables rejudging only for
+new container-toolchain jobs, binds Caddy to public 80/443, enables secure
+cookies and HTTPS redirects, and recreates the stack. Caddy then waits for the
+two A records to point to the VPS before obtaining public certificates. HSTS is
+deliberately left disabled until the resulting HTTPS site has been verified.
