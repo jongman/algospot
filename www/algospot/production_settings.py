@@ -46,9 +46,27 @@ SECURE_HSTS_SECONDS = int(os.environ.get('ALGOSPOT_SECURE_HSTS_SECONDS', '0'))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
 X_FRAME_OPTIONS = 'DENY'
 
-# The migration stack has not yet connected an authenticated outbound mail
-# provider. Password reset and registration must fail locally instead of
-# leaking mail or relying on a host mail daemon.
-EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+EMAIL_BACKEND = os.environ.get(
+    'ALGOSPOT_EMAIL_BACKEND',
+    'django.core.mail.backends.dummy.EmailBackend')
 DEFAULT_FROM_EMAIL = os.environ.get(
     'ALGOSPOT_DEFAULT_FROM_EMAIL', 'noreply@algospot.com')
+SERVER_EMAIL = os.environ.get('ALGOSPOT_SERVER_EMAIL', DEFAULT_FROM_EMAIL)
+
+if EMAIL_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
+    def required_email_setting(name):
+        value = os.environ.get(name, '')
+        if not value:
+            raise RuntimeError('SMTP email requires %s' % name)
+        return value
+
+    EMAIL_HOST = required_email_setting('ALGOSPOT_EMAIL_HOST')
+    EMAIL_PORT = int(os.environ.get('ALGOSPOT_EMAIL_PORT', '587'))
+    EMAIL_HOST_USER = required_email_setting('ALGOSPOT_EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = required_email_setting(
+        'ALGOSPOT_EMAIL_HOST_PASSWORD')
+    EMAIL_USE_TLS = os.environ.get('ALGOSPOT_EMAIL_USE_TLS', '1') == '1'
+    EMAIL_USE_SSL = os.environ.get('ALGOSPOT_EMAIL_USE_SSL', '0') == '1'
+    EMAIL_TIMEOUT = int(os.environ.get('ALGOSPOT_EMAIL_TIMEOUT', '10'))
+    if EMAIL_USE_TLS and EMAIL_USE_SSL:
+        raise RuntimeError('SMTP TLS and implicit SSL cannot both be enabled')

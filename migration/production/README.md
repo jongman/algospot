@@ -36,3 +36,20 @@ Before DNS cutover, take a final dump and media delta from the old host, repeat
 the restore/migrate validation while submissions are paused, configure public
 80/443 and Caddy's production site address, enable rejudging for newly created
 jobs, and verify off-site backup restoration.
+
+## Transactional email
+
+Production email is fail-closed: it remains on Django's dummy backend until an
+authenticated SMTP relay is installed. Resend can be configured without putting
+its API key in shell history:
+
+```console
+ssh -t ubuntu@vps-05290a25.vps.ovh.us \
+  /srv/algospot/app/migration/production/configure-resend.sh
+```
+
+The script prompts invisibly for the production API key, asks for the verified
+From address, updates `/srv/algospot/production.env` with mode `0600`, recreates
+only the web service, and verifies an authenticated STARTTLS connection without
+sending a message. Domain verification is still required before Resend will
+deliver to arbitrary users.

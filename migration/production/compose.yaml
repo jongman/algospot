@@ -21,6 +21,16 @@ x-app-environment: &app-environment
   LEGACY_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
   MODERN_ALLOW_DATABASE_WRITES: production-web
   ALGOSPOT_REJUDGE_ENABLED: ${ALGOSPOT_REJUDGE_ENABLED:-0}
+  ALGOSPOT_EMAIL_BACKEND: ${ALGOSPOT_EMAIL_BACKEND:-django.core.mail.backends.dummy.EmailBackend}
+  ALGOSPOT_EMAIL_HOST: ${ALGOSPOT_EMAIL_HOST:-}
+  ALGOSPOT_EMAIL_PORT: ${ALGOSPOT_EMAIL_PORT:-587}
+  ALGOSPOT_EMAIL_HOST_USER: ${ALGOSPOT_EMAIL_HOST_USER:-}
+  ALGOSPOT_EMAIL_HOST_PASSWORD: ${ALGOSPOT_EMAIL_HOST_PASSWORD:-}
+  ALGOSPOT_EMAIL_USE_TLS: ${ALGOSPOT_EMAIL_USE_TLS:-1}
+  ALGOSPOT_EMAIL_USE_SSL: ${ALGOSPOT_EMAIL_USE_SSL:-0}
+  ALGOSPOT_EMAIL_TIMEOUT: ${ALGOSPOT_EMAIL_TIMEOUT:-10}
+  ALGOSPOT_DEFAULT_FROM_EMAIL: ${ALGOSPOT_DEFAULT_FROM_EMAIL:-noreply@algospot.com}
+  ALGOSPOT_SERVER_EMAIL: ${ALGOSPOT_SERVER_EMAIL:-noreply@algospot.com}
 
 x-app-volumes: &app-volumes
   - type: bind
@@ -201,7 +211,7 @@ services:
     mem_limit: 256m
     cpus: 0.5
     healthcheck:
-      test: [CMD, wget, --quiet, --spider, --header=Host:algospot.com, http://127.0.0.1/]
+      test: [CMD, wget, --quiet, --spider, http://localhost/healthz]
       interval: 5s
       timeout: 5s
       retries: 30

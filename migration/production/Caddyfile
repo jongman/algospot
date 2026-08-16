@@ -32,3 +32,6 @@
 	}
 }
 
+http://localhost {
+	respond /healthz "ok" 200
+}
