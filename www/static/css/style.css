@@ -165,11 +165,25 @@ section[role=navigation] header h1 {
 }
 #user-info ul li:last-child { margin-right:0; }
 #user-info .button-link { font-size:80%; }
-#user-info .logout-form { margin:0; }
-#user-info .logout-form button {
+#user-info .logout-form {
+	display:inline;
+	margin:0;
+	padding:0;
+}
+#user-info .logout-form button.button-link {
+	height:auto;
+	margin:0;
 	padding:2px 6px;
 	border:none;
+	font-weight:normal;
+	line-height:normal;
+	background:#ae432e;
+	color:#fff;
 	box-shadow:none;
+}
+#user-info .logout-form button.button-link:hover {
+	background:#4c4c4c;
+	color:#fff;
 }
 
 /*  Navigation Layout :: Nav  */
