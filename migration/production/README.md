@@ -66,3 +66,20 @@ new container-toolchain jobs, binds Caddy to public 80/443, enables secure
 cookies and HTTPS redirects, and recreates the stack. Caddy then waits for the
 two A records to point to the VPS before obtaining public certificates. HSTS is
 deliberately left disabled until the resulting HTTPS site has been verified.
+
+## Restored static sites
+
+The proxy also mounts `ALGOSPOT_LEGACY_STATIC_DIR` read-only. The preserved
+August 14 snapshot supplies the old `/contest/` tree, `book.algospot.com`, and
+the exact redirect table formerly served by `links.algospot.com`. The static
+snapshot is kept outside the application checkout and included in the encrypted
+VPS backup.
+
+The dedicated Algospot restic recovery set contains a validated logical
+PostgreSQL dump, uploaded media, this legacy static tree, the root-only
+production environment, image digests, and an inventory manifest. Raw live
+PostgreSQL files, disposable judge work directories, collected application
+static files, and container images are intentionally excluded: they are either
+unsafe to copy live or reproducible from the dump, checkout, and pinned image
+references. The weekly restore test imports the database into a fresh
+PostgreSQL container and compares database rows and both file-tree inventories.

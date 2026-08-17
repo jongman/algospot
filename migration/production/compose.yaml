@@ -197,6 +197,10 @@ services:
         source: ${ALGOSPOT_MEDIA_DIR:?set ALGOSPOT_MEDIA_DIR}
         target: /srv/media
         read_only: true
+      - type: bind
+        source: ${ALGOSPOT_LEGACY_STATIC_DIR:-/var/lib/algospot/legacy-static}
+        target: /srv/legacy-static
+        read_only: true
       - caddy-data:/data
       - caddy-config:/config
     networks: [frontend]

@@ -15,9 +15,73 @@
 		file_server
 	}
 
+	@contest-root path /contest
+	redir @contest-root /contest/ 308
+
+	handle_path /contest/* {
+		root * /srv/legacy-static/www_static/contest
+		file_server
+	}
+
 	handle {
 		reverse_proxy web:8000
 	}
+
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		X-Frame-Options DENY
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+book.algospot.com {
+	encode zstd gzip
+	root * /srv/legacy-static/www_static/book
+	file_server
+
+	header {
+		-Server
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		X-Frame-Options DENY
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+links.algospot.com {
+	@a path /a /a/
+	redir @a http://google.com 302
+	@b path /b /b/
+	redir @b http://bing.com 302
+	@numbering0 path /numbering0 /numbering0/
+	redir @numbering0 http://www.cs.utexas.edu/users/EWD/transcriptions/EWD08xx/EWD831.html 302
+	@comparingfloats path /comparingfloats /comparingfloats/
+	redir @comparingfloats http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm 302
+	@fp-arithmetic path /fp-arithmetic /fp-arithmetic/
+	redir @fp-arithmetic http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html 302
+	@sudoku path /sudoku /sudoku/
+	redir @sudoku http://norvig.com/sudoku.html 302
+	@linesweep path /linesweep /linesweep/
+	redir @linesweep http://www.topcoder.com/tc?module=Static&d1=tutorials&d2=lineSweep 302
+	@rotcal path /rotcal /rotcal/
+	redir @rotcal http://www-cgrl.cs.mcgill.ca/~godfried/research/calipers.html 302
+	@bithacks path /bithacks /bithacks/
+	redir @bithacks http://graphics.stanford.edu/~seander/bithacks.html 302
+	@dlx path /dlx /dlx/
+	redir @dlx http://arxiv.org/abs/cs/0011047 302
+	@test path /test /test/
+	redir @test http://google.com 302
+	respond 404
 
 	header {
 		-Server
