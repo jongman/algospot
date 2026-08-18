@@ -6,7 +6,8 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.contrib.auth.models import User
-from django.test import TestCase, override_settings
+from django.template import Context, Template
+from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
 
 
@@ -16,6 +17,24 @@ class SimpleTest(TestCase):
         Tests that 1 + 1 always equals 2.
         """
         self.assertEqual(1 + 1, 2)
+
+
+class SortableTableHeaderTests(SimpleTestCase):
+    def test_preserves_and_html_escapes_query_parameters(self):
+        request = RequestFactory().get(
+            '/judge/problem/list/6', {
+                'order_by': 'slug',
+                'verdict': 'notyet',
+                'user_tried': '33535',
+            })
+        rendered = Template(
+            '{% load common_tags %}'
+            '{% sortable_table_header "Problem ID" "slug" %}'
+        ).render(Context({'request': request}))
+
+        self.assertIn(
+            'href="/judge/problem/list/6?order_by=-slug&amp;verdict=notyet'
+            '&amp;user_tried=33535"', rendered)
 
 
 class AccountRouteTests(TestCase):

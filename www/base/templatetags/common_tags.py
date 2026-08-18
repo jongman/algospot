@@ -2,6 +2,7 @@
 
 from diff_match_patch import diff_match_patch
 from django.urls import reverse
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django import template
 from algospot.comments_compat import BaseCommentNode
@@ -73,11 +74,12 @@ class TableHeaderNode(template.Node):
             if current_order.endswith(order_by):
                 arrow = "↑"
 
-        get_params = dict(context['request'].GET)
-        get_params['order_by'] = [new_order]
-        get_params = '&'.join('%s=%s' % (k, v[0]) for k, v in list(get_params.items()))
-        full_path = context['request'].get_full_path().split('?')[0]
-        return mark_safe("""<a href="%s?%s">%s%s</a>""" % (full_path, get_params, column_name, arrow))
+        get_params = context['request'].GET.copy()
+        get_params['order_by'] = new_order
+        full_path = context['request'].path
+        return format_html('<a href="{}?{}">{}{}</a>',
+                           full_path, get_params.urlencode(),
+                           column_name, arrow)
 
 @register.tag
 def sortable_table_header(parser, token):

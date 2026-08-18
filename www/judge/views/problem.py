@@ -24,6 +24,19 @@ import urllib.request, urllib.parse, urllib.error
 from django.conf import settings
 
 
+PROBLEM_LIST_ORDER_FIELDS = frozenset((
+    'slug', 'name', 'user', 'submissions_count', 'ratio',
+))
+
+
+def get_problem_list_order(value):
+    """Return a supported problem-list ordering, or the default."""
+    field = value[1:] if value.startswith('-') else value
+    if field in PROBLEM_LIST_ORDER_FIELDS and value.count('-') <= 1:
+        return value
+    return 'slug'
+
+
 @login_required
 def new(request):
     new_problem = Problem(user=request.user, name="(새 문제)",
@@ -286,7 +299,7 @@ def list(request, page=1):
             title = user.username + ': 시도한 문제들'
             problems = problems.filter(solver__user=user)
 
-    order_by = request.GET.get('order_by', 'slug')
+    order_by = get_problem_list_order(request.GET.get('order_by', 'slug'))
     if order_by.endswith('ratio'):
         ratio_def = ('cast("judge_problem"."accepted_count" as float) / '
                      'greatest(1, "judge_problem"."submissions_count")')
