@@ -19,6 +19,9 @@ MARKDOWN_EXTENSIONS = (
     | misaka.EXT_STRIKETHROUGH
     | misaka.EXT_SUPERSCRIPT
     | getattr(misaka, 'EXT_MATH', 0)
+    # Hoedown/Misaka 2 requires this separately to recognize $...$ and
+    # $$...$$.  EXT_MATH alone only enables the explicit TeX delimiters.
+    | getattr(misaka, 'EXT_MATH_EXPLICIT', 0)
     | misaka.EXT_SPACE_HEADERS
 )
 

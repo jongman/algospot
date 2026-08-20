@@ -9,6 +9,9 @@ from django.contrib.auth.models import User
 from django.template import Context, Template
 from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
 from django.urls import reverse
+import misaka
+
+from rendertext import MARKDOWN_EXTENSIONS, render_text
 
 
 class SimpleTest(TestCase):
@@ -35,6 +38,16 @@ class SortableTableHeaderTests(SimpleTestCase):
         self.assertIn(
             'href="/judge/problem/list/6?order_by=-slug&amp;verdict=notyet'
             '&amp;user_tried=33535"', rendered)
+
+
+class MathRenderingTests(SimpleTestCase):
+    def test_math_markdown_is_emitted_for_mathjax(self):
+        rendered = render_text('Inline $x^2$ and display:\n\n$$x = y$$')
+
+        self.assertTrue(MARKDOWN_EXTENSIONS & misaka.EXT_MATH)
+        self.assertTrue(MARKDOWN_EXTENSIONS & misaka.EXT_MATH_EXPLICIT)
+        self.assertNotIn('$x^2$', rendered)
+        self.assertNotIn('$$x = y$$', rendered)
 
 
 class AccountRouteTests(TestCase):
