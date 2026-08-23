@@ -146,5 +146,15 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {'console': {'class': 'logging.StreamHandler'}},
+    'loggers': {
+        # Replace Django's default production logger, which includes an
+        # AdminEmailHandler when DEBUG is false. User-facing email continues
+        # to use EMAIL_BACKEND; only automatic error reports are disabled.
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
     'root': {'handlers': ['console'], 'level': 'INFO'},
 }

@@ -5,9 +5,12 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 
+import logging
+
 from django.contrib.auth.models import User
 from django.template import Context, Template
 from django.test import RequestFactory, SimpleTestCase, TestCase, override_settings
+from django.utils.log import AdminEmailHandler
 from django.urls import reverse
 import misaka
 
@@ -38,6 +41,22 @@ class SortableTableHeaderTests(SimpleTestCase):
         self.assertIn(
             'href="/judge/problem/list/6?order_by=-slug&amp;verdict=notyet'
             '&amp;user_tried=33535"', rendered)
+
+
+class ErrorLoggingTests(SimpleTestCase):
+    def test_django_request_errors_are_not_emailed(self):
+        handlers = []
+        logger = logging.getLogger('django.request')
+        while logger is not None:
+            handlers.extend(logger.handlers)
+            if not logger.propagate:
+                break
+            logger = logger.parent
+
+        self.assertFalse(any(isinstance(handler, AdminEmailHandler)
+                             for handler in handlers))
+        self.assertTrue(any(isinstance(handler, logging.StreamHandler)
+                            for handler in handlers))
 
 
 class MathRenderingTests(SimpleTestCase):
